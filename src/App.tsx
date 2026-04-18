@@ -56,9 +56,18 @@ import { DataTable } from "../lib/components/data/DataTable";
 // Healthcare
 import { DoctorCard, VitalBadge, AppointmentCard } from "../lib/components/healthcare/DoctorCard";
 
+// ─── Storybook base URL (from .env) ─────────────────────────────────────────
+const STORYBOOK_URL = import.meta.env.VITE_STORYBOOK_URL ?? "http://localhost:6006";
+
 // ─── Section wrapper ──────────────────────────────────────────────────────────
 
-function Section({ title, id, children }: { title: string; id: string; children: React.ReactNode }) {
+function Section({ title, id, storybookPath, children }: {
+  title: string;
+  id: string;
+  /** The Storybook story/docs path, e.g. "?path=/docs/primitives-button--docs" */
+  storybookPath?: string;
+  children: React.ReactNode;
+}) {
   return (
     <Box as="section" mb="14" id={id} scrollMarginTop="80px">
       <Box
@@ -76,9 +85,36 @@ function Section({ title, id, children }: { title: string; id: string; children:
           fontWeight="bold"
           color="text.heading"
           fontFamily="var(--font-heading)"
+          flex="1"
         >
           {title}
         </Text>
+        {storybookPath && (
+          <a
+            href={`${STORYBOOK_URL}/${storybookPath}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 5,
+              fontSize: 11,
+              fontFamily: "var(--font-body)",
+              color: "#0685FF",
+              background: "rgba(6,133,255,0.08)",
+              border: "1px solid rgba(6,133,255,0.2)",
+              borderRadius: 20,
+              padding: "3px 10px",
+              textDecoration: "none",
+              whiteSpace: "nowrap",
+              fontWeight: 500,
+              letterSpacing: "0.01em",
+            }}
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Storybook
+          </a>
+        )}
       </Box>
       <Box display="flex" flexWrap="wrap" gap="4" alignItems="flex-start">
         {children}
@@ -159,8 +195,9 @@ export default function App() {
         onCtaClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
         ctaIconHref="https://github.com/medixdeck/medixdeck-ui"
         onCtaIconClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
-        secondaryCtaHref="https://www.npmjs.com/package/@medixdeck/ui"
-        secondaryCtaLabel="View on NPM"
+        secondaryCtaLabel="Storybook Docs"
+        secondaryCtaHref={STORYBOOK_URL}
+        onSecondaryCtaClick={() => window.open(STORYBOOK_URL, "_blank")}
         isSticky
       />
 
@@ -261,7 +298,7 @@ export default function App() {
           {/* ────────────────────────────────────────────────────
               LOGO
           ──────────────────────────────────────────────────── */}
-          <Section title="Logo" id="logo">
+          <Section title="Logo" id="logo" storybookPath="?path=/docs/primitives-logo--docs">
             {/* Full variants */}
             <Box display="flex" flexDirection="column" gap="6" w="100%">
               <Box>
@@ -318,6 +355,120 @@ export default function App() {
                   <Logo variant="blue" height={64} />
                 </Box>
               </Box>
+            </Box>
+          </Section>
+
+          {/* ────────────────────────────────────────────────────
+              NAVIGATION
+          ──────────────────────────────────────────────────── */}
+
+          {/* ── Navbar variants ── */}
+          <Section title="Navbar" id="navbar">
+            <Box w="100%" display="flex" flexDirection="column" gap="8">
+
+              {/* 1 — href navigation */}
+              <Box>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
+                  textTransform="uppercase" letterSpacing="0.06em">1 — href navigation</Text>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
+                  ctaHref="/consult" — both buttons act as standard anchor links (no JS handler needed).
+                </Text>
+                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+                  <Navbar
+                    navItems={[
+                      { label: "Logo", href: "#logo" },
+                      { label: "Buttons", href: "#buttons" },
+                      { label: "Forms", href: "#forms" },
+                      { label: "Navigation", href: "#navigation" },
+                    ]}
+                    ctaLabel="Talk to a doctor"
+                    ctaHref="#"
+                    position="relative"
+                  />
+                </Box>
+              </Box>
+
+              {/* 2 — click handler */}
+              <Box>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
+                  textTransform="uppercase" letterSpacing="0.06em">2 — click handlers (label + icon separate)</Text>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
+                  onCtaClick opens a modal. onCtaIconClick opens the external app (different destination).
+                </Text>
+                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+                  <Navbar
+                    navItems={[
+                      { label: "Logo", href: "#logo" },
+                      { label: "Buttons", href: "#buttons" },
+                      { label: "Forms", href: "#forms" },
+                    ]}
+                    ctaLabel="View on GitHub"
+                    onCtaClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
+                    ctaIconHref="https://github.com/medixdeck/medixdeck-ui"
+                    onCtaIconClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
+                    position="relative"
+                  />
+                </Box>
+              </Box>
+
+              {/* 3 — with secondary CTA */}
+              <Box>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
+                  textTransform="uppercase" letterSpacing="0.06em">3 — with secondary CTA</Text>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
+                  secondaryCtaLabel + secondaryCtaHref + onSecondaryCtaClick — ghost "Sign In" to the left.
+                </Text>
+                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+                  <Navbar
+                    navItems={[
+                      { label: "Logo", href: "#logo" },
+                      { label: "Buttons", href: "#buttons" },
+                      { label: "Forms", href: "#forms" },
+                    ]}
+                    ctaLabel="Talk to a doctor"
+                    ctaHref="#"
+                    secondaryCtaLabel="Sign In"
+                    secondaryCtaHref="#"
+                    onSecondaryCtaClick={() => alert("Sign In clicked")}
+                    position="relative"
+                  />
+                </Box>
+              </Box>
+
+              {/* 4 — custom ctaSlot */}
+              <Box>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
+                  textTransform="uppercase" letterSpacing="0.06em">4 — custom ctaSlot (full control)</Text>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
+                  Pass any ReactNode — replaces the default CTA area entirely.
+                </Text>
+                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+                  <Navbar
+                    navItems={[
+                      { label: "Logo", href: "#logo" },
+                      { label: "Buttons", href: "#buttons" },
+                    ]}
+                    ctaSlot={
+                      <Box display="flex" gap="2" alignItems="center">
+                        <Button variant="ghost" colorScheme="blue" size="sm"
+                          onClick={() => alert("Sign In clicked")}>Sign In</Button>
+                        <Button variant="solid" colorScheme="purple" size="sm"
+                          onClick={() => alert("Get Started clicked")}
+                          rightIcon={
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                          }
+                        >
+                          Get Started
+                        </Button>
+                      </Box>
+                    }
+                    position="relative"
+                  />
+                </Box>
+              </Box>
 
               {/* Navbar with custom logo override */}
               <Box>
@@ -347,12 +498,13 @@ export default function App() {
                 </Box>
               </Box>
             </Box>
+
           </Section>
 
           {/* ────────────────────────────────────────────────────
               BUTTONS — comprehensive showcase
           ──────────────────────────────────────────────────── */}
-          <Section title="Buttons" id="buttons">
+          <Section title="Buttons" id="buttons" storybookPath="?path=/docs/primitives-button--docs">
             <Box display="flex" flexDirection="column" gap="8" w="100%">
 
               {/* Row label helper */}
@@ -507,7 +659,7 @@ export default function App() {
               PRIMITIVES
           ──────────────────────────────────────────────────── */}
 
-          <Section title="Badges & Tags" id="badges">
+          <Section title="Badges & Tags" id="badges" storybookPath="?path=/docs/primitives-badge--docs">
             <Badge status="success">Verified</Badge>
             <Badge status="warning" variant="subtle">Pending</Badge>
             <Badge status="error" variant="solid">Cancelled</Badge>
@@ -520,7 +672,7 @@ export default function App() {
             <Tag colorScheme="gray" variant="outline">General Practice</Tag>
           </Section>
 
-          <Section title="Avatars" id="avatars">
+          <Section title="Avatars" id="avatars" storybookPath="?path=/docs/primitives-avatar--docs">
             <Avatar name="Dr. Amaka Okonkwo" size="xs" />
             <Avatar name="Dr. Tunde Bello" size="sm" />
             <Avatar name="Ngozi A." size="md" showStatus statusColor="green.500" />
@@ -596,7 +748,7 @@ export default function App() {
           </Section>
 
           {/* ── OTP Input ─ */}
-          <Section title="OTP / Pin Input" id="otp">
+          <Section title="OTP / Pin Input" id="otp" storybookPath="?path=/docs/form-otpinput--docs">
             <Box display="flex" flexDirection="column" gap="6">
               <OTPInput
                 length={6}
@@ -617,7 +769,7 @@ export default function App() {
           </Section>
 
           {/* ── Phone Input ── */}
-          <Section title="Phone Input" id="phone">
+          <Section title="Phone Input" id="phone" storybookPath="?path=/docs/form-phoneinput--docs">
             <Box maxW="380px" w="100%">
               <PhoneInput
                 label="Phone number"
@@ -631,7 +783,7 @@ export default function App() {
           </Section>
 
           {/* ── Date Picker ── */}
-          <Section title="Date Picker" id="datepicker">
+          <Section title="Date Picker" id="datepicker" storybookPath="?path=/docs/form-datepicker--docs">
             <Box display="flex" flexDirection="column" gap="4" maxW="380px" w="100%">
               <DatePicker
                 label="Appointment Date"
@@ -656,7 +808,7 @@ export default function App() {
           </Section>
 
           {/* ── File Upload ── */}
-          <Section title="File Upload" id="upload">
+          <Section title="File Upload" id="upload" storybookPath="?path=/docs/form-fileupload--docs">
             <Box maxW="500px" w="100%">
               <FileUpload
                 label="Medical Records & Scans"
@@ -672,14 +824,14 @@ export default function App() {
           {/* ────────────────────────────────────────────────────
               LAYOUT
           ──────────────────────────────────────────────────── */}
-          <Section title="Stat Cards" id="layout">
+          <Section title="Stat Cards" id="layout" storybookPath="?path=/docs/layout-statcard--docs">
             <StatCard value="25K+" label="Happy Patients" change={12.5} />
             <StatCard value="200+" label="Expert Doctors" change={-2} />
             <StatCard value="98%" label="Satisfaction Rate" trend="neutral" />
             <StatCard value="₦2.4B" label="Consultations" change={8.3} />
           </Section>
 
-          <Section title="Cards" id="cards">
+          <Section title="Cards" id="cards" storybookPath="?path=/docs/layout-card--docs">
             <Card w="300px">
               <CardHeader title="Patient Overview" subtitle="Last updated 2 hours ago" />
               <CardBody>
@@ -713,7 +865,7 @@ export default function App() {
           </Section>
 
           {/* ── Notifications ── */}
-          <Section title="Notifications & Toasts" id="notifications">
+          <Section title="Notifications & Toasts" id="notifications" storybookPath="?path=/docs/feedback-notification-toast--docs">
             <Box display="flex" flexWrap="wrap" gap="4">
               <Button
                 variant="solid"
@@ -747,122 +899,7 @@ export default function App() {
             </Box>
           </Section>
 
-          {/* ────────────────────────────────────────────────────
-              NAVIGATION
-          ──────────────────────────────────────────────────── */}
-
-          {/* ── Navbar variants ── */}
-          <Section title="Navbar" id="navbar">
-            <Box w="100%" display="flex" flexDirection="column" gap="8">
-
-              {/* 1 — href navigation */}
-              <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
-                  textTransform="uppercase" letterSpacing="0.06em">1 — href navigation</Text>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  ctaHref="/consult" — both buttons act as standard anchor links (no JS handler needed).
-                </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
-                  <Navbar
-                    navItems={[
-                      { label: "Logo", href: "#logo" },
-                      { label: "Buttons", href: "#buttons" },
-                      { label: "Forms", href: "#forms" },
-                      { label: "Navigation", href: "#navigation" },
-                    ]}
-                    ctaLabel="Talk to a doctor"
-                    ctaHref="#"
-                    position="relative"
-                  />
-                </Box>
-              </Box>
-
-              {/* 2 — click handler */}
-              <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
-                  textTransform="uppercase" letterSpacing="0.06em">2 — click handlers (label + icon separate)</Text>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  onCtaClick opens a modal. onCtaIconClick opens the external app (different destination).
-                </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
-                  <Navbar
-                    navItems={[
-                      { label: "Logo", href: "#logo" },
-                      { label: "Buttons", href: "#buttons" },
-                      { label: "Forms", href: "#forms" },
-                    ]}
-                    ctaLabel="View on GitHub"
-                    onCtaClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
-                    ctaIconHref="https://github.com/medixdeck/medixdeck-ui"
-                    onCtaIconClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
-                    position="relative"
-                  />
-                </Box>
-              </Box>
-
-              {/* 3 — with secondary CTA */}
-              <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
-                  textTransform="uppercase" letterSpacing="0.06em">3 — with secondary CTA</Text>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  secondaryCtaLabel + secondaryCtaHref + onSecondaryCtaClick — ghost "Sign In" to the left.
-                </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
-                  <Navbar
-                    navItems={[
-                      { label: "Logo", href: "#logo" },
-                      { label: "Buttons", href: "#buttons" },
-                      { label: "Forms", href: "#forms" },
-                    ]}
-                    ctaLabel="Talk to a doctor"
-                    ctaHref="#"
-                    secondaryCtaLabel="Sign In"
-                    secondaryCtaHref="#"
-                    onSecondaryCtaClick={() => alert("Sign In clicked")}
-                    position="relative"
-                  />
-                </Box>
-              </Box>
-
-              {/* 4 — custom ctaSlot */}
-              <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
-                  textTransform="uppercase" letterSpacing="0.06em">4 — custom ctaSlot (full control)</Text>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  Pass any ReactNode — replaces the default CTA area entirely.
-                </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
-                  <Navbar
-                    navItems={[
-                      { label: "Logo", href: "#logo" },
-                      { label: "Buttons", href: "#buttons" },
-                    ]}
-                    ctaSlot={
-                      <Box display="flex" gap="2" alignItems="center">
-                        <Button variant="ghost" colorScheme="blue" size="sm"
-                          onClick={() => alert("Sign In clicked")}>Sign In</Button>
-                        <Button variant="solid" colorScheme="purple" size="sm"
-                          onClick={() => alert("Get Started clicked")}
-                          rightIcon={
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M5 12h14M12 5l7 7-7 7" />
-                            </svg>
-                          }
-                        >
-                          Get Started
-                        </Button>
-                      </Box>
-                    }
-                    position="relative"
-                  />
-                </Box>
-              </Box>
-
-            </Box>
-          </Section>
-
-          <Section title="Tabs" id="navigation">
+          <Section title="Tabs" id="navigation" storybookPath="?path=/docs/navigation-tabs--docs">
             <Box w="100%">
               <Tabs
                 tabs={[
@@ -884,7 +921,7 @@ export default function App() {
             </Box>
           </Section>
 
-          <Section title="Stepper" id="stepper">
+          <Section title="Stepper" id="stepper" storybookPath="?path=/docs/navigation-stepper--docs">
             <Box w="100%" display="flex" flexDirection="column" gap="6">
 
               {/* Booking flow — step 2 active (step 1 done) */}
@@ -938,7 +975,7 @@ export default function App() {
             </Box>
           </Section>
 
-          <Section title="Pagination" id="pagination">
+          <Section title="Pagination" id="pagination" storybookPath="?path=/docs/navigation-pagination--docs">
             <Pagination total={245} pageSize={10} currentPage={page} onChange={setPage} />
             <Pagination total={50} pageSize={10} currentPage={2} compact />
           </Section>
@@ -946,14 +983,14 @@ export default function App() {
           {/* ────────────────────────────────────────────────────
               FEEDBACK
           ──────────────────────────────────────────────────── */}
-          <Section title="Alerts" id="feedback">
+          <Section title="Alerts" id="feedback" storybookPath="?path=/docs/feedback-alert--docs">
             <Alert status="success" title="Appointment confirmed!" description="Dr. Okonkwo will see you at 2:00 PM today." closable w="400px" />
             <Alert status="warning" title="Incomplete profile" description="Please complete your medical history." w="400px" />
             <Alert status="error" title="Payment failed" description="Your card was declined. Please try another method." closable w="400px" />
             <Alert status="info" variant="left-accent" title="New feature" description="Video consultations are now available 24/7." w="400px" />
           </Section>
 
-          <Section title="Tooltip" id="tooltip">
+          <Section title="Tooltip" id="tooltip" storybookPath="?path=/docs/feedback-tooltip--docs">
             <Tooltip label="MDCN Verified — This doctor is licensed and verified">
               <Button variant="outline" colorScheme="blue">Hover me</Button>
             </Tooltip>
@@ -962,7 +999,7 @@ export default function App() {
             </Tooltip>
           </Section>
 
-          <Section title="Skeleton Loading" id="skeleton">
+          <Section title="Skeleton Loading" id="skeleton" storybookPath="?path=/docs/feedback-skeleton--docs">
             <SkeletonCard w="280px" />
             <Box w="280px" p="4" bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card">
               <Skeleton h="4" w="60%" borderRadius="full" mb="3" />
@@ -972,7 +1009,7 @@ export default function App() {
             </Box>
           </Section>
 
-          <Section title="Progress" id="progress">
+          <Section title="Progress" id="progress" storybookPath="?path=/docs/feedback-progress--docs">
             <Box w="100%" display="flex" flexDirection="column" gap="4">
               <Progress value={75} colorScheme="blue" size="md" showLabel />
               <Progress value={45} colorScheme="purple" size="sm" />
@@ -982,14 +1019,14 @@ export default function App() {
           </Section>
 
           {/* ── Modal & Drawer triggers ── */}
-          <Section title="Modal & Drawer" id="drawer">
+          <Section title="Modal & Drawer" id="drawer" storybookPath="?path=/docs/feedback-modal--docs">
             <Box display="flex" gap="3" flexWrap="wrap">
               <Button variant="solid" onClick={() => setModalOpen(true)}>Open Modal</Button>
               <Button variant="outline" onClick={() => setDrawerOpen(true)}>Open Right Drawer</Button>
             </Box>
           </Section>
 
-          <Section title="Empty State" id="emptystate">
+          <Section title="Empty State" id="emptystate" storybookPath="?path=/docs/feedback-emptystate--docs">
             <Box w="100%" bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card">
               <EmptyState
                 icon="📋"
@@ -1042,7 +1079,7 @@ export default function App() {
             </Box>
           </Section>
 
-          <Section title="Accordion / FAQ" id="accordion">
+          <Section title="Accordion / FAQ" id="accordion" storybookPath="?path=/docs/data-accordion--docs">
             <Box w="100%" maxW="640px">
               <Accordion
                 items={[
@@ -1058,7 +1095,7 @@ export default function App() {
           {/* ────────────────────────────────────────────────────
               HEALTHCARE
           ──────────────────────────────────────────────────── */}
-          <Section title="Doctor Cards" id="healthcare">
+          <Section title="Doctor Cards" id="healthcare" storybookPath="?path=/docs/healthcare-doctorcard--docs">
             <DoctorCard
               name="Dr. Amaka Okonkwo"
               specialty="Cardiologist"
@@ -1083,7 +1120,7 @@ export default function App() {
             />
           </Section>
 
-          <Section title="Appointment Cards" id="appointments">
+          <Section title="Appointment Cards" id="appointments" storybookPath="?path=/docs/healthcare-doctorcard--docs">
             <AppointmentCard
               doctorName="Dr. Amaka Okonkwo"
               doctorSpecialty="Cardiologist"
@@ -1107,7 +1144,7 @@ export default function App() {
             />
           </Section>
 
-          <Section title="Vital Badges" id="vitals">
+          <Section title="Vital Badges" id="vitals" storybookPath="?path=/docs/healthcare-doctorcard--docs">
             <VitalBadge label="Blood Pressure" value="138/89" unit="mmHg" status="warning" />
             <VitalBadge label="SpO₂" value="98%" unit="" status="normal" />
             <VitalBadge label="Heart Rate" value="105" unit="bpm" status="critical" />

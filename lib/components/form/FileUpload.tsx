@@ -162,7 +162,7 @@ export function FileUpload({
               Selected file{selectedFileNames.length > 1 ? "s" : ""}:
             </Text>
             {selectedFileNames.map((name, i) => (
-              <Text key={i} fontSize="xs" color="text.muted" isTruncated fontFamily="var(--font-body)">
+              <Text key={i} fontSize="xs" color="text.muted" truncate fontFamily="var(--font-body)">
                 {name}
               </Text>
             ))}
