@@ -23,6 +23,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.build.json && vite build",
+    "build:app": "vite build -c vite.app.config.ts",
     "build:watch": "vite build --watch",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
