@@ -22,6 +22,9 @@ import { FormControl } from "../lib/components/form/FormControl";
 import { OTPInput } from "../lib/components/form/OTPInput";
 import { PhoneInput } from "../lib/components/form/PhoneInput";
 import { DatePicker } from "../lib/components/form/DatePicker";
+import { DateRangePicker } from "../lib/components/form/DateRangePicker";
+import { Combobox } from "../lib/components/form/Combobox";
+import { FileUpload } from "../lib/components/form/FileUpload";
 
 // Layout
 import { Card, CardHeader, CardBody, CardFooter } from "../lib/components/layout/Card";
@@ -43,6 +46,7 @@ import { Modal } from "../lib/components/feedback/Modal";
 import { Drawer } from "../lib/components/feedback/Drawer";
 import { Tooltip } from "../lib/components/feedback/Tooltip";
 import { EmptyState } from "../lib/components/feedback/EmptyState";
+import { Toaster, toast } from "../lib/components/feedback/Notification";
 
 // Data Display
 import { Accordion } from "../lib/components/data/Accordion";
@@ -141,6 +145,8 @@ export default function App() {
 
   return (
     <MedixProvider defaultColorMode={colorMode}>
+      <Toaster />
+
       {/* ── Navbar — default CTA pattern: [Talk to a doctor] [↗] ── */}
       <Navbar
         navItems={[
@@ -153,6 +159,8 @@ export default function App() {
         onCtaClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
         ctaIconHref="https://github.com/medixdeck/medixdeck-ui"
         onCtaIconClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
+        secondaryCtaHref="https://www.npmjs.com/package/@medixdeck/ui"
+        secondaryCtaLabel="View on NPM"
         isSticky
       />
 
@@ -171,7 +179,11 @@ export default function App() {
           <Box as="header" display="flex" justifyContent="space-between" alignItems="flex-start" mb="6" flexWrap="wrap" gap="4">
             <Box>
               <Text as="h1" fontSize="3xl" fontWeight="bold" color="text.heading" fontFamily="var(--font-heading)">
-                @medixdeck/ui
+                <Link
+                  href="https://www.npmjs.com/package/@medixdeck/ui"
+                >
+                  @medixdeck/ui
+                </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
                 Component Library Preview · v0.1.0 · 43 components
@@ -232,6 +244,7 @@ export default function App() {
               { href: "#navbar", label: "Navbar" },
               { href: "#navigation", label: "Tabs & More" },
               { href: "#feedback", label: "Feedback" },
+              { href: "#notifications", label: "Notifications" },
               { href: "#drawer", label: "Drawer" },
               { href: "#datatable", label: "DataTable" },
               { href: "#healthcare", label: "Healthcare" },
@@ -555,6 +568,18 @@ export default function App() {
                   ]}
                 />
               </FormControl>
+              <FormControl label="Hospital Branch">
+                <Combobox
+                  placeholder="Search branches..."
+                  options={[
+                    { value: "lagos-main", label: "Lagos Main Branch" },
+                    { value: "lekki", label: "Lekki Phase 1 Clinic" },
+                    { value: "ikeja", label: "Ikeja General" },
+                    { value: "abuja", label: "Abuja Central" },
+                    { value: "ph", label: "Port Harcourt Base" },
+                  ]}
+                />
+              </FormControl>
               <FormControl label="Patient Notes">
                 <Textarea placeholder="Describe your symptoms…" rows={3} maxLength={300} showCount />
               </FormControl>
@@ -620,10 +645,26 @@ export default function App() {
                 includeTime
                 helperText="Select date and time for your appointment"
               />
-              <DatePicker
-                label="Date of Birth"
-                isInvalid
-                errorMessage="Date of birth is required"
+
+              <DateRangePicker
+                label="Leave/Absence Period"
+                startPlaceholder="Start Date"
+                endPlaceholder="End Date"
+                helperText="Select the start and end dates"
+              />
+            </Box>
+          </Section>
+
+          {/* ── File Upload ── */}
+          <Section title="File Upload" id="upload">
+            <Box maxW="500px" w="100%">
+              <FileUpload
+                label="Medical Records & Scans"
+                accept=".pdf, .png, .jpg"
+                multiple
+                maxSize={5 * 1024 * 1024} // 5MB
+                helperText="Upload any necessary documents (Max 5MB each)"
+                onChange={(files) => console.log("Files uploaded:", files)}
               />
             </Box>
           </Section>
@@ -668,6 +709,41 @@ export default function App() {
                 description="Connect with MDCN-verified doctors in minutes. Get quality care from the comfort of your home."
                 align="left"
               />
+            </Box>
+          </Section>
+
+          {/* ── Notifications ── */}
+          <Section title="Notifications & Toasts" id="notifications">
+            <Box display="flex" flexWrap="wrap" gap="4">
+              <Button
+                variant="solid"
+                colorScheme="blue"
+                onClick={() => toast.success("Appointment Confirmed", { description: "Your booking for April 24 has been successfully scheduled." })}
+              >
+                Success Toast
+              </Button>
+              <Button
+                variant="outline"
+                colorScheme="blue"
+                onClick={() => toast.info("New Message", { description: "You have a new message from Dr. Okonkwo." })}
+              >
+                Info Toast
+              </Button>
+              <Button
+                variant="solid"
+                colorScheme="black"
+                onClick={() => toast.warning("Connection Unstable", { description: "Please check your internet connection and try again." })}
+              >
+                Warning Toast
+              </Button>
+              <Button
+                variant="solid"
+                bg="#EF4444"
+                color="white"
+                onClick={() => toast.error("Booking Failed", { description: "The selected time slot is no longer available." })}
+              >
+                Error Toast
+              </Button>
             </Box>
           </Section>
 

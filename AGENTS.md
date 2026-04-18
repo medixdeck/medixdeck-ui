@@ -404,7 +404,7 @@ import { Button, Navbar, DoctorCard, Logo } from "@medixdeck/ui";
 ## 13. Component Conventions Summary
 
 | Convention | Rule |
-|---|---|
+| --- | --- |
 | File naming | `PascalCase.tsx` |
 | Export style | Named exports only (no default exports from lib) |
 | Props interface | `ComponentNameProps` |
