@@ -442,10 +442,10 @@ medixdeck-ui/
 - [x] Healthcare components (DoctorCard, VitalBadge, AppointmentCard)
 - [x] Font auto-injection (Satoshi + Inter via MedixProvider)
 - [x] Dark mode via `.dark` class on `<html>` (all components including Navbar respond correctly)
-- [ ] Storybook interactive docs
-- [ ] Vitest + React Testing Library unit tests
-- [ ] GitHub Actions CI/CD for automated publishing
-- [ ] `DateRangePicker` component
-- [ ] `Combobox` / searchable select
-- [ ] `FileUpload` component
-- [ ] `Notification` / toast system
+- [x] Storybook interactive docs
+- [x] Vitest + React Testing Library unit tests
+- [x] GitHub Actions CI/CD for automated publishing
+- [x] `DateRangePicker` component
+- [x] `Combobox` / searchable select
+- [x] `FileUpload` component
+- [x] `Notification` / toast system
