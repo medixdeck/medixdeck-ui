@@ -428,16 +428,6 @@ medixdeck-ui/
 
 ---
 
-## Publishing
-
-```bash
-# Bump version in package.json first, then:
-npm run build
-npm publish --access public
-```
-
----
-
 ## Roadmap
 
 - [x] Primitive components (Button, Badge, Avatar, Spinner, Tag, Divider, **Logo**)
