@@ -111,7 +111,7 @@ function Section({ title, id, storybookPath, children }: {
               letterSpacing: "0.01em",
             }}
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
             Storybook
           </a>
         )}
@@ -223,7 +223,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.0 · 43 components
+                Component Library Preview · v0.1.1 · 43 components
               </Text>
             </Box>
             <Box display="flex" gap="3" alignItems="center">
@@ -1181,7 +1181,7 @@ export default function App() {
           {/* Footer */}
           <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
             <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-              <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.0 · Built with Chakra UI v3 + Vite · Satoshi font · 43 components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
+              <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.1 · Built with Chakra UI v3 + Vite · Satoshi font · 43 components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
             </Text>
           </Box>
         </Container>
