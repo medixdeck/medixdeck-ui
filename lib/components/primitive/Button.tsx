@@ -53,7 +53,25 @@ const COLORS = {
     fg: "#D97706",
     fgHover: "#A85B04",
   },
-} as const;
+  black: {
+    solid: "#111926",
+    solidHover: "#0D131D",
+    solidActive: "#000000",
+    tint: "#F3F4F6",
+    tintHover: "#E5E7EB",
+    fg: "#111926",
+    fgHover: "#000000",
+  },
+  gray: {
+    solid: "#4B5563",
+    solidHover: "#374151",
+    solidActive: "#1F2937",
+    tint: "#F9FAFB",
+    tintHover: "#F3F4F6",
+    fg: "#4B5563",
+    fgHover: "#1F2937",
+  },
+} as Record<string, any>;
 
 const SIZE = {
   xs: { height: "28px", px: "12px", fontSize: "11px" },
@@ -70,7 +88,7 @@ export interface ButtonProps {
   /** Size */
   size?: "xs" | "sm" | "md" | "lg";
   /** Color scheme — maps to MedixDeck brand colors */
-  colorScheme?: "blue" | "purple" | "green" | "red" | "amber";
+  colorScheme?: "blue" | "purple" | "green" | "red" | "amber" | "black" | "gray" | string;
   /** Show loading spinner */
   isLoading?: boolean;
   /** Element rendered before the label */
@@ -127,8 +145,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const c = COLORS[colorScheme];
-    const s = SIZE[size];
+    // Safely fallback to blue if an invalid/unsupported color scheme is passed
+    const c = COLORS[colorScheme] || COLORS.blue;
+    const s = SIZE[size as keyof typeof SIZE] || SIZE.md;
 
     // ── Compute base styles per variant ────────────────────────────────────
     const base: React.CSSProperties = {
