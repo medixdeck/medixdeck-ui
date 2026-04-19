@@ -80,8 +80,14 @@ export interface NavbarProps extends Omit<BoxProps, "children"> {
   /** Logo element. Defaults to `<Logo />` when omitted. */
   logo?: React.ReactNode;
 
-  /** Navigation items rendered in the center. */
+  /** Navigation items to display. */
   navItems?: NavItem[];
+
+  /**
+   * Alignment of the navigation items on desktop.
+   * @default "center"
+   */
+  navItemsAlign?: "left" | "center" | "right";
 
   /**
    * Custom link renderer — lets you integrate React Router, Next.js `<Link>`, etc.
@@ -268,6 +274,7 @@ function MaybeLink({
 export function Navbar({
   logo,
   navItems = [],
+  navItemsAlign = "center",
   ctaLabel = "Get Started",
   ctaHref,
   onCtaClick,
@@ -383,6 +390,9 @@ export function Navbar({
           as="ul"
           display={{ base: "none", md: "flex" }}
           alignItems="center"
+          justifyContent={
+            navItemsAlign === "left" ? "flex-start" : navItemsAlign === "right" ? "flex-end" : "center"
+          }
           gap="1"
           listStyleType="none"
           m="0"
