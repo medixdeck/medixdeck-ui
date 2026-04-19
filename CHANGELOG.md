@@ -4,6 +4,29 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.2] — 2026-04-19
+
+### Added
+
+- **Storybook Interactive Documentation**: Fully configured `@storybook/react-vite` and deployed to dedicated UI subdomain.
+- **Vitest Testing Infrastructure**: Enabled `@testing-library/react`, `jsdom`, and `@testing-library/jest-dom` for component unit tests natively using `vitest`.
+- **Form Components**:
+  - `DateRangePicker`: Date range selector with start/end bounds.
+  - `Combobox`: Searchable dropdown select input.
+  - `FileUpload`: Dedicated drag-and-drop file upload integration.
+- **Developer Experience & UI Linkage**: Dev preview showcase (`App.tsx`) sections now display a context-sensitive "View in Storybook" badge using the `VITE_STORYBOOK_URL` fallback.
+- **Programmatic Notification System**: Toaster setup.
+
+### Fixed
+
+- **Vercel/Amplify Storybook CI crash**: Disabled `vite-plugin-dts` specifically during `storybook build` so it no longer invokes `api-extractor` concurrently.
+- **Vitest Type Declarations**: Fixed TS errors (e.g., `toBeInTheDocument` missing on `Assertion`) by updating `tsconfig.json` globals and modifying Vite test setup.
+- **Storybook Autodocs Bugs**: Removed `autodoc` tags from DOM manipulating components (like `Navbar`, `Logo`) to stop static build processes from crashing on HMR.
+- **Button Component**: Implemented safe standard color fallbacks resolving runtime type errors when passing unsupported variants.
+- **BlogCard Styling**: Gradient placeholder correctly follows `borderRadius="card"` to prevent component overflow.
+
+---
+
 ## [0.1.1] — 2026-04-18
 
 ### Changed
@@ -151,10 +174,4 @@ Chakra UI v3's recipe engine leaked default blue (`#3B82F6`) in interactive stat
 
 ## Upcoming
 
-- **[0.2.0]** — Storybook interactive documentation
-- **[0.2.0]** — Vitest + React Testing Library unit tests
-- **[0.3.0]** — `DateRangePicker` component
-- **[0.3.0]** — `Combobox` / searchable select
-- **[0.3.0]** — `FileUpload` with drag-and-drop
-- **[0.4.0]** — `Notification` / toast system
 - **[1.0.0]** — Stable public release on npm
