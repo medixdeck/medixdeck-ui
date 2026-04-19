@@ -17,7 +17,7 @@ Thank you for being part of the MedixDeck team! This guide covers how to develop
 ## Setup
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/medixdeck/medixdeck-ui
 cd medixdeck-ui
 npm install
 npm run dev   # → http://localhost:5173/
