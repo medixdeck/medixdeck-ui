@@ -57,6 +57,7 @@ import { DataTable } from "../lib/components/data/DataTable";
 import { DoctorCard, VitalBadge, AppointmentCard } from "../lib/components/healthcare/DoctorCard";
 
 // ─── Storybook base URL (from .env) ─────────────────────────────────────────
+// @ts-expect-error unknown import error
 const STORYBOOK_URL = import.meta.env.VITE_STORYBOOK_URL ?? "http://localhost:6006";
 
 // ─── Section wrapper ──────────────────────────────────────────────────────────
@@ -223,7 +224,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.1 · 43 components
+                Component Library Preview · v0.1.2 · 43 components
               </Text>
             </Box>
             <Box display="flex" gap="3" alignItems="center">
@@ -890,8 +891,7 @@ export default function App() {
               </Button>
               <Button
                 variant="solid"
-                bg="#EF4444"
-                color="white"
+                colorScheme="red"
                 onClick={() => toast.error("Booking Failed", { description: "The selected time slot is no longer available." })}
               >
                 Error Toast
@@ -1169,6 +1169,7 @@ export default function App() {
             ].map((item, i) => (
               <BlogCard
                 key={i}
+                coverImage="https://healthcareoffers.in/wp-content/uploads/2025/09/Blog-Posting-on-Healthcare-1280x669.jpg"
                 title={item.title}
                 excerpt="Learn key signs and symptoms that warrant immediate medical attention, plus tips on navigating Nigeria's healthcare options effectively."
                 category="Medical Support"
@@ -1181,7 +1182,7 @@ export default function App() {
           {/* Footer */}
           <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
             <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-              <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.1 · Built with Chakra UI v3 + Vite · Satoshi font · 43 components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
+              <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.2 · Built with Chakra UI v3 + Vite · Satoshi font · 43 components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
             </Text>
           </Box>
         </Container>
