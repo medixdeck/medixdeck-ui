@@ -81,6 +81,12 @@ import { Button, DoctorCard, OTPInput, PhoneInput, DataTable, Logo } from "@medi
 // Logo in a Navbar (or pass no logo prop for automatic default)
 <Navbar logo={<Logo variant="purple" height={28} />} navItems={[...]} />
 
+// left aligned navItems
+<Navbar navItemsAlign="left" navItems={[...]} />
+
+// right aligned navItems
+<Navbar navItemsAlign="right" navItems={[...]} />
+
 // Phone input with country code
 <PhoneInput label="Phone number" defaultCountryCode="+234" onChange={setPhone} />
 
@@ -415,37 +421,3 @@ medixdeck-ui/
 ├── tsconfig.build.json
 └── package.json
 ```
-
----
-
-## Scripts
-
-| Script | Command | Description |
-| --- | --- | --- |
-| Dev preview | `npm run dev` | Start Vite dev server (<http://localhost:5173>) |
-| Build library | `npm run build` | Compile to `dist/` (ESM + CJS + types) |
-| Type check | `npm run typecheck` | Run `tsc --noEmit` |
-
----
-
-## Roadmap
-
-- [x] Primitive components (Button, Badge, Avatar, Spinner, Tag, Divider, **Logo**)
-- [x] Form components (Input, Textarea, Select, Checkbox, RadioGroup, Switch, FormControl)
-- [x] OTPInput / PinInput
-- [x] PhoneInput with country code selector
-- [x] DatePicker
-- [x] Layout components (Card, StatCard, Container, SectionHeader)
-- [x] Navigation (Navbar with default Logo fallback, Breadcrumb, Tabs, Pagination, Stepper)
-- [x] Feedback (Alert, Skeleton, Progress, Modal, Drawer, Tooltip, EmptyState)
-- [x] DataTable with sorting + loading state
-- [x] Healthcare components (DoctorCard, VitalBadge, AppointmentCard)
-- [x] Font auto-injection (Satoshi + Inter via MedixProvider)
-- [x] Dark mode via `.dark` class on `<html>` (all components including Navbar respond correctly)
-- [x] Storybook interactive docs
-- [x] Vitest + React Testing Library unit tests
-- [x] GitHub Actions CI/CD for automated publishing
-- [x] `DateRangePicker` component
-- [x] `Combobox` / searchable select
-- [x] `FileUpload` component
-- [x] `Notification` / toast system
