@@ -64,7 +64,7 @@ export function Accordion({
         return (
           <Box
             key={item.id}
-            bg="bg.surface"
+            bg="bg.primary"
             border="1px solid"
             borderColor="border"
             borderRadius="card"
@@ -113,7 +113,7 @@ export function Accordion({
                 transition="background 0.2s, border-color 0.2s, color 0.2s"
                 aria-hidden="true"
                 style={{
-                  border: isOpen ? "none" : "1.5px solid var(--medix-form-border, #E2E8F0)",
+                  border: isOpen ? "none" : "1.5px solid var(--medix-form-text)",
                   background: isOpen ? "#0685FF" : "transparent",
                   color: isOpen ? "#ffffff" : "inherit",
                   flexShrink: 0,
@@ -122,12 +122,12 @@ export function Accordion({
                 {/* SVG icons for crisp +/− at all sizes */}
                 {isOpen ? (
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                    <rect x="3" y="8.25" width="12" height="1.5" rx="0.75" fill="currentColor" />
+                    <rect x="3" y="8.25" width="12" height="1.5" rx="0.75" fill=" var(--medix-form-text)" />
                   </svg>
                 ) : (
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                    <rect x="3" y="8.25" width="12" height="1.5" rx="0.75" fill="currentColor" />
-                    <rect x="8.25" y="3" width="1.5" height="12" rx="0.75" fill="currentColor" />
+                    <rect x="3" y="8.25" width="12" height="1.5" rx="0.75" fill=" var(--medix-form-text)" />
+                    <rect x="8.25" y="3" width="1.5" height="12" rx="0.75" fill=" var(--medix-form-text)" />
                   </svg>
                 )}
               </Box>

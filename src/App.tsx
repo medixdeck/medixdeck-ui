@@ -57,6 +57,7 @@ import { DataTable } from "../lib/components/data/DataTable";
 import { DoctorCard, VitalBadge, AppointmentCard } from "../lib/components/healthcare/DoctorCard";
 
 // ─── Storybook base URL (from .env) ─────────────────────────────────────────
+// @ts-expect-error unknown import error
 const STORYBOOK_URL = import.meta.env.VITE_STORYBOOK_URL ?? "http://localhost:6006";
 
 // ─── Section wrapper ──────────────────────────────────────────────────────────
@@ -890,8 +891,7 @@ export default function App() {
               </Button>
               <Button
                 variant="solid"
-                bg="#EF4444"
-                color="white"
+                colorScheme="red"
                 onClick={() => toast.error("Booking Failed", { description: "The selected time slot is no longer available." })}
               >
                 Error Toast
@@ -1169,6 +1169,7 @@ export default function App() {
             ].map((item, i) => (
               <BlogCard
                 key={i}
+                coverImage="https://healthcareoffers.in/wp-content/uploads/2025/09/Blog-Posting-on-Healthcare-1280x669.jpg"
                 title={item.title}
                 excerpt="Learn key signs and symptoms that warrant immediate medical attention, plus tips on navigating Nigeria's healthcare options effectively."
                 category="Medical Support"

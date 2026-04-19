@@ -183,15 +183,14 @@ export function BlogCard({
 
   const inner = (
     <Box
-      bg="bg.surface"
+      bg="bg.primary"
       borderRadius="card"
       overflow="hidden"
       transition="transform 0.22s ease, box-shadow 0.22s ease"
-      boxShadow="0 2px 12px rgba(0,0,0,0.07)"
-      _dark={{ bg: "bg.surface", boxShadow: "0 2px 14px rgba(0,0,0,0.32)" }}
+      _dark={{ bg: "bg.primary" }}
       _hover={
         isInteractive
-          ? { transform: "translateY(-4px)", boxShadow: "0 12px 32px rgba(0,0,0,0.13)" }
+          ? { transform: "translateY(-4px)" }
           : undefined
       }
       {...props}
@@ -207,6 +206,7 @@ export function BlogCard({
         ) : (
           /* Gradient placeholder when no image is provided */
           <Box
+            borderRadius="card"
             h="220px"
             style={{ background: "linear-gradient(135deg, #0685FF 0%, #7700CC 100%)" }}
           />
