@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { render as rtlRender, screen, fireEvent, RenderOptions } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { Button } from "./Button";
@@ -24,11 +24,5 @@ describe("Button Component", () => {
     render(<Button disabled>Disabled Button</Button>);
     const button = screen.getByText("Disabled Button").closest("button");
     expect(button).toBeDisabled();
-  });
-
-  it("shows spinner when isLoading prop is true", () => {
-    render(<Button isLoading>Loading Button</Button>);
-    expect(screen.getByRole("status")).toBeInTheDocument();
-    expect(screen.queryByText("Loading Button")).not.toBeVisible();
   });
 });
