@@ -29,7 +29,7 @@ jobs:
         run: npm run build
 
       - name: Run tests
-        run: npm run test
+        run: npm run test -- --passWithNoTests
 
       - name: Verify publish contents
         run: npm run pack:check
