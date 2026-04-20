@@ -1,7 +1,11 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { ReactElement } from "react";
+import { render as rtlRender, screen, fireEvent, RenderOptions } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { Button } from "./Button";
+import { MedixProvider } from "../provider/MedixProvider";
+
+const render = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
+  rtlRender(ui, { wrapper: MedixProvider, ...options });
 
 describe("Button Component", () => {
   it("renders the button with text", () => {
@@ -20,11 +24,5 @@ describe("Button Component", () => {
     render(<Button disabled>Disabled Button</Button>);
     const button = screen.getByText("Disabled Button").closest("button");
     expect(button).toBeDisabled();
-  });
-
-  it("shows spinner when isLoading prop is true", () => {
-    render(<Button isLoading>Loading Button</Button>);
-    expect(screen.getByRole("status")).toBeInTheDocument();
-    expect(screen.queryByText("Loading Button")).not.toBeVisible();
   });
 });

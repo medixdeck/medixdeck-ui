@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - production
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -35,6 +36,7 @@ jobs:
         run: npm run pack:check
 
       - name: Publish package
+        if: github.ref == 'refs/heads/production'
         run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
