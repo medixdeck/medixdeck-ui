@@ -43,10 +43,10 @@ lib/                     ← ALL library source code lives here
   components/
     provider/            ← MedixProvider (wraps ChakraProvider + next-themes)
     primitive/           ← Button, Badge, Avatar, Spinner, Tag, Divider, Logo
-    form/                ← Input, Select, Checkbox, OTPInput, PhoneInput, DatePicker, etc.
+    form/                ← Input, Select, Checkbox, OTPInput, PhoneInput, DatePicker, DateRangePicker, Combobox, FileUpload
     layout/              ← Card, StatCard, Container, SectionHeader
     navigation/          ← Navbar, Breadcrumb, Tabs, Pagination, Stepper
-    feedback/            ← Alert, Skeleton, Progress, Modal, Drawer, Tooltip, EmptyState
+    feedback/            ← Alert, Skeleton, Progress, Modal, Drawer, Tooltip, EmptyState, Notification
     data/                ← Accordion, TestimonialCard, BlogCard, DataTable
     healthcare/          ← DoctorCard, VitalBadge, AppointmentCard
 
@@ -55,6 +55,13 @@ src/                     ← Dev preview app (NOT part of the library output)
   main.tsx               ← Vite dev entry
 
 dist/                    ← Build output (auto-generated, do not edit)
+.github/
+  copilot-instructions.md ← GitHub Copilot repository instructions
+  workflows/publish.yml   ← npm publishing workflow
+COPILOT.md               ← concise AI contributor guide
+README.md                ← npm landing page and public API index
+CHANGELOG.md             ← release notes
+LICENSE                  ← package license
 ```
 
 ### ⚠️ Rules
@@ -62,7 +69,15 @@ dist/                    ← Build output (auto-generated, do not edit)
 - **Never** put library source code in `src/`. Only the dev preview lives there.
 - **Never** import from `src/` inside `lib/`.
 - **All new components must be exported** from `lib/index.ts`.
+- **Public API changes must stay in sync** across `lib/index.ts`, `README.md`, `src/App.tsx`, Storybook, and `CHANGELOG.md`.
 - **Never edit** `dist/` files directly.
+
+### AI helper files
+
+- `AGENTS.md` is the full repository guide for any coding agent.
+- `COPILOT.md` is the shorter root guide intended for quick AI repo orientation.
+- `.github/copilot-instructions.md` should stay brief and point Copilot back to the repo conventions here.
+- When contributor guidance changes, update all three together.
 
 ---
 
@@ -119,7 +134,13 @@ When asked to add a new component (e.g., `FileUpload`, `DateRangePicker`):
 
 4. **Add to the dev showcase** in `src/App.tsx` — wrap in a `<Section>` block.
 
-5. **Run the build** to confirm 0 errors: `npm run build`
+5. **Run the verification commands** to confirm the package stays publishable:
+
+   ```bash
+   npm run build
+   npm run test
+   npm run pack:check
+   ```
 
 ---
 
@@ -295,10 +316,12 @@ fontFamily="var(--font-heading)"   // headings, card titles, nav items
 
 ## 9. Build & Verification
 
-After any change to the library source, run:
+After any change to the library source or package metadata, run:
 
 ```bash
 npm run build
+npm run test
+npm run pack:check
 ```
 
 A successful build outputs:
@@ -311,7 +334,7 @@ dist/index.cjs  ~75 kB │ gzip: ~19 kB
 Exit code: 0
 ```
 
-If the build fails, **do not leave it failing**. Fix all TypeScript errors before completing your task.
+If any of these fail, **do not leave the repo in a failing state**. Fix the TypeScript, packaging, or test issue before completing your task.
 
 ---
 
@@ -414,6 +437,16 @@ import { Button, Navbar, DoctorCard, Logo } from "@medixdeck/ui";
 | Color prop naming | Use `colorScheme` in our API → maps to `colorPalette` internally for Chakra |
 | Size prop | Use `xs \| sm \| md \| lg` in our API → map to Chakra's internal sizes |
 | Variant prop | Use human-friendly names (`solid`, `outline`, `ghost`) → map internally |
+
+---
+
+## 14. npm Publishing Standards
+
+- `package.json` is the source of truth for npm metadata. Keep `description`, `exports`, `types`, `files`, `repository`, `homepage`, `bugs`, `engines`, and `publishConfig` current.
+- Runtime-only package deps belong in `dependencies`; test and Storybook tooling belong in `devDependencies`.
+- Any component shown in `src/App.tsx` or Storybook and intended for consumers must also be exported from `lib/index.ts`.
+- The publish workflow should run install, build, test, and `npm pack --dry-run` before `npm publish`.
+- Never publish from source files. The npm package should publish the compiled `dist/` output.
 
 ---
 
