@@ -1,7 +1,11 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import React, { ReactElement } from "react";
+import { render as rtlRender, screen, fireEvent, RenderOptions } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { Button } from "./Button";
+import { MedixProvider } from "../provider/MedixProvider";
+
+const render = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
+  rtlRender(ui, { wrapper: MedixProvider, ...options });
 
 describe("Button Component", () => {
   it("renders the button with text", () => {
