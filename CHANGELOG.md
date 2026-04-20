@@ -4,7 +4,12 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
-## [Unreleased]
+## [0.1.4] — 2026-04-20
+
+### Added
+
+- **`DashboardLayout` Component**: A comprehensive and responsive layout shell. Supports dynamic navigation groups, a user profile dropdown, configurable sidebar sizing, custom top-bar slots, and built-in native active/hover states with full `next-themes` dark mode compatibility.
+- **Navbar Layout Controls**: Added `navItemsAlign` prop to the `Navbar` to support `left`, `center` (default), and `right` alignment for desktop navigation links.
 
 ### Changed
 
