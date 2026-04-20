@@ -77,6 +77,15 @@ export type { PhoneInputProps } from "./components/form/PhoneInput";
 export { DatePicker } from "./components/form/DatePicker";
 export type { DatePickerProps } from "./components/form/DatePicker";
 
+export { DateRangePicker } from "./components/form/DateRangePicker";
+export type { DateRangePickerProps } from "./components/form/DateRangePicker";
+
+export { Combobox } from "./components/form/Combobox";
+export type { ComboboxProps, ComboboxOption } from "./components/form/Combobox";
+
+export { FileUpload } from "./components/form/FileUpload";
+export type { FileUploadProps } from "./components/form/FileUpload";
+
 // ─── Layout Components ─────────────────────────────────────────────────────────
 export { Card, CardHeader, CardBody, CardFooter } from "./components/layout/Card";
 export type { CardProps, CardHeaderProps } from "./components/layout/Card";
@@ -86,6 +95,15 @@ export type { StatCardProps } from "./components/layout/StatCard";
 
 export { Container, SectionHeader } from "./components/layout/Container";
 export type { ContainerProps, SectionHeaderProps } from "./components/layout/Container";
+
+export { DashboardLayout } from "./components/layout/DashboardLayout";
+export type {
+  DashboardLayoutProps,
+  DashboardNavItem,
+  DashboardNavGroup,
+  DashboardUser,
+  DashboardDropdownItem,
+} from "./components/layout/DashboardLayout";
 
 // ─── Navigation Components ─────────────────────────────────────────────────────
 export { Navbar } from "./components/navigation/Navbar";
@@ -124,6 +142,9 @@ export type { EmptyStateProps } from "./components/feedback/EmptyState";
 
 export { Drawer } from "./components/feedback/Drawer";
 export type { DrawerProps, DrawerPlacement, DrawerSize } from "./components/feedback/Drawer";
+
+export { Toaster, toast, dismissToast } from "./components/feedback/Notification";
+export type { ToastOptions, ToastType } from "./components/feedback/Notification";
 
 // ─── Data Display Components ───────────────────────────────────────────────────
 export { Accordion } from "./components/data/Accordion";

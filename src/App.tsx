@@ -30,6 +30,7 @@ import { FileUpload } from "../lib/components/form/FileUpload";
 import { Card, CardHeader, CardBody, CardFooter } from "../lib/components/layout/Card";
 import { StatCard } from "../lib/components/layout/StatCard";
 import { Container, SectionHeader } from "../lib/components/layout/Container";
+import { DashboardLayout } from "../lib/components/layout/DashboardLayout";
 
 // Navigation
 import { Navbar } from "../lib/components/navigation/Navbar";
@@ -148,6 +149,7 @@ function Chip({ href, label }: { href: string; label: string }) {
 
 export default function App() {
   const [colorMode, setColorMode] = React.useState<"light" | "dark">("light");
+  const [showDashboard, setShowDashboard] = React.useState(false);
   const [page, setPage] = React.useState(3);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -179,6 +181,46 @@ export default function App() {
     Completed: "#0685FF",
     Cancelled: "#DC2626",
   };
+
+  if (showDashboard) {
+    return (
+      <MedixProvider defaultColorMode={colorMode}>
+        <DashboardLayout
+          user={{ name: "Daniel", email: "daniel@medixdeck.com" }}
+          navGroups={[
+            {
+              items: [
+                { label: 'Home', href: '#home', isActive: true },
+                { label: 'Consult', href: '#consult' },
+                { label: 'Records', href: '#records' },
+                { label: 'Messages', href: '#messages', badge: 6 },
+              ]
+            },
+            {
+              groupLabel: 'Account',
+              items: [
+                { label: 'Profile', href: '#profile' },
+                { label: 'Notifications', href: '#notifications', hasDot: true },
+              ]
+            }
+          ]}
+        >
+          <Box h="full">
+            <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap="4">
+              <Box>
+                <Text color="text.heading" fontWeight="600" fontSize="lg">Welcome to your dashboard</Text>
+                <Text mt="1" color="text.body" fontSize="sm">This is the full-screen dashboard preview.</Text>
+              </Box>
+              <Button onClick={() => setShowDashboard(false)} variant="solid" colorScheme="blue">
+                Exit Dashboard
+              </Button>
+            </Box>
+            <Box mt="6" h="800px" bg="bg" borderRadius="card" border="1px dashed" borderColor="border" />
+          </Box>
+        </DashboardLayout>
+      </MedixProvider>
+    );
+  }
 
   return (
     <MedixProvider defaultColorMode={colorMode}>
@@ -224,7 +266,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.3 · 43 components
+                Component Library Preview · v0.1.5 · 43 components
               </Text>
             </Box>
             <Box display="flex" gap="3" alignItems="center">
@@ -498,6 +540,21 @@ export default function App() {
                   />
                 </Box>
               </Box>
+
+              {/* 5 — DashboardLayout Pattern */}
+              <Box>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
+                  textTransform="uppercase" letterSpacing="0.06em">Dashboard Layout Shell</Text>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
+                  A responsive dashboard shell with a fixed sidebar, top bar, and main content area.
+                </Text>
+                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden" p="10" display="flex" alignItems="center" justifyContent="center">
+                  <Button onClick={() => setShowDashboard(true)} variant="solid" colorScheme="purple">
+                    Launch Full-Screen Dashboard Layout
+                  </Button>
+                </Box>
+              </Box>
+
             </Box>
 
           </Section>
@@ -1182,7 +1239,7 @@ export default function App() {
           {/* Footer */}
           <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
             <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-              <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.3 · Built with Chakra UI v3 + Vite · Satoshi font · 43 components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
+              <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.5 · Built with Chakra UI v3 + Vite · Satoshi font · 43 components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
             </Text>
           </Box>
         </Container>

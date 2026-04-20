@@ -23,8 +23,6 @@ npm install
 npm run dev   # → http://localhost:5173/
 ```
 
-> `framer-motion` is already included in `dependencies` — no extra install needed in this repo. Consuming projects should install it separately.
-
 ---
 
 ## Development Workflow
@@ -104,9 +102,22 @@ In `src/App.tsx`, add a `<Section>` block for your component:
 
 ```bash
 npm run build
+npm run test
+npm run pack:check
 ```
 
-Look for `Exit code: 0`. Fix any TypeScript errors before submitting.
+Fix any TypeScript, packaging, or test failures before submitting.
+
+### 6. Keep the public API indexed
+
+If you add, rename, or remove any public export, update all of these in the same change:
+
+- `lib/index.ts`
+- `README.md`
+- `src/App.tsx`
+- relevant Storybook stories
+- `CHANGELOG.md`
+- `AGENTS.md` and `COPILOT.md` when contributor guidance changes
 
 ---
 
@@ -231,6 +242,7 @@ refactor(theme): consolidate border tokens
 - [ ] Example included in the JSDoc
 - [ ] Exported from `lib/index.ts`
 - [ ] Added to `src/App.tsx` showcase
-- [ ] `npm run build` passes with 0 errors
+- [ ] `README.md` and changelog updated if the public API changed
+- [ ] `npm run build`, `npm run test`, and `npm run pack:check` pass
 - [ ] Dark mode tested (toggle in dev preview)
 - [ ] Semantic tokens used (no hardcoded colors)
