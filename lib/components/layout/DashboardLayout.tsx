@@ -575,6 +575,7 @@ function TopBar({
       <Box position="relative" ref={dropdownRef}>
         <Box
           as="button"
+          id="user-menu-button"
           display="flex"
           alignItems="center"
           gap="2"
@@ -585,8 +586,9 @@ function TopBar({
           p="1"
           _hover={{ bg: "bg.subtle" }}
           onClick={() => setDropdownOpen((o) => !o)}
-          aria-haspopup="true"
+          aria-haspopup="menu"
           aria-expanded={dropdownOpen}
+          aria-controls={dropdownOpen ? "user-menu-dropdown" : undefined}
           aria-label="User menu"
         >
           <Avatar
@@ -602,6 +604,9 @@ function TopBar({
         {/* Dropdown */}
         {dropdownOpen && (
           <Box
+            id="user-menu-dropdown"
+            role="menu"
+            aria-labelledby="user-menu-button"
             position="absolute"
             top="calc(100% + 8px)"
             right="0"
