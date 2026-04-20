@@ -41,7 +41,7 @@ export function App() {
 | Provider + theme | `MedixProvider`, `system`, `medixConfig`, token exports |
 | Primitive | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo` |
 | Form | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Combobox`, `FileUpload` |
-| Layout | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader` |
+| Layout | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `DashboardLayout` |
 | Navigation | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper` |
 | Feedback | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `Toaster`, `toast`, `dismissToast` |
 | Data display | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable` |
