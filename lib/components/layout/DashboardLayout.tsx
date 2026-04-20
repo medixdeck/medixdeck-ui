@@ -585,8 +585,9 @@ function TopBar({
           p="1"
           _hover={{ bg: "bg.subtle" }}
           onClick={() => setDropdownOpen((o) => !o)}
-          aria-haspopup="true"
+          aria-haspopup="menu"
           aria-expanded={dropdownOpen}
+          aria-controls="user-dropdown-menu"
           aria-label="User menu"
         >
           <Avatar
@@ -602,6 +603,8 @@ function TopBar({
         {/* Dropdown */}
         {dropdownOpen && (
           <Box
+            id="user-dropdown-menu"
+            role="menu"
             position="absolute"
             top="calc(100% + 8px)"
             right="0"
