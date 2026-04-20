@@ -4,6 +4,14 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- Standardized npm package metadata, helper documentation, and publishing guidance.
+- Synced the documented public API with the actual package entrypoint, including newer form and notification exports.
+- Added publish-check guidance and workflow validation for build, test, and `npm pack --dry-run`.
+
 ## [0.1.2] — 2026-04-19
 
 ### Added
