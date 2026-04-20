@@ -244,8 +244,8 @@ function SidebarNavItem({
         bg: isActive
           ? BLUE_ACTIVE_BG_DARK
           : hovered
-          ? BLUE_HOVER_BG_DARK
-          : "transparent",
+            ? BLUE_HOVER_BG_DARK
+            : "transparent",
       }}
     >
       {/* Icon */}
@@ -604,9 +604,9 @@ function TopBar({
         {/* Dropdown */}
         {dropdownOpen && (
           <Box
-            id="user-menu-dropdown"
             role="menu"
             aria-labelledby="user-menu-button"
+            id="user-dropdown-menu"
             position="absolute"
             top="calc(100% + 8px)"
             right="0"
