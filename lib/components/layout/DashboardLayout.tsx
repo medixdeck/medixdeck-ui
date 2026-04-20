@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useId } from "react";
 import { Box, type BoxProps } from "@chakra-ui/react";
 import { Logo } from "../primitive/Logo";
 import { Avatar } from "../primitive/Avatar";
@@ -244,8 +244,8 @@ function SidebarNavItem({
         bg: isActive
           ? BLUE_ACTIVE_BG_DARK
           : hovered
-          ? BLUE_HOVER_BG_DARK
-          : "transparent",
+            ? BLUE_HOVER_BG_DARK
+            : "transparent",
       }}
     >
       {/* Icon */}
@@ -505,6 +505,9 @@ function TopBar({
 }: TopBarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const uid = useId();
+  const menuButtonId = `user-menu-button-${uid}`;
+  const menuDropdownId = `user-menu-dropdown-${uid}`;
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -575,6 +578,7 @@ function TopBar({
       <Box position="relative" ref={dropdownRef}>
         <Box
           as="button"
+          id={menuButtonId}
           display="flex"
           alignItems="center"
           gap="2"
@@ -587,7 +591,7 @@ function TopBar({
           onClick={() => setDropdownOpen((o) => !o)}
           aria-haspopup="menu"
           aria-expanded={dropdownOpen}
-          aria-controls="user-dropdown-menu"
+          aria-controls={dropdownOpen ? menuDropdownId : undefined}
           aria-label="User menu"
         >
           <Avatar
@@ -603,8 +607,9 @@ function TopBar({
         {/* Dropdown */}
         {dropdownOpen && (
           <Box
-            id="user-dropdown-menu"
             role="menu"
+            aria-labelledby={menuButtonId}
+            id={menuDropdownId}
             position="absolute"
             top="calc(100% + 8px)"
             right="0"

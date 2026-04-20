@@ -1,6 +1,6 @@
 {
   "name": "@medixdeck/ui",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "MedixDeck shared UI component library — built with Chakra UI v3 and Vite",
   "author": "MedixDeck Team",
   "license": "MIT",
