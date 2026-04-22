@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import {
   Box,
+  Button,
   Container,
   Grid,
   Text,
@@ -390,15 +391,16 @@ export function Footer({
                     transition="all 0.2s"
                     required
                   />
-                  <Box
-                    as="button"
-                    // @ts-ignore type button
+                  <Button
                     type="submit"
                     position="absolute"
                     right="4px"
                     top="4px"
                     bottom="4px"
                     w="36px"
+                    minW="36px"
+                    h="36px"
+                    p={0}
                     bg="blue.500"
                     color="white"
                     borderRadius="md"
@@ -417,7 +419,7 @@ export function Footer({
                         <polygon points="22 2 15 22 11 13 2 9 22 2" />
                       </svg>
                     )}
-                  </Box>
+                  </Button>
                 </Box>
               </Box>
             </Box>
