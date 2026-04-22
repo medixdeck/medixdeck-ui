@@ -3,6 +3,8 @@ import React from "react";
 import { MedixProvider } from "../lib/components/provider/MedixProvider";
 import { Box, Link, Text } from "@chakra-ui/react";
 
+const PREVIEW_COMPONENT_COUNT = 44;
+
 // Primitives
 import { Button } from "../lib/components/primitive/Button";
 import { Badge } from "../lib/components/primitive/Badge";
@@ -1252,7 +1254,7 @@ export default function App() {
       {/* Footer */}
       <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
         <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-          <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.6 · Built with Chakra UI v3 + Vite · Satoshi font · 43 components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
+          <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.6 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
         </Text>
       </Box>
 
