@@ -275,7 +275,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
 
     return (
       <Component
-        ref={ref}
+        ref={ref as any}
         type={Component === "button" ? (props.type ?? "button") : undefined}
         href={href}
         target={target}
