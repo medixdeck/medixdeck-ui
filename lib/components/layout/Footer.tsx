@@ -10,6 +10,7 @@ import {
   VStack,
   HStack,
   Flex,
+  Link,
   type BoxProps,
 } from "@chakra-ui/react";
 import { Logo } from "../primitive/Logo";
@@ -274,10 +275,8 @@ export function Footer({
               {socialLinks.map((social) => {
                 const Icon = SocialIcons[social.platform];
                 return (
-                  <Box
+                  <Link
                     key={social.platform}
-                    as="a"
-                    // @ts-ignore this is a temp solution to fix the dark mode issue.
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -288,9 +287,10 @@ export function Footer({
                       opacity: 0.9,
                     }}
                     title={social.platform}
+                    aria-label={social.platform}
                   >
                     <Icon />
-                  </Box>
+                  </Link>
                 );
               })}
             </HStack>
