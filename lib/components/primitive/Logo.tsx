@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 
 export type LogoVariant = "blue" | "purple" | "black" | "white";
 export type LogoType = "full" | "icon";
@@ -32,10 +35,10 @@ export interface LogoProps {
 
 // ─── Color maps ──────────────────────────────────────────────────────────────
 const MARK_COLOR: Record<LogoVariant, string> = {
-  blue:   "#0685FF",
+  blue: "#0685FF",
   purple: "#7700CC",
-  black:  "#111926",
-  white:  "#FFFFFF",
+  black: "#111926",
+  white: "#FFFFFF",
 };
 
 /**
@@ -45,38 +48,19 @@ const MARK_COLOR: Record<LogoVariant, string> = {
  * `black` and `white` variants are explicit — always honour them.
  */
 const TEXT_COLOR_LIGHT: Record<LogoVariant, string> = {
-  blue:   "#111926",
+  blue: "#111926",
   purple: "#111926",
-  black:  "#111926",
-  white:  "#FFFFFF",
+  black: "#111926",
+  white: "#FFFFFF",
 };
 
 const TEXT_COLOR_DARK: Record<LogoVariant, string> = {
-  blue:   "#FFFFFF",   // white on dark bg
+  blue: "#FFFFFF",   // white on dark bg
   purple: "#FFFFFF",   // white on dark bg
-  black:  "#111926",   // explicit black — unchanged
-  white:  "#FFFFFF",   // explicit white — unchanged
+  black: "#111926",   // explicit black — unchanged
+  white: "#FFFFFF",   // explicit white — unchanged
 };
 
-/** Returns true when the <html> element currently has the .dark class. */
-function isDarkMode(): boolean {
-  if (typeof document === "undefined") return false;
-  return document.documentElement.classList.contains("dark");
-}
-
-/** React hook that tracks the .dark class on <html> via MutationObserver. */
-function useDarkMode(): boolean {
-  const [dark, setDark] = React.useState<boolean>(isDarkMode);
-
-  React.useEffect(() => {
-    const el = document.documentElement;
-    const observer = new MutationObserver(() => setDark(isDarkMode()));
-    observer.observe(el, { attributeFilter: ["class"] });
-    return () => observer.disconnect();
-  }, []);
-
-  return dark;
-}
 
 // ─── Brand-mark SVG (icon only) ───────────────────────────────────────────────
 //
@@ -308,7 +292,17 @@ export function Logo({
   className,
   style,
 }: LogoProps) {
-  const dark = useDarkMode();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Safe fallback for SSR: always render light mode text first,
+  // then update to dark after mounting if necessary.
+  const dark = mounted ? resolvedTheme === "dark" : false;
+
   const markColor = MARK_COLOR[variant];
   const textColor = dark ? TEXT_COLOR_DARK[variant] : TEXT_COLOR_LIGHT[variant];
 
@@ -328,6 +322,7 @@ export function Logo({
       style={wrapperStyle}
       role="img"
       aria-label="MedixDeck logo"
+      suppressHydrationWarning
     >
       <MedixMark color={markColor} height={height} />
       {type === "full" && (

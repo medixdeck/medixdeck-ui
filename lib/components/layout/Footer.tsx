@@ -158,9 +158,10 @@ const defaultSections: FooterSection[] = [
     title: "COMPANY",
     links: [
       { label: "Home", href: "/" },
-      { label: "About Us", href: "/about" },
+      { label: "About", href: "/about" },
       { label: "For Doctors", href: "/doctors" },
       { label: "For Businesses", href: "/businesses" },
+      { label: "For Patients", href: "/patients" },
     ],
   },
   {
