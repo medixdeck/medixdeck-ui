@@ -4,10 +4,13 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
-## [0.1.5] — 2026-04-20
+## [0.1.5] — 2026-04-22
 
 ### Added
 
+- **`Footer` Component**: A highly reusable, responsive footer with a brand area, custom navigation columns, newsletter subscription form, and inline branded SVG social media icons.
+- **Theme Toggle**: Added a built-in dark/light mode icon toggle directly to the footer using `next-themes`.
+- **Storybook Documentation**: Created comprehensive Storybook stories (`autodocs`) for layout components including `Footer`, `DashboardLayout`, and `Container`/`SectionHeader`.
 - **`DashboardLayout` Component**: A comprehensive and responsive layout shell. Supports dynamic navigation groups, a user profile dropdown, configurable sidebar sizing, custom top-bar slots, and built-in native active/hover states with full `next-themes` dark mode compatibility.
 - **Navbar Layout Controls**: Added `navItemsAlign` prop to the `Navbar` to support `left`, `center` (default), and `right` alignment for desktop navigation links.
 - **Accessibility Improvements**: Improved accessibility support for the user dropdown menu, including adding the missing `role="menu"` attribute on the menu container.
