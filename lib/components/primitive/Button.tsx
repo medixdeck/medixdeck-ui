@@ -100,7 +100,7 @@ export interface ButtonProps {
   /** HTML type attribute */
   type?: "button" | "submit" | "reset";
   /** Click handler */
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: React.MouseEventHandler<HTMLElement>;
   /** Any additional className */
   className?: string;
   /** Arbitrary additional style */
@@ -111,8 +111,8 @@ export interface ButtonProps {
   "aria-expanded"?: boolean | "true" | "false";
   "aria-controls"?: string;
   "aria-haspopup"?: boolean | "dialog" | "menu" | "grid" | "listbox" | "tree";
-  /** HTML element to render as */
-  as?: React.ElementType;
+  /** HTML element to render as — supports "button" (default) or "a" (anchor link) */
+  as?: "button" | "a";
   /** Link destination if rendered as an anchor */
   href?: string;
   /** Link target if rendered as an anchor */
@@ -137,7 +137,7 @@ export interface ButtonProps {
  * <Button variant="ghost" colorScheme="blue" size="sm">Cancel</Button>
  * ```
  */
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = React.forwardRef<HTMLElement, ButtonProps>(
   (
     {
       variant = "solid",
