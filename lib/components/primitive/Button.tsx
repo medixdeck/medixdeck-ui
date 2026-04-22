@@ -294,8 +294,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           e.currentTarget.style.boxShadow =
             stateOverride.boxShadow ?? variantStyles.boxShadow ?? "none";
         }}
-        {...(Component !== "button" && (disabled || isLoading) ? { "aria-disabled": true, onClick: (e: any) => e.preventDefault() } : {})}
         {...props}
+        aria-disabled={
+          Component !== "button" && (disabled || isLoading)
+            ? true
+            : props["aria-disabled"]
+        }
+        onClick={(e: any) => {
+          if (Component !== "button" && (disabled || isLoading)) {
+            e.preventDefault();
+            return;
+          }
+          props.onClick?.(e);
+        }}
       >
         {isLoading ? (
           <Box
