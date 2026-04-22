@@ -310,46 +310,44 @@ export function Navbar({
       flexDirection={mobile ? "column" : "row"}
     >
       {secondaryCtaLabel && (
-        <MaybeLink href={secondaryCtaHref}>
-          <Button
-            variant={mobile ? "outline" : "ghost"}
-            colorScheme="blue"
-            size={mobile ? "md" : "sm"}
-            onClick={() => { onSecondaryCtaClick?.(); if (mobile) setIsOpen(false); }}
-            style={mobile ? { width: "100%" } : undefined}
-          >
-            {secondaryCtaLabel}
-          </Button>
-        </MaybeLink>
-      )}
-      <MaybeLink href={ctaHref}>
         <Button
-          variant="solid"
+          as={secondaryCtaHref ? "a" : "button"}
+          href={secondaryCtaHref}
+          variant={mobile ? "outline" : "ghost"}
           colorScheme="blue"
           size={mobile ? "md" : "sm"}
-          onClick={() => { onCtaClick?.(); if (mobile) setIsOpen(false); }}
+          onClick={() => { onSecondaryCtaClick?.(); if (mobile) setIsOpen(false); }}
           style={mobile ? { width: "100%" } : undefined}
         >
-          {ctaLabel}
+          {secondaryCtaLabel}
         </Button>
-      </MaybeLink>
+      )}
+      <Button
+        as={ctaHref ? "a" : "button"}
+        href={ctaHref}
+        variant="solid"
+        colorScheme="blue"
+        size={mobile ? "md" : "sm"}
+        onClick={() => { onCtaClick?.(); if (mobile) setIsOpen(false); }}
+        style={mobile ? { width: "100%" } : undefined}
+      >
+        {ctaLabel}
+      </Button>
       {!mobile && (
-        <MaybeLink
+        <Button
+          as={resolvedIconHref ? "a" : "button"}
           href={resolvedIconHref}
           target={resolvedIconHref && resolvedIconHref !== ctaHref ? "_blank" : undefined}
           rel={resolvedIconHref && resolvedIconHref !== ctaHref ? "noopener noreferrer" : undefined}
+          variant="solid"
+          colorScheme="blue"
+          size="sm"
+          onClick={resolvedIconHandler}
+          aria-label="Open"
+          style={{ width: 34, height: 34, padding: 0, borderRadius: 8, flexShrink: 0 }}
         >
-          <Button
-            variant="solid"
-            colorScheme="blue"
-            size="sm"
-            onClick={resolvedIconHandler}
-            aria-label="Open"
-            style={{ width: 34, height: 34, padding: 0, borderRadius: 8, flexShrink: 0 }}
-          >
-            <ArrowIcon />
-          </Button>
-        </MaybeLink>
+          <ArrowIcon />
+        </Button>
       )}
     </Box>
   );
