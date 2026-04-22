@@ -109,6 +109,16 @@ export type {
 export { Navbar } from "./components/navigation/Navbar";
 export type { NavbarProps, NavItem } from "./components/navigation/Navbar";
 
+export { Footer } from "./components/layout/Footer";
+export type {
+  FooterProps,
+  FooterSection,
+  FooterLink,
+  SocialLink,
+  NewsletterProps,
+  BottomLink,
+} from "./components/layout/Footer";
+
 export { Breadcrumb } from "./components/navigation/Breadcrumb";
 export type { BreadcrumbProps, BreadcrumbItem } from "./components/navigation/Breadcrumb";
 
