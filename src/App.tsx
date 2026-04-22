@@ -269,7 +269,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.6 · 44 components
+                Component Library Preview · v0.1.6 · {PREVIEW_COMPONENT_COUNT} components
               </Text>
             </Box>
             <Box display="flex" gap="3" alignItems="center">
