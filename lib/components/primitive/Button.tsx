@@ -298,7 +298,9 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
         aria-disabled={
           Component !== "button" && (disabled || isLoading)
             ? true
-            : props["aria-disabled"]
+            : (props as { "aria-disabled"?: boolean | "true" | "false" })[
+                "aria-disabled"
+              ]
         }
         onClick={(e: any) => {
           if (Component !== "button" && (disabled || isLoading)) {
