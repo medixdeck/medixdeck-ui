@@ -226,7 +226,7 @@ export function Footer({
   const resolvedCopyright = copyright ?? `© ${currentYear} MedixDeck. MDCN & FMoH Certified Platform.`;
   const [email, setEmail] = useState("");
 
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme: theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
