@@ -3,6 +3,8 @@ import React from "react";
 import { MedixProvider } from "../lib/components/provider/MedixProvider";
 import { Box, Link, Text } from "@chakra-ui/react";
 
+const PREVIEW_COMPONENT_COUNT = 44;
+
 // Primitives
 import { Button } from "../lib/components/primitive/Button";
 import { Badge } from "../lib/components/primitive/Badge";
@@ -34,6 +36,7 @@ import { DashboardLayout } from "../lib/components/layout/DashboardLayout";
 
 // Navigation
 import { Navbar } from "../lib/components/navigation/Navbar";
+import { Footer } from "../lib/components/layout/Footer";
 import { Breadcrumb } from "../lib/components/navigation/Breadcrumb";
 import { Tabs } from "../lib/components/navigation/Tabs";
 import { Pagination } from "../lib/components/navigation/Pagination";
@@ -266,7 +269,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.5 · 43 components
+                Component Library Preview · v0.1.6 · 44 components
               </Text>
             </Box>
             <Box display="flex" gap="3" alignItems="center">
@@ -1236,13 +1239,23 @@ export default function App() {
             ))}
           </Section>
 
-          {/* Footer */}
-          <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
-            <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-              <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.5 · Built with Chakra UI v3 + Vite · Satoshi font · 43 components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
-            </Text>
-          </Box>
+          {/* Footer Showcase */}
+          <Section title="Footer" id="footer" storybookPath="?path=/docs/layout-footer--docs">
+            <Box w="100%" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+              <Footer />
+            </Box>
+          </Section>
+
+          {/* Actual Site Footer */}
+          <Footer mt={16} />
         </Container>
+      </Box>
+
+      {/* Footer */}
+      <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
+        <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
+          <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.6 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
+        </Text>
       </Box>
 
       {/* ── Modal ── */}
