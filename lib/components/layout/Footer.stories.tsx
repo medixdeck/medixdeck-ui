@@ -34,6 +34,7 @@ export const NoNewsletter: Story = {
   render: () => (
     <Footer
       description="A secure and robust platform for managing your healthcare journey."
+      newsletter={{ hide: true }}
     />
   ),
 };
