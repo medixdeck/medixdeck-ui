@@ -111,6 +111,14 @@ export interface ButtonProps {
   "aria-expanded"?: boolean | "true" | "false";
   "aria-controls"?: string;
   "aria-haspopup"?: boolean | "dialog" | "menu" | "grid" | "listbox" | "tree";
+  /** HTML element to render as */
+  as?: React.ElementType;
+  /** Link destination if rendered as an anchor */
+  href?: string;
+  /** Link target if rendered as an anchor */
+  target?: string;
+  /** Link rel if rendered as an anchor */
+  rel?: string;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -141,6 +149,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       children,
       style,
+      as: Component = "button",
+      href,
+      target,
+      rel,
       ...props
     },
     ref
@@ -262,23 +274,27 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     return (
-      <button
+      <Component
         ref={ref}
-        type={props.type ?? "button"}
-        disabled={disabled || isLoading}
+        type={Component === "button" ? (props.type ?? "button") : undefined}
+        href={href}
+        target={target}
+        rel={rel}
+        disabled={Component === "button" ? (disabled || isLoading) : undefined}
         style={composedStyle}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => { setHovered(false); setPressed(false); }}
         onMouseDown={() => setPressed(true)}
         onMouseUp={() => setPressed(false)}
-        onFocus={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+        onFocus={(e: React.FocusEvent<HTMLElement>) => {
+          e.currentTarget.style.boxShadow =
             `0 0 0 2px #FFFFFF, 0 0 0 4px ${c.solid}`;
         }}
-        onBlur={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+        onBlur={(e: React.FocusEvent<HTMLElement>) => {
+          e.currentTarget.style.boxShadow =
             stateOverride.boxShadow ?? variantStyles.boxShadow ?? "none";
         }}
+        {...(Component !== "button" && (disabled || isLoading) ? { "aria-disabled": true, onClick: (e: any) => e.preventDefault() } : {})}
         {...props}
       >
         {isLoading ? (
@@ -307,7 +323,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             )}
           </>
         )}
-      </button>
+      </Component>
     );
   }
 );
