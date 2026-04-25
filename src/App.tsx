@@ -257,7 +257,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.7 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v0.1.8 · {PREVIEW_COMPONENT_COUNT} components
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
                 Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
@@ -1268,7 +1268,7 @@ export default function App() {
       {/* Footer */}
       <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
         <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-          <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.7 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
+          <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.8 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
         </Text>
       </Box>
 
