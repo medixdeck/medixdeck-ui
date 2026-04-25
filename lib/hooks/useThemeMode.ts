@@ -8,12 +8,13 @@ export type ThemeModeSetting = ThemeMode | "system";
 
 export interface UseThemeModeResult {
   /**
-   * Indicates whether the hook has mounted and the active theme has resolved.
+   * Indicates whether the hook has mounted on the client.
+   * Primarily useful for avoiding SSR hydration mismatches with `next-themes`.
    */
   mounted: boolean;
   /**
    * The currently resolved theme mode.
-   * Falls back to `"light"` until the client has mounted.
+   * Falls back to `"light"` before client-side theme values are available.
    */
   themeMode: ThemeMode;
   /**
