@@ -4,6 +4,12 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.8] — 2026-04-25
+
+### Added
+
+- **Theme hooks**: Exported `useThemeMode` and `useIsDarkMode` so consuming apps can read the resolved light/dark mode, inspect the current theme preference, and update the mode through the same `next-themes` integration used by the library.
+
 ## [0.1.7] — 2026-04-22
 
 ### Added
