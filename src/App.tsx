@@ -270,6 +270,8 @@ export default function App() {
                   <Box
                     key={mode}
                     as="button"
+                    type="button"
+                    aria-pressed={themeSetting === mode}
                     onClick={() => setThemeMode(mode)}
                     px="3" py="2"
                     bg={themeSetting === mode ? "bg.subtle" : "bg.surface"}
@@ -282,6 +284,7 @@ export default function App() {
                     cursor="pointer"
                     textTransform="capitalize"
                     _hover={{ borderColor: "blue.400" }}
+                    _focusVisible={{ outline: "2px solid", outlineColor: "blue.500", outlineOffset: "2px" }}
                   >
                     {mode}
                   </Box>
