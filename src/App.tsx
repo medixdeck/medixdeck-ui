@@ -261,7 +261,7 @@ export default function App() {
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
                 Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
-                <strong>{themeSetting ?? "system"}</strong>
+                <strong>{themeSetting}</strong>
               </Text>
             </Box>
             <Box display="flex" gap="3" alignItems="center" flexWrap="wrap">

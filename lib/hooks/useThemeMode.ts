@@ -18,10 +18,11 @@ export interface UseThemeModeResult {
    */
   themeMode: ThemeMode;
   /**
-   * The user's current theme preference.
-   * Can be `"system"` when the provider is configured to follow the OS setting.
+   * The user's current theme preference (`"light"`, `"dark"`, or `"system"`).
+   * Defaults to `"system"` before client-side hydration or when the provider
+   * returns an unrecognised value (e.g. outside a `MedixProvider`).
    */
-  themeSetting?: ThemeModeSetting;
+  themeSetting: ThemeModeSetting;
   /**
    * Updates the active theme preference.
    */
@@ -63,10 +64,10 @@ export function useThemeMode(): UseThemeModeResult {
   }, []);
 
   const themeMode: ThemeMode = resolvedTheme === "dark" ? "dark" : "light";
-  const themeSetting =
+  const themeSetting: ThemeModeSetting =
     theme === "light" || theme === "dark" || theme === "system"
       ? theme
-      : undefined;
+      : "system";
 
   const setThemeMode = useCallback(
     (mode: ThemeModeSetting) => {
