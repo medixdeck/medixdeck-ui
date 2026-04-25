@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
+import React from "react";
+import { useThemeMode } from "../../hooks/useThemeMode";
 
 export type LogoVariant = "blue" | "purple" | "black" | "white";
 export type LogoType = "full" | "icon";
@@ -292,16 +292,11 @@ export function Logo({
   className,
   style,
 }: LogoProps) {
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const { mounted, themeMode } = useThemeMode();
 
   // Safe fallback for SSR: always render light mode text first,
   // then update to dark after mounting if necessary.
-  const dark = mounted ? resolvedTheme === "dark" : false;
+  const dark = mounted ? themeMode === "dark" : false;
 
   const markColor = MARK_COLOR[variant];
   const textColor = dark ? TEXT_COLOR_DARK[variant] : TEXT_COLOR_LIGHT[variant];
