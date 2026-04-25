@@ -35,9 +35,17 @@ export interface UseThemeModeResult {
 /**
  * Accesses the current MedixDeck theme mode and helpers for updating it.
  *
+ * In SSR environments (e.g. Next.js), `next-themes` resolves the theme after
+ * hydration. Gate any theme-dependent UI on `mounted` to avoid hydration
+ * mismatches and flicker. In Next.js App Router, this hook must be called
+ * inside a `"use client"` component.
+ *
  * @example
  * ```tsx
- * const { themeMode, toggleThemeMode } = useThemeMode();
+ * // Avoid hydration mismatch: render theme-dependent UI only after mount.
+ * const { mounted, themeMode, toggleThemeMode } = useThemeMode();
+ *
+ * if (!mounted) return null;
  *
  * return (
  *   <button onClick={toggleThemeMode}>

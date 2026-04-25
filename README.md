@@ -25,8 +25,12 @@ import {
   useThemeMode,
 } from "@medixdeck/ui";
 
+// Next.js App Router: mark this component "use client" when using hooks.
 function ThemeToggle() {
-  const { themeMode, toggleThemeMode } = useThemeMode();
+  const { mounted, themeMode, toggleThemeMode } = useThemeMode();
+
+  // Avoid hydration mismatch: next-themes resolves the theme after mount.
+  if (!mounted) return null;
 
   return (
     <Button variant="solid" colorScheme="blue" onClick={toggleThemeMode}>
