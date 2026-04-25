@@ -90,9 +90,13 @@ export function useThemeMode(): UseThemeModeResult {
 
 /**
  * Convenience hook for checking whether the active MedixDeck theme is dark.
+ *
+ * Returns `false` until the component has mounted and `next-themes` has had a
+ * chance to resolve the active theme. This avoids reporting light mode during
+ * SSR or initial hydration when the resolved client theme is actually dark.
  */
-export function useIsDarkMode() {
-  const { themeMode } = useThemeMode();
+export function useIsDarkMode(): boolean {
+  const { mounted, themeMode } = useThemeMode();
 
-  return themeMode === "dark";
+  return mounted && themeMode === "dark";
 }
