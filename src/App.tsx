@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import { MedixProvider } from "../lib/components/provider/MedixProvider";
 import { Box, Link, Text } from "@chakra-ui/react";
+import { useThemeMode } from "../lib";
 
 const PREVIEW_COMPONENT_COUNT = 44;
 
@@ -151,7 +151,7 @@ function Chip({ href, label }: { href: string; label: string }) {
 // ─── Main App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [colorMode, setColorMode] = React.useState<"light" | "dark">("light");
+  const { mounted, themeMode, themeSetting, setThemeMode, toggleThemeMode } = useThemeMode();
   const [showDashboard, setShowDashboard] = React.useState(false);
   const [page, setPage] = React.useState(3);
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -159,16 +159,6 @@ export default function App() {
   const [otpValue, setOtpValue] = React.useState("");
   const [phoneValue, setPhoneValue] = React.useState("");
   const [appointmentDate, setAppointmentDate] = React.useState("");
-
-  // ── Apply dark class to <html> so ALL components (incl. Navbar) get theme ──
-  React.useEffect(() => {
-    const root = document.documentElement;
-    if (colorMode === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  }, [colorMode]);
 
   const patientRows = [
     { id: "1", name: "Ngozi Adeyemi", age: 34, specialty: "Cardiology", status: "Active", date: "Apr 18, 2026" },
@@ -187,46 +177,44 @@ export default function App() {
 
   if (showDashboard) {
     return (
-      <MedixProvider defaultColorMode={colorMode}>
-        <DashboardLayout
-          user={{ name: "Daniel", email: "daniel@medixdeck.com" }}
-          navGroups={[
-            {
-              items: [
-                { label: 'Home', href: '#home', isActive: true },
-                { label: 'Consult', href: '#consult' },
-                { label: 'Records', href: '#records' },
-                { label: 'Messages', href: '#messages', badge: 6 },
-              ]
-            },
-            {
-              groupLabel: 'Account',
-              items: [
-                { label: 'Profile', href: '#profile' },
-                { label: 'Notifications', href: '#notifications', hasDot: true },
-              ]
-            }
-          ]}
-        >
-          <Box h="full">
-            <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap="4">
-              <Box>
-                <Text color="text.heading" fontWeight="600" fontSize="lg">Welcome to your dashboard</Text>
-                <Text mt="1" color="text.body" fontSize="sm">This is the full-screen dashboard preview.</Text>
-              </Box>
-              <Button onClick={() => setShowDashboard(false)} variant="solid" colorScheme="blue">
-                Exit Dashboard
-              </Button>
+      <DashboardLayout
+        user={{ name: "Daniel", email: "daniel@medixdeck.com" }}
+        navGroups={[
+          {
+            items: [
+              { label: 'Home', href: '#home', isActive: true },
+              { label: 'Consult', href: '#consult' },
+              { label: 'Records', href: '#records' },
+              { label: 'Messages', href: '#messages', badge: 6 },
+            ]
+          },
+          {
+            groupLabel: 'Account',
+            items: [
+              { label: 'Profile', href: '#profile' },
+              { label: 'Notifications', href: '#notifications', hasDot: true },
+            ]
+          }
+        ]}
+      >
+        <Box h="full">
+          <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap="4">
+            <Box>
+              <Text color="text.heading" fontWeight="600" fontSize="lg">Welcome to your dashboard</Text>
+              <Text mt="1" color="text.body" fontSize="sm">This is the full-screen dashboard preview.</Text>
             </Box>
-            <Box mt="6" h="800px" bg="bg" borderRadius="card" border="1px dashed" borderColor="border" />
+            <Button onClick={() => setShowDashboard(false)} variant="solid" colorScheme="blue">
+              Exit Dashboard
+            </Button>
           </Box>
-        </DashboardLayout>
-      </MedixProvider>
+          <Box mt="6" h="800px" bg="bg" borderRadius="card" border="1px dashed" borderColor="border" />
+        </Box>
+      </DashboardLayout>
     );
   }
 
   return (
-    <MedixProvider defaultColorMode={colorMode}>
+    <>
       <Toaster />
 
       {/* ── Navbar — default CTA pattern: [Talk to a doctor] [↗] ── */}
@@ -269,10 +257,36 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.7 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v0.1.8 · {PREVIEW_COMPONENT_COUNT} components
+              </Text>
+              <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
+                Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
+                <strong>{themeSetting ?? "system"}</strong>
               </Text>
             </Box>
-            <Box display="flex" gap="3" alignItems="center">
+            <Box display="flex" gap="3" alignItems="center" flexWrap="wrap">
+              <Box display="flex" gap="2" alignItems="center" flexWrap="wrap">
+                {(["light", "dark", "system"] as const).map((mode) => (
+                  <Box
+                    key={mode}
+                    as="button"
+                    onClick={() => setThemeMode(mode)}
+                    px="3" py="2"
+                    bg={themeSetting === mode ? "bg.subtle" : "bg.surface"}
+                    color={themeSetting === mode ? "text.heading" : "text.body"}
+                    borderRadius="md"
+                    border="1px solid"
+                    borderColor={themeSetting === mode ? "blue.500" : "border"}
+                    fontSize="sm"
+                    fontFamily="var(--font-body)"
+                    cursor="pointer"
+                    textTransform="capitalize"
+                    _hover={{ borderColor: "blue.400" }}
+                  >
+                    {mode}
+                  </Box>
+                ))}
+              </Box>
               <Box
                 as="button"
                 onClick={() => setModalOpen(true)}
@@ -299,7 +313,7 @@ export default function App() {
               </Box>
               <Box
                 as="button"
-                onClick={() => setColorMode(m => m === "light" ? "dark" : "light")}
+                onClick={toggleThemeMode}
                 px="4" py="2"
                 bg="blue.500" color="white"
                 borderRadius="md" border="none"
@@ -308,7 +322,7 @@ export default function App() {
                 fontFamily="var(--font-body)"
                 _hover={{ bg: "blue.600" }}
               >
-                {colorMode === "light" ? "🌙 Dark" : "☀️ Light"}
+                {themeMode === "light" ? "🌙 Dark" : "☀️ Light"}
               </Box>
             </Box>
           </Box>
@@ -1254,7 +1268,7 @@ export default function App() {
       {/* Footer */}
       <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
         <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-          <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.7 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
+          <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.8 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
         </Text>
       </Box>
 
@@ -1319,6 +1333,6 @@ export default function App() {
           />
         </Box>
       </Drawer>
-    </MedixProvider>
+    </>
   );
 }

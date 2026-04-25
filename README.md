@@ -17,7 +17,27 @@ npm install @medixdeck/ui @chakra-ui/react react react-dom
 ## Quick start
 
 ```tsx
-import { Button, MedixProvider, Navbar, Logo } from "@medixdeck/ui";
+import {
+  Button,
+  Logo,
+  MedixProvider,
+  Navbar,
+  useThemeMode,
+} from "@medixdeck/ui";
+
+// Next.js App Router: mark this component "use client" when using hooks.
+function ThemeToggle() {
+  const { mounted, themeMode, toggleThemeMode } = useThemeMode();
+
+  // Avoid hydration mismatch: next-themes resolves the theme after mount.
+  if (!mounted) return null;
+
+  return (
+    <Button variant="solid" colorScheme="blue" onClick={toggleThemeMode}>
+      Switch to {themeMode === "dark" ? "light" : "dark"} mode
+    </Button>
+  );
+}
 
 export function App() {
   return (
@@ -27,7 +47,7 @@ export function App() {
         ctaLabel="Talk to a Doctor"
         ctaHref="/consult"
       />
-      <Button variant="solid" colorScheme="blue">Book appointment</Button>
+      <ThemeToggle />
       <Logo variant="purple" height={28} />
     </MedixProvider>
   );
@@ -38,7 +58,7 @@ export function App() {
 
 | Area | Exports |
 | --- | --- |
-| Provider + theme | `MedixProvider`, `system`, `medixConfig`, token exports |
+| Provider + theme | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `system`, `medixConfig`, token exports |
 | Primitive | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo` |
 | Form | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Combobox`, `FileUpload` |
 | Layout | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `DashboardLayout` |
@@ -55,6 +75,29 @@ export function App() {
 - Use semantic tokens such as `bg.surface`, `text.heading`, and `border` instead of raw hex for normal component styling.
 - For color-critical interactive controls, prefer the repo's native-first pattern instead of Chakra recipes.
 - Apply dark mode on `document.documentElement`, not an inner container.
+
+## Theme hooks
+
+```tsx
+import { useIsDarkMode, useThemeMode } from "@medixdeck/ui";
+
+function ThemeStatus() {
+  const { themeMode, themeSetting, setThemeMode, toggleThemeMode } = useThemeMode();
+  const isDarkMode = useIsDarkMode();
+
+  return (
+    <>
+      <p>Resolved mode: {themeMode}</p>
+      <p>Following: {themeSetting ?? "system"}</p>
+      <p>Dark mode active: {String(isDarkMode)}</p>
+      <button onClick={() => setThemeMode("dark")}>Dark</button>
+      <button onClick={() => setThemeMode("light")}>Light</button>
+      <button onClick={() => setThemeMode("system")}>System</button>
+      <button onClick={toggleThemeMode}>Toggle</button>
+    </>
+  );
+}
+```
 
 ## Repository index
 
