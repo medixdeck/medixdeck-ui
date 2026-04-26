@@ -14,6 +14,7 @@ All notable changes to `@medixdeck/ui` are documented here.
 ### Changed
 
 - **`Tabs` pill variant styling**: Updated the pill tabs to use a segmented-control treatment driven by MedixDeck semantic tokens so the component now reads correctly in both light and dark mode without changing its API or behavior.
+- **Preview app routing**: Moved the theme color explorer out of `App.tsx` into a dedicated `/theme-colors` preview page and updated the default navbar to point to the new route.
 
 ## [0.1.8] — 2026-04-25
 

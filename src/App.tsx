@@ -32,7 +32,6 @@ import { FileUpload } from "../lib/components/form/FileUpload";
 import { Card, CardHeader, CardBody, CardFooter } from "../lib/components/layout/Card";
 import { StatCard } from "../lib/components/layout/StatCard";
 import { Container, SectionHeader } from "../lib/components/layout/Container";
-import { ThemeColorPalette } from "../lib/components/layout/ThemeColorPalette";
 import { DashboardLayout } from "../lib/components/layout/DashboardLayout";
 
 // Navigation
@@ -222,7 +221,7 @@ export default function App() {
       <Navbar
         navItems={[
           { label: "Logo", href: "#logo" },
-          { label: "Theme", href: "#theme-colors" },
+          { label: "Theme", href: "/theme-colors" },
           { label: "Buttons", href: "#buttons" },
           { label: "Forms", href: "#forms" },
           { label: "Navigation", href: "#navigation" },
@@ -336,7 +335,6 @@ export default function App() {
           <Box display="flex" flexWrap="wrap" gap="2" mb="10">
             {[
               { href: "#logo", label: "Logo" },
-              { href: "#theme-colors", label: "Theme Colors" },
               { href: "#buttons", label: "Buttons" },
               { href: "#primitives", label: "Primitives" },
               { href: "#forms", label: "Forms" },
@@ -353,10 +351,6 @@ export default function App() {
               { href: "#healthcare", label: "Healthcare" },
             ].map((c) => <Chip key={c.href} {...c} />)}
           </Box>
-
-          <Section title="Theme Colors" id="theme-colors" storybookPath="?path=/docs/layout-themecolorpalette--docs">
-            <ThemeColorPalette w="100%" />
-          </Section>
 
           <Section title="Breadcrumb" id="breadcrumb">
             <Breadcrumb
