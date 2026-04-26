@@ -9,6 +9,11 @@ All notable changes to `@medixdeck/ui` are documented here.
 ### Added
 
 - **`ThemeColorPalette` component**: Added a built-in design-system color reference that shows MedixDeck semantic tokens in both light and dark mode plus the raw brand, status, and neutral token scales. Wired it into the dev preview and Storybook so developers can inspect the palette quickly.
+- **`DashboardLayout` theme switcher**: Added a built-in top-right light/dark/system control powered by `useThemeMode`, matching the library's existing theme persistence and system-aware behavior.
+
+### Changed
+
+- **`Tabs` pill variant styling**: Updated the pill tabs to use a segmented-control treatment driven by MedixDeck semantic tokens so the component now reads correctly in both light and dark mode without changing its API or behavior.
 
 ## [0.1.8] — 2026-04-25
 

@@ -6,8 +6,8 @@ const meta: Meta<typeof Tabs> = {
   component: Tabs,
   tags: ["autodocs"],
   argTypes: {
-    variant: { control: "select", options: ["line", "card", "pill"] },
-    colorScheme: { control: "select", options: ["blue", "purple"] },
+    variant: { control: "select", options: ["line", "pill"] },
+    size: { control: "select", options: ["sm", "md", "lg"] },
   },
 };
 
@@ -21,17 +21,20 @@ const tabItems = [
 ];
 
 export const Line: Story = {
-  args: { items: tabItems, variant: "line" },
+  args: { tabs: tabItems, variant: "line" },
 };
 
 export const Pill: Story = {
-  args: { items: tabItems, variant: "pill" },
+  args: { tabs: tabItems, variant: "pill" },
 };
 
-export const Card: Story = {
-  args: { items: tabItems, variant: "card" },
-};
-
-export const PurpleVariant: Story = {
-  args: { items: tabItems, colorScheme: "purple", variant: "line" },
+export const WithBadges: Story = {
+  args: {
+    variant: "pill",
+    tabs: [
+      { id: "patients", label: "Patients", badge: 24, content: <p style={{ padding: 16 }}>Patients content.</p> },
+      { id: "doctors", label: "Doctors", badge: 8, content: <p style={{ padding: 16 }}>Doctors content.</p> },
+      { id: "admins", label: "Admins", badge: 2, content: <p style={{ padding: 16 }}>Admins content.</p> },
+    ],
+  },
 };
