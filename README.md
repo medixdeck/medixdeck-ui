@@ -61,7 +61,7 @@ export function App() {
 | Provider + theme | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `system`, `medixConfig`, token exports |
 | Primitive | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo` |
 | Form | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Combobox`, `FileUpload` |
-| Layout | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `DashboardLayout` |
+| Layout | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout` |
 | Navigation | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper` |
 | Feedback | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `Toaster`, `toast`, `dismissToast` |
 | Data display | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable` |
@@ -98,6 +98,18 @@ function ThemeStatus() {
   );
 }
 ```
+
+## Theme color reference
+
+```tsx
+import { ThemeColorPalette } from "@medixdeck/ui";
+
+export function DesignTokensPage() {
+  return <ThemeColorPalette mt="8" />;
+}
+```
+
+`ThemeColorPalette` renders the semantic design tokens side by side for light and dark mode, then lists the raw brand, status, and neutral scales that power the theme.
 
 ## Repository index
 
