@@ -98,6 +98,9 @@ export type { StatCardProps } from "./components/layout/StatCard";
 export { Container, SectionHeader } from "./components/layout/Container";
 export type { ContainerProps, SectionHeaderProps } from "./components/layout/Container";
 
+export { ThemeColorPalette } from "./components/layout/ThemeColorPalette";
+export type { ThemeColorPaletteProps } from "./components/layout/ThemeColorPalette";
+
 export { DashboardLayout } from "./components/layout/DashboardLayout";
 export type {
   DashboardLayoutProps,

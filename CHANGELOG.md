@@ -4,6 +4,12 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **`ThemeColorPalette` component**: Added a built-in design-system color reference that shows MedixDeck semantic tokens in both light and dark mode plus the raw brand, status, and neutral token scales. Wired it into the dev preview and Storybook so developers can inspect the palette quickly.
+
 ## [0.1.8] — 2026-04-25
 
 ### Added
