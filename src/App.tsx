@@ -253,6 +253,9 @@ export default function App() {
               <Text as="h1" fontSize="3xl" fontWeight="bold" color="text.heading" fontFamily="var(--font-heading)">
                 <Link
                   href="https://www.npmjs.com/package/@medixdeck/ui"
+                  color="blue.fg"
+                  textDecorationColor="currentColor"
+                  _hover={{ color: "blue.fg", opacity: 0.9 }}
                 >
                   @medixdeck/ui
                 </Link>
@@ -1272,7 +1275,25 @@ export default function App() {
       {/* Footer */}
       <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
         <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-          <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.8 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
+          <Link
+            href="https://x.com/medixdeck"
+            color="blue.fg"
+            textDecorationColor="currentColor"
+            _hover={{ color: "blue.fg", opacity: 0.9 }}
+          >
+            @medixdeck/ui
+          </Link>{" "}
+          · v0.1.8 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
+          {" "}
+          ⚡ by{" "}
+          <Link
+            href="https://x.com/eunit99"
+            color="blue.fg"
+            textDecorationColor="currentColor"
+            _hover={{ color: "blue.fg", opacity: 0.9 }}
+          >
+            Eunit
+          </Link>
         </Text>
       </Box>
 

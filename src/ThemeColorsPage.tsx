@@ -43,7 +43,12 @@ export default function ThemeColorsPage() {
           >
             <Box>
               <Text as="h1" fontSize="3xl" fontWeight="bold" color="text.heading" fontFamily="var(--font-heading)">
-                <Link href="https://www.npmjs.com/package/@medixdeck/ui">
+                <Link
+                  href="https://www.npmjs.com/package/@medixdeck/ui"
+                  color="blue.fg"
+                  textDecorationColor="currentColor"
+                  _hover={{ color: "blue.fg", opacity: 0.9 }}
+                >
                   @medixdeck/ui Theme Colors
                 </Link>
               </Text>
