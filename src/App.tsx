@@ -3,7 +3,7 @@ import React from "react";
 import { Box, Link, Text } from "@chakra-ui/react";
 import { useThemeMode } from "../lib";
 
-const PREVIEW_COMPONENT_COUNT = 44;
+const PREVIEW_COMPONENT_COUNT = 45;
 
 // Primitives
 import { Button } from "../lib/components/primitive/Button";
@@ -221,6 +221,7 @@ export default function App() {
       <Navbar
         navItems={[
           { label: "Logo", href: "#logo" },
+          { label: "Theme", href: "/theme-colors" },
           { label: "Buttons", href: "#buttons" },
           { label: "Forms", href: "#forms" },
           { label: "Navigation", href: "#navigation" },
@@ -252,12 +253,15 @@ export default function App() {
               <Text as="h1" fontSize="3xl" fontWeight="bold" color="text.heading" fontFamily="var(--font-heading)">
                 <Link
                   href="https://www.npmjs.com/package/@medixdeck/ui"
+                  color="blue.fg"
+                  textDecorationColor="currentColor"
+                  _hover={{ color: "blue.fg", opacity: 0.9 }}
                 >
                   @medixdeck/ui
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.8 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v0.1.9 · {PREVIEW_COMPONENT_COUNT} components
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
                 Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
@@ -270,6 +274,7 @@ export default function App() {
                   <Box
                     key={mode}
                     as="button"
+                    // @ts-ignore
                     type="button"
                     aria-pressed={themeSetting === mode}
                     onClick={() => setThemeMode(mode)}
@@ -1271,7 +1276,25 @@ export default function App() {
       {/* Footer */}
       <Box as="footer" mt="16" pt="8" borderTop="1px solid" borderColor="border" textAlign="center">
         <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-          <Link href="https://x.com/medixdeck">@medixdeck/ui</Link> · v0.1.8 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With ⚡ by <Link href="https://x.com/eunit99">Eunit</Link>
+          <Link
+            href="https://x.com/medixdeck"
+            color="blue.fg"
+            textDecorationColor="currentColor"
+            _hover={{ color: "blue.fg", opacity: 0.9 }}
+          >
+            @medixdeck/ui
+          </Link>{" "}
+          · v0.1.9 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
+          {" "}
+          ⚡ by{" "}
+          <Link
+            href="https://x.com/eunit99"
+            color="blue.fg"
+            textDecorationColor="currentColor"
+            _hover={{ color: "blue.fg", opacity: 0.9 }}
+          >
+            Eunit
+          </Link>
         </Text>
       </Box>
 

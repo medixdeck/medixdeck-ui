@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useId } from "react";
 import { Box, type BoxProps } from "@chakra-ui/react";
+import { useThemeMode, type ThemeModeSetting } from "../../hooks/useThemeMode";
 import { Logo } from "../primitive/Logo";
 import { Avatar } from "../primitive/Avatar";
 
@@ -12,6 +13,7 @@ const BLUE_HOVER_BG_LIGHT = "rgba(6,133,255,0.08)";
 const BLUE_HOVER_BG_DARK = "rgba(6,133,255,0.12)";
 const BLUE_ACTIVE_BG_LIGHT = "rgba(6,133,255,0.10)";
 const BLUE_ACTIVE_BG_DARK = "rgba(6,133,255,0.15)";
+const BLUE_ACTIVE_BG_DARK_STRONG = "rgba(6,133,255,0.18)";
 const RED = "#EF4444";
 const RED_HOVER_BG = "rgba(239,68,68,0.08)";
 
@@ -64,6 +66,37 @@ const SettingsIcon = () => (
     strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="3" />
     <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+  </svg>
+);
+
+const SunIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="4" />
+    <line x1="12" y1="2" x2="12" y2="4" />
+    <line x1="12" y1="20" x2="12" y2="22" />
+    <line x1="4.93" y1="4.93" x2="6.34" y2="6.34" />
+    <line x1="17.66" y1="17.66" x2="19.07" y2="19.07" />
+    <line x1="2" y1="12" x2="4" y2="12" />
+    <line x1="20" y1="12" x2="22" y2="12" />
+    <line x1="4.93" y1="19.07" x2="6.34" y2="17.66" />
+    <line x1="17.66" y1="6.34" x2="19.07" y2="4.93" />
+  </svg>
+);
+
+const MoonIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+);
+
+const SystemIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4" width="18" height="12" rx="2" />
+    <line x1="8" y1="20" x2="16" y2="20" />
+    <line x1="12" y1="16" x2="12" y2="20" />
   </svg>
 );
 
@@ -197,6 +230,88 @@ function autoGreeting(): string {
   if (h < 12) return "Good morning";
   if (h < 17) return "Good afternoon";
   return "Good evening";
+}
+
+const themeOptions: Array<{
+  value: ThemeModeSetting;
+  label: string;
+  shortLabel: string;
+  icon: React.ReactNode;
+}> = [
+  { value: "light", label: "Light mode", shortLabel: "Light", icon: <SunIcon /> },
+  { value: "dark", label: "Dark mode", shortLabel: "Dark", icon: <MoonIcon /> },
+  { value: "system", label: "System theme", shortLabel: "System", icon: <SystemIcon /> },
+];
+
+function ThemeToggleGroup() {
+  const { mounted, themeMode, themeSetting, setThemeMode } = useThemeMode();
+
+  const activeMode = mounted ? themeSetting : undefined;
+
+  return (
+    <Box
+      display="flex"
+      alignItems="center"
+      gap="1"
+      bg="bg.surface"
+      border="1px solid"
+      borderColor="border"
+      borderRadius="full"
+      p="1"
+      aria-label="Theme mode switcher"
+    >
+      {themeOptions.map((option) => {
+        const isActive = activeMode === option.value;
+        const activeFill = option.value === "dark"
+          ? BLUE_ACTIVE_BG_DARK_STRONG
+          : option.value === "system"
+            ? "rgba(6,133,255,0.12)"
+            : "rgba(6,133,255,0.08)";
+
+        return (
+          <Box
+            key={option.value}
+            as="button"
+            onClick={() => {
+              if (!mounted) return;
+              setThemeMode(option.value);
+            }}
+            aria-pressed={isActive}
+            aria-label={option.label}
+            title={mounted && option.value === "system" ? `System theme (currently ${themeMode})` : option.label}
+            display="inline-flex"
+            alignItems="center"
+            gap="2"
+            h="9"
+            px={{ base: isActive ? "3" : "2.5", md: "3" }}
+            borderRadius="full"
+            border="none"
+            bg={isActive ? activeFill : "transparent"}
+            color={isActive ? "blue.500" : "text.muted"}
+            opacity={mounted ? 1 : 0.6}
+            cursor={mounted ? "pointer" : "default"}
+            transition="background 0.18s ease, color 0.18s ease, opacity 0.18s ease"
+            _hover={mounted ? { bg: isActive ? activeFill : "bg", color: "text.heading" } : undefined}
+            _focusVisible={{ outline: "2px solid", outlineColor: "blue.500", outlineOffset: "2px" }}
+          >
+            <Box display="inline-flex" alignItems="center" justifyContent="center" flexShrink={0}>
+              {option.icon}
+            </Box>
+            <Box
+              as="span"
+              display={{ base: "none", lg: "inline" }}
+              fontSize="xs"
+              fontWeight={isActive ? "700" : "600"}
+              fontFamily="var(--font-body)"
+              whiteSpace="nowrap"
+            >
+              {option.shortLabel}
+            </Box>
+          </Box>
+        );
+      })}
+    </Box>
+  );
 }
 
 // ─── SidebarNavItem ───────────────────────────────────────────────────────────
@@ -573,6 +688,8 @@ function TopBar({
 
       {/* Optional right slot */}
       {topBarSlot}
+
+      <ThemeToggleGroup />
 
       {/* User menu */}
       <Box position="relative" ref={dropdownRef}>

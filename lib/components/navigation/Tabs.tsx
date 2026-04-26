@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import { Box, Text, type BoxProps } from "@chakra-ui/react";
 
 export interface TabItem {
   id: string;
@@ -69,10 +69,11 @@ export function Tabs({
         display="flex"
         gap={variant === "pill" ? "1" : "0"}
         borderBottom={variant === "line" ? "1px solid" : "none"}
+        border={variant === "pill" ? "1px solid" : "none"}
         borderColor="border"
         bg={variant === "pill" ? "bg.subtle" : "transparent"}
         p={variant === "pill" ? "1" : "0"}
-        borderRadius={variant === "pill" ? "md" : "none"}
+        borderRadius={variant === "pill" ? "full" : "none"}
         overflowX="auto"
         flexWrap="nowrap"
         style={{ scrollbarWidth: "none" } as React.CSSProperties}
@@ -93,20 +94,38 @@ export function Tabs({
               display="flex"
               alignItems="center"
               gap="2"
-              px={sz.px}
-              py={sz.py}
+              justifyContent="center"
+              px={variant === "pill" ? "4" : sz.px}
+              py={variant === "pill" ? "3" : sz.py}
               fontFamily="var(--font-body)"
               fontWeight={isActive ? "semibold" : "medium"}
-              fontSize={sz.fontSize}
-              color={tab.disabled ? "text.muted" : isActive ? "blue.500" : "text.body"}
+              fontSize={variant === "pill" ? "sm" : sz.fontSize}
+              color={
+                tab.disabled
+                  ? "text.muted"
+                  : variant === "pill"
+                    ? isActive
+                      ? "text.heading"
+                      : "text.body"
+                    : isActive
+                      ? "blue.500"
+                      : "text.body"
+              }
               cursor={tab.disabled ? "not-allowed" : "pointer"}
               opacity={tab.disabled ? 0.5 : 1}
-              transition="all 0.15s"
+              transition="all 0.2s ease"
               whiteSpace="nowrap"
-              flexShrink={0}
-              bg={variant === "pill" && isActive ? "bg" : "transparent"}
-              borderRadius={variant === "pill" ? "md" : "none"}
-              boxShadow={variant === "pill" && isActive ? "sm" : "none"}
+              flex={variant === "pill" ? "1" : undefined}
+              flexShrink={variant === "pill" ? 1 : 0}
+              bg={
+                variant === "pill"
+                  ? isActive
+                    ? "bg"
+                    : "bg.surface"
+                  : "transparent"
+              }
+              borderRadius={variant === "pill" ? "full" : "none"}
+              boxShadow="none"
               borderBottom={variant === "line" ? "2px solid" : "none"}
               borderColor={
                 variant === "line" ? (isActive ? "blue.500" : "transparent") : undefined
@@ -116,17 +135,22 @@ export function Tabs({
                 !tab.disabled
                   ? variant === "line"
                     ? { color: "blue.500" }
-                    : { bg: "bg" }
+                    : {
+                        bg: isActive ? "bg" : "bg.subtle",
+                        color: isActive ? "text.heading" : "text.heading",
+                      }
                   : undefined
               }
               _focusVisible={{
                 outline: "2px solid",
                 outlineColor: "blue.500",
                 outlineOffset: "2px",
-                borderRadius: "sm",
+                borderRadius: variant === "pill" ? "full" : "sm",
               }}
             >
-              {tab.label}
+              <Text fontSize="inherit" fontWeight="inherit" color="inherit">
+                {tab.label}
+              </Text>
               {tab.badge !== undefined && (
                 <Box
                   as="span"
@@ -139,8 +163,24 @@ export function Tabs({
                   borderRadius="full"
                   fontSize="2xs"
                   fontWeight="bold"
-                  bg={isActive ? "blue.100" : "bg.subtle"}
-                  color={isActive ? "blue.700" : "text.muted"}
+                  bg={
+                    variant === "pill"
+                      ? isActive
+                        ? "bg.subtle"
+                        : "bg"
+                      : isActive
+                        ? "blue.100"
+                        : "bg.subtle"
+                  }
+                  color={
+                    variant === "pill"
+                      ? isActive
+                        ? "text.heading"
+                        : "text.muted"
+                      : isActive
+                        ? "blue.700"
+                        : "text.muted"
+                  }
                 >
                   {tab.badge}
                 </Box>

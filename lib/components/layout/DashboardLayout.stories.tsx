@@ -63,6 +63,9 @@ export const Default: Story = {
           <Text fontSize="2xl" fontWeight="bold" mb={4} color="text.heading">
             Welcome to MedixDeck
           </Text>
+          <Text mb={4} color="text.body">
+            Use the top-right theme control to switch between light, dark, and system modes.
+          </Text>
           <Box p={8} bg="bg.surface" borderRadius="xl" border="1px dashed" borderColor="border">
             <Text color="text.body">Your dashboard content goes here.</Text>
           </Box>

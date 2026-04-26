@@ -35,7 +35,7 @@ export const Divider = React.forwardRef<HTMLHRElement, DividerProps>(
           <span
             style={{
               fontSize: "var(--chakra-font-sizes-sm)",
-              color: "var(--chakra-colors-text-muted)",
+              color: "var(--chakra-colors-text-body)",
               whiteSpace: "nowrap",
               fontFamily: "var(--font-body)",
             }}
