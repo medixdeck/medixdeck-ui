@@ -4,7 +4,7 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
-## [Unreleased]
+## [0.1.9] — 2026-04-26
 
 ### Added
 
