@@ -4,6 +4,12 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.10] — 2026-04-26
+
+### Added
+
+- **Logos** Added `logo-text-white.png`, `logo-text-blue.png`, `logo-text-purple.png`
+
 ## [0.1.9] — 2026-04-26
 
 ### Added
