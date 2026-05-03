@@ -12,8 +12,13 @@ export interface PhoneInputProps {
   showCountryCode?: boolean;
   /** Show the country flag SVG */
   showCountryFlag?: boolean;
-  /** Default country code e.g. "+234" */
+  /** Default country calling code e.g. "+234". When multiple countries share
+   *  the same code (e.g. "+1"), prefer `defaultCountry` for an exact match. */
   defaultCountryCode?: string;
+  /** Default country ISO 3166-1 alpha-2 code (e.g. "US", "NG"). Takes
+   *  precedence over `defaultCountryCode` and avoids ambiguity for shared
+   *  calling codes such as +1 (NANP) or +7 (Russia/Kazakhstan). */
+  defaultCountry?: string;
   placeholder?: string;
   isInvalid?: boolean;
   errorMessage?: string;
@@ -22,6 +27,25 @@ export interface PhoneInputProps {
   isDisabled?: boolean;
   id?: string;
 }
+
+/**
+ * For calling codes shared by multiple countries, map to the canonical/primary
+ * country so that `defaultCountryCode`-only lookup returns the expected result.
+ * Consumers can always override via the `defaultCountry` (ISO) prop.
+ */
+const CANONICAL_COUNTRY_FOR_CODE: Record<string, string> = {
+  "+1":   "US", // NANP: many Caribbean/Pacific territories share +1
+  "+7":   "RU", // Russia & Kazakhstan
+  "+39":  "IT", // Italy & Vatican City
+  "+44":  "GB", // UK, Guernsey, Isle of Man, Jersey
+  "+47":  "NO", // Norway & Svalbard
+  "+212": "MA", // Morocco & Western Sahara
+  "+262": "RE", // Réunion, Mayotte
+  "+290": "SH", // Saint Helena
+  "+358": "FI", // Finland & Åland Islands
+  "+590": "GP", // Guadeloupe, Saint Barthélemy, Saint Martin
+  "+599": "CW", // Curaçao & Bonaire
+};
 
 const COUNTRY_CODES = [
   { country: "AF", code: "+93", flag: "🇦🇫" }, { country: "AL", code: "+355", flag: "🇦🇱" }, { country: "DZ", code: "+213", flag: "🇩🇿" },
@@ -115,10 +139,18 @@ const COUNTRY_CODES = [
  *
  * @example
  * ```tsx
+ * // Nigeria (default)
  * <PhoneInput
  *   label="Phone number"
  *   placeholder="80 000 0000"
  *   defaultCountryCode="+234"
+ *   onChange={(val) => setValue(val)}
+ * />
+ *
+ * // US (unambiguous ISO override — avoids picking AS for the shared +1 code)
+ * <PhoneInput
+ *   label="Phone number"
+ *   defaultCountry="US"
  *   onChange={(val) => setValue(val)}
  * />
  * ```
@@ -129,6 +161,7 @@ export function PhoneInput({
   showCountryCode = true,
   showCountryFlag = true,
   defaultCountryCode = "+234",
+  defaultCountry,
   placeholder = "80 000 0000",
   isInvalid = false,
   errorMessage,
@@ -137,7 +170,19 @@ export function PhoneInput({
   isDisabled = false,
   id,
 }: PhoneInputProps) {
-  const defaultCountryObj = COUNTRY_CODES.find((c) => c.code === defaultCountryCode) ?? COUNTRY_CODES.find(c => c.country === "NG") ?? COUNTRY_CODES[0];
+  // Resolve the initial country object. Priority:
+  // 1. Explicit ISO code via `defaultCountry` prop (unambiguous).
+  // 2. Canonical country for the given calling code (avoids picking e.g. AS
+  //    for +1 instead of US).
+  // 3. First country that matches the calling code (covers unique codes).
+  // 4. Nigeria (library default) → fallback to first entry.
+  const canonicalISO = defaultCountry
+    ?? (defaultCountryCode ? CANONICAL_COUNTRY_FOR_CODE[defaultCountryCode] : undefined);
+  const defaultCountryObj =
+    (canonicalISO ? COUNTRY_CODES.find((c) => c.country === canonicalISO) : undefined)
+    ?? COUNTRY_CODES.find((c) => c.code === defaultCountryCode)
+    ?? COUNTRY_CODES.find((c) => c.country === "NG")
+    ?? COUNTRY_CODES[0];
   const [selectedCountryId, setSelectedCountryId] = React.useState(defaultCountryObj.country);
   const [localNumber, setLocalNumber] = React.useState(value);
   const [isFocused, setIsFocused] = React.useState(false);
