@@ -158,6 +158,12 @@ export type { TooltipProps } from "./components/feedback/Tooltip";
 export { EmptyState } from "./components/feedback/EmptyState";
 export type { EmptyStateProps } from "./components/feedback/EmptyState";
 
+export { NotFoundPage } from "./components/feedback/NotFoundPage";
+export type { NotFoundPageProps } from "./components/feedback/NotFoundPage";
+
+export { ServerErrorPage } from "./components/feedback/ServerErrorPage";
+export type { ServerErrorPageProps } from "./components/feedback/ServerErrorPage";
+
 export { Drawer } from "./components/feedback/Drawer";
 export type { DrawerProps, DrawerPlacement, DrawerSize } from "./components/feedback/Drawer";
 

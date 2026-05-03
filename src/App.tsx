@@ -51,6 +51,8 @@ import { Modal } from "../lib/components/feedback/Modal";
 import { Drawer } from "../lib/components/feedback/Drawer";
 import { Tooltip } from "../lib/components/feedback/Tooltip";
 import { EmptyState } from "../lib/components/feedback/EmptyState";
+import { NotFoundPage } from "../lib/components/feedback/NotFoundPage";
+import { ServerErrorPage } from "../lib/components/feedback/ServerErrorPage";
 import { Toaster, toast } from "../lib/components/feedback/Notification";
 
 // Data Display
@@ -1133,6 +1135,26 @@ export default function App() {
                 actionLabel="Find a Doctor"
                 secondaryLabel="Learn how it works"
               />
+            </Box>
+          </Section>
+
+          <Section title="Error Pages" id="errorpages">
+            <Box display="flex" flexDirection="column" gap="8" w="100%">
+              <Box bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden" position="relative" minH="500px">
+                <NotFoundPage 
+                  title="Page Not Found" 
+                  description="We couldn't find the page you were looking for." 
+                  actionLabel="Back to Dashboard" 
+                  minH="500px"
+                />
+              </Box>
+              <Box bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden" position="relative" minH="500px">
+                <ServerErrorPage 
+                  errorMessage="Failed to fetch user data: Network timeout" 
+                  actionLabel="Try Again" 
+                  minH="500px"
+                />
+              </Box>
             </Box>
           </Section>
 
