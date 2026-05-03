@@ -81,7 +81,7 @@ export function Pagination({
   currentPage = 1,
   onChange,
   siblingCount = 1,
-  showEdges = false,
+  showEdges = true,
   compact = false,
   ...props
 }: PaginationProps) {
