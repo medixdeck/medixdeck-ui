@@ -31,6 +31,24 @@ function shiftDay(dayIndex: number) {
   return dayIndex === 0 ? 6 : dayIndex - 1;
 }
 
+// Returns true if a date (in the current-month frame) is outside min/max bounds
+function isDateOutOfRange(
+  d: number, m: number, y: number,
+  minDate?: Date,
+  maxDate?: Date,
+): boolean {
+  const date = new Date(y, m, d);
+  if (minDate) {
+    const min = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+    if (date < min) return true;
+  }
+  if (maxDate) {
+    const max = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+    if (date > max) return true;
+  }
+  return false;
+}
+
 /**
  * MedixDeck Re-usable Calendar Component
  * 
@@ -51,6 +69,15 @@ export function Calendar({
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
 
+  // Constrain month navigation to minDate/maxDate bounds
+  const canGoPrev = !minDate ||
+    year > minDate.getFullYear() ||
+    (year === minDate.getFullYear() && month > minDate.getMonth());
+
+  const canGoNext = !maxDate ||
+    year < maxDate.getFullYear() ||
+    (year === maxDate.getFullYear() && month < maxDate.getMonth());
+
   const handlePrevMonth = () => {
     setCurrentMonth(new Date(year, month - 1, 1));
   };
@@ -60,9 +87,11 @@ export function Calendar({
   };
 
   const handleToday = () => {
-    setCurrentMonth(new Date());
-    if (onChange) {
-      onChange(new Date());
+    const today = new Date();
+    setCurrentMonth(today);
+    // Only fire onChange if today is within the allowed range
+    if (onChange && !isDateOutOfRange(today.getDate(), today.getMonth(), today.getFullYear(), minDate, maxDate)) {
+      onChange(today);
     }
   };
 
@@ -96,12 +125,14 @@ export function Calendar({
     
     // Current month cells
     for (let i = 1; i <= daysInMonth; i++) {
+      const outOfRange = isDateOutOfRange(i, month, year, minDate, maxDate);
       cells.push(
         <DayCell
           key={`curr-${i}`}
           day={i}
           isActive={isSelected(i, month, year)}
-          onClick={() => onChange?.(new Date(year, month, i))}
+          isDisabled={outOfRange}
+          onClick={outOfRange ? undefined : () => onChange?.(new Date(year, month, i))}
         />
       );
     }
@@ -133,15 +164,11 @@ export function Calendar({
       {/* Header */}
       <Flex justify="space-between" align="center" mb="6">
         <Flex align="center" gap="4">
-          <Box as="button" onClick={handlePrevMonth} cursor="pointer" color="text.heading" _hover={{ color: "blue.500" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-          </Box>
+          <MonthNavButton enabled={canGoPrev} onClick={handlePrevMonth} direction="prev" />
           <Text fontWeight="semibold" fontSize="md" color="text.heading">
             {MONTHS[month]} {year}
           </Text>
-          <Box as="button" onClick={handleNextMonth} cursor="pointer" color="text.heading" _hover={{ color: "blue.500" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          </Box>
+          <MonthNavButton enabled={canGoNext} onClick={handleNextMonth} direction="next" />
         </Flex>
         
         <Box 
@@ -178,15 +205,45 @@ export function Calendar({
   );
 }
 
+function MonthNavButton({
+  enabled,
+  onClick,
+  direction,
+}: {
+  enabled: boolean;
+  onClick: () => void;
+  direction: "prev" | "next";
+}) {
+  return (
+    <Box
+      as="button"
+      onClick={onClick}
+      cursor={enabled ? "pointer" : "not-allowed"}
+      color={enabled ? "text.heading" : "text.muted"}
+      opacity={enabled ? 1 : 0.4}
+      _hover={enabled ? { color: "blue.500" } : undefined}
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        {direction === "prev"
+          ? <path d="M15 18l-6-6 6-6"/>
+          : <path d="M9 18l6-6-6-6"/>}
+      </svg>
+    </Box>
+  );
+}
+
 function DayCell({
   day,
   isActive,
   isMuted,
+  isDisabled,
   onClick,
 }: {
   day: number;
   isActive?: boolean;
   isMuted?: boolean;
+  /** Out-of-range day: visible but not selectable */
+  isDisabled?: boolean;
   onClick?: () => void;
 }) {
   return (
@@ -202,11 +259,15 @@ function DayCell({
         fontSize="sm"
         fontWeight="medium"
         onClick={onClick}
-        cursor={isMuted ? "default" : "pointer"}
+        // Muted (overflow) days: hide entirely from pointer interaction.
+        // Disabled (out-of-range) days: allow pointer events so the browser
+        // can render the not-allowed cursor, but onClick is always undefined.
+        cursor={isMuted ? "default" : isDisabled ? "not-allowed" : "pointer"}
         pointerEvents={isMuted ? "none" : "auto"}
+        opacity={isDisabled ? 0.35 : 1}
         bg={isActive ? "blue.500" : "transparent"}
-        color={isActive ? "white" : isMuted ? "text.muted" : "text.heading"}
-        _hover={!isMuted && !isActive ? { bg: "bg.subtle", color: "blue.500" } : undefined}
+        color={isActive ? "white" : (isMuted || isDisabled) ? "text.muted" : "text.heading"}
+        _hover={!isMuted && !isDisabled && !isActive ? { bg: "bg.subtle", color: "blue.500" } : undefined}
         transition="all 0.2s"
       >
         {day}

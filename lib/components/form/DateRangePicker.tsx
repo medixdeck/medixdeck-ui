@@ -130,15 +130,34 @@ export function DateRangePicker({
     }
   };
 
+  /** Parse a YYYY-MM-DD string into a local Date to avoid UTC off-by-one. */
+  const parseLocalDate = (dateStr?: string): Date | undefined => {
+    if (!dateStr) return undefined;
+    const [y, m, d] = dateStr.split("-").map(Number);
+    // Explicit bounds check before constructing to catch invalid inputs early
+    if (!y || m < 1 || m > 12 || d < 1 || d > 31) return undefined;
+    const parsed = new Date(y, m - 1, d);
+    // Round-trip check rejects rolled-over dates (e.g. Feb 31 → Mar 3)
+    if (
+      parsed.getFullYear() !== y ||
+      parsed.getMonth() !== m - 1 ||
+      parsed.getDate() !== d
+    ) return undefined;
+    return parsed;
+  };
+
   const currentCalValue = activeInput === "start" ? startValue : endValue;
-  const parsedDate = currentCalValue ? new Date(currentCalValue) : undefined;
-  
-  const displayStart = startValue && !isNaN(new Date(startValue).getTime())
-    ? new Date(startValue).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+  const parsedDate = parseLocalDate(currentCalValue);
+
+  const startDate = parseLocalDate(startValue);
+  const endDate = parseLocalDate(endValue);
+
+  const displayStart = startDate
+    ? startDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
     : "";
-    
-  const displayEnd = endValue && !isNaN(new Date(endValue).getTime())
-    ? new Date(endValue).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+
+  const displayEnd = endDate
+    ? endDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
     : "";
 
   return (
@@ -206,7 +225,18 @@ export function DateRangePicker({
           bg="bg.surface"
           overflow="hidden"
         >
-          <Calendar value={parsedDate} onChange={handleDateSelect} />
+          <Calendar
+            value={parsedDate}
+            onChange={handleDateSelect}
+            minDate={
+              // When selecting the end date, the earliest selectable day is the
+              // chosen start date (if set), otherwise fall back to the prop min.
+              activeInput === "end"
+                ? (startDate ?? parseLocalDate(min))
+                : parseLocalDate(min)
+            }
+            maxDate={parseLocalDate(max)}
+          />
         </Box>
       )}
 
