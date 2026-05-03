@@ -177,7 +177,6 @@ export function BlogCard({
     border: "none",
     padding: 0,
     cursor: isInteractive ? "pointer" : "default",
-    width: "100%",
     textAlign: "left",
   };
 
@@ -201,14 +200,14 @@ export function BlogCard({
           <img
             src={coverImage}
             alt={title}
-            style={{ width: "100%", height: 220, objectFit: "cover", display: "block" }}
+            style={{ width: "100%", height: 300, objectFit: "cover", display: "block", borderRadius: "20px" }}
           />
         ) : (
           /* Gradient placeholder when no image is provided */
           <Box
             borderRadius="card"
-            h="220px"
-            style={{ background: "linear-gradient(135deg, #0685FF 0%, #7700CC 100%)" }}
+            h="300px"
+            style={{ background: "linear-gradient(135deg, #0685FF 0%, #7700CC 100%)", borderRadius: "20px" }}
           />
         )}
 
@@ -258,7 +257,7 @@ export function BlogCard({
       </Box>
 
       {/* ── Content area ────────────────────────────────── */}
-      <Box px="4" pt="3" pb="4">
+      <Box px="0" pt="3" pb="4">
         {/* Category pill — solid blue, white text, full-radius */}
         {category && (
           <Box

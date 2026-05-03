@@ -4,6 +4,35 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.13] — 2026-05-03
+
+### Added
+- **`Calendar` Component**: Built a reusable, standalone Calendar component mimicking standard native behaviors, fully customized for MedixDeck UI with support for dynamic month navigation, active state highlights, and muted secondary month days.
+
+### Changed
+- **`DatePicker`**: Upgraded from a native `input type="date"` to a custom popover using the new `Calendar` component. It now handles dynamic absolute positioning, formatted string displays (e.g. "May 15, 2026"), and closes on outside click.
+- **`DateRangePicker`**: Converted to utilize dual calendar popovers for both "Start date" and "End date" inputs. Clicking an input now triggers a localized `Calendar` picker rather than the native system widget.
+
+## [0.1.12] — 2026-05-03
+
+### Changed
+
+- **`Pagination` Redesign**: Updated component styling to match the current MedixDeck design system.
+  - Replaced icon-only navigation buttons with text labels and chevron icons (`< Prev`, `Next >`).
+  - Switched the background of inactive page number buttons to `blue.100` (or tinted background in dark mode) instead of transparent, with primary blue text for higher contrast.
+  - Removed borders from all pagination buttons and updated spacing.
+  - Changed default behavior of `showEdges` to `false` for a cleaner default appearance.
+
+## [0.1.11] — 2026-05-03
+
+### Changed
+
+- **`DoctorCard` Redesign & Variants**: Updated the component UI to precisely match MedixDeck design specifications.
+  - Added `variant` prop (`"standard" | "compact" | "featured"`) for flexible layout options.
+  - Added `experience` prop to cleanly display years of experience.
+  - Integrated custom icons for the verified badge, rating star, and experience shield.
+  - Enhanced layout alignment, borders, and typography across all variants.
+
 ## [0.1.10] — 2026-04-26
 
 ### Added

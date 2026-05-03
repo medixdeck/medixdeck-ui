@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Box, Text } from "@chakra-ui/react";
+import { Calendar } from "./Calendar";
 
 export interface DateRangePickerProps {
   /** Controlled start date value (ISO date string: YYYY-MM-DD) */
@@ -27,7 +28,7 @@ export interface DateRangePickerProps {
 /**
  * MedixDeck DateRangePicker
  *
- * Styled wrapper around two native date inputs (start and end).
+ * Uses the custom MedixDeck Calendar component for picking start and end dates.
  *
  * @example
  * ```tsx
@@ -52,11 +53,22 @@ export function DateRangePicker({
   errorMessage,
   isInvalid = false,
   isDisabled = false,
-  startPlaceholder,
-  endPlaceholder,
+  startPlaceholder = "Start date",
+  endPlaceholder = "End date",
   id,
 }: DateRangePickerProps) {
-  const [activeInput, setActiveInput] = React.useState<"start" | "end" | null>(null);
+  const [activeInput, setActiveInput] = useState<"start" | "end" | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setActiveInput(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const activeBorderColor = isInvalid
     ? "#DC2626"
@@ -83,8 +95,73 @@ export function DateRangePicker({
     width: "100%",
   };
 
+  const formatDateValue = (date: Date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  const clampDateValue = (value: string) => {
+    if (min && value < min) {
+      return min;
+    }
+    if (max && value > max) {
+      return max;
+    }
+    return value;
+  };
+
+  const handleDateSelect = (date: Date) => {
+    const formatted = clampDateValue(formatDateValue(date));
+
+    if (activeInput === "start") {
+      onStartChange?.(formatted);
+      if (endValue && endValue < formatted) {
+        onEndChange?.("");
+      }
+      setActiveInput("end"); // auto move to end
+    } else if (activeInput === "end") {
+      onEndChange?.(formatted);
+      if (startValue && startValue > formatted) {
+        onStartChange?.("");
+      }
+      setActiveInput(null); // close popover
+    }
+  };
+
+  /** Parse a YYYY-MM-DD string into a local Date to avoid UTC off-by-one. */
+  const parseLocalDate = (dateStr?: string): Date | undefined => {
+    if (!dateStr) return undefined;
+    const [y, m, d] = dateStr.split("-").map(Number);
+    // Explicit bounds check before constructing to catch invalid inputs early
+    if (!y || m < 1 || m > 12 || d < 1 || d > 31) return undefined;
+    const parsed = new Date(y, m - 1, d);
+    // Round-trip check rejects rolled-over dates (e.g. Feb 31 → Mar 3)
+    if (
+      parsed.getFullYear() !== y ||
+      parsed.getMonth() !== m - 1 ||
+      parsed.getDate() !== d
+    ) return undefined;
+    return parsed;
+  };
+
+  const currentCalValue = activeInput === "start" ? startValue : endValue;
+  const parsedDate = parseLocalDate(currentCalValue);
+
+  const startDate = parseLocalDate(startValue);
+  const endDate = parseLocalDate(endValue);
+
+  const displayStart = startDate
+    ? startDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+    : "";
+
+  const displayEnd = endDate
+    ? endDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+    : "";
+
   return (
-    <Box w="100%">
+    <Box w="100%" position="relative" ref={containerRef}>
       {label && (
         <Text mb="1.5" fontSize="sm" fontWeight="medium" color="text.heading" fontFamily="var(--font-body)">
           {label}
@@ -94,6 +171,7 @@ export function DateRangePicker({
       <Box
         display="flex"
         alignItems="center"
+        position="relative"
         style={{
           width: "100%",
           height: "40px",
@@ -108,17 +186,14 @@ export function DateRangePicker({
       >
         <input
           id={id}
-          type="date"
-          value={startValue ?? ""}
-          onChange={(e) => onStartChange?.(e.target.value)}
-          min={min}
-          max={endValue || max}
+          readOnly
+          type="text"
+          value={displayStart}
           placeholder={startPlaceholder}
           disabled={isDisabled}
           aria-invalid={isInvalid}
-          onFocus={() => setActiveInput("start")}
-          onBlur={() => setActiveInput(null)}
-          style={inputStyle}
+          onClick={() => !isDisabled && setActiveInput("start")}
+          style={{ ...inputStyle, textAlign: "center" }}
         />
         
         <Box color="text.muted" px="1" fontSize="sm">
@@ -126,19 +201,44 @@ export function DateRangePicker({
         </Box>
 
         <input
-          type="date"
-          value={endValue ?? ""}
-          onChange={(e) => onEndChange?.(e.target.value)}
-          min={startValue || min}
-          max={max}
+          readOnly
+          type="text"
+          value={displayEnd}
           placeholder={endPlaceholder}
           disabled={isDisabled}
           aria-invalid={isInvalid}
-          onFocus={() => setActiveInput("end")}
-          onBlur={() => setActiveInput(null)}
-          style={inputStyle}
+          onClick={() => !isDisabled && setActiveInput("end")}
+          style={{ ...inputStyle, textAlign: "center" }}
         />
       </Box>
+
+      {activeInput && (
+        <Box 
+          position="absolute" 
+          top="calc(100% + 8px)" 
+          left="0" 
+          zIndex="10" 
+          boxShadow="lg" 
+          borderRadius="card"
+          border="1px solid"
+          borderColor="border"
+          bg="bg.surface"
+          overflow="hidden"
+        >
+          <Calendar
+            value={parsedDate}
+            onChange={handleDateSelect}
+            minDate={
+              // When selecting the end date, the earliest selectable day is the
+              // chosen start date (if set), otherwise fall back to the prop min.
+              activeInput === "end"
+                ? (startDate ?? parseLocalDate(min))
+                : parseLocalDate(min)
+            }
+            maxDate={parseLocalDate(max)}
+          />
+        </Box>
+      )}
 
       {(helperText || errorMessage) && (
         <Text mt="1.5" fontSize="xs" color={isInvalid ? "red.500" : "text.muted"} fontFamily="var(--font-body)">
