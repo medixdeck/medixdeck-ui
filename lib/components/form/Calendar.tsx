@@ -277,13 +277,10 @@ function DayCell({
         fontSize="sm"
         fontWeight="medium"
         onClick={onClick}
-        aria-disabled={isMuted || isDisabled}
-        tabIndex={(isMuted || isDisabled) ? -1 : undefined}
-        // Muted (overflow) days: hide entirely from pointer interaction.
-        // Disabled (out-of-range) days: allow pointer events so the browser
-        // can render the not-allowed cursor (often overridden by native disabled, but kept for semantics)
-        cursor={isMuted ? "default" : isDisabled ? "not-allowed" : "pointer"}
-        pointerEvents={isMuted ? "none" : "auto"}
+        // Native disabled prevents focus and click activation for both muted
+        // (overflow) and out-of-range days, improving screen reader behavior.
+        {...({ disabled: isMuted || isDisabled } as Record<string, unknown>)}
+        cursor={isDisabled ? "not-allowed" : "pointer"}
         opacity={isDisabled ? 0.35 : 1}
         bg={isActive ? "blue.500" : "transparent"}
         color={isActive ? "white" : (isMuted || isDisabled) ? "text.muted" : "text.heading"}
