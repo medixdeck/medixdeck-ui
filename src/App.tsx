@@ -23,6 +23,7 @@ import { Switch } from "../lib/components/form/Switch";
 import { FormControl } from "../lib/components/form/FormControl";
 import { OTPInput } from "../lib/components/form/OTPInput";
 import { PhoneInput } from "../lib/components/form/PhoneInput";
+import { Calendar } from "../lib/components/form/Calendar";
 import { DatePicker } from "../lib/components/form/DatePicker";
 import { DateRangePicker } from "../lib/components/form/DateRangePicker";
 import { Combobox } from "../lib/components/form/Combobox";
@@ -157,8 +158,10 @@ export default function App() {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [otpValue, setOtpValue] = React.useState("");
+  const [pinValue, setPinValue] = React.useState("");
   const [phoneValue, setPhoneValue] = React.useState("");
   const [appointmentDate, setAppointmentDate] = React.useState("");
+  const [calendarDate, setCalendarDate] = React.useState<Date | undefined>(new Date());
 
   const patientRows = [
     { id: "1", name: "Ngozi Adeyemi", age: 34, specialty: "Cardiology", status: "Active", date: "Apr 18, 2026" },
@@ -261,7 +264,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.10 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v0.1.13 · {PREVIEW_COMPONENT_COUNT} components
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
                 Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
@@ -756,7 +759,7 @@ export default function App() {
           </Section>
 
           <Section title="Avatars" id="avatars" storybookPath="?path=/docs/primitives-avatar--docs">
-            <Avatar name="Dr. Amaka Okonkwo" size="xs" />
+            <Avatar name="Dr. Amaka Okonkwo" size="xs" src="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg" />
             <Avatar name="Dr. Tunde Bello" size="sm" />
             <Avatar name="Ngozi A." size="md" showStatus statusColor="green.500" />
             <Avatar name="Emeka O." size="lg" />
@@ -845,8 +848,14 @@ export default function App() {
                 length={4}
                 label="Enter PIN"
                 mask
-                isInvalid={otpValue.length > 0 && otpValue.length < 4}
+                value={pinValue}
+                onChange={setPinValue}
+                isInvalid={pinValue.length > 0 && pinValue.length < 4}
                 errorMessage="PIN must be 4 digits"
+              />
+              <OTPInput
+                length={5}
+                label="Enter Pass"
               />
             </Box>
           </Section>
@@ -862,6 +871,13 @@ export default function App() {
                 onChange={setPhoneValue}
                 helperText="We'll send your appointment confirmation here"
               />
+            </Box>
+          </Section>
+
+          {/* ── Calendar ── */}
+          <Section title="Calendar" id="calendar" storybookPath="?path=/docs/form-calendar--docs">
+            <Box display="flex" flexDirection="column" gap="4" maxW="380px" w="100%">
+              <Calendar value={calendarDate} onChange={setCalendarDate} />
             </Box>
           </Section>
 
@@ -1178,28 +1194,56 @@ export default function App() {
               HEALTHCARE
           ──────────────────────────────────────────────────── */}
           <Section title="Doctor Cards" id="healthcare" storybookPath="?path=/docs/healthcare-doctorcard--docs">
-            <DoctorCard
-              name="Dr. Amaka Okonkwo"
-              specialty="Cardiologist"
-              location="Lagos, Nigeria"
-              rating={4.9}
-              reviewCount={128}
-              consultationFee="₦5,000"
-              isVerified
-              isAvailable
-              onBookClick={() => alert("Booking!")}
-              onViewClick={() => alert("View profile")}
-              w="300px"
-            />
-            <DoctorCard
-              name="Dr. Emmanuel Ibrahim"
-              specialty="Pediatrician"
-              rating={4.7}
-              reviewCount={89}
-              consultationFee="₦3,500"
-              isVerified
-              w="300px"
-            />
+            <Box display="flex" flexWrap="wrap" gap="6" w="100%">
+              <DoctorCard
+                variant="featured"
+                name="Dr. Amaka Okonkwo"
+                specialty="General Practitioner"
+                location="Lagos"
+                rating={4.9}
+                reviewCount={128}
+                experience="8 yrs experience"
+                consultationFee="₦5,000"
+                isVerified
+                isAvailable
+                onBookClick={() => alert("Booking!")}
+                onViewClick={() => alert("View profile")}
+                w="360px"
+                avatar="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
+              />
+              <DoctorCard
+                variant="standard"
+                name="Dr. Amaka Okonkwo"
+                specialty="General Practitioner"
+                location="Lagos"
+                rating={4.9}
+                reviewCount={128}
+                experience="8 yrs experience"
+                consultationFee="₦5,000"
+                isVerified
+                isAvailable
+                onBookClick={() => alert("Booking!")}
+                onViewClick={() => alert("View profile")}
+                w="360px"
+                avatar="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
+                h="300px"
+              />
+              <DoctorCard
+                variant="compact"
+                name="Dr. Amaka Okonkwo"
+                specialty="General Practitioner"
+                location="Lagos"
+                rating={4.9}
+                reviewCount={128}
+                experience="8 yrs"
+                consultationFee="₦5,000"
+                onBookClick={() => alert("Booking!")}
+                onViewClick={() => alert("View profile")}
+                w="360px"
+                avatar="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
+                h="250px"
+              />
+            </Box>
           </Section>
 
           <Section title="Appointment Cards" id="appointments" storybookPath="?path=/docs/healthcare-doctorcard--docs">
@@ -1257,6 +1301,7 @@ export default function App() {
                 category="Medical Support"
                 date={item.date}
                 w="280px"
+                href="/blog/emergency-room"
               />
             ))}
           </Section>
@@ -1284,7 +1329,7 @@ export default function App() {
           >
             @medixdeck/ui
           </Link>{" "}
-          · v0.1.10 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
+          · v0.1.13 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
           {" "}
           ⚡ by{" "}
           <Link

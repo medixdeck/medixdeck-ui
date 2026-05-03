@@ -94,15 +94,15 @@ export function Pagination({
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    w: "9",
-    h: "9",
+    w: "8",
+    h: "8",
     borderRadius: "md",
     fontSize: "sm",
     fontFamily: "var(--font-body)",
-    fontWeight: "medium",
+    fontWeight: "semibold",
     cursor: "pointer",
     transition: "all 0.15s",
-    border: "1px solid",
+    border: "none",
     userSelect: "none",
   };
 
@@ -111,26 +111,56 @@ export function Pagination({
     disabled,
     onClick,
     label,
+    icon,
+    isNext,
   }: {
     children: React.ReactNode;
     disabled?: boolean;
     onClick?: () => void;
     label: string;
+    icon?: React.ReactNode;
+    isNext?: boolean;
   }) => (
     <Box
       as="button"
-      {...btnBase}
-      borderColor="border"
-      bg="bg.surface"
-      color={disabled ? "text.muted" : "text.body"}
+      display="inline-flex"
+      alignItems="center"
+      justifyContent="center"
+      gap="1.5"
+      h="8"
+      px="2"
+      borderRadius="md"
+      fontSize="sm"
+      fontFamily="var(--font-body)"
+      fontWeight="medium"
+      cursor="pointer"
+      transition="all 0.15s"
+      userSelect="none"
+      border="none"
+      bg="transparent"
+      color="text.muted"
       opacity={disabled ? 0.4 : 1}
       pointerEvents={disabled ? "none" : undefined}
       onClick={onClick}
       aria-label={label}
-      _hover={{ borderColor: "blue.400", color: "blue.500" }}
+      _hover={{ color: "blue.500" }}
     >
+      {!isNext && icon && <Box as="span" display="flex" alignItems="center">{icon}</Box>}
       {children}
+      {isNext && icon && <Box as="span" display="flex" alignItems="center">{icon}</Box>}
     </Box>
+  );
+
+  const ChevronLeft = (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  );
+  
+  const ChevronRight = (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
   );
 
   return (
@@ -140,21 +170,22 @@ export function Pagination({
       aria-label="Pagination"
       display="flex"
       alignItems="center"
-      gap="1"
+      gap="2"
       flexWrap="wrap"
       {...props}
     >
       {showEdges && (
-        <NavBtn disabled={currentPage === 1} onClick={() => onChange?.(1)} label="First page">
-          «
+        <NavBtn disabled={currentPage === 1} onClick={() => onChange?.(1)} label="First page" icon={ChevronLeft}>
+          First
         </NavBtn>
       )}
       <NavBtn
         disabled={currentPage === 1}
         onClick={() => onChange?.(currentPage - 1)}
         label="Previous page"
+        icon={ChevronLeft}
       >
-        ‹
+        Prev
       </NavBtn>
 
       {!compact &&
@@ -163,7 +194,6 @@ export function Pagination({
             <Box
               key={`dots-${idx}`}
               {...btnBase}
-              border="none"
               bg="transparent"
               color="text.muted"
               cursor="default"
@@ -176,15 +206,18 @@ export function Pagination({
               key={page}
               as="button"
               {...btnBase}
-              borderColor={currentPage === page ? "blue.500" : "border"}
-              bg={currentPage === page ? "blue.500" : "bg.surface"}
-              color={currentPage === page ? "white" : "text.body"}
+              bg={currentPage === page ? "blue.500" : "blue.100"}
+              color={currentPage === page ? "white" : "blue.500"}
+              _dark={{
+                bg: currentPage === page ? "blue.500" : "rgba(6, 133, 255, 0.12)",
+                color: currentPage === page ? "white" : "blue.200",
+              }}
               onClick={() => onChange?.(page as number)}
               aria-label={`Page ${page}`}
               aria-current={currentPage === page ? "page" : undefined}
               _hover={
                 currentPage !== page
-                  ? { borderColor: "blue.400", color: "blue.500" }
+                  ? { bg: "blue.200", _dark: { bg: "rgba(6, 133, 255, 0.2)" } }
                   : undefined
               }
             >
@@ -209,16 +242,20 @@ export function Pagination({
         disabled={currentPage === pageCount}
         onClick={() => onChange?.(currentPage + 1)}
         label="Next page"
+        icon={ChevronRight}
+        isNext
       >
-        ›
+        Next
       </NavBtn>
       {showEdges && (
         <NavBtn
           disabled={currentPage === pageCount}
           onClick={() => onChange?.(pageCount)}
           label="Last page"
+          icon={ChevronRight}
+          isNext
         >
-          »
+          Last
         </NavBtn>
       )}
     </Box>

@@ -76,6 +76,9 @@ export type { OTPInputProps, PinInputProps } from "./components/form/OTPInput";
 export { PhoneInput } from "./components/form/PhoneInput";
 export type { PhoneInputProps } from "./components/form/PhoneInput";
 
+export { Calendar } from "./components/form/Calendar";
+export type { CalendarProps } from "./components/form/Calendar";
+
 export { DatePicker } from "./components/form/DatePicker";
 export type { DatePickerProps } from "./components/form/DatePicker";
 

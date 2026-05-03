@@ -61,7 +61,7 @@ export const colorTokens = {
   green: {
     50: { value: "#F0FDF4" },
     100: { value: "#DCFCE7" },   // Green tint ★
-    500: { value: "#1B7A38" },   // Green ★
+    500: { value: "#16A34A" },   // Green ★
     600: { value: "#166534" },
   },
   amber: {
