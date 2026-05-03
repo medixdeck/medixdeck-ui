@@ -231,7 +231,7 @@ export function DoctorCard({
                 {name}
               </Box>
               <Box fontSize="md" color="text.muted" fontFamily="var(--font-body)">
-                {specialty}{location ? ` • ${location}` : ""}
+                {specialty}{location && variant !== "compact" ? ` • ${location}` : ""}
               </Box>
             </Box>
           </Box>
