@@ -4,6 +4,16 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.11] — 2026-05-03
+
+### Changed
+
+- **`DoctorCard` Redesign & Variants**: Updated the component UI to precisely match MedixDeck design specifications.
+  - Added `variant` prop (`"standard" | "compact" | "featured"`) for flexible layout options.
+  - Added `experience` prop to cleanly display years of experience.
+  - Integrated custom icons for the verified badge, rating star, and experience shield.
+  - Enhanced layout alignment, borders, and typography across all variants.
+
 ## [0.1.10] — 2026-04-26
 
 ### Added

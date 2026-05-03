@@ -1178,28 +1178,56 @@ export default function App() {
               HEALTHCARE
           ──────────────────────────────────────────────────── */}
           <Section title="Doctor Cards" id="healthcare" storybookPath="?path=/docs/healthcare-doctorcard--docs">
-            <DoctorCard
-              name="Dr. Amaka Okonkwo"
-              specialty="Cardiologist"
-              location="Lagos, Nigeria"
-              rating={4.9}
-              reviewCount={128}
-              consultationFee="₦5,000"
-              isVerified
-              isAvailable
-              onBookClick={() => alert("Booking!")}
-              onViewClick={() => alert("View profile")}
-              w="300px"
-            />
-            <DoctorCard
-              name="Dr. Emmanuel Ibrahim"
-              specialty="Pediatrician"
-              rating={4.7}
-              reviewCount={89}
-              consultationFee="₦3,500"
-              isVerified
-              w="300px"
-            />
+            <Box display="flex" flexWrap="wrap" gap="6" w="100%">
+              <DoctorCard
+                variant="featured"
+                name="Dr. Amaka Okonkwo"
+                specialty="General Practitioner"
+                location="Lagos"
+                rating={4.9}
+                reviewCount={128}
+                experience="8 yrs experience"
+                consultationFee="₦5,000"
+                isVerified
+                isAvailable
+                onBookClick={() => alert("Booking!")}
+                onViewClick={() => alert("View profile")}
+                w="360px"
+                avatar="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
+              />
+              <DoctorCard
+                variant="standard"
+                name="Dr. Amaka Okonkwo"
+                specialty="General Practitioner"
+                location="Lagos"
+                rating={4.9}
+                reviewCount={128}
+                experience="8 yrs experience"
+                consultationFee="₦5,000"
+                isVerified
+                isAvailable
+                onBookClick={() => alert("Booking!")}
+                onViewClick={() => alert("View profile")}
+                w="360px"
+                avatar="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
+                h="300px"
+              />
+              <DoctorCard
+                variant="compact"
+                name="Dr. Amaka Okonkwo"
+                specialty="General Practitioner"
+                location="Lagos"
+                rating={4.9}
+                reviewCount={128}
+                experience="8 yrs"
+                consultationFee="₦5,000"
+                onBookClick={() => alert("Booking!")}
+                onViewClick={() => alert("View profile")}
+                w="360px"
+                avatar="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
+                h="250px"
+              />
+            </Box>
           </Section>
 
           <Section title="Appointment Cards" id="appointments" storybookPath="?path=/docs/healthcare-doctorcard--docs">
