@@ -4,6 +4,16 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.12] — 2026-05-03
+
+### Changed
+
+- **`Pagination` Redesign**: Updated component styling to match the current MedixDeck design system.
+  - Replaced icon-only navigation buttons with text labels and chevron icons (`< Prev`, `Next >`).
+  - Switched the background of inactive page number buttons to `blue.100` (or tinted background in dark mode) instead of transparent, with primary blue text for higher contrast.
+  - Removed borders from all pagination buttons and updated spacing.
+  - Changed default behavior of `showEdges` to `false` for a cleaner default appearance.
+
 ## [0.1.11] — 2026-05-03
 
 ### Changed
