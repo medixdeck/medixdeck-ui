@@ -218,9 +218,19 @@ export function PhoneInput({
   return (
     <Box w="100%">
       {label && (
-        <Text mb="1.5" fontSize="sm" fontWeight="medium" color="text.heading" fontFamily="var(--font-body)">
+        <label
+          htmlFor={inputId}
+          style={{
+            display: "block",
+            marginBottom: "6px",
+            fontSize: "14px",
+            fontWeight: 500,
+            color: "var(--medix-form-text)",
+            fontFamily: "var(--font-body)",
+          }}
+        >
           {label}
-        </Text>
+        </label>
       )}
 
       {/*
