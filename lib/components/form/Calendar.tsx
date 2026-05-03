@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Flex, Text, type BoxProps } from "@chakra-ui/react";
 
 export interface CalendarProps extends Omit<BoxProps, "onChange"> {
@@ -65,6 +65,22 @@ export function Calendar({
   ...props
 }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(() => value ? new Date(value) : new Date());
+
+  // Sync displayed month whenever the controlled value moves to a different month
+  useEffect(() => {
+    if (value) {
+      setCurrentMonth((prev) => {
+        const next = new Date(value);
+        if (
+          prev.getFullYear() === next.getFullYear() &&
+          prev.getMonth() === next.getMonth()
+        ) {
+          return prev; // already showing the right month — no re-render
+        }
+        return next;
+      });
+    }
+  }, [value]);
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
@@ -217,7 +233,9 @@ function MonthNavButton({
   return (
     <Box
       as="button"
-      onClick={onClick}
+      aria-label={direction === "prev" ? "Go to previous month" : "Go to next month"}
+      aria-disabled={!enabled}
+      onClick={enabled ? onClick : undefined}
       cursor={enabled ? "pointer" : "not-allowed"}
       color={enabled ? "text.heading" : "text.muted"}
       opacity={enabled ? 1 : 0.4}

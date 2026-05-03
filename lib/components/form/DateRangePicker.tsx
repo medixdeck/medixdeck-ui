@@ -192,7 +192,19 @@ export function DateRangePicker({
           placeholder={startPlaceholder}
           disabled={isDisabled}
           aria-invalid={isInvalid}
+          aria-haspopup="dialog"
+          aria-expanded={activeInput === "start"}
           onClick={() => !isDisabled && setActiveInput("start")}
+          onKeyDown={(e) => {
+            if (!isDisabled) {
+              if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+                e.preventDefault();
+                setActiveInput("start");
+              } else if (e.key === "Escape") {
+                setActiveInput(null);
+              }
+            }
+          }}
           style={{ ...inputStyle, textAlign: "center" }}
         />
         
@@ -207,7 +219,19 @@ export function DateRangePicker({
           placeholder={endPlaceholder}
           disabled={isDisabled}
           aria-invalid={isInvalid}
+          aria-haspopup="dialog"
+          aria-expanded={activeInput === "end"}
           onClick={() => !isDisabled && setActiveInput("end")}
+          onKeyDown={(e) => {
+            if (!isDisabled) {
+              if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+                e.preventDefault();
+                setActiveInput("end");
+              } else if (e.key === "Escape") {
+                setActiveInput(null);
+              }
+            }
+          }}
           style={{ ...inputStyle, textAlign: "center" }}
         />
       </Box>

@@ -79,8 +79,23 @@ export function DatePicker({
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, "0");
     const dd = String(date.getDate()).padStart(2, "0");
-    onChange?.(`${yyyy}-${mm}-${dd}`);
-    setIsOpen(false);
+    if (includeTime) {
+      // Preserve any existing time component; default to 00:00
+      const existingTime = value?.includes("T") ? value.split("T")[1].slice(0, 5) : "00:00";
+      onChange?.(`${yyyy}-${mm}-${dd}T${existingTime}`);
+      // Keep picker open so the user can also adjust the time
+    } else {
+      onChange?.(`${yyyy}-${mm}-${dd}`);
+      setIsOpen(false);
+    }
+  };
+
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = e.target.value;
+    const dateStr = value?.split("T")[0] ?? "";
+    if (dateStr) {
+      onChange?.(`${dateStr}T${newTime}`);
+    }
   };
 
   const parseLocalDate = (dateValue?: string) => {
@@ -91,7 +106,8 @@ export function DatePicker({
     const [yearString, monthString, dayString] = dateValue.split("-");
     const year = Number(yearString);
     const month = Number(monthString);
-    const day = Number(dayString);
+    // Strip any time component that may be appended (e.g. "15T14:30")
+    const day = Number(dayString?.split("T")[0]);
 
     if (
       !Number.isInteger(year) ||
@@ -114,10 +130,13 @@ export function DatePicker({
     return parsed;
   };
 
-  const parsedDate = parseLocalDate(value);
+  // When includeTime is true, value may be "YYYY-MM-DDTHH:MM" — strip the time for date parsing
+  const parsedDate = parseLocalDate(value?.split("T")[0]);
 
-  const displayValue = value && parsedDate && !isNaN(parsedDate.getTime())
-    ? parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+  const displayValue = parsedDate && !isNaN(parsedDate.getTime())
+    ? includeTime && value?.includes("T")
+      ? `${parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })} ${value.split("T")[1].slice(0, 5)}`
+      : parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
     : "";
 
   return (
@@ -137,7 +156,19 @@ export function DatePicker({
           placeholder={placeholder}
           disabled={isDisabled}
           aria-invalid={isInvalid}
+          aria-haspopup="dialog"
+          aria-expanded={isOpen}
           onClick={() => !isDisabled && setIsOpen(!isOpen)}
+          onKeyDown={(e) => {
+            if (!isDisabled) {
+              if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+                e.preventDefault();
+                setIsOpen(true);
+              } else if (e.key === "Escape") {
+                setIsOpen(false);
+              }
+            }
+          }}
           style={{
             width: "100%",
             height: "40px",
@@ -183,7 +214,37 @@ export function DatePicker({
           bg="bg.surface"
           overflow="hidden"
         >
-          <Calendar value={parsedDate} onChange={handleDateSelect} />
+          <Calendar
+            value={parsedDate}
+            onChange={handleDateSelect}
+            minDate={parseLocalDate(min)}
+            maxDate={parseLocalDate(max)}
+          />
+          {includeTime && (
+            <Box px="5" pb="4" borderTop="1px solid" borderColor="border">
+              <Text fontSize="xs" fontWeight="medium" color="text.muted" mb="1.5" fontFamily="var(--font-body)">
+                Time
+              </Text>
+              <input
+                type="time"
+                value={value?.includes("T") ? value.split("T")[1].slice(0, 5) : "00:00"}
+                onChange={handleTimeChange}
+                style={{
+                  width: "100%",
+                  height: "36px",
+                  padding: "0 12px",
+                  borderRadius: "8px",
+                  border: "1.5px solid var(--medix-form-border)",
+                  background: "var(--medix-form-bg)",
+                  color: "var(--medix-form-text)",
+                  fontSize: "14px",
+                  fontFamily: "var(--font-body)",
+                  outline: "none",
+                  colorScheme: "auto",
+                }}
+              />
+            </Box>
+          )}
         </Box>
       )}
 
