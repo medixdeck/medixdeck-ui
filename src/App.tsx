@@ -262,7 +262,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.10 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v0.1.13 · {PREVIEW_COMPONENT_COUNT} components
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
                 Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
@@ -1327,7 +1327,7 @@ export default function App() {
           >
             @medixdeck/ui
           </Link>{" "}
-          · v0.1.10 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
+          · v0.1.13 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
           {" "}
           ⚡ by{" "}
           <Link
