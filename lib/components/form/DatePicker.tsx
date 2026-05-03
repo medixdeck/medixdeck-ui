@@ -55,6 +55,10 @@ export function DatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  /** Extract HH:MM from a datetime string of the form "YYYY-MM-DDTHH:MM". */
+  const extractTime = (val?: string): string =>
+    val?.includes("T") ? (val.split("T")[1].slice(0, 5) || "00:00") : "00:00";
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -81,8 +85,7 @@ export function DatePicker({
     const dd = String(date.getDate()).padStart(2, "0");
     if (includeTime) {
       // Preserve any existing time component; default to 00:00
-      const existingTime = value?.includes("T") ? (value.split("T")[1]?.slice(0, 5) || "00:00") : "00:00";
-      onChange?.(`${yyyy}-${mm}-${dd}T${existingTime}`);
+      onChange?.(`${yyyy}-${mm}-${dd}T${extractTime(value)}`);
       // Keep picker open so the user can also adjust the time
     } else {
       onChange?.(`${yyyy}-${mm}-${dd}`);
@@ -106,7 +109,7 @@ export function DatePicker({
     const [yearString, monthString, dayString] = dateValue.split("-");
     const year = Number(yearString);
     const month = Number(monthString);
-    // Strip any time component that may be appended (e.g. "15T14:30")
+    // Strip any time component that may be present (e.g. "2024-05-15T14:30" → day "15T14:30" → 15)
     const day = Number(dayString?.split("T")[0]);
 
     if (
@@ -135,7 +138,7 @@ export function DatePicker({
 
   const displayValue = parsedDate && !isNaN(parsedDate.getTime())
     ? includeTime && value?.includes("T")
-      ? `${parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })} ${value.split("T")[1]?.slice(0, 5) || "00:00"}`
+      ? `${parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })} ${value.split("T")[1].slice(0, 5)}`
       : parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
     : "";
 
@@ -227,7 +230,7 @@ export function DatePicker({
               </Text>
               <input
                 type="time"
-                value={value?.includes("T") ? (value.split("T")[1]?.slice(0, 5) || "00:00") : "00:00"}
+                value={extractTime(value)}
                 onChange={handleTimeChange}
                 disabled={!parsedDate}
                 style={{
