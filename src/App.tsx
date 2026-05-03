@@ -846,8 +846,14 @@ export default function App() {
                 length={4}
                 label="Enter PIN"
                 mask
+                value={otpValue}
+                onChange={setOtpValue}
                 isInvalid={otpValue.length > 0 && otpValue.length < 4}
                 errorMessage="PIN must be 4 digits"
+              />
+              <OTPInput
+                length={5}
+                label="Enter Pass"
               />
             </Box>
           </Section>
