@@ -81,7 +81,7 @@ export function DatePicker({
     const dd = String(date.getDate()).padStart(2, "0");
     if (includeTime) {
       // Preserve any existing time component; default to 00:00
-      const existingTime = value?.includes("T") ? value.split("T")[1].slice(0, 5) : "00:00";
+      const existingTime = value?.includes("T") ? (value.split("T")[1]?.slice(0, 5) || "00:00") : "00:00";
       onChange?.(`${yyyy}-${mm}-${dd}T${existingTime}`);
       // Keep picker open so the user can also adjust the time
     } else {
@@ -135,7 +135,7 @@ export function DatePicker({
 
   const displayValue = parsedDate && !isNaN(parsedDate.getTime())
     ? includeTime && value?.includes("T")
-      ? `${parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })} ${value.split("T")[1].slice(0, 5)}`
+      ? `${parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })} ${value.split("T")[1]?.slice(0, 5) || "00:00"}`
       : parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
     : "";
 
@@ -227,8 +227,9 @@ export function DatePicker({
               </Text>
               <input
                 type="time"
-                value={value?.includes("T") ? value.split("T")[1].slice(0, 5) : "00:00"}
+                value={value?.includes("T") ? (value.split("T")[1]?.slice(0, 5) || "00:00") : "00:00"}
                 onChange={handleTimeChange}
+                disabled={!parsedDate}
                 style={{
                   width: "100%",
                   height: "36px",
@@ -240,6 +241,8 @@ export function DatePicker({
                   fontSize: "14px",
                   fontFamily: "var(--font-body)",
                   outline: "none",
+                  opacity: parsedDate ? 1 : 0.4,
+                  cursor: parsedDate ? "default" : "not-allowed",
                   colorScheme: "auto",
                 }}
               />
