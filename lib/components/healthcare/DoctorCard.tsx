@@ -455,10 +455,10 @@ export interface VitalBadgeProps extends BoxProps {
   status?: VitalStatus;
 }
 
-const vitalStatusConfig: Record<VitalStatus, { bg: string; dot: string; text: string }> = {
-  normal: { bg: "rgba(27, 122, 56, 0.08)", dot: "status.success", text: "status.success" },
-  warning: { bg: "rgba(217, 119, 6, 0.08)", dot: "status.warning", text: "status.warning" },
-  critical: { bg: "rgba(220, 38, 38, 0.08)", dot: "status.error", text: "status.error" },
+const vitalStatusConfig: Record<VitalStatus, { bg: string; dot: string; border: string; text: string }> = {
+  normal:   { bg: "rgba(27, 122, 56, 0.08)",  dot: "status.success", border: "rgba(22, 163, 74, 0.2)",  text: "status.success" },
+  warning:  { bg: "rgba(217, 119, 6, 0.08)",  dot: "status.warning", border: "rgba(217, 119, 6, 0.2)",  text: "status.warning" },
+  critical: { bg: "rgba(220, 38, 38, 0.08)",  dot: "status.error",   border: "rgba(220, 38, 38, 0.2)", text: "status.error" },
 };
 
 /**
@@ -484,7 +484,7 @@ export function VitalBadge({ label, value, unit, status = "normal", ...props }: 
       borderRadius="md"
       bg={cfg.bg}
       border="1px solid"
-      borderColor={`${cfg.dot}33`}
+      borderColor={cfg.border}
       {...props}
     >
       <Box w="2" h="2" borderRadius="full" bg={cfg.dot} flexShrink={0} />
