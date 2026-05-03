@@ -6,10 +6,7 @@ const meta: Meta<typeof Pagination> = {
   title: "Navigation/Pagination",
   component: Pagination,
   tags: ["autodocs"],
-  argTypes: {
-    colorScheme: { control: "select", options: ["blue", "purple"] },
-    size: { control: "select", options: ["sm", "md", "lg"] },
-  },
+  argTypes: {},
 };
 
 export default meta;
