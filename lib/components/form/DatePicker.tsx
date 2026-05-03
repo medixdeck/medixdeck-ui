@@ -83,8 +83,39 @@ export function DatePicker({
     setIsOpen(false);
   };
 
-  const parsedDate = value ? new Date(value) : undefined;
-  
+  const parseLocalDate = (dateValue?: string) => {
+    if (!dateValue) {
+      return undefined;
+    }
+
+    const [yearString, monthString, dayString] = dateValue.split("-");
+    const year = Number(yearString);
+    const month = Number(monthString);
+    const day = Number(dayString);
+
+    if (
+      !Number.isInteger(year) ||
+      !Number.isInteger(month) ||
+      !Number.isInteger(day)
+    ) {
+      return undefined;
+    }
+
+    const parsed = new Date(year, month - 1, day);
+
+    if (
+      parsed.getFullYear() !== year ||
+      parsed.getMonth() !== month - 1 ||
+      parsed.getDate() !== day
+    ) {
+      return undefined;
+    }
+
+    return parsed;
+  };
+
+  const parsedDate = parseLocalDate(value);
+
   const displayValue = value && parsedDate && !isNaN(parsedDate.getTime())
     ? parsedDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
     : "";
