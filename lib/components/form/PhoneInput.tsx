@@ -170,6 +170,9 @@ export function PhoneInput({
   isDisabled = false,
   id,
 }: PhoneInputProps) {
+  const fallbackId = React.useId();
+  const inputId = id ?? fallbackId;
+
   // Resolve the initial country object. Priority:
   // 1. Explicit ISO code via `defaultCountry` prop (unambiguous).
   // 2. Canonical country for the given calling code (avoids picking e.g. AS
@@ -240,7 +243,7 @@ export function PhoneInput({
       >
         {showCountryCode && (
           <label
-            htmlFor={`${id}-country`}
+            htmlFor={`${inputId}-country`}
             style={{
               display: "flex",
               alignItems: "center",
@@ -260,7 +263,7 @@ export function PhoneInput({
               </Box>
             )}
             <select
-              id={`${id}-country`}
+              id={`${inputId}-country`}
               value={selectedCountryId}
               onChange={handleCountryChange}
               aria-label="Country code"
@@ -295,7 +298,7 @@ export function PhoneInput({
         )}
 
         <input
-          id={id}
+          id={inputId}
           type="tel"
           value={localNumber}
           onChange={handleLocalChange}

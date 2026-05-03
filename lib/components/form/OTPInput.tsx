@@ -163,8 +163,9 @@ export function OTPInput({
             }}
             onFocusCapture={(e) => {
               (e.target as HTMLInputElement).style.borderColor = focusBorder;
-              (e.target as HTMLInputElement).style.boxShadow = `0 0 0 3px ${isInvalid ? "status.error" : "brand.solid"
-                }`;
+              (e.target as HTMLInputElement).style.boxShadow = `0 0 0 3px ${
+                isInvalid ? "rgba(220,38,38,0.15)" : "rgba(6,133,255,0.15)"
+              }`;
             }}
             onBlurCapture={(e) => {
               (e.target as HTMLInputElement).style.borderColor = idleBorder;

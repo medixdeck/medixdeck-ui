@@ -277,9 +277,11 @@ function DayCell({
         fontSize="sm"
         fontWeight="medium"
         onClick={onClick}
+        aria-disabled={isMuted || isDisabled}
+        tabIndex={(isMuted || isDisabled) ? -1 : undefined}
         // Muted (overflow) days: hide entirely from pointer interaction.
         // Disabled (out-of-range) days: allow pointer events so the browser
-        // can render the not-allowed cursor, but onClick is always undefined.
+        // can render the not-allowed cursor (often overridden by native disabled, but kept for semantics)
         cursor={isMuted ? "default" : isDisabled ? "not-allowed" : "pointer"}
         pointerEvents={isMuted ? "none" : "auto"}
         opacity={isDisabled ? 0.35 : 1}
