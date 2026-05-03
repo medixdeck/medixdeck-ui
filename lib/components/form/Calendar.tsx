@@ -280,7 +280,7 @@ function DayCell({
         // Native disabled prevents focus and click activation for both muted
         // (overflow) and out-of-range days, improving screen reader behavior.
         {...({ disabled: isMuted || isDisabled } as Record<string, unknown>)}
-        cursor={isDisabled ? "not-allowed" : "pointer"}
+        cursor={isMuted ? "default" : isDisabled ? "not-allowed" : "pointer"}
         opacity={isDisabled ? 0.35 : 1}
         bg={isActive ? "blue.500" : "transparent"}
         color={isActive ? "white" : (isMuted || isDisabled) ? "text.muted" : "text.heading"}
