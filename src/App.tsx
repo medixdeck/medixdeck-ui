@@ -1257,6 +1257,7 @@ export default function App() {
                 category="Medical Support"
                 date={item.date}
                 w="280px"
+                href="/blog/emergency-room"
               />
             ))}
           </Section>
