@@ -6,6 +6,8 @@ import { Box, Text } from "@chakra-ui/react";
 export interface OTPInputProps {
   /** Number of digits */
   length?: number;
+  /** Default uncontrolled value */
+  defaultValue?: string;
   /** Controlled value (joined string) */
   value?: string;
   onChange?: (value: string) => void;
@@ -42,7 +44,8 @@ export interface OTPInputProps {
  */
 export function OTPInput({
   length = 6,
-  value = "",
+  value,
+  defaultValue = "",
   onChange,
   onComplete,
   isInvalid = false,
@@ -52,7 +55,12 @@ export function OTPInput({
   helperText,
   errorMessage,
 }: OTPInputProps) {
-  const digits = value.split("").slice(0, length);
+  const [internalValue, setInternalValue] = React.useState(defaultValue);
+  const [focusedIdx, setFocusedIdx] = React.useState<number | null>(null);
+  const isControlled = value !== undefined;
+  const currentValue = isControlled ? value : internalValue;
+
+  const digits = currentValue.split("").slice(0, length);
   const inputRefs = React.useRef<Array<HTMLInputElement | null>>([]);
 
   // Idle border colour — uses CSS vars so it automatically flips in dark mode.
@@ -68,11 +76,15 @@ export function OTPInput({
       const newDigits = [...digits];
       if (newDigits[idx]) {
         newDigits[idx] = "";
-        onChange?.(newDigits.join(""));
+        const joined = newDigits.join("");
+        if (!isControlled) setInternalValue(joined);
+        onChange?.(joined);
       } else if (idx > 0) {
         inputRefs.current[idx - 1]?.focus();
         newDigits[idx - 1] = "";
-        onChange?.(newDigits.join(""));
+        const joined = newDigits.join("");
+        if (!isControlled) setInternalValue(joined);
+        onChange?.(joined);
       }
     } else if (e.key === "ArrowLeft" && idx > 0) {
       inputRefs.current[idx - 1]?.focus();
@@ -90,6 +102,7 @@ export function OTPInput({
       const newDigits = [...Array(length).fill("")];
       pasted.forEach((d, i) => { newDigits[i] = d; });
       const joined = newDigits.join("");
+      if (!isControlled) setInternalValue(joined);
       onChange?.(joined);
       const focusIdx = Math.min(pasted.length, length - 1);
       inputRefs.current[focusIdx]?.focus();
@@ -101,12 +114,11 @@ export function OTPInput({
     while (newDigits.length < length) newDigits.push("");
     newDigits[idx] = raw;
     const joined = newDigits.join("");
+    if (!isControlled) setInternalValue(joined);
     onChange?.(joined);
     if (idx < length - 1) inputRefs.current[idx + 1]?.focus();
     if (joined.replace(/\s/g, "").length === length) onComplete?.(joined);
   };
-
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => e.target.select();
 
   return (
     <Box w="fit-content">
@@ -128,14 +140,18 @@ export function OTPInput({
             value={digits[idx] ?? ""}
             onChange={(e) => handleChange(e, idx)}
             onKeyDown={(e) => handleKeyDown(e, idx)}
-            onFocus={handleFocus}
+            onFocus={(e) => { e.target.select(); setFocusedIdx(idx); }}
+            onBlur={() => setFocusedIdx(null)}
             disabled={isDisabled}
             aria-label={`Digit ${idx + 1} of ${length}`}
             style={{
               width: "48px",
               height: "48px",
               borderRadius: "10px",
-              border: `1.5px solid ${idleBorder}`,
+              border: `1.5px solid ${focusedIdx === idx ? focusBorder : idleBorder}`,
+              boxShadow: focusedIdx === idx
+                ? `0 0 0 3px ${isInvalid ? "rgba(220,38,38,0.15)" : "rgba(6,133,255,0.15)"}`
+                : "none",
               /* CSS vars flip automatically when .dark is on any ancestor */
               background: "var(--medix-form-bg)",
               color: "var(--medix-form-text)",
@@ -147,16 +163,6 @@ export function OTPInput({
               transition: "border-color 0.15s, box-shadow 0.15s",
               cursor: isDisabled ? "not-allowed" : "text",
               opacity: isDisabled ? 0.5 : 1,
-            }}
-            onFocusCapture={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = focusBorder;
-              (e.target as HTMLInputElement).style.boxShadow = `0 0 0 3px ${
-                isInvalid ? "rgba(220,38,38,0.15)" : "rgba(6,133,255,0.15)"
-              }`;
-            }}
-            onBlurCapture={(e) => {
-              (e.target as HTMLInputElement).style.borderColor = idleBorder;
-              (e.target as HTMLInputElement).style.boxShadow = "none";
             }}
           />
         ))}
