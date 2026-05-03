@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Box, Text } from "@chakra-ui/react";
+import { Calendar } from "./Calendar";
 
 export interface DateRangePickerProps {
   /** Controlled start date value (ISO date string: YYYY-MM-DD) */
@@ -27,7 +28,7 @@ export interface DateRangePickerProps {
 /**
  * MedixDeck DateRangePicker
  *
- * Styled wrapper around two native date inputs (start and end).
+ * Uses the custom MedixDeck Calendar component for picking start and end dates.
  *
  * @example
  * ```tsx
@@ -52,11 +53,22 @@ export function DateRangePicker({
   errorMessage,
   isInvalid = false,
   isDisabled = false,
-  startPlaceholder,
-  endPlaceholder,
+  startPlaceholder = "Start date",
+  endPlaceholder = "End date",
   id,
 }: DateRangePickerProps) {
-  const [activeInput, setActiveInput] = React.useState<"start" | "end" | null>(null);
+  const [activeInput, setActiveInput] = useState<"start" | "end" | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setActiveInput(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const activeBorderColor = isInvalid
     ? "#DC2626"
@@ -83,8 +95,34 @@ export function DateRangePicker({
     width: "100%",
   };
 
+  const handleDateSelect = (date: Date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    const formatted = `${yyyy}-${mm}-${dd}`;
+    
+    if (activeInput === "start") {
+      onStartChange?.(formatted);
+      setActiveInput("end"); // auto move to end
+    } else if (activeInput === "end") {
+      onEndChange?.(formatted);
+      setActiveInput(null); // close popover
+    }
+  };
+
+  const currentCalValue = activeInput === "start" ? startValue : endValue;
+  const parsedDate = currentCalValue ? new Date(currentCalValue) : undefined;
+  
+  const displayStart = startValue && !isNaN(new Date(startValue).getTime())
+    ? new Date(startValue).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+    : "";
+    
+  const displayEnd = endValue && !isNaN(new Date(endValue).getTime())
+    ? new Date(endValue).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+    : "";
+
   return (
-    <Box w="100%">
+    <Box w="100%" position="relative" ref={containerRef}>
       {label && (
         <Text mb="1.5" fontSize="sm" fontWeight="medium" color="text.heading" fontFamily="var(--font-body)">
           {label}
@@ -94,6 +132,7 @@ export function DateRangePicker({
       <Box
         display="flex"
         alignItems="center"
+        position="relative"
         style={{
           width: "100%",
           height: "40px",
@@ -108,17 +147,14 @@ export function DateRangePicker({
       >
         <input
           id={id}
-          type="date"
-          value={startValue ?? ""}
-          onChange={(e) => onStartChange?.(e.target.value)}
-          min={min}
-          max={endValue || max}
+          readOnly
+          type="text"
+          value={displayStart}
           placeholder={startPlaceholder}
           disabled={isDisabled}
           aria-invalid={isInvalid}
-          onFocus={() => setActiveInput("start")}
-          onBlur={() => setActiveInput(null)}
-          style={inputStyle}
+          onClick={() => !isDisabled && setActiveInput("start")}
+          style={{ ...inputStyle, textAlign: "center" }}
         />
         
         <Box color="text.muted" px="1" fontSize="sm">
@@ -126,19 +162,33 @@ export function DateRangePicker({
         </Box>
 
         <input
-          type="date"
-          value={endValue ?? ""}
-          onChange={(e) => onEndChange?.(e.target.value)}
-          min={startValue || min}
-          max={max}
+          readOnly
+          type="text"
+          value={displayEnd}
           placeholder={endPlaceholder}
           disabled={isDisabled}
           aria-invalid={isInvalid}
-          onFocus={() => setActiveInput("end")}
-          onBlur={() => setActiveInput(null)}
-          style={inputStyle}
+          onClick={() => !isDisabled && setActiveInput("end")}
+          style={{ ...inputStyle, textAlign: "center" }}
         />
       </Box>
+
+      {activeInput && (
+        <Box 
+          position="absolute" 
+          top="calc(100% + 8px)" 
+          left="0" 
+          zIndex="10" 
+          boxShadow="lg" 
+          borderRadius="card"
+          border="1px solid"
+          borderColor="border"
+          bg="bg.surface"
+          overflow="hidden"
+        >
+          <Calendar value={parsedDate} onChange={handleDateSelect} />
+        </Box>
+      )}
 
       {(helperText || errorMessage) && (
         <Text mt="1.5" fontSize="xs" color={isInvalid ? "red.500" : "text.muted"} fontFamily="var(--font-body)">

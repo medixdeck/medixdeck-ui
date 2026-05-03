@@ -4,6 +4,15 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.13] — 2026-05-03
+
+### Added
+- **`Calendar` Component**: Built a reusable, standalone Calendar component mimicking standard native behaviors, fully customized for MedixDeck UI with support for dynamic month navigation, active state highlights, and muted secondary month days.
+
+### Changed
+- **`DatePicker`**: Upgraded from a native `input type="date"` to a custom popover using the new `Calendar` component. It now handles dynamic absolute positioning, formatted string displays (e.g. "May 15, 2026"), and closes on outside click.
+- **`DateRangePicker`**: Converted to utilize dual calendar popovers for both "Start date" and "End date" inputs. Clicking an input now triggers a localized `Calendar` picker rather than the native system widget.
+
 ## [0.1.12] — 2026-05-03
 
 ### Changed

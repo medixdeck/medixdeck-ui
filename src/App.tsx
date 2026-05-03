@@ -23,6 +23,7 @@ import { Switch } from "../lib/components/form/Switch";
 import { FormControl } from "../lib/components/form/FormControl";
 import { OTPInput } from "../lib/components/form/OTPInput";
 import { PhoneInput } from "../lib/components/form/PhoneInput";
+import { Calendar } from "../lib/components/form/Calendar";
 import { DatePicker } from "../lib/components/form/DatePicker";
 import { DateRangePicker } from "../lib/components/form/DateRangePicker";
 import { Combobox } from "../lib/components/form/Combobox";
@@ -862,6 +863,13 @@ export default function App() {
                 onChange={setPhoneValue}
                 helperText="We'll send your appointment confirmation here"
               />
+            </Box>
+          </Section>
+
+          {/* ── Calendar ── */}
+          <Section title="Calendar" id="calendar" storybookPath="?path=/docs/form-calendar--docs">
+            <Box display="flex" flexDirection="column" gap="4" maxW="380px" w="100%">
+              <Calendar value={new Date()} onChange={(d) => console.log("Set date", d)} />
             </Box>
           </Section>
 
