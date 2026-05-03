@@ -8,6 +8,7 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 - **`Calendar` Component**: Built a reusable, standalone Calendar component mimicking standard native behaviors, fully customized for MedixDeck UI with support for dynamic month navigation, active state highlights, and muted secondary month days.
+- **Error Pages**: Added `NotFoundPage` (404) and `ServerErrorPage` (500) components for standard application error handling. These are full-height layouts that developers can render inside their routing error boundaries.
 
 ### Changed
 - **`DatePicker`**: Upgraded from a native `input type="date"` to a custom popover using the new `Calendar` component. It now handles dynamic absolute positioning, formatted string displays (e.g. "May 15, 2026"), and closes on outside click.
