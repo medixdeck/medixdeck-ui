@@ -158,8 +158,10 @@ export default function App() {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [otpValue, setOtpValue] = React.useState("");
+  const [pinValue, setPinValue] = React.useState("");
   const [phoneValue, setPhoneValue] = React.useState("");
   const [appointmentDate, setAppointmentDate] = React.useState("");
+  const [calendarDate, setCalendarDate] = React.useState<Date | undefined>(new Date());
 
   const patientRows = [
     { id: "1", name: "Ngozi Adeyemi", age: 34, specialty: "Cardiology", status: "Active", date: "Apr 18, 2026" },
@@ -846,9 +848,9 @@ export default function App() {
                 length={4}
                 label="Enter PIN"
                 mask
-                value={otpValue}
-                onChange={setOtpValue}
-                isInvalid={otpValue.length > 0 && otpValue.length < 4}
+                value={pinValue}
+                onChange={setPinValue}
+                isInvalid={pinValue.length > 0 && pinValue.length < 4}
                 errorMessage="PIN must be 4 digits"
               />
               <OTPInput
@@ -875,7 +877,7 @@ export default function App() {
           {/* ── Calendar ── */}
           <Section title="Calendar" id="calendar" storybookPath="?path=/docs/form-calendar--docs">
             <Box display="flex" flexDirection="column" gap="4" maxW="380px" w="100%">
-              <Calendar value={new Date()} onChange={(d) => console.log("Set date", d)} />
+              <Calendar value={calendarDate} onChange={setCalendarDate} />
             </Box>
           </Section>
 
