@@ -756,7 +756,7 @@ export default function App() {
           </Section>
 
           <Section title="Avatars" id="avatars" storybookPath="?path=/docs/primitives-avatar--docs">
-            <Avatar name="Dr. Amaka Okonkwo" size="xs" />
+            <Avatar name="Dr. Amaka Okonkwo" size="xs" src="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg" />
             <Avatar name="Dr. Tunde Bello" size="sm" />
             <Avatar name="Ngozi A." size="md" showStatus statusColor="green.500" />
             <Avatar name="Emeka O." size="lg" />
