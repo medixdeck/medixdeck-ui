@@ -464,9 +464,9 @@ export interface VitalBadgeProps extends BoxProps {
 }
 
 const vitalStatusConfig: Record<VitalStatus, { bg: string; dot: string; border: string; text: string }> = {
-  normal:   { bg: "rgba(27, 122, 56, 0.08)",  dot: "status.success", border: "rgba(22, 163, 74, 0.2)",  text: "status.success" },
-  warning:  { bg: "rgba(217, 119, 6, 0.08)",  dot: "status.warning", border: "rgba(217, 119, 6, 0.2)",  text: "status.warning" },
-  critical: { bg: "rgba(220, 38, 38, 0.08)",  dot: "status.error",   border: "rgba(220, 38, 38, 0.2)", text: "status.error" },
+  normal:   { bg: "color-mix(in srgb, var(--chakra-colors-status-success) 8%, transparent)",  dot: "status.success", border: "color-mix(in srgb, var(--chakra-colors-status-success) 20%, transparent)",  text: "status.success" },
+  warning:  { bg: "color-mix(in srgb, var(--chakra-colors-status-warning) 8%, transparent)",  dot: "status.warning", border: "color-mix(in srgb, var(--chakra-colors-status-warning) 20%, transparent)",  text: "status.warning" },
+  critical: { bg: "color-mix(in srgb, var(--chakra-colors-status-error) 8%, transparent)",  dot: "status.error",   border: "color-mix(in srgb, var(--chakra-colors-status-error) 20%, transparent)", text: "status.error" },
 };
 
 /**
