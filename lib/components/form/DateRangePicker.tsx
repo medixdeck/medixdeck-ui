@@ -95,17 +95,37 @@ export function DateRangePicker({
     width: "100%",
   };
 
-  const handleDateSelect = (date: Date) => {
+  const formatDateValue = (date: Date) => {
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, "0");
     const dd = String(date.getDate()).padStart(2, "0");
-    const formatted = `${yyyy}-${mm}-${dd}`;
-    
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  const clampDateValue = (value: string) => {
+    if (min && value < min) {
+      return min;
+    }
+    if (max && value > max) {
+      return max;
+    }
+    return value;
+  };
+
+  const handleDateSelect = (date: Date) => {
+    const formatted = clampDateValue(formatDateValue(date));
+
     if (activeInput === "start") {
       onStartChange?.(formatted);
+      if (endValue && endValue < formatted) {
+        onEndChange?.("");
+      }
       setActiveInput("end"); // auto move to end
     } else if (activeInput === "end") {
       onEndChange?.(formatted);
+      if (startValue && startValue > formatted) {
+        onStartChange?.("");
+      }
       setActiveInput(null); // close popover
     }
   };
