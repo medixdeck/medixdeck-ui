@@ -60,14 +60,13 @@ export function Breadcrumb({
       {items.map((item, idx) => {
         const isLast = idx === items.length - 1;
         return (
-          <Box key={idx} display="flex" alignItems="center" gap="1.5"
-            justifyContent={"center"}
-
-          >
+          <Box key={idx} display="flex" alignItems="center" gap="1.5">
             {renderLink(
               item,
               <Box
                 as="span"
+                display="inline-block"
+                lineHeight="1.2"
                 fontSize="sm"
                 fontFamily="var(--font-body)"
                 fontWeight={isLast ? "medium" : "normal"}
@@ -82,7 +81,7 @@ export function Breadcrumb({
               </Box>
             )}
             {!isLast && (
-              <Box color="text.muted" display="flex" alignItems="center" flexShrink={0}>
+              <Box color="text.muted" display="flex" alignItems="center" flexShrink={0} mt="0.5">
                 {separator}
               </Box>
             )}

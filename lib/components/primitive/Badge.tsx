@@ -16,6 +16,8 @@ export interface BadgeProps {
   status?: BadgeStatus;
   /** Size */
   size?: BadgeSize;
+  /** Whether to apply a fully rounded (100px) pill border radius vs the standard 16px */
+  rounded?: boolean;
   children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -25,19 +27,19 @@ export interface BadgeProps {
 // Per-status raw hex pairs: [solid bg, text, tint bg, tint text, border]
 const STATUS_COLORS: Record<BadgeStatus, {
   solid: string; solidText: string;
-  tint: string;  tintText: string;
+  tint: string; tintText: string;
   border: string;
 }> = {
   success: { solid: "#1B7A38", solidText: "#fff", tint: "#DCFCE7", tintText: "#1B7A38", border: "#1B7A38" },
   warning: { solid: "#D97706", solidText: "#fff", tint: "#FEF3C7", tintText: "#B45309", border: "#D97706" },
-  error:   { solid: "#DC2626", solidText: "#fff", tint: "#FFE4E6", tintText: "#B91C1C", border: "#DC2626" },
-  info:    { solid: "#0685FF", solidText: "#fff", tint: "#E8F3FF", tintText: "#0562C2", border: "#0685FF" },
+  error: { solid: "#DC2626", solidText: "#fff", tint: "#FFE4E6", tintText: "#B91C1C", border: "#DC2626" },
+  info: { solid: "#0685FF", solidText: "#fff", tint: "#E8F3FF", tintText: "#0562C2", border: "#0685FF" },
   neutral: { solid: "#6B7280", solidText: "#fff", tint: "#F3F4F6", tintText: "#374151", border: "#9CA3AF" },
 };
 
 const SIZE_STYLES: Record<BadgeSize, React.CSSProperties> = {
-  sm: { padding: "1px 6px",  fontSize: 10, lineHeight: "18px" },
-  md: { padding: "2px 8px",  fontSize: 11, lineHeight: "20px" },
+  sm: { padding: "1px 6px", fontSize: 10, lineHeight: "18px" },
+  md: { padding: "2px 8px", fontSize: 11, lineHeight: "20px" },
   lg: { padding: "3px 10px", fontSize: 12, lineHeight: "22px" },
 };
 
@@ -54,7 +56,7 @@ const SIZE_STYLES: Record<BadgeSize, React.CSSProperties> = {
  * ```
  */
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ variant = "subtle", status = "neutral", size = "md", children, style, ...props }, ref) => {
+  ({ variant = "subtle", status = "neutral", size = "md", rounded, children, style, ...props }, ref) => {
     const c = STATUS_COLORS[status];
     const sz = SIZE_STYLES[size];
 
@@ -82,7 +84,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       fontWeight: 500,
       letterSpacing: "0.03em",
       textTransform: "none",
-      borderRadius: 4,
+      borderRadius: rounded ? "100px" : "16px",
       border,
       background: bg,
       color,
