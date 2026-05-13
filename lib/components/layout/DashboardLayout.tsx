@@ -280,12 +280,26 @@ const themeOptions: Array<{
 
 function ThemeToggleGroup({ scheme }: { scheme: typeof SCHEME_COLORS[DashboardColorScheme] }) {
   const { mounted, themeMode, themeSetting, setThemeMode } = useThemeMode();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const activeMode = mounted ? themeSetting : undefined;
+  const activeOption = themeOptions.find((o) => o.value === activeMode) || themeOptions[0];
 
-  return (
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Shared inner content for the horizontal pill
+  const desktopPill = (
     <Box
-      display="flex"
+      display={{ base: "none", md: "flex" }}
       alignItems="center"
       gap="1"
       bg="bg.surface"
@@ -318,7 +332,7 @@ function ThemeToggleGroup({ scheme }: { scheme: typeof SCHEME_COLORS[DashboardCo
             alignItems="center"
             gap="2"
             h="9"
-            px={{ base: isActive ? "3" : "2.5", md: "3" }}
+            px="3"
             borderRadius="full"
             border="none"
             bg={isActive ? activeFill : "transparent"}
@@ -334,7 +348,6 @@ function ThemeToggleGroup({ scheme }: { scheme: typeof SCHEME_COLORS[DashboardCo
             </Box>
             <Box
               as="span"
-              display={{ base: "none", lg: "inline" }}
               fontSize="xs"
               fontWeight={isActive ? "700" : "600"}
               fontFamily="var(--font-body)"
@@ -346,6 +359,105 @@ function ThemeToggleGroup({ scheme }: { scheme: typeof SCHEME_COLORS[DashboardCo
         );
       })}
     </Box>
+  );
+
+  // Mobile dropdown
+  const mobileDropdown = (
+    <Box display={{ base: "block", md: "none" }} position="relative" ref={dropdownRef}>
+      <Box
+        as="button"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        w="10"
+        h="10"
+        borderRadius="full"
+        bg="bg.surface"
+        border="1px solid"
+        borderColor="border"
+        color={scheme.chakraToken}
+        cursor={mounted ? "pointer" : "default"}
+        opacity={mounted ? 1 : 0.6}
+        _hover={mounted ? { bg: "bg" } : undefined}
+        onClick={() => {
+          if (!mounted) return;
+          setDropdownOpen((o) => !o);
+        }}
+        aria-label="Theme mode switcher"
+        aria-expanded={dropdownOpen}
+        aria-haspopup="menu"
+      >
+        {activeOption.icon}
+      </Box>
+
+      {dropdownOpen && mounted && (
+        <Box
+          role="menu"
+          position="absolute"
+          top="calc(100% + 8px)"
+          right="0"
+          minW="150px"
+          bg="bg"
+          border="1px solid"
+          borderColor="border"
+          borderRadius="xl"
+          boxShadow="0 8px 32px rgba(0,0,0,0.12)"
+          zIndex="popover"
+          overflow="hidden"
+          py="1"
+        >
+          {themeOptions.map((option) => {
+            const isActive = activeMode === option.value;
+            return (
+              <Box
+                key={option.value}
+                as="button"
+                role="menuitem"
+                display="flex"
+                alignItems="center"
+                gap="2.5"
+                w="full"
+                px="4"
+                py="2.5"
+                border="none"
+                bg={isActive ? scheme.hoverBgLight : "transparent"}
+                color={isActive ? scheme.chakraToken : "text.body"}
+                cursor="pointer"
+                textAlign="left"
+                onClick={() => {
+                  setThemeMode(option.value);
+                  setDropdownOpen(false);
+                }}
+                _hover={{ bg: scheme.hoverBgLight, color: scheme.chakraToken }}
+                _dark={{
+                  bg: isActive ? scheme.hoverBgDark : "transparent",
+                  _hover: { bg: scheme.hoverBgDark },
+                }}
+              >
+                <Box flexShrink={0}>
+                  {option.icon}
+                </Box>
+                <Box
+                  as="span"
+                  fontSize="sm"
+                  fontWeight={isActive ? "600" : "500"}
+                  fontFamily="var(--font-body)"
+                >
+                  {option.label}
+                </Box>
+              </Box>
+            );
+          })}
+        </Box>
+      )}
+    </Box>
+  );
+
+  return (
+    <>
+      {desktopPill}
+      {mobileDropdown}
+    </>
   );
 }
 
