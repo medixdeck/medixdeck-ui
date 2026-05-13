@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useId } from "react";
 import { Box, type BoxProps } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useThemeMode, type ThemeModeSetting } from "../../hooks/useThemeMode";
 import { Logo } from "../primitive/Logo";
 import { Avatar } from "../primitive/Avatar";
@@ -478,10 +478,12 @@ function SidebarNavItem({
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }) {
   const [hovered, setHovered] = useState(false);
+  const [focusVisible, setFocusVisible] = useState(false);
   const isActive = item.isActive ?? false;
   const hasActiveSubItem = item.subItems?.some((sub) => sub.isActive) ?? false;
   const [expanded, setExpanded] = useState(isActive || hasActiveSubItem);
   const hasSubItems = !!(item.subItems && item.subItems.length > 0);
+  const subMenuId = useId();
 
   useEffect(() => {
     if (isActive || hasActiveSubItem) {
@@ -489,7 +491,8 @@ function SidebarNavItem({
     }
   }, [isActive, hasActiveSubItem]);
 
-  const content = (
+  // Visual row — pure styling, no interactive semantics
+  const rowContent = (
     <Box
       display="flex"
       alignItems="center"
@@ -501,16 +504,9 @@ function SidebarNavItem({
       borderTopLeftRadius={hasSubItems ? "lg" : "none"}
       borderBottomLeftRadius={hasSubItems ? "lg" : "none"}
       position="relative"
-      cursor="pointer"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={() => {
-        if (hasSubItems) {
-          setExpanded((e) => !e);
-        } else {
-          onClick?.();
-        }
-      }}
+      // For leaf items, propagate the onClick (e.g. close mobile sidebar) via
+      // the wrapped link element produced by render().
+      onClick={!hasSubItems ? onClick : undefined}
       style={{
         background: isActive
           ? scheme.activeBgLight
@@ -518,6 +514,8 @@ function SidebarNavItem({
             ? scheme.hoverBgLight
             : "transparent",
         boxShadow: isActive && !hasSubItems ? `inset 3px 0 0 ${scheme.solid}` : undefined,
+        outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
+        outlineOffset: focusVisible ? "2px" : undefined,
         transition: "background 0.15s ease, box-shadow 0.15s ease",
       }}
       _dark={{
@@ -610,39 +608,66 @@ function SidebarNavItem({
 
   return (
     <>
-      {hasSubItems ? content : render(item, content)}
+      {hasSubItems ? (
+        // Render as a native <button> so keyboard users can toggle via Enter/Space
+        // and assistive tech can announce aria-expanded / aria-controls.
+        <button
+          type="button"
+          aria-expanded={expanded}
+          aria-controls={subMenuId}
+          onClick={() => setExpanded((e) => !e)}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          onFocus={(e) => {
+            setFocusVisible(e.currentTarget.matches(":focus-visible"));
+          }}
+          onBlur={() => setFocusVisible(false)}
+          style={{
+            display: "block",
+            width: "100%",
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            textAlign: "left",
+          }}
+        >
+          {rowContent}
+        </button>
+      ) : (
+        render(item, rowContent)
+      )}
 
-      {/* Sub-items dropdown list */}
-      <AnimatePresence initial={false}>
-        {hasSubItems && expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.0, 0.0, 0.2, 1.0] }}
-            style={{ overflow: "hidden" }}
+      {/* Sub-items dropdown list — always in DOM so aria-controls resolves */}
+      {hasSubItems && (
+        <motion.div
+          id={subMenuId}
+          initial={false}
+          animate={expanded ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+          transition={{ duration: 0.2, ease: [0.0, 0.0, 0.2, 1.0] }}
+          style={{ overflow: "hidden" }}
+          aria-hidden={!expanded}
+        >
+          <Box
+            display="flex"
+            flexDirection="column"
+            gap="0.5"
+            pl="9" // Indent to align with text of parent item
+            mt="0.5"
+            mb="1"
           >
-            <Box
-              display="flex"
-              flexDirection="column"
-              gap="0.5"
-              pl="9" // Indent to align with text of parent item
-              mt="0.5"
-              mb="1"
-            >
-              {item.subItems!.map((subItem) => (
-                <SidebarNavItem
-                  key={subItem.href}
-                  item={subItem}
-                  renderLink={render}
-                  onClick={onClick}
-                  scheme={scheme}
-                />
-              ))}
-            </Box>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {item.subItems!.map((subItem) => (
+              <SidebarNavItem
+                key={subItem.href}
+                item={subItem}
+                renderLink={render}
+                onClick={onClick}
+                scheme={scheme}
+              />
+            ))}
+          </Box>
+        </motion.div>
+      )}
     </>
   );
 }
