@@ -481,7 +481,6 @@ function SidebarNavItem({
   const [expanded, setExpanded] = useState(item.isActive || item.subItems?.some((sub) => sub.isActive) || false);
   const isActive = item.isActive ?? false;
   const hasSubItems = item.subItems && item.subItems.length > 0;
-  const submenuId = `dashboard-submenu-${item.href.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
 
   const content = (
     <Box
@@ -491,12 +490,17 @@ function SidebarNavItem({
       px="3"
       py="2.5"
       borderRadius="lg"
+      borderLeftRadius={hasSubItems ? "lg" : "none"}
+      borderTopLeftRadius={hasSubItems ? "lg" : "none"}
+      borderBottomLeftRadius={hasSubItems ? "lg" : "none"}
       position="relative"
-      cursor={hasSubItems ? "default" : "pointer"}
+      cursor="pointer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => {
-        if (!hasSubItems) {
+        if (hasSubItems) {
+          setExpanded((e) => !e);
+        } else {
           onClick?.();
         }
       }}
@@ -586,46 +590,21 @@ function SidebarNavItem({
       )}
 
       {/* Chevron for sub-items */}
+      {hasSubItems && (
+        <Box
+          flexShrink={0}
+          color="text.muted"
+        >
+          <ChevronDownIcon open={expanded} />
+        </Box>
+      )}
     </Box>
   );
 
   return (
     <>
-      {hasSubItems ? (
-        <Box display="flex" alignItems="stretch" gap="1">
-          <Box flex="1" minW={0}>
-            {render(item, content)}
-          </Box>
-          <Box
-            as="button"
-            aria-label={expanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
-            aria-expanded={expanded}
-            aria-controls={submenuId}
-            onClick={() => setExpanded((prev) => !prev)}
-            alignSelf="center"
-            flexShrink={0}
-            h="36px"
-            w="36px"
-            borderRadius="md"
-            border="none"
-            bg={hovered ? "bg.surface" : "transparent"}
-            color="text.muted"
-            display="inline-flex"
-            alignItems="center"
-            justifyContent="center"
-            cursor="pointer"
-            transition="background 0.15s ease"
-            _dark={{ bg: hovered ? scheme.hoverBgDark : "transparent" }}
-            _hover={{ bg: "bg.surface" }}
-            _focusVisible={{ outline: "none", boxShadow: `0 0 0 3px ${scheme.solid}33` }}
-          >
-            <ChevronDownIcon open={expanded} />
-          </Box>
-        </Box>
-      ) : (
-        render(item, content)
-      )}
-      
+      {hasSubItems ? content : render(item, content)}
+
       {/* Sub-items dropdown list */}
       <AnimatePresence initial={false}>
         {hasSubItems && expanded && (
@@ -637,7 +616,6 @@ function SidebarNavItem({
             style={{ overflow: "hidden" }}
           >
             <Box
-              id={submenuId}
               display="flex"
               flexDirection="column"
               gap="0.5"
