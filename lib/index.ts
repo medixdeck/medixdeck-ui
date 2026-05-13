@@ -20,6 +20,9 @@ export { MedixProvider } from "./components/provider/MedixProvider";
 export type { MedixProviderProps } from "./components/provider/MedixProvider";
 export { useThemeMode, useIsDarkMode } from "./hooks/useThemeMode";
 export type { ThemeMode, ThemeModeSetting, UseThemeModeResult } from "./hooks/useThemeMode";
+
+export { useColorScheme } from "./hooks/useColorScheme";
+export type { ColorScheme, UseColorSchemeResult } from "./hooks/useColorScheme";
 export { system, medixConfig } from "./theme";
 export { colorTokens } from "./theme/colors";
 export { typographyTokens, textStyleTokens } from "./theme/typography";
@@ -111,11 +114,12 @@ export type {
   DashboardNavGroup,
   DashboardUser,
   DashboardDropdownItem,
+  DashboardColorScheme,
 } from "./components/layout/DashboardLayout";
 
 // ─── Navigation Components ─────────────────────────────────────────────────────
 export { Navbar } from "./components/navigation/Navbar";
-export type { NavbarProps, NavItem } from "./components/navigation/Navbar";
+export type { NavbarProps, NavItem, NavbarColorScheme } from "./components/navigation/Navbar";
 
 export { Footer } from "./components/layout/Footer";
 export type {
@@ -125,6 +129,7 @@ export type {
   SocialLink,
   NewsletterProps,
   BottomLink,
+  FooterColorScheme,
 } from "./components/layout/Footer";
 
 export { Breadcrumb } from "./components/navigation/Breadcrumb";
@@ -172,10 +177,10 @@ export type { ToastOptions, ToastType } from "./components/feedback/Notification
 
 // ─── Data Display Components ───────────────────────────────────────────────────
 export { Accordion } from "./components/data/Accordion";
-export type { AccordionProps, AccordionItem } from "./components/data/Accordion";
+export type { AccordionProps, AccordionItem, AccordionColorScheme } from "./components/data/Accordion";
 
 export { TestimonialCard, BlogCard } from "./components/data/Cards";
-export type { TestimonialCardProps, BlogCardProps } from "./components/data/Cards";
+export type { TestimonialCardProps, BlogCardProps, BlogCardColorScheme } from "./components/data/Cards";
 
 export { DataTable } from "./components/data/DataTable";
 export type { DataTableProps, Column } from "./components/data/DataTable";
