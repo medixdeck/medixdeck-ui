@@ -101,15 +101,22 @@ function ThemeStatus() {
 
 ## Color scheme theming
 
-Four components — `Navbar`, `Footer`, `Accordion`, and `BlogCard` — accept a `colorScheme` prop that switches every brand accent between MedixDeck blue (`#0685FF`) and purple (`#7700CC`).
+Five components — `Navbar`, `Footer`, `Accordion`, `BlogCard`, and `DashboardLayout` — accept a `colorScheme` prop that switches every brand accent between MedixDeck blue (`#0685FF`) and purple (`#7700CC`).
 
 ```tsx
-import { Navbar, Footer, Accordion, BlogCard } from "@medixdeck/ui";
+import {
+  Navbar,
+  Footer,
+  Accordion,
+  BlogCard,
+  DashboardLayout,
+} from "@medixdeck/ui";
 
-<Navbar    colorScheme="purple" navItems={[...]} ctaLabel="Talk to a Doctor" />
-<Footer    colorScheme="purple" />
-<Accordion colorScheme="purple" items={[...]} />
-<BlogCard  colorScheme="purple" title="..." />
+<Navbar          colorScheme="purple" navItems={[...]} ctaLabel="Talk to a Doctor" />
+<Footer          colorScheme="purple" />
+<Accordion       colorScheme="purple" items={[...]} />
+<BlogCard        colorScheme="purple" title="..." />
+<DashboardLayout colorScheme="purple">{/* ... */}</DashboardLayout>
 ```
 
 Use the `useColorScheme` hook to manage the active scheme in state and keep multiple components in sync:
