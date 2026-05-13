@@ -16,7 +16,7 @@ export interface BadgeProps {
   status?: BadgeStatus;
   /** Size */
   size?: BadgeSize;
-  /** Whether to apply a fully rounded (100px) pill border radius vs the standard 16px */
+  /** Whether to apply a fully rounded (100px) pill border radius vs the standard 4px */
   rounded?: boolean;
   children?: React.ReactNode;
   className?: string;
