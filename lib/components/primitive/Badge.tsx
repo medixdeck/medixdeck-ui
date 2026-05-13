@@ -50,9 +50,12 @@ const SIZE_STYLES: Record<BadgeSize, React.CSSProperties> = {
  *
  * @example
  * ```tsx
- * <Badge status="success">Verified</Badge>
- * <Badge status="warning" variant="subtle">Pending</Badge>
- * <Badge status="error" variant="solid">Cancelled</Badge>
+ * <Badge rounded={true} status="success">Verified</Badge>
+ * <Badge rounded={true} status="warning" variant="subtle">Pending</Badge>
+ * <Badge rounded={true} status="error" variant="solid">Cancelled</Badge>
+ * <Badge rounded={false} status="success">Verified</Badge>
+ * <Badge rounded={false} status="warning" variant="subtle">Pending</Badge>
+ * <Badge rounded={false} status="error" variant="solid">Cancelled</Badge>
  * ```
  */
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
