@@ -478,9 +478,16 @@ function SidebarNavItem({
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }) {
   const [hovered, setHovered] = useState(false);
-  const [expanded, setExpanded] = useState(item.isActive || item.subItems?.some((sub) => sub.isActive) || false);
   const isActive = item.isActive ?? false;
-  const hasSubItems = item.subItems && item.subItems.length > 0;
+  const hasActiveSubItem = item.subItems?.some((sub) => sub.isActive) ?? false;
+  const [expanded, setExpanded] = useState(isActive || hasActiveSubItem);
+  const hasSubItems = !!(item.subItems && item.subItems.length > 0);
+
+  useEffect(() => {
+    if (isActive || hasActiveSubItem) {
+      setExpanded(true);
+    }
+  }, [isActive, hasActiveSubItem]);
 
   const content = (
     <Box
