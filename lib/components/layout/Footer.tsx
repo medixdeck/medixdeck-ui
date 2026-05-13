@@ -240,6 +240,8 @@ export function Footer({
   const currentYear = new Date().getFullYear();
   const resolvedCopyright = copyright ?? `© ${currentYear} MedixDeck. MDCN & FMoH Certified Platform.`;
   const [email, setEmail] = useState("");
+  const [newsletterButtonHovered, setNewsletterButtonHovered] = useState(false);
+  const [newsletterButtonFocused, setNewsletterButtonFocused] = useState(false);
   const scheme = FOOTER_COLORS[colorScheme];
 
   const { mounted, themeMode, toggleThemeMode } = useThemeMode();
@@ -407,7 +409,7 @@ export function Footer({
                       width: "36px",
                       height: "36px",
                       padding: 0,
-                      background: scheme.solid,
+                      background: newsletterButtonHovered ? scheme.solidHover : scheme.solid,
                       color: "white",
                       borderRadius: "6px",
                       display: "flex",
@@ -415,10 +417,13 @@ export function Footer({
                       justifyContent: "center",
                       cursor: "pointer",
                       border: "none",
-                      transition: "background 0.2s ease"
+                      boxShadow: newsletterButtonFocused ? `0 0 0 3px ${scheme.focusRing}` : "none",
+                      transition: "background 0.2s ease, box-shadow 0.2s ease",
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = scheme.solidHover}
-                    onMouseLeave={(e) => e.currentTarget.style.background = scheme.solid}
+                    onMouseEnter={() => setNewsletterButtonHovered(true)}
+                    onMouseLeave={() => setNewsletterButtonHovered(false)}
+                    onFocus={() => setNewsletterButtonFocused(true)}
+                    onBlur={() => setNewsletterButtonFocused(false)}
                     aria-label="Subscribe"
                   >
                     {newsletter?.buttonIcon ?? (
