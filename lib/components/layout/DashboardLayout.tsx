@@ -281,7 +281,7 @@ const themeOptions: Array<{
     { value: "system", label: "System theme", shortLabel: "System", icon: <SystemIcon /> },
   ];
 
-function ThemeToggleGroup({ scheme }: { scheme: typeof SCHEME_COLORS[DashboardColorScheme] }) {
+function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[DashboardColorScheme] }) {
   const { mounted, themeMode, themeSetting, setThemeMode } = useThemeMode();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -475,7 +475,7 @@ function SidebarNavItem({
   item: DashboardNavItem;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   onClick?: () => void;
-  scheme: typeof SCHEME_COLORS[DashboardColorScheme];
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }) {
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(item.isActive || item.subItems?.some((sub) => sub.isActive) || false);
@@ -650,7 +650,7 @@ interface SidebarProps {
   onLogout?: () => void;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   sidebarWidth: number;
-  scheme: typeof SCHEME_COLORS[DashboardColorScheme];
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }
 
 function Sidebar({
@@ -813,7 +813,7 @@ interface TopBarProps {
   topBarSlot?: React.ReactNode;
   dropdownItems?: DashboardDropdownItem[];
   onLogout?: () => void;
-  scheme: typeof SCHEME_COLORS[DashboardColorScheme];
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }
 
 function TopBar({
@@ -1036,7 +1036,7 @@ function DropdownItem({
   label: string;
   isDanger?: boolean;
   onClick?: () => void;
-  scheme: typeof SCHEME_COLORS[DashboardColorScheme];
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }) {
   const [hovered, setHovered] = useState(false);
 
