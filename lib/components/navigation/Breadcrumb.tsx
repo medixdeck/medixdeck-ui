@@ -52,6 +52,7 @@ export function Breadcrumb({
       as="nav"
       aria-label="Breadcrumb"
       display="flex"
+      flexWrap="wrap"
       alignItems="center"
       gap="1.5"
       {...props}
@@ -64,6 +65,8 @@ export function Breadcrumb({
               item,
               <Box
                 as="span"
+                display="inline-block"
+                lineHeight="1.2"
                 fontSize="sm"
                 fontFamily="var(--font-body)"
                 fontWeight={isLast ? "medium" : "normal"}
@@ -71,12 +74,14 @@ export function Breadcrumb({
                 _hover={!isLast ? { color: "blue.500" } : undefined}
                 cursor={!isLast && item.href ? "pointer" : "default"}
                 transition="color 0.15s"
+                wordBreak="break-word"
+                whiteSpace={!isLast ? "nowrap" : "normal"}
               >
                 {item.label}
               </Box>
             )}
             {!isLast && (
-              <Box color="text.muted" display="flex" alignItems="center">
+              <Box color="text.muted" display="flex" alignItems="center" flexShrink={0} mt="0.5">
                 {separator}
               </Box>
             )}

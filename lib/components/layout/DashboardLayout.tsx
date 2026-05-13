@@ -2,18 +2,47 @@
 
 import React, { useState, useRef, useEffect, useId } from "react";
 import { Box, type BoxProps } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { useThemeMode, type ThemeModeSetting } from "../../hooks/useThemeMode";
 import { Logo } from "../primitive/Logo";
 import { Avatar } from "../primitive/Avatar";
 
 // ─── Brand colours (native-first pattern per AGENTS.md §15) ──────────────────
 
-const BLUE = "#0685FF";
-const BLUE_HOVER_BG_LIGHT = "rgba(6,133,255,0.08)";
-const BLUE_HOVER_BG_DARK = "rgba(6,133,255,0.12)";
-const BLUE_ACTIVE_BG_LIGHT = "rgba(6,133,255,0.10)";
-const BLUE_ACTIVE_BG_DARK = "rgba(6,133,255,0.15)";
-const BLUE_ACTIVE_BG_DARK_STRONG = "rgba(6,133,255,0.18)";
+export type DashboardColorScheme = "blue" | "purple";
+
+const SCHEME_COLORS: Record<
+  DashboardColorScheme,
+  {
+    solid: string;
+    hoverBgLight: string;
+    hoverBgDark: string;
+    activeBgLight: string;
+    activeBgDark: string;
+    activeBgDarkStrong: string;
+    chakraToken: string;
+  }
+> = {
+  blue: {
+    solid: "#0685FF",
+    hoverBgLight: "rgba(6,133,255,0.08)",
+    hoverBgDark: "rgba(6,133,255,0.12)",
+    activeBgLight: "rgba(6,133,255,0.10)",
+    activeBgDark: "rgba(6,133,255,0.15)",
+    activeBgDarkStrong: "rgba(6,133,255,0.18)",
+    chakraToken: "blue.500",
+  },
+  purple: {
+    solid: "#7700CC",
+    hoverBgLight: "rgba(119,0,204,0.08)",
+    hoverBgDark: "rgba(119,0,204,0.12)",
+    activeBgLight: "rgba(119,0,204,0.10)",
+    activeBgDark: "rgba(119,0,204,0.15)",
+    activeBgDarkStrong: "rgba(119,0,204,0.18)",
+    chakraToken: "purple.500",
+  },
+};
+
 const RED = "#EF4444";
 const RED_HOVER_BG = "rgba(239,68,68,0.08)";
 
@@ -115,6 +144,8 @@ export interface DashboardNavItem {
   hasDot?: boolean;
   /** Mark this item as the currently active route. */
   isActive?: boolean;
+  /** Optional nested sub-items (creates an expandable dropdown accordion). */
+  subItems?: DashboardNavItem[];
 }
 
 export interface DashboardNavGroup {
@@ -213,6 +244,13 @@ export interface DashboardLayoutProps extends Omit<BoxProps, "children"> {
    * @default 220
    */
   sidebarWidth?: number;
+
+  /**
+   * Brand accent applied to active nav items, logo, badge backgrounds, and the
+   * theme toggle active state.
+   * @default "blue"
+   */
+  colorScheme?: DashboardColorScheme;
 }
 
 // ─── Helper: default link renderer ───────────────────────────────────────────
@@ -238,19 +276,33 @@ const themeOptions: Array<{
   shortLabel: string;
   icon: React.ReactNode;
 }> = [
-  { value: "light", label: "Light mode", shortLabel: "Light", icon: <SunIcon /> },
-  { value: "dark", label: "Dark mode", shortLabel: "Dark", icon: <MoonIcon /> },
-  { value: "system", label: "System theme", shortLabel: "System", icon: <SystemIcon /> },
-];
+    { value: "light", label: "Light mode", shortLabel: "Light", icon: <SunIcon /> },
+    { value: "dark", label: "Dark mode", shortLabel: "Dark", icon: <MoonIcon /> },
+    { value: "system", label: "System theme", shortLabel: "System", icon: <SystemIcon /> },
+  ];
 
-function ThemeToggleGroup() {
+function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[DashboardColorScheme] }) {
   const { mounted, themeMode, themeSetting, setThemeMode } = useThemeMode();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const activeMode = mounted ? themeSetting : undefined;
+  const activeOption = themeOptions.find((o) => o.value === activeMode) || themeOptions[0];
 
-  return (
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Shared inner content for the horizontal pill
+  const desktopPill = (
     <Box
-      display="flex"
+      display={{ base: "none", md: "flex" }}
       alignItems="center"
       gap="1"
       bg="bg.surface"
@@ -263,10 +315,10 @@ function ThemeToggleGroup() {
       {themeOptions.map((option) => {
         const isActive = activeMode === option.value;
         const activeFill = option.value === "dark"
-          ? BLUE_ACTIVE_BG_DARK_STRONG
+          ? scheme.activeBgDarkStrong
           : option.value === "system"
-            ? "rgba(6,133,255,0.12)"
-            : "rgba(6,133,255,0.08)";
+            ? scheme.hoverBgDark
+            : scheme.hoverBgLight;
 
         return (
           <Box
@@ -283,23 +335,22 @@ function ThemeToggleGroup() {
             alignItems="center"
             gap="2"
             h="9"
-            px={{ base: isActive ? "3" : "2.5", md: "3" }}
+            px="3"
             borderRadius="full"
             border="none"
             bg={isActive ? activeFill : "transparent"}
-            color={isActive ? "blue.500" : "text.muted"}
+            color={isActive ? scheme.chakraToken : "text.muted"}
             opacity={mounted ? 1 : 0.6}
             cursor={mounted ? "pointer" : "default"}
             transition="background 0.18s ease, color 0.18s ease, opacity 0.18s ease"
             _hover={mounted ? { bg: isActive ? activeFill : "bg", color: "text.heading" } : undefined}
-            _focusVisible={{ outline: "2px solid", outlineColor: "blue.500", outlineOffset: "2px" }}
+            _focusVisible={{ outline: "2px solid", outlineColor: scheme.chakraToken, outlineOffset: "2px" }}
           >
             <Box display="inline-flex" alignItems="center" justifyContent="center" flexShrink={0}>
               {option.icon}
             </Box>
             <Box
               as="span"
-              display={{ base: "none", lg: "inline" }}
               fontSize="xs"
               fontWeight={isActive ? "700" : "600"}
               fontFamily="var(--font-body)"
@@ -312,6 +363,105 @@ function ThemeToggleGroup() {
       })}
     </Box>
   );
+
+  // Mobile dropdown
+  const mobileDropdown = (
+    <Box display={{ base: "block", md: "none" }} position="relative" ref={dropdownRef}>
+      <Box
+        as="button"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        w="10"
+        h="10"
+        borderRadius="full"
+        bg="bg.surface"
+        border="1px solid"
+        borderColor="border"
+        color={scheme.chakraToken}
+        cursor={mounted ? "pointer" : "default"}
+        opacity={mounted ? 1 : 0.6}
+        _hover={mounted ? { bg: "bg" } : undefined}
+        onClick={() => {
+          if (!mounted) return;
+          setDropdownOpen((o) => !o);
+        }}
+        aria-label="Theme mode switcher"
+        aria-expanded={dropdownOpen}
+        aria-haspopup="menu"
+      >
+        {activeOption.icon}
+      </Box>
+
+      {dropdownOpen && mounted && (
+        <Box
+          role="menu"
+          position="absolute"
+          top="calc(100% + 8px)"
+          right="0"
+          minW="150px"
+          bg="bg"
+          border="1px solid"
+          borderColor="border"
+          borderRadius="xl"
+          boxShadow="0 8px 32px rgba(0,0,0,0.12)"
+          zIndex="popover"
+          overflow="hidden"
+          py="1"
+        >
+          {themeOptions.map((option) => {
+            const isActive = activeMode === option.value;
+            return (
+              <Box
+                key={option.value}
+                as="button"
+                role="menuitem"
+                display="flex"
+                alignItems="center"
+                gap="2.5"
+                w="full"
+                px="4"
+                py="2.5"
+                border="none"
+                bg={isActive ? scheme.hoverBgLight : "transparent"}
+                color={isActive ? scheme.chakraToken : "text.body"}
+                cursor="pointer"
+                textAlign="left"
+                onClick={() => {
+                  setThemeMode(option.value);
+                  setDropdownOpen(false);
+                }}
+                _hover={{ bg: scheme.hoverBgLight, color: scheme.chakraToken }}
+                _dark={{
+                  bg: isActive ? scheme.hoverBgDark : "transparent",
+                  _hover: { bg: scheme.hoverBgDark },
+                }}
+              >
+                <Box flexShrink={0}>
+                  {option.icon}
+                </Box>
+                <Box
+                  as="span"
+                  fontSize="sm"
+                  fontWeight={isActive ? "600" : "500"}
+                  fontFamily="var(--font-body)"
+                >
+                  {option.label}
+                </Box>
+              </Box>
+            );
+          })}
+        </Box>
+      )}
+    </Box>
+  );
+
+  return (
+    <>
+      {desktopPill}
+      {mobileDropdown}
+    </>
+  );
 }
 
 // ─── SidebarNavItem ───────────────────────────────────────────────────────────
@@ -320,15 +470,29 @@ function SidebarNavItem({
   item,
   renderLink: render,
   onClick,
+  scheme,
 }: {
   item: DashboardNavItem;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   onClick?: () => void;
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }) {
   const [hovered, setHovered] = useState(false);
+  const [focusVisible, setFocusVisible] = useState(false);
   const isActive = item.isActive ?? false;
+  const hasActiveSubItem = item.subItems?.some((sub) => sub.isActive) ?? false;
+  const [expanded, setExpanded] = useState(isActive || hasActiveSubItem);
+  const hasSubItems = !!(item.subItems && item.subItems.length > 0);
+  const subMenuId = useId();
 
-  const content = (
+  useEffect(() => {
+    if (isActive || hasActiveSubItem) {
+      setExpanded(true);
+    }
+  }, [isActive, hasActiveSubItem]);
+
+  // Visual row — pure styling, no interactive semantics
+  const rowContent = (
     <Box
       display="flex"
       alignItems="center"
@@ -336,30 +500,31 @@ function SidebarNavItem({
       px="3"
       py="2.5"
       borderRadius="lg"
-      borderLeftRadius="none"
-      borderTopLeftRadius="none"
-      borderBottomLeftRadius="none"
+      borderLeftRadius={hasSubItems ? "lg" : "none"}
+      borderTopLeftRadius={hasSubItems ? "lg" : "none"}
+      borderBottomLeftRadius={hasSubItems ? "lg" : "none"}
       position="relative"
-      cursor="pointer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
+      // For leaf items, propagate the onClick (e.g. close mobile sidebar) via
+      // the wrapped link element produced by render().
+      onClick={!hasSubItems ? onClick : undefined}
       style={{
-        // Active: left accent bar + tinted bg
         background: isActive
-          ? BLUE_ACTIVE_BG_LIGHT
+          ? scheme.activeBgLight
           : hovered
-            ? BLUE_HOVER_BG_LIGHT
+            ? scheme.hoverBgLight
             : "transparent",
-        boxShadow: isActive ? `inset 3px 0 0 ${BLUE}` : undefined,
+        boxShadow: isActive && !hasSubItems ? `inset 3px 0 0 ${scheme.solid}` : undefined,
+        outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
+        outlineOffset: focusVisible ? "2px" : undefined,
         transition: "background 0.15s ease, box-shadow 0.15s ease",
       }}
-      // Dark mode overrides via data-theme
       _dark={{
         bg: isActive
-          ? BLUE_ACTIVE_BG_DARK
+          ? scheme.activeBgDark
           : hovered
-            ? BLUE_HOVER_BG_DARK
+            ? scheme.hoverBgDark
             : "transparent",
       }}
     >
@@ -368,11 +533,11 @@ function SidebarNavItem({
         <Box
           flexShrink={0}
           style={{
-            color: isActive ? BLUE : undefined,
-            opacity: isActive ? 1 : hovered ? 0.85 : 0.6,
+            color: isActive || expanded ? scheme.solid : undefined,
+            opacity: isActive || expanded ? 1 : hovered ? 0.85 : 0.6,
             transition: "color 0.15s ease, opacity 0.15s ease",
           }}
-          color={isActive ? "blue.500" : "text.body"}
+          color={isActive || expanded ? scheme.chakraToken : "text.body"}
         >
           {item.icon}
         </Box>
@@ -383,19 +548,19 @@ function SidebarNavItem({
         as="span"
         flex="1"
         fontSize="sm"
-        fontWeight={isActive ? "600" : "500"}
+        fontWeight={isActive || expanded ? "600" : "500"}
         fontFamily="var(--font-body)"
         style={{
-          color: isActive ? BLUE : undefined,
+          color: isActive || expanded ? scheme.solid : undefined,
           transition: "color 0.15s ease",
         }}
-        color={isActive ? "blue.500" : "text.body"}
+        color={isActive || expanded ? scheme.chakraToken : "text.body"}
       >
         {item.label}
       </Box>
 
       {/* Numeric badge */}
-      {typeof item.badge === "number" && (
+      {typeof item.badge === "number" && !hasSubItems && (
         <Box
           as="span"
           display="inline-flex"
@@ -409,7 +574,7 @@ function SidebarNavItem({
           fontWeight="700"
           lineHeight="1"
           style={{
-            background: BLUE,
+            background: scheme.solid,
             color: "#fff",
           }}
         >
@@ -418,7 +583,7 @@ function SidebarNavItem({
       )}
 
       {/* Red dot badge */}
-      {item.hasDot && (
+      {item.hasDot && !hasSubItems && (
         <Box
           as="span"
           display="inline-block"
@@ -430,10 +595,81 @@ function SidebarNavItem({
           aria-label="New notification"
         />
       )}
+
+      {/* Chevron for sub-items */}
+      {hasSubItems && (
+        <Box
+          flexShrink={0}
+          color="text.muted"
+        >
+          <ChevronDownIcon open={expanded} />
+        </Box>
+      )}
     </Box>
   );
 
-  return render(item, content);
+  return (
+    <>
+      {hasSubItems ? (
+        // Render as a native <button> so keyboard users can toggle via Enter/Space
+        // and assistive tech can announce aria-expanded / aria-controls.
+        <button
+          type="button"
+          aria-expanded={expanded}
+          aria-controls={subMenuId}
+          onClick={() => setExpanded((e) => !e)}
+          onFocus={(e) => {
+            setFocusVisible(e.currentTarget.matches(":focus-visible"));
+          }}
+          onBlur={() => setFocusVisible(false)}
+          style={{
+            display: "block",
+            width: "100%",
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            textAlign: "left",
+          }}
+        >
+          {rowContent}
+        </button>
+      ) : (
+        render(item, rowContent)
+      )}
+
+      {/* Sub-items dropdown list — always in DOM so aria-controls resolves */}
+      {hasSubItems && (
+        <motion.div
+          id={subMenuId}
+          initial={false}
+          animate={expanded ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+          transition={{ duration: 0.2, ease: [0.0, 0.0, 0.2, 1.0] }}
+          style={{ overflow: "hidden" }}
+          aria-hidden={!expanded}
+        >
+          <Box
+            display="flex"
+            flexDirection="column"
+            gap="0.5"
+            pl="9" // Indent to align with text of parent item
+            mt="0.5"
+            mb="1"
+          >
+            {item.subItems!.map((subItem) => (
+              <SidebarNavItem
+                key={subItem.href}
+                item={subItem}
+                renderLink={render}
+                onClick={onClick}
+                scheme={scheme}
+              />
+            ))}
+          </Box>
+        </motion.div>
+      )}
+    </>
+  );
 }
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
@@ -446,6 +682,7 @@ interface SidebarProps {
   onLogout?: () => void;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   sidebarWidth: number;
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }
 
 function Sidebar({
@@ -456,6 +693,7 @@ function Sidebar({
   onLogout,
   renderLink,
   sidebarWidth,
+  scheme,
 }: SidebarProps) {
   const [logoutHovered, setLogoutHovered] = useState(false);
 
@@ -536,6 +774,7 @@ function Sidebar({
                     item={item}
                     renderLink={renderLink}
                     onClick={onClose}
+                    scheme={scheme}
                   />
                 ))}
               </Box>
@@ -606,6 +845,7 @@ interface TopBarProps {
   topBarSlot?: React.ReactNode;
   dropdownItems?: DashboardDropdownItem[];
   onLogout?: () => void;
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }
 
 function TopBar({
@@ -617,6 +857,7 @@ function TopBar({
   topBarSlot,
   dropdownItems,
   onLogout,
+  scheme,
 }: TopBarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -689,7 +930,7 @@ function TopBar({
       {/* Optional right slot */}
       {topBarSlot}
 
-      <ThemeToggleGroup />
+      <ThemeToggleGroup scheme={scheme} />
 
       {/* User menu */}
       <Box position="relative" ref={dropdownRef}>
@@ -769,11 +1010,13 @@ function TopBar({
                   icon={<ProfileIcon />}
                   label="My Profile"
                   onClick={() => setDropdownOpen(false)}
+                  scheme={scheme}
                 />
                 <DropdownItem
                   icon={<SettingsIcon />}
                   label="Settings"
                   onClick={() => setDropdownOpen(false)}
+                  scheme={scheme}
                 />
               </>
             )}
@@ -789,6 +1032,7 @@ function TopBar({
                   setDropdownOpen(false);
                   di.onClick?.();
                 }}
+                scheme={scheme}
               />
             ))}
 
@@ -802,6 +1046,7 @@ function TopBar({
                 setDropdownOpen(false);
                 onLogout?.();
               }}
+              scheme={scheme}
             />
           </Box>
         )}
@@ -817,11 +1062,13 @@ function DropdownItem({
   label,
   isDanger,
   onClick,
+  scheme,
 }: {
   icon?: React.ReactNode;
   label: string;
   isDanger?: boolean;
   onClick?: () => void;
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -843,7 +1090,7 @@ function DropdownItem({
       onMouseLeave={() => setHovered(false)}
       onClick={onClick}
       style={{
-        background: hovered ? (isDanger ? RED_HOVER_BG : BLUE_HOVER_BG_LIGHT) : "transparent",
+        background: hovered ? (isDanger ? RED_HOVER_BG : scheme.hoverBgLight) : "transparent",
         color: isDanger ? RED : undefined,
         transition: "background 0.12s ease",
       }}
@@ -940,11 +1187,14 @@ export function DashboardLayout({
   dropdownItems,
   topBarSlot,
   sidebarWidth = 220,
+  colorScheme = "blue",
   ...rest
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const scheme = SCHEME_COLORS[colorScheme];
 
   const resolvedGreeting = greeting ?? autoGreeting();
+  const resolvedLogo = logo ?? <Logo variant={colorScheme} height={26} />;
 
   return (
     <Box
@@ -955,13 +1205,14 @@ export function DashboardLayout({
     >
       {/* ── Sidebar ── */}
       <Sidebar
-        logo={logo ?? <Logo height={26} />}
+        logo={resolvedLogo}
         navGroups={navGroups}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         onLogout={onLogout}
         renderLink={renderLink}
         sidebarWidth={sidebarWidth}
+        scheme={scheme}
       />
 
       {/* ── Main content area (offset by sidebar width on desktop) ── */}
@@ -983,6 +1234,7 @@ export function DashboardLayout({
           topBarSlot={topBarSlot}
           dropdownItems={dropdownItems}
           onLogout={onLogout}
+          scheme={scheme}
         />
 
         {/* Page content */}
