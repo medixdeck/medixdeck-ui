@@ -445,9 +445,11 @@ export default function App() {
                   textTransform="uppercase" letterSpacing="0.06em">1 — href navigation</Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
                   ctaHref="/consult" — both buttons act as standard anchor links (no JS handler needed).
+                  Also, `colorScheme="purple"`
                 </Text>
                 <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
                   <Navbar
+                    colorScheme="purple"
                     navItems={[
                       { label: "Logo", href: "#logo" },
                       { label: "Buttons", href: "#buttons" },
@@ -1141,17 +1143,17 @@ export default function App() {
           <Section title="Error Pages" id="errorpages">
             <Box display="flex" flexDirection="column" gap="8" w="100%">
               <Box bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden" position="relative" minH="500px">
-                <NotFoundPage 
-                  title="Page Not Found" 
-                  description="We couldn't find the page you were looking for." 
-                  actionLabel="Back to Dashboard" 
+                <NotFoundPage
+                  title="Page Not Found"
+                  description="We couldn't find the page you were looking for."
+                  actionLabel="Back to Dashboard"
                   minH="500px"
                 />
               </Box>
               <Box bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden" position="relative" minH="500px">
-                <ServerErrorPage 
-                  errorMessage="Failed to fetch user data: Network timeout" 
-                  actionLabel="Try Again" 
+                <ServerErrorPage
+                  errorMessage="Failed to fetch user data: Network timeout"
+                  actionLabel="Try Again"
                   minH="500px"
                 />
               </Box>
@@ -1202,6 +1204,17 @@ export default function App() {
           <Section title="Accordion / FAQ" id="accordion" storybookPath="?path=/docs/data-accordion--docs">
             <Box w="100%" maxW="640px">
               <Accordion
+                items={[
+                  { id: "q1", question: "What is MedixDeck?", answer: "MedixDeck is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations." },
+                  { id: "q2", question: "Are the doctors on MedixDeck qualified?", answer: "Yes. Every doctor on MedixDeck is MDCN (Medical and Dental Council of Nigeria) verified before being listed on the platform." },
+                  { id: "q3", question: "What do I need to get started?", answer: "Simply create an account, complete your health profile, and you can begin searching for doctors immediately — no waitlist." },
+                  { id: "q4", question: "Is my medical data safe?", answer: "Absolutely. MedixDeck uses end-to-end encryption and complies with Nigerian data protection regulations (NDPR) to keep your health data private." },
+                ]}
+              />
+            </Box>
+            <Box w="100%" maxW="640px">
+              <Accordion
+                colorScheme="purple"
                 items={[
                   { id: "q1", question: "What is MedixDeck?", answer: "MedixDeck is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations." },
                   { id: "q2", question: "Are the doctors on MedixDeck qualified?", answer: "Yes. Every doctor on MedixDeck is MDCN (Medical and Dental Council of Nigeria) verified before being listed on the platform." },
@@ -1316,6 +1329,7 @@ export default function App() {
               { title: "5 Signs You Should See a Doctor Today", date: "2025-11-15" },
             ].map((item, i) => (
               <BlogCard
+                colorScheme="purple"
                 key={i}
                 coverImage="https://healthcareoffers.in/wp-content/uploads/2025/09/Blog-Posting-on-Healthcare-1280x669.jpg"
                 title={item.title}
@@ -1331,6 +1345,7 @@ export default function App() {
           {/* Footer Showcase */}
           <Section title="Footer" id="footer" storybookPath="?path=/docs/layout-footer--docs">
             <Box w="100%" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+              <Footer colorScheme="purple" />
               <Footer />
             </Box>
           </Section>

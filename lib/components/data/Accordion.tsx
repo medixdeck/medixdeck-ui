@@ -11,12 +11,19 @@ export interface AccordionItem {
   answer: string | React.ReactNode;
 }
 
+export type AccordionColorScheme = "blue" | "purple";
+
 export interface AccordionProps extends Omit<BoxProps, "onChange"> {
   items: AccordionItem[];
   /** Allow multiple items open simultaneously */
   allowMultiple?: boolean;
   /** Initially open item IDs */
   defaultOpenIds?: string[];
+  /**
+   * Brand accent applied to the open toggle icon and hover border.
+   * @default "blue"
+   */
+  colorScheme?: AccordionColorScheme;
 }
 
 /**
@@ -35,12 +42,19 @@ export interface AccordionProps extends Omit<BoxProps, "onChange"> {
  * />
  * ```
  */
+const SCHEME_COLORS: Record<AccordionColorScheme, { solid: string; ring: string }> = {
+  blue:   { solid: "#0685FF", ring: "#0685FF" },
+  purple: { solid: "#7700CC", ring: "#7700CC" },
+};
+
 export function Accordion({
   items,
   allowMultiple = false,
   defaultOpenIds = [],
+  colorScheme = "blue",
   ...props
 }: AccordionProps) {
+  const scheme = SCHEME_COLORS[colorScheme];
   const [openIds, setOpenIds] = React.useState<Set<string>>(new Set(defaultOpenIds));
 
   const toggle = (id: string) => {
@@ -70,7 +84,7 @@ export function Accordion({
             borderRadius="card"
             overflow="hidden"
             transition="border-color 0.2s"
-            _hover={{ borderColor: isOpen ? "blue.500" : "border" }}
+            _hover={{ borderColor: isOpen ? scheme.ring : "border" }}
           >
             {/* ── Trigger row ─────────────────────────────────────────────── */}
             <Box
@@ -114,7 +128,7 @@ export function Accordion({
                 aria-hidden="true"
                 style={{
                   border: isOpen ? "none" : "1.5px solid var(--medix-form-text)",
-                  background: isOpen ? "#0685FF" : "transparent",
+                  background: isOpen ? scheme.solid : "transparent",
                   color: isOpen ? "#ffffff" : "inherit",
                   flexShrink: 0,
                 }}
