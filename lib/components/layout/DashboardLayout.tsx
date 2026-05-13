@@ -504,6 +504,8 @@ function SidebarNavItem({
       borderTopLeftRadius={hasSubItems ? "lg" : "none"}
       borderBottomLeftRadius={hasSubItems ? "lg" : "none"}
       position="relative"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       // For leaf items, propagate the onClick (e.g. close mobile sidebar) via
       // the wrapped link element produced by render().
       onClick={!hasSubItems ? onClick : undefined}
@@ -616,8 +618,6 @@ function SidebarNavItem({
           aria-expanded={expanded}
           aria-controls={subMenuId}
           onClick={() => setExpanded((e) => !e)}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
           onFocus={(e) => {
             setFocusVisible(e.currentTarget.matches(":focus-visible"));
           }}
