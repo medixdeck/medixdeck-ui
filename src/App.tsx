@@ -375,6 +375,18 @@ export default function App() {
               items={[{ label: "Home", href: "#" }, { label: "Components", href: "#" }, { label: "Preview" }]}
               mb="10"
             />
+
+            <Breadcrumb
+              items={
+                [
+                  { label: "Home", href: "#" },
+                  { label: "Blog", href: "#" },
+                  { label: "Health & Wellness Blog", href: "#" },
+                  { label: "10 Tips for Better Sleep: How To Sleep For Longer Hours" }
+                ]
+              }
+              mb="10"
+            />
           </Section>
 
           {/* ────────────────────────────────────────────────────

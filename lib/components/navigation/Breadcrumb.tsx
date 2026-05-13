@@ -52,6 +52,7 @@ export function Breadcrumb({
       as="nav"
       aria-label="Breadcrumb"
       display="flex"
+      flexWrap="wrap"
       alignItems="center"
       gap="1.5"
       {...props}
@@ -59,7 +60,10 @@ export function Breadcrumb({
       {items.map((item, idx) => {
         const isLast = idx === items.length - 1;
         return (
-          <Box key={idx} display="flex" alignItems="center" gap="1.5">
+          <Box key={idx} display="flex" alignItems="center" gap="1.5"
+            justifyContent={"center"}
+
+          >
             {renderLink(
               item,
               <Box
@@ -71,12 +75,14 @@ export function Breadcrumb({
                 _hover={!isLast ? { color: "blue.500" } : undefined}
                 cursor={!isLast && item.href ? "pointer" : "default"}
                 transition="color 0.15s"
+                wordBreak="break-word"
+                whiteSpace={!isLast ? "nowrap" : "normal"}
               >
                 {item.label}
               </Box>
             )}
             {!isLast && (
-              <Box color="text.muted" display="flex" alignItems="center">
+              <Box color="text.muted" display="flex" alignItems="center" flexShrink={0}>
                 {separator}
               </Box>
             )}
