@@ -115,3 +115,53 @@ export const Purple: Story = {
     </Box>
   ),
 };
+
+export const WithSublinks: Story = {
+  args: {
+    user: {
+      name: "Tobi K.",
+      email: "tobi@medixdeck.com",
+    },
+    navGroups: [
+      {
+        items: [
+          { label: "Dashboard", href: "#dashboard", icon: <HomeIcon /> },
+          {
+            label: "Appointments",
+            href: "#appointments-parent",
+            icon: <UserIcon />,
+            isActive: true, // Auto-expands by default since a subItem could be active, or we just set the parent to active
+            subItems: [
+              { label: "Upcoming", href: "#upcoming", badge: 3 },
+              { label: "Completed", href: "#completed" },
+              { label: "Cancelled", href: "#cancelled" },
+            ],
+          },
+        ],
+      },
+      {
+        groupLabel: "System",
+        items: [
+          { label: "Settings", href: "#settings", icon: <SettingsIcon /> },
+        ],
+      },
+    ],
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <Box p={8}>
+          <Text fontSize="2xl" fontWeight="bold" mb={4} color="text.heading">
+            Collapsible Sublinks
+          </Text>
+          <Text mb={4} color="text.body">
+            The "Appointments" item has sub-links. It renders a chevron and expands when clicked.
+          </Text>
+          <Box p={8} bg="bg.surface" borderRadius="xl" border="1px dashed" borderColor="border">
+            <Text color="text.body">Your dashboard content goes here.</Text>
+          </Box>
+        </Box>
+      </DashboardLayout>
+    </Box>
+  ),
+};

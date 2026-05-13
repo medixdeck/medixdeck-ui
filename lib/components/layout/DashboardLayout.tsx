@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useId } from "react";
 import { Box, type BoxProps } from "@chakra-ui/react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useThemeMode, type ThemeModeSetting } from "../../hooks/useThemeMode";
 import { Logo } from "../primitive/Logo";
 import { Avatar } from "../primitive/Avatar";
@@ -143,6 +144,8 @@ export interface DashboardNavItem {
   hasDot?: boolean;
   /** Mark this item as the currently active route. */
   isActive?: boolean;
+  /** Optional nested sub-items (creates an expandable dropdown accordion). */
+  subItems?: DashboardNavItem[];
 }
 
 export interface DashboardNavGroup {
@@ -475,7 +478,9 @@ function SidebarNavItem({
   scheme: typeof SCHEME_COLORS[DashboardColorScheme];
 }) {
   const [hovered, setHovered] = useState(false);
+  const [expanded, setExpanded] = useState(item.isActive || item.subItems?.some((sub) => sub.isActive) || false);
   const isActive = item.isActive ?? false;
+  const hasSubItems = item.subItems && item.subItems.length > 0;
 
   const content = (
     <Box
@@ -485,21 +490,27 @@ function SidebarNavItem({
       px="3"
       py="2.5"
       borderRadius="lg"
-      borderLeftRadius="none"
-      borderTopLeftRadius="none"
-      borderBottomLeftRadius="none"
+      borderLeftRadius={hasSubItems ? "lg" : "none"}
+      borderTopLeftRadius={hasSubItems ? "lg" : "none"}
+      borderBottomLeftRadius={hasSubItems ? "lg" : "none"}
       position="relative"
       cursor="pointer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
+      onClick={() => {
+        if (hasSubItems) {
+          setExpanded((e) => !e);
+        } else {
+          onClick?.();
+        }
+      }}
       style={{
         background: isActive
           ? scheme.activeBgLight
           : hovered
             ? scheme.hoverBgLight
             : "transparent",
-        boxShadow: isActive ? `inset 3px 0 0 ${scheme.solid}` : undefined,
+        boxShadow: isActive && !hasSubItems ? `inset 3px 0 0 ${scheme.solid}` : undefined,
         transition: "background 0.15s ease, box-shadow 0.15s ease",
       }}
       _dark={{
@@ -515,11 +526,11 @@ function SidebarNavItem({
         <Box
           flexShrink={0}
           style={{
-            color: isActive ? scheme.solid : undefined,
-            opacity: isActive ? 1 : hovered ? 0.85 : 0.6,
+            color: isActive || expanded ? scheme.solid : undefined,
+            opacity: isActive || expanded ? 1 : hovered ? 0.85 : 0.6,
             transition: "color 0.15s ease, opacity 0.15s ease",
           }}
-          color={isActive ? scheme.chakraToken : "text.body"}
+          color={isActive || expanded ? scheme.chakraToken : "text.body"}
         >
           {item.icon}
         </Box>
@@ -530,19 +541,19 @@ function SidebarNavItem({
         as="span"
         flex="1"
         fontSize="sm"
-        fontWeight={isActive ? "600" : "500"}
+        fontWeight={isActive || expanded ? "600" : "500"}
         fontFamily="var(--font-body)"
         style={{
-          color: isActive ? scheme.solid : undefined,
+          color: isActive || expanded ? scheme.solid : undefined,
           transition: "color 0.15s ease",
         }}
-        color={isActive ? scheme.chakraToken : "text.body"}
+        color={isActive || expanded ? scheme.chakraToken : "text.body"}
       >
         {item.label}
       </Box>
 
       {/* Numeric badge */}
-      {typeof item.badge === "number" && (
+      {typeof item.badge === "number" && !hasSubItems && (
         <Box
           as="span"
           display="inline-flex"
@@ -565,7 +576,7 @@ function SidebarNavItem({
       )}
 
       {/* Red dot badge */}
-      {item.hasDot && (
+      {item.hasDot && !hasSubItems && (
         <Box
           as="span"
           display="inline-block"
@@ -577,10 +588,56 @@ function SidebarNavItem({
           aria-label="New notification"
         />
       )}
+
+      {/* Chevron for sub-items */}
+      {hasSubItems && (
+        <Box
+          flexShrink={0}
+          color="text.muted"
+        >
+          <ChevronDownIcon open={expanded} />
+        </Box>
+      )}
     </Box>
   );
 
-  return render(item, content);
+  return (
+    <>
+      {hasSubItems ? content : render(item, content)}
+      
+      {/* Sub-items dropdown list */}
+      <AnimatePresence initial={false}>
+        {hasSubItems && expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: [0.0, 0.0, 0.2, 1.0] }}
+            style={{ overflow: "hidden" }}
+          >
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap="0.5"
+              pl="9" // Indent to align with text of parent item
+              mt="0.5"
+              mb="1"
+            >
+              {item.subItems!.map((subItem) => (
+                <SidebarNavItem
+                  key={subItem.href}
+                  item={subItem}
+                  renderLink={render}
+                  onClick={onClick}
+                  scheme={scheme}
+                />
+              ))}
+            </Box>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 }
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────

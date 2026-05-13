@@ -190,7 +190,15 @@ export default function App() {
             items: [
               { label: 'Home', href: '#home', isActive: true },
               { label: 'Consult', href: '#consult' },
-              { label: 'Records', href: '#records' },
+              {
+                label: 'Records',
+                href: '#records',
+                subItems: [
+                  { label: "Medical History", href: "#records-history" },
+                  { label: "Prescriptions", href: "#records-prescriptions" },
+                  { label: "Test Results", href: "#records-test-results", badge: 2 },
+                ],
+              },
               { label: 'Messages', href: '#messages', badge: 6 },
             ]
           },
