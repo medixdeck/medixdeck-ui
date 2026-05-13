@@ -275,7 +275,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.13 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v0.1.14 · {PREVIEW_COMPONENT_COUNT} components
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
                 Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
@@ -771,16 +771,38 @@ export default function App() {
           ──────────────────────────────────────────────────── */}
 
           <Section title="Badges & Tags" id="badges" storybookPath="?path=/docs/primitives-badge--docs">
-            <Badge status="success">Verified</Badge>
-            <Badge status="warning" variant="subtle">Pending</Badge>
-            <Badge status="error" variant="solid">Cancelled</Badge>
-            <Badge status="info">New</Badge>
-            <Badge status="neutral" variant="outline">Draft</Badge>
-            <Divider label="Tags" w="100%" />
-            <Tag colorScheme="blue" variant="subtle">Cardiology</Tag>
-            <Tag colorScheme="purple" variant="solid">Psychiatry</Tag>
-            <Tag colorScheme="green" onClose={() => { }}>Pediatrics ×</Tag>
-            <Tag colorScheme="gray" variant="outline">General Practice</Tag>
+            <Box mb="2">
+              <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)"
+                textTransform="uppercase" letterSpacing="0.06em">Badges with `rounded` prop</Text>
+            </Box>
+            <Box display="flex" flexWrap="wrap" gap="4" w="100%">
+              <Badge rounded={true} status="success">Verified</Badge>
+              <Badge rounded={true} status="warning" variant="subtle">Pending</Badge>
+              <Badge rounded={true} status="error" variant="solid">Cancelled</Badge>
+              <Badge rounded={true} status="info">New</Badge>
+              <Badge rounded={true} status="neutral" variant="outline">Draft</Badge>
+            </Box>
+
+            <Box mb="2" mt={6}>
+              <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)"
+                textTransform="uppercase" letterSpacing="0.06em">Badges without `rounded` prop</Text>
+            </Box>
+            <Box display="flex" flexWrap="wrap" gap="4" w="100%">
+              <Badge rounded={false} status="success">Verified</Badge>
+              <Badge rounded={false} status="warning" variant="subtle">Pending</Badge>
+              <Badge rounded={false} status="error" variant="solid">Cancelled</Badge>
+              <Badge rounded={false} status="info">New</Badge>
+              <Badge rounded={false} status="neutral" variant="outline">Draft</Badge>
+            </Box>
+
+            <Divider label="Tags" w="100%" my="6" />
+
+            <Box display="flex" flexWrap="wrap" gap="4" w="100%">
+              <Tag colorScheme="blue" variant="subtle">Cardiology</Tag>
+              <Tag colorScheme="purple" variant="solid">Psychiatry</Tag>
+              <Tag colorScheme="green" onClose={() => { }}>Pediatrics ×</Tag>
+              <Tag colorScheme="gray" variant="outline">General Practice</Tag>
+            </Box>
           </Section>
 
           <Section title="Avatars" id="avatars" storybookPath="?path=/docs/primitives-avatar--docs">
@@ -1387,7 +1409,7 @@ export default function App() {
           >
             @medixdeck/ui
           </Link>{" "}
-          · v0.1.13 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
+          · v0.1.14 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
           {" "}
           ⚡ by{" "}
           <Link

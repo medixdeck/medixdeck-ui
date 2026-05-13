@@ -84,7 +84,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       fontWeight: 500,
       letterSpacing: "0.03em",
       textTransform: "none",
-      borderRadius: rounded ? "100px" : "16px",
+      borderRadius: rounded ? "100px" : 4,
       border,
       background: bg,
       color,
