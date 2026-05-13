@@ -58,10 +58,10 @@ export function App() {
 
 | Area | Exports |
 | --- | --- |
-| Provider + theme | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `system`, `medixConfig`, token exports |
+| Provider + theme | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports |
 | Primitive | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo` |
 | Form | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload` |
-| Layout | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout` |
+| Layout | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer` |
 | Navigation | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper` |
 | Feedback | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `Toaster`, `toast`, `dismissToast` |
 | Data display | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable` |
@@ -99,7 +99,52 @@ function ThemeStatus() {
 }
 ```
 
+## Color scheme theming
+
+Four components — `Navbar`, `Footer`, `Accordion`, and `BlogCard` — accept a `colorScheme` prop that switches every brand accent between MedixDeck blue (`#0685FF`) and purple (`#7700CC`).
+
+```tsx
+import { Navbar, Footer, Accordion, BlogCard } from "@medixdeck/ui";
+
+<Navbar    colorScheme="purple" navItems={[...]} ctaLabel="Talk to a Doctor" />
+<Footer    colorScheme="purple" />
+<Accordion colorScheme="purple" items={[...]} />
+<BlogCard  colorScheme="purple" title="..." />
+```
+
+Use the `useColorScheme` hook to manage the active scheme in state and keep multiple components in sync:
+
+```tsx
+import { useColorScheme, Navbar, Footer, Accordion } from "@medixdeck/ui";
+
+function Page() {
+  const { colorScheme, toggleColorScheme } = useColorScheme(); // defaults to "blue"
+
+  return (
+    <>
+      <button onClick={toggleColorScheme}>
+        Switch to {colorScheme === "blue" ? "purple" : "blue"}
+      </button>
+      <Navbar    colorScheme={colorScheme} navItems={[...]} />
+      <Accordion colorScheme={colorScheme} items={[...]} />
+      <Footer    colorScheme={colorScheme} />
+    </>
+  );
+}
+```
+
+`useColorScheme(initialScheme?)` returns:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `colorScheme` | `"blue" \| "purple"` | Currently active scheme |
+| `setColorScheme` | `(scheme) => void` | Explicit setter |
+| `toggleColorScheme` | `() => void` | Flips blue ↔ purple |
+| `isBlue` | `boolean` | `true` when scheme is `"blue"` |
+| `isPurple` | `boolean` | `true` when scheme is `"purple"` |
+
 ## Theme color reference
+
 
 ```tsx
 import { ThemeColorPalette } from "@medixdeck/ui";

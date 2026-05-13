@@ -20,6 +20,9 @@ export { MedixProvider } from "./components/provider/MedixProvider";
 export type { MedixProviderProps } from "./components/provider/MedixProvider";
 export { useThemeMode, useIsDarkMode } from "./hooks/useThemeMode";
 export type { ThemeMode, ThemeModeSetting, UseThemeModeResult } from "./hooks/useThemeMode";
+
+export { useColorScheme } from "./hooks/useColorScheme";
+export type { ColorScheme, UseColorSchemeResult } from "./hooks/useColorScheme";
 export { system, medixConfig } from "./theme";
 export { colorTokens } from "./theme/colors";
 export { typographyTokens, textStyleTokens } from "./theme/typography";
@@ -111,6 +114,7 @@ export type {
   DashboardNavGroup,
   DashboardUser,
   DashboardDropdownItem,
+  DashboardColorScheme,
 } from "./components/layout/DashboardLayout";
 
 // ─── Navigation Components ─────────────────────────────────────────────────────
