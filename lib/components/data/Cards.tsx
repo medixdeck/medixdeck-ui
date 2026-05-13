@@ -98,6 +98,13 @@ export function TestimonialCard({
 
 // ─── BlogCard ─────────────────────────────────────────────────────────────────
 
+export type BlogCardColorScheme = "blue" | "purple";
+
+const BLOG_CARD_COLORS: Record<BlogCardColorScheme, { solid: string; token: string }> = {
+  blue:   { solid: "#0685FF", token: "blue.500" },
+  purple: { solid: "#7700CC", token: "purple.500" },
+};
+
 export interface BlogCardProps extends Omit<BoxProps, "onClick"> {
   /** Article headline */
   title: string;
@@ -122,6 +129,11 @@ export interface BlogCardProps extends Omit<BoxProps, "onClick"> {
   href?: string;
   /** Click handler – wraps the entire card in a <button> */
   onClick?: () => void;
+  /**
+   * Brand accent applied to the category pill and date badge day number.
+   * @default "blue"
+   */
+  colorScheme?: BlogCardColorScheme;
 }
 
 /** Try to derive { day, weekday } from a date string. Returns null if unparseable. */
@@ -165,10 +177,12 @@ export function BlogCard({
   coverImage,
   href,
   onClick,
+  colorScheme = "blue",
   ...props
 }: BlogCardProps) {
   const isInteractive = Boolean(href || onClick);
   const dateBadge = parseDateBadge(date);
+  const scheme = BLOG_CARD_COLORS[colorScheme];
 
   const cardStyles: React.CSSProperties = {
     display: "block",
@@ -232,7 +246,7 @@ export function BlogCard({
               style={{
                 fontSize: 22,
                 fontWeight: 700,
-                color: "#0685FF",
+                color: scheme.solid,
                 lineHeight: 1,
                 fontFamily: "var(--font-heading)",
               }}
@@ -267,7 +281,7 @@ export function BlogCard({
             py="1"
             mb="3"
             borderRadius="full"
-            bg="blue.500"
+            bg={scheme.token}
             color="white"
             fontSize="xs"
             fontWeight="medium"

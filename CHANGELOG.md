@@ -4,6 +4,47 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.14] — 2026-05-13
+
+### Added
+
+- **`colorScheme` prop on themed components**: `Navbar`, `Footer`, `Accordion`, and `BlogCard` now all accept a `colorScheme?: "blue" | "purple"` prop (default `"blue"`). Passing `"purple"` switches every brand accent on that component — CTA buttons, active/hover link colours, toggle icon fills, category pills, date badge numbers, social icon backgrounds, and the newsletter button — to the MedixDeck secondary purple (#7700CC) without changing any other behaviour or layout.
+
+  | Component | Affected elements |
+  | --- | --- |
+  | `Navbar` | CTA buttons, hamburger/close icon fill, active & hover link colour, default `Logo` variant |
+  | `Footer` | Social icon backgrounds, newsletter submit button, input focus ring, nav link hover colour |
+  | `Accordion` | Open-state toggle icon fill, card border hover accent |
+  | `BlogCard` | Category pill background, date badge day-number colour |
+
+- **`useColorScheme` hook**: A new `lib/hooks/useColorScheme.ts` hook that manages the active brand colour scheme in React state and exposes helpers for updating it.
+
+  ```tsx
+  import { useColorScheme } from "@medixdeck/ui";
+
+  const { colorScheme, setColorScheme, toggleColorScheme, isBlue, isPurple } = useColorScheme();
+  // or start purple:
+  const { colorScheme } = useColorScheme("purple");
+  ```
+
+  | Return value | Type | Description |
+  | --- | --- | --- |
+  | `colorScheme` | `"blue" \| "purple"` | Currently active scheme |
+  | `setColorScheme` | `(scheme) => void` | Explicit setter |
+  | `toggleColorScheme` | `() => void` | Flips blue ↔ purple |
+  | `isBlue` | `boolean` | Convenience flag |
+  | `isPurple` | `boolean` | Convenience flag |
+
+- **New type exports**: `ColorScheme`, `UseColorSchemeResult`, `NavbarColorScheme`, `FooterColorScheme`, `AccordionColorScheme`, `BlogCardColorScheme` — all exported from `lib/index.ts`.
+
+### Changed
+
+- **`Navbar`**: When no `logo` prop is supplied the built-in `<Logo>` now automatically mirrors the active `colorScheme` (`variant="blue"` or `variant="purple"`).
+- **`Footer`**: The newsletter submit button was converted from a Chakra `<Button>` to a native `<button>` element with `onMouseEnter/Leave` for hover, consistent with the library's native-first interactive component pattern (see `AGENTS.md §15`).
+- **`Footer` `SocialIcons`**: Refactored from a static object of component functions to a factory `(iconColor: string) => ({...})` so the icon background colour is fully dynamic.
+
+---
+
 ## [0.1.13] — 2026-05-03
 
 ### Added

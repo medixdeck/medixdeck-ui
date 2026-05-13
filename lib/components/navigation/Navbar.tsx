@@ -7,35 +7,44 @@ import { Button } from "../primitive/Button";
 import { Logo } from "../primitive/Logo";
 
 // ─── Bezier easing presets (Framer Motion v12 requires tuples, not strings) ───
-const EASE_OUT    = [0.0, 0.0, 0.2, 1.0] as [number, number, number, number];
-const EASE_IN     = [0.4, 0.0, 1.0, 1.0] as [number, number, number, number];
-const EASE_SPRING = [0.22, 1,  0.36, 1]  as [number, number, number, number];
+const EASE_OUT = [0.0, 0.0, 0.2, 1.0] as [number, number, number, number];
+const EASE_IN = [0.4, 0.0, 1.0, 1.0] as [number, number, number, number];
+const EASE_SPRING = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 // ─── Framer Motion variants ───────────────────────────────────────────────────
 
 /** Mobile menu panel — slides down from the navbar edge */
 const menuVariants: Variants = {
-  hidden:  { opacity: 0, y: -8,  scaleY: 0.96, transformOrigin: "top" },
-  visible: { opacity: 1, y: 0,   scaleY: 1,    transformOrigin: "top", transition: { duration: 0.22, ease: EASE_SPRING } },
-  exit:    { opacity: 0, y: -6,  scaleY: 0.97, transformOrigin: "top", transition: { duration: 0.16, ease: EASE_IN } },
+  hidden: { opacity: 0, y: -8, scaleY: 0.96, transformOrigin: "top" },
+  visible: { opacity: 1, y: 0, scaleY: 1, transformOrigin: "top", transition: { duration: 0.22, ease: EASE_SPRING } },
+  exit: { opacity: 0, y: -6, scaleY: 0.97, transformOrigin: "top", transition: { duration: 0.16, ease: EASE_IN } },
 };
 
 /** Stagger container for mobile nav links */
 const linkListVariants: Variants = {
-  hidden:  {},
+  hidden: {},
   visible: { transition: { staggerChildren: 0.045, delayChildren: 0.06 } },
 };
 
 /** Each mobile nav link item */
 const linkItemVariants: Variants = {
-  hidden:  { opacity: 0, x: -10 },
-  visible: { opacity: 1, x: 0,  transition: { duration: 0.2, ease: EASE_OUT } },
+  hidden: { opacity: 0, x: -10 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.2, ease: EASE_OUT } },
 };
 
 /** Mobile CTA buttons — slide + fade up */
 const ctaVariants: Variants = {
-  hidden:  { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0,  transition: { duration: 0.22, ease: EASE_OUT, delay: 0.18 } },
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.22, ease: EASE_OUT, delay: 0.18 } },
+};
+
+// ─── Color scheme map ────────────────────────────────────────────────────────
+
+export type NavbarColorScheme = "blue" | "purple";
+
+const NAVBAR_COLORS: Record<NavbarColorScheme, { solid: string; hover: string; hoverBg: string; hoverBgDark: string }> = {
+  blue: { solid: "#0685FF", hover: "#0685FF", hoverBg: "blue.50", hoverBgDark: "rgba(6,133,255,0.10)" },
+  purple: { solid: "#7700CC", hover: "#7700CC", hoverBg: "purple.50", hoverBgDark: "rgba(119,0,204,0.10)" },
 };
 
 // ─── Inline SVG icons ─────────────────────────────────────────────────────────
@@ -48,24 +57,28 @@ const ArrowIcon = () => (
   </svg>
 );
 
-const HamburgerIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="32" height="32" rx="8" fill="#0685FF" />
-    <path d="M9.25 10.75H22.75" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M9.25 16H22.75"    stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M9.25 21.25H22.75" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
+function HamburgerIcon({ color }: { color: string }) {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="8" fill={color} />
+      <path d="M9.25 10.75H22.75" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.25 16H22.75" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.25 21.25H22.75" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
-const CloseIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="32" height="32" rx="8" fill="#0685FF" />
-    <path
-      d="M13.8801 16.71L8.93005 21.66L10.3401 23.07L13.1701 20.24L16.0001 17.41L18.1201 19.54L21.6601 23.07L23.0701 21.66L18.1201 16.71L17.4101 16L23.0701 10.34L21.6601 8.92999L16.0001 14.59L10.3401 8.92999L8.93005 10.34L14.5901 16L13.8801 16.71Z"
-      fill="white"
-    />
-  </svg>
-);
+function CloseIcon({ color }: { color: string }) {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="8" fill={color} />
+      <path
+        d="M13.8801 16.71L8.93005 21.66L10.3401 23.07L13.1701 20.24L16.0001 17.41L18.1201 19.54L21.6601 23.07L23.0701 21.66L18.1201 16.71L17.4101 16L23.0701 10.34L21.6601 8.92999L16.0001 14.59L10.3401 8.92999L8.93005 10.34L14.5901 16L13.8801 16.71Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -157,6 +170,12 @@ export interface NavbarProps extends Omit<BoxProps, "children"> {
    * ```
    */
   ctaSlot?: React.ReactNode;
+
+  /**
+   * Brand color scheme applied to CTAs, active links, and mobile icon accents.
+   * @default "blue"
+   */
+  colorScheme?: NavbarColorScheme;
 
   /** Pin the navbar to the top of the viewport. */
   isSticky?: boolean;
@@ -286,13 +305,15 @@ export function Navbar({
   ctaSlot,
   renderLink = defaultRenderLink,
   isSticky = false,
+  colorScheme = "blue",
   variant = "solid",
   ...props
 }: NavbarProps) {
   const [isOpen, setIsOpen] = React.useState(false);
+  const scheme = NAVBAR_COLORS[colorScheme];
 
   // Icon button falls back to label button values
-  const resolvedIconHref    = ctaIconHref    ?? ctaHref;
+  const resolvedIconHref = ctaIconHref ?? ctaHref;
   const resolvedIconHandler = onCtaIconClick ?? onCtaClick;
 
   // Background
@@ -314,7 +335,7 @@ export function Navbar({
           as={secondaryCtaHref ? "a" : "button"}
           href={secondaryCtaHref}
           variant={mobile ? "outline" : "ghost"}
-          colorScheme="blue"
+          colorScheme={colorScheme}
           size={mobile ? "md" : "sm"}
           onClick={() => { onSecondaryCtaClick?.(); if (mobile) setIsOpen(false); }}
           style={mobile ? { width: "100%" } : undefined}
@@ -326,7 +347,7 @@ export function Navbar({
         as={ctaHref ? "a" : "button"}
         href={ctaHref}
         variant="solid"
-        colorScheme="blue"
+        colorScheme={colorScheme}
         size={mobile ? "md" : "sm"}
         onClick={() => { onCtaClick?.(); if (mobile) setIsOpen(false); }}
         style={mobile ? { width: "100%" } : undefined}
@@ -340,7 +361,7 @@ export function Navbar({
           target={resolvedIconHref && resolvedIconHref !== ctaHref ? "_blank" : undefined}
           rel={resolvedIconHref && resolvedIconHref !== ctaHref ? "noopener noreferrer" : undefined}
           variant="solid"
-          colorScheme="blue"
+          colorScheme={colorScheme}
           size="sm"
           onClick={resolvedIconHandler}
           aria-label="Open"
@@ -380,7 +401,7 @@ export function Navbar({
       >
         {/* Logo */}
         <Box flexShrink={0}>
-          {logo ?? <Logo height={28} />}
+          {logo ?? <Logo variant={colorScheme === "blue" ? "blue" : "purple"} height={28} />}
         </Box>
 
         {/* ── Desktop nav links ─────────────────────────────────────────────── */}
@@ -409,11 +430,11 @@ export function Navbar({
                   fontSize="sm"
                   fontWeight="medium"
                   fontFamily="var(--font-body)"
-                  color={item.isActive ? "blue.500" : "text.body"}
+                  color={item.isActive ? scheme.hover : "text.body"}
                   borderRadius="md"
                   transition="all 0.15s"
-                  _hover={{ color: "blue.500", bg: "blue.50" }}
-                  _dark={{ _hover: { bg: "rgba(6,133,255,0.10)" } }}
+                  _hover={{ color: scheme.hover, bg: scheme.hoverBg }}
+                  _dark={{ _hover: { bg: scheme.hoverBgDark } }}
                   cursor="pointer"
                 >
                   {item.label}
@@ -453,7 +474,7 @@ export function Navbar({
                 transition={{ duration: 0.18, ease: "easeOut" }}
                 style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
               >
-                <CloseIcon />
+                <CloseIcon color={scheme.solid} />
               </motion.span>
             ) : (
               <motion.span
@@ -464,7 +485,7 @@ export function Navbar({
                 transition={{ duration: 0.18, ease: "easeOut" }}
                 style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
               >
-                <HamburgerIcon />
+                <HamburgerIcon color={scheme.solid} />
               </motion.span>
             )}
           </AnimatePresence>
@@ -509,9 +530,9 @@ export function Navbar({
                         fontSize="md"
                         fontWeight="medium"
                         fontFamily="var(--font-body)"
-                        color={item.isActive ? "blue.500" : "text.body"}
+                        color={item.isActive ? scheme.hover : "text.body"}
                         borderRadius="md"
-                        _hover={{ color: "blue.500", bg: "bg.subtle" }}
+                        _hover={{ color: scheme.hover, bg: "bg.subtle" }}
                         cursor="pointer"
                         onClick={() => setIsOpen(false)}
                       >
