@@ -64,7 +64,7 @@ export interface FooterProps extends Omit<BoxProps, "children"> {
   sections?: FooterSection[];
   /** Social media links */
   socialLinks?: SocialLink[];
-  /** Copyright text. Defaults to "© {year} MedixDeck. MDCN & FMoH Certified Platform." */
+  /** Copyright text. Defaults to "© {year} MedixDeck Health Solution Ltd. All Rights Reserved." */
   copyright?: string;
   /** Links at the bottom right corner */
   bottomLinks?: BottomLink[];
@@ -238,7 +238,7 @@ export function Footer({
   ...props
 }: FooterProps) {
   const currentYear = new Date().getFullYear();
-  const resolvedCopyright = copyright ?? `© ${currentYear} MedixDeck. MDCN & FMoH Certified Platform.`;
+  const resolvedCopyright = copyright ?? `© ${currentYear} MedixDeck Health Solution Ltd. All Rights Reserved.`;
   const [email, setEmail] = useState("");
   const [newsletterButtonHovered, setNewsletterButtonHovered] = useState(false);
   const [newsletterButtonFocused, setNewsletterButtonFocused] = useState(false);
