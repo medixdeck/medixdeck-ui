@@ -750,7 +750,7 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
       bg="bg"
       borderTop="1px solid"
       borderColor="border"
-      alignItems="stretch"
+      alignItems="center"
       style={{
         height: 64,
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
@@ -845,6 +845,8 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
             flex="1"
             display="flex"
             alignItems="stretch"
+            justifyContent="center"
+            h="16"
             style={{ textDecoration: "none" }}
           >
             {renderLink(navItem, tabContent)}
