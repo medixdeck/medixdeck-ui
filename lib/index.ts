@@ -112,6 +112,7 @@ export type {
   DashboardLayoutProps,
   DashboardNavItem,
   DashboardNavGroup,
+  DashboardMobileNavItem,
   DashboardUser,
   DashboardDropdownItem,
   DashboardColorScheme,

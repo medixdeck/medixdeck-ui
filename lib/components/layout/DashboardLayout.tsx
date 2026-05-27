@@ -155,6 +155,17 @@ export interface DashboardNavGroup {
   items: DashboardNavItem[];
 }
 
+export interface DashboardMobileNavItem {
+  /** Label shown below the icon in the mobile bottom bar. */
+  label: string;
+  /** href used by `renderLink` and as a unique key. */
+  href: string;
+  /** Icon element rendered above the label (recommended: 22×22 SVG). */
+  icon: React.ReactNode;
+  /** Mark this tab as active. */
+  isActive?: boolean;
+}
+
 export interface DashboardUser {
   /** Display name shown in the top bar greeting and dropdown. */
   name: string;
@@ -251,6 +262,26 @@ export interface DashboardLayoutProps extends Omit<BoxProps, "children"> {
    * @default "blue"
    */
   colorScheme?: DashboardColorScheme;
+
+  /**
+   * Optional flat list of up to 5 items for the mobile bottom navigation bar.
+   * When provided, a fixed bottom tab bar is shown on mobile (hidden on md+).
+   * Each item requires an `icon` and a `label`. Set `isActive` on the current
+   * route's item to highlight it.
+   *
+   * The same `renderLink` prop is used to wrap each tab, so router integration
+   * works out-of-the-box.
+   *
+   * @example
+   * ```tsx
+   * mobileNavItems={[
+   *   { label: "Home",     href: "/",          icon: <HomeIcon />,    isActive: true },
+   *   { label: "Messages", href: "/messages",  icon: <ChatIcon />,   badge: 3 },
+   *   { label: "Profile",  href: "/profile",   icon: <UserIcon /> },
+   * ]}
+   * ```
+   */
+  mobileNavItems?: DashboardMobileNavItem[];
 }
 
 // ─── Helper: default link renderer ───────────────────────────────────────────
@@ -485,11 +516,16 @@ function SidebarNavItem({
   const hasSubItems = !!(item.subItems && item.subItems.length > 0);
   const subMenuId = useId();
 
+  // Sync expanded when active state changes from outside (e.g. route change).
+  // But do NOT keep expanded=true after navigating away — only expand when
+  // this item (or one of its children) is actually the active route.
   useEffect(() => {
-    if (isActive || hasActiveSubItem) {
-      setExpanded(true);
-    }
+    setExpanded(isActive || hasActiveSubItem);
   }, [isActive, hasActiveSubItem]);
+
+  // Use isActive for colour; use (isActive || expanded) only for the chevron
+  // direction so that manually-opened accordions don't inherit the brand colour.
+  const isColoured = isActive;
 
   // Visual row — pure styling, no interactive semantics
   const rowContent = (
@@ -533,11 +569,11 @@ function SidebarNavItem({
         <Box
           flexShrink={0}
           style={{
-            color: isActive || expanded ? scheme.solid : undefined,
-            opacity: isActive || expanded ? 1 : hovered ? 0.85 : 0.6,
+            color: isColoured ? scheme.solid : undefined,
+            opacity: isColoured ? 1 : hovered ? 0.85 : 0.6,
             transition: "color 0.15s ease, opacity 0.15s ease",
           }}
-          color={isActive || expanded ? scheme.chakraToken : "text.body"}
+          color={isColoured ? scheme.chakraToken : "text.body"}
         >
           {item.icon}
         </Box>
@@ -548,13 +584,13 @@ function SidebarNavItem({
         as="span"
         flex="1"
         fontSize="sm"
-        fontWeight={isActive || expanded ? "600" : "500"}
+        fontWeight={isColoured ? "600" : "500"}
         fontFamily="var(--font-body)"
         style={{
-          color: isActive || expanded ? scheme.solid : undefined,
+          color: isColoured ? scheme.solid : undefined,
           transition: "color 0.15s ease",
         }}
-        color={isActive || expanded ? scheme.chakraToken : "text.body"}
+        color={isColoured ? scheme.chakraToken : "text.body"}
       >
         {item.label}
       </Box>
@@ -669,6 +705,114 @@ function SidebarNavItem({
         </motion.div>
       )}
     </>
+  );
+}
+
+// ─── MobileBottomNav ─────────────────────────────────────────────────────────
+
+interface MobileBottomNavProps {
+  items: DashboardMobileNavItem[];
+  renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
+}
+
+function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
+  return (
+    <Box
+      as="nav"
+      aria-label="Mobile bottom navigation"
+      display={{ base: "flex", md: "none" }}
+      position="fixed"
+      bottom="0"
+      left="0"
+      right="0"
+      zIndex="docked"
+      bg="bg"
+      borderTop="1px solid"
+      borderColor="border"
+      h="16"
+      alignItems="stretch"
+      boxShadow="0 -4px 24px rgba(0,0,0,0.07)"
+    >
+      {items.slice(0, 5).map((item) => {
+        const isActive = item.isActive ?? false;
+
+        const tabContent = (
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            gap="0.5"
+            flex="1"
+            h="full"
+            px="1"
+            position="relative"
+            style={{ cursor: "pointer" }}
+          >
+            {/* Active indicator bar at top */}
+            {isActive && (
+              <Box
+                position="absolute"
+                top="0"
+                left="20%"
+                right="20%"
+                h="2px"
+                borderBottomRadius="full"
+                style={{ background: scheme.solid }}
+              />
+            )}
+
+            {/* Icon */}
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              style={{
+                color: isActive ? scheme.solid : undefined,
+                opacity: isActive ? 1 : 0.55,
+                transition: "color 0.15s ease, opacity 0.15s ease",
+              }}
+              color={isActive ? scheme.chakraToken : "text.muted"}
+            >
+              {item.icon}
+            </Box>
+
+            {/* Label */}
+            <Box
+              as="span"
+              fontSize="2xs"
+              fontWeight={isActive ? "700" : "500"}
+              fontFamily="var(--font-body)"
+              textAlign="center"
+              lineHeight="1.2"
+              style={{
+                color: isActive ? scheme.solid : undefined,
+                transition: "color 0.15s ease",
+              }}
+              color={isActive ? scheme.chakraToken : "text.muted"}
+            >
+              {item.label}
+            </Box>
+          </Box>
+        );
+
+        // Cast DashboardMobileNavItem to DashboardNavItem shape for renderLink
+        const navItem: DashboardNavItem = { label: item.label, href: item.href, isActive: item.isActive };
+
+        return (
+          <Box
+            key={item.href}
+            flex="1"
+            display="flex"
+            alignItems="stretch"
+            style={{ textDecoration: "none" }}
+          >
+            {renderLink(navItem, tabContent)}
+          </Box>
+        );
+      })}
+    </Box>
   );
 }
 
@@ -1188,10 +1332,12 @@ export function DashboardLayout({
   topBarSlot,
   sidebarWidth = 220,
   colorScheme = "blue",
+  mobileNavItems,
   ...rest
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const scheme = SCHEME_COLORS[colorScheme];
+  const hasMobileNav = !!(mobileNavItems && mobileNavItems.length > 0);
 
   const resolvedGreeting = greeting ?? autoGreeting();
   const resolvedLogo = logo ?? <Logo variant={colorScheme} height={26} />;
@@ -1246,10 +1392,22 @@ export function DashboardLayout({
           overflowY="auto"
           bg="bg.subtle"
           p={{ base: "4", md: "6", lg: "8" }}
+          // Add bottom padding on mobile when bottom nav is present so content
+          // is never hidden behind the fixed bar (h=16 = 4rem, +1rem clearance)
+          pb={hasMobileNav ? { base: "20", md: "6", lg: "8" } : { base: "4", md: "6", lg: "8" }}
         >
           {children}
         </Box>
       </Box>
+
+      {/* ── Mobile bottom navigation ── */}
+      {hasMobileNav && (
+        <MobileBottomNav
+          items={mobileNavItems!}
+          renderLink={renderLink}
+          scheme={scheme}
+        />
+      )}
     </Box>
   );
 }
