@@ -84,7 +84,11 @@ export function Modal({
       />
 
       {/* Positioner is required in Chakra v3 to portal the dialog into <body> */}
-      <DialogPositioner>
+      <DialogPositioner
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
         <DialogContent
           bg="bg"
           border="1px solid"
