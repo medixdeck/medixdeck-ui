@@ -213,7 +213,7 @@ export default function App() {
         ]}
         mobileNavItems={[
           { label: 'Home', href: '#home', icon: <LuHouse size={22} /> },
-          { label: 'Consult', href: '#consult', icon: <LuStethoscope size={22} /> },
+          { label: 'Consult', href: '#consult', badge: 3, icon: <LuStethoscope size={22} /> },
           { label: 'Records', href: '#records', icon: <LuFileText size={22} /> },
           { label: 'Messages', href: '#messages', isActive: true, badge: 6, icon: <LuMessageCircle size={22} /> },
           { label: 'Profile', href: '#profile', icon: <LuUser size={22} /> },
