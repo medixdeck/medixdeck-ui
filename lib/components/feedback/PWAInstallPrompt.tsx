@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../primitive/Button";
+import { Logo } from "../primitive/Logo";
 import { useIsDarkMode } from "../../hooks/useThemeMode";
 
 // ─── Constants ──────────────────────────────────────────────────────────────────
@@ -98,25 +99,10 @@ function IOSShareIcon({ size = 18, color = "#0685FF" }: { size?: number; color?:
 
 // ─── Default App Icon ───────────────────────────────────────────────────────────
 
-function DefaultAppIcon({ isDark }: { isDark: boolean }) {
+function DefaultAppIcon() {
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      w="48px"
-      h="48px"
-      borderRadius="12px"
-      flexShrink={0}
-      style={{
-        background: "linear-gradient(135deg, #0685FF 0%, #7700CC 100%)",
-      }}
-    >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-        <polyline points="7 10 12 15 17 10" />
-        <line x1="12" y1="15" x2="12" y2="3" />
-      </svg>
+    <Box flexShrink={0}>
+      <Logo type="icon" height={44} />
     </Box>
   );
 }
@@ -256,7 +242,7 @@ export function PWAInstallPrompt({
           >
             <Flex gap="4" align="flex-start">
               {/* Icon */}
-              {icon ?? <DefaultAppIcon isDark={isDark} />}
+              {icon ?? <DefaultAppIcon />}
 
               {/* Content */}
               <Box flex="1" minW="0">
