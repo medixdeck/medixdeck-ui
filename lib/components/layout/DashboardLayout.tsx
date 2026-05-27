@@ -164,6 +164,8 @@ export interface DashboardMobileNavItem {
   icon: React.ReactNode;
   /** Mark this tab as active. */
   isActive?: boolean;
+  /** Numeric count badge shown on the icon (capped at 99+). */
+  badge?: number;
 }
 
 export interface DashboardUser {
@@ -800,7 +802,7 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
               }}
             />
 
-            {/* Icon — uses Chakra Box so color token flips in dark mode */}
+            {/* Icon — relative wrapper so the badge bubble can be absolutely positioned */}
             <Box
               display="flex"
               alignItems="center"
@@ -814,6 +816,35 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
               }}
             >
               {item.icon}
+
+              {/* Badge bubble */}
+              {typeof item.badge === "number" && item.badge > 0 && (
+                <span
+                  aria-label={`${item.badge} unread`}
+                  style={{
+                    position: "absolute",
+                    top: -5,
+                    right: -6,
+                    minWidth: 16,
+                    height: 16,
+                    borderRadius: 8,
+                    background: scheme.solid,
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    fontFamily: "var(--font-body)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "0 3px",
+                    lineHeight: 1,
+                    boxShadow: "0 0 0 2px var(--chakra-colors-bg, #fff)",
+                    pointerEvents: "none",
+                  }}
+                >
+                  {item.badge > 99 ? "99+" : item.badge}
+                </span>
+              )}
             </Box>
 
             {/* Label */}
