@@ -97,27 +97,42 @@ export function Modal({
           boxShadow="xl"
         >
           {(title || description) && (
-            <DialogHeader borderBottom="1px solid" borderColor="border" px="6" py="4">
-              {title && (
-                <DialogTitle
-                  fontFamily="var(--font-heading)"
-                  fontSize="xl"
-                  fontWeight="semibold"
-                  color="text.heading"
-                >
-                  {title}
-                </DialogTitle>
-              )}
-              {description && (
-                <DialogDescription
-                  mt="1"
-                  fontSize="sm"
-                  color="text.muted"
-                  fontFamily="var(--font-body)"
-                >
-                  {description}
-                </DialogDescription>
-              )}
+            <DialogHeader
+              borderBottom="1px solid"
+              borderColor="border"
+              px="6"
+              py="4"
+              display="flex"
+              flexDirection="row"
+              alignItems="flex-start"
+              justifyContent="space-between"
+              position="relative"
+            >
+              {/* Title + description stacked vertically */}
+              <div style={{ display: "flex", flexDirection: "column", flex: 1, paddingRight: "2rem" }}>
+                {title && (
+                  <DialogTitle
+                    fontFamily="var(--font-heading)"
+                    fontSize="xl"
+                    fontWeight="semibold"
+                    color="text.heading"
+                  >
+                    {title}
+                  </DialogTitle>
+                )}
+                {description && (
+                  <DialogDescription
+                    mt="1"
+                    fontSize="sm"
+                    color="text.muted"
+                    fontFamily="var(--font-body)"
+                  >
+                    {description}
+                  </DialogDescription>
+                )}
+              </div>
+
+              {/* Close button with visible ✕ icon */}
               <DialogCloseTrigger
                 position="absolute"
                 top="4"
@@ -131,7 +146,23 @@ export function Modal({
                 color="text.muted"
                 _hover={{ bg: "bg.subtle", color: "text.heading" }}
                 transition="all 0.15s"
-              />
+                aria-label="Close modal"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </DialogCloseTrigger>
             </DialogHeader>
           )}
 
