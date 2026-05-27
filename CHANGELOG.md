@@ -107,6 +107,20 @@ All notable changes to `@medixdeck/ui` are documented here.
   | `isExternal?` | `boolean` | Opens link in a new tab (`true` by default) |
   | `imageSrc?` | `string` | Image URL. Falls back to a generic shield icon if omitted. |
 
+- **`CookieConsentBanner` — GDPR / NDPR compliant banner**
+
+  A customizable cookie consent banner powered by `react-cookie-consent`, pre-styled to match the MedixDeck design system.
+
+  ```tsx
+  <CookieConsentBanner
+    title="Privacy & Cookies"
+    acceptText="Accept All"
+    declineText="Reject Non-Essential"
+  >
+    We use cookies to securely manage your session, enhance your browsing experience, and analyze our platform's performance. By clicking "Accept All", you consent to our use of cookies.
+  </CookieConsentBanner>
+  ```
+
 ### Changed
 
 - **`Footer`**: The default `copyright` text was updated to `"© {year} MedixDeck Health Solution Ltd. All Rights Reserved."`.

@@ -55,6 +55,7 @@ import { EmptyState } from "../lib/components/feedback/EmptyState";
 import { NotFoundPage } from "../lib/components/feedback/NotFoundPage";
 import { ServerErrorPage } from "../lib/components/feedback/ServerErrorPage";
 import { Toaster, toast } from "../lib/components/feedback/Notification";
+import { CookieConsentBanner } from "../lib/components/feedback/CookieConsentBanner";
 
 // Data Display
 import { Accordion } from "../lib/components/data/Accordion";
@@ -1515,6 +1516,8 @@ export default function App() {
           />
         </Box>
       </Drawer>
+
+      <CookieConsentBanner />
     </>
   );
 }

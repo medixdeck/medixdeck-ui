@@ -178,6 +178,9 @@ export type { DrawerProps, DrawerPlacement, DrawerSize } from "./components/feed
 export { Toaster, toast, dismissToast } from "./components/feedback/Notification";
 export type { ToastOptions, ToastType } from "./components/feedback/Notification";
 
+export { CookieConsentBanner } from "./components/feedback/CookieConsentBanner";
+export type { CookieConsentBannerProps } from "./components/feedback/CookieConsentBanner";
+
 // ─── Data Display Components ───────────────────────────────────────────────────
 export { Accordion } from "./components/data/Accordion";
 export type { AccordionProps, AccordionItem, AccordionColorScheme } from "./components/data/Accordion";
