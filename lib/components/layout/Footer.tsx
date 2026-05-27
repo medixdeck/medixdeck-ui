@@ -171,7 +171,7 @@ const defaultSections: FooterSection[] = [
       { label: "Home", href: "/" },
       { label: "About", href: "/about" },
       { label: "For Doctors", href: "/doctors" },
-      { label: "For Businesses", href: "/businesses" },
+      { label: "For Businesses", href: "/business" },
       { label: "For Patients", href: "/patients" },
     ],
   },
@@ -274,7 +274,7 @@ export function Footer({
             </Box>
             <Text
               fontSize="sm"
-              color="text.muted"
+              color="text.body"
               maxW="320px"
               lineHeight="1.6"
               fontFamily="var(--font-body)"
@@ -328,7 +328,7 @@ export function Footer({
                         <Box
                           as="span"
                           fontSize="sm"
-                          color="text.muted"
+                          color="text.body"
                           fontFamily="var(--font-body)"
                           _hover={{ color: scheme.token }}
                           transition="color 0.2s ease"
@@ -367,7 +367,7 @@ export function Footer({
                 </Text>
                 <Text
                   fontSize="sm"
-                  color="text.muted"
+                  color="text.body"
                   mb={5}
                   fontFamily="var(--font-body)"
                   lineHeight="1.5"
@@ -394,7 +394,7 @@ export function Footer({
                     fontSize="sm"
                     fontFamily="var(--font-body)"
                     color="text.body"
-                    _placeholder={{ color: "text.muted" }}
+                    _placeholder={{ color: "text.body" }}
                     _focus={{ outline: "none", borderColor: scheme.token, boxShadow: `0 0 0 1px ${scheme.solid}` }}
                     transition="all 0.2s"
                     required
@@ -448,7 +448,7 @@ export function Footer({
           >
             <Text
               fontSize="xs"
-              color="text.muted"
+              color="text.body"
               fontFamily="var(--font-body)"
               textAlign={{ base: "center", md: "left" }}
             >
@@ -463,7 +463,7 @@ export function Footer({
                     <Box
                       as="span"
                       fontSize="xs"
-                      color="text.muted"
+                      color="text.body"
                       fontFamily="var(--font-body)"
                       _hover={{ color: "text.heading" }}
                       transition="color 0.2s ease"
@@ -489,7 +489,7 @@ export function Footer({
                   bg="bg.surface"
                   border="1px solid"
                   borderColor="border"
-                  color="text.muted"
+                  color="text.body"
                   _hover={{ color: "text.heading", bg: "bg" }}
                   cursor="pointer"
                   transition="all 0.2s"
