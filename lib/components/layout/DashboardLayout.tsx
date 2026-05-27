@@ -716,11 +716,31 @@ interface MobileBottomNavProps {
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
 }
 
+// ─── Keyframe singleton injector ────────────────────────────────────────────────────
+
+let mobileNavKfInjected = false;
+function injectMobileNavKeyframe() {
+  if (typeof document === "undefined" || mobileNavKfInjected) return;
+  const s = document.createElement("style");
+  s.setAttribute("data-medixdeck", "mobile-nav");
+  s.textContent = `
+    @keyframes medixMobileNavIn {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+  `;
+  document.head.appendChild(s);
+  mobileNavKfInjected = true;
+}
+
 function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
+  React.useEffect(() => { injectMobileNavKeyframe(); }, []);
+
   return (
     <Box
       as="nav"
       aria-label="Mobile bottom navigation"
+      // Responsive: visible on mobile, hidden on md+
       display={{ base: "flex", md: "none" }}
       position="fixed"
       bottom="0"
@@ -730,50 +750,68 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
       bg="bg"
       borderTop="1px solid"
       borderColor="border"
-      h="16"
       alignItems="stretch"
-      boxShadow="0 -4px 24px rgba(0,0,0,0.07)"
+      style={{
+        height: 64,
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        boxShadow: "0 -8px 40px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.04)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        animation: "medixMobileNavIn 0.42s cubic-bezier(0.22,1,0.36,1) both",
+      }}
     >
       {items.slice(0, 5).map((item) => {
         const isActive = item.isActive ?? false;
 
         const tabContent = (
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            gap="0.5"
-            flex="1"
-            h="full"
-            px="1"
-            position="relative"
-            style={{ cursor: "pointer" }}
+          <motion.div
+            whileTap={{ scale: 0.82 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30, mass: 0.7 }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+              height: "100%",
+              padding: "6px 4px 4px",
+              cursor: "pointer",
+              position: "relative",
+              gap: 4,
+              textDecoration: "none",
+              WebkitTapHighlightColor: "transparent",
+            }}
           >
-            {/* Active indicator bar at top */}
-            {isActive && (
-              <Box
-                position="absolute"
-                top="0"
-                left="20%"
-                right="20%"
-                h="2px"
-                borderBottomRadius="full"
-                style={{ background: scheme.solid }}
-              />
-            )}
+            {/* Animated pill capsule — scales in behind the active icon */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                top: 7,
+                left: "50%",
+                width: 44,
+                height: 28,
+                borderRadius: 14,
+                background: scheme.activeBgLight,
+                transform: `translateX(-50%) scaleX(${isActive ? 1 : 0})`,
+                opacity: isActive ? 1 : 0,
+                transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.2s ease",
+                pointerEvents: "none",
+              }}
+            />
 
-            {/* Icon */}
+            {/* Icon — uses Chakra Box so color token flips in dark mode */}
             <Box
               display="flex"
               alignItems="center"
               justifyContent="center"
-              style={{
-                color: isActive ? scheme.solid : undefined,
-                opacity: isActive ? 1 : 0.55,
-                transition: "color 0.15s ease, opacity 0.15s ease",
-              }}
+              position="relative"
+              zIndex={1}
               color={isActive ? scheme.chakraToken : "text.muted"}
+              style={{
+                transition: "color 0.18s ease",
+                opacity: isActive ? 1 : 0.6,
+              }}
             >
               {item.icon}
             </Box>
@@ -785,19 +823,20 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
               fontWeight={isActive ? "700" : "500"}
               fontFamily="var(--font-body)"
               textAlign="center"
-              lineHeight="1.2"
-              style={{
-                color: isActive ? scheme.solid : undefined,
-                transition: "color 0.15s ease",
-              }}
+              lineHeight="1"
+              position="relative"
+              zIndex={1}
               color={isActive ? scheme.chakraToken : "text.muted"}
+              style={{
+                transition: "color 0.18s ease",
+                letterSpacing: isActive ? "-0.01em" : "0",
+              }}
             >
               {item.label}
             </Box>
-          </Box>
+          </motion.div>
         );
 
-        // Cast DashboardMobileNavItem to DashboardNavItem shape for renderLink
         const navItem: DashboardNavItem = { label: item.label, href: item.href, isActive: item.isActive };
 
         return (

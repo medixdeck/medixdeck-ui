@@ -2,6 +2,7 @@
 import React from "react";
 import { Box, Link, Text } from "@chakra-ui/react";
 import { useThemeMode } from "../lib";
+import { LuHouse, LuStethoscope, LuFileText, LuMessageCircle, LuUser } from "react-icons/lu";
 
 const PREVIEW_COMPONENT_COUNT = 45;
 
@@ -211,58 +212,11 @@ export default function App() {
           }
         ]}
         mobileNavItems={[
-          {
-            label: 'Home',
-            href: '#home',
-            isActive: true,
-            icon: (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-            ),
-          },
-          {
-            label: 'Consult',
-            href: '#consult',
-            icon: (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z" />
-              </svg>
-            ),
-          },
-          {
-            label: 'Records',
-            href: '#records',
-            icon: (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="16" y1="13" x2="8" y2="13" />
-                <line x1="16" y1="17" x2="8" y2="17" />
-                <polyline points="10 9 9 9 8 9" />
-              </svg>
-            ),
-          },
-          {
-            label: 'Messages',
-            href: '#messages',
-            icon: (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
-            ),
-          },
-          {
-            label: 'Profile',
-            href: '#profile',
-            icon: (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            ),
-          },
+          { label: 'Home', href: '#home', icon: <LuHouse size={22} /> },
+          { label: 'Consult', href: '#consult', icon: <LuStethoscope size={22} /> },
+          { label: 'Records', href: '#records', icon: <LuFileText size={22} /> },
+          { label: 'Messages', href: '#messages', isActive: true, icon: <LuMessageCircle size={22} /> },
+          { label: 'Profile', href: '#profile', icon: <LuUser size={22} /> },
         ]}
       >
         <Box h="full">
