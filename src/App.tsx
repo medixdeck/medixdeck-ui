@@ -1404,13 +1404,33 @@ export default function App() {
           {/* Footer Showcase */}
           <Section title="Footer" id="footer" storybookPath="?path=/docs/layout-footer--docs">
             <Box w="100%" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
-              <Footer colorScheme="purple" />
-              <Footer />
+              <Footer
+                colorScheme="purple"
+                certifications={[
+                  { name: "NDPR Compliant", href: "https://nitda.gov.ng" },
+                  { name: "ISO 27001", href: "#" },
+                  { name: "MDCN Certified", href: "https://mdcn.gov.ng" },
+                ]}
+              />
+              <Footer
+                certifications={[
+                  { name: "NDPR Compliant Platform", href: "https://nitda.gov.ng" },
+                  { name: "ISO 27001", href: "#" },
+                  { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
+                ]}
+              />
             </Box>
           </Section>
 
           {/* Actual Site Footer */}
-          <Footer mt={16} />
+          <Footer
+            mt={16}
+            certifications={[
+              { name: "NDPR Compliant", href: "https://nitda.gov.ng" },
+              { name: "ISO 27001", href: "#" },
+              { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
+            ]}
+          />
         </Container>
       </Box>
 

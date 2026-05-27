@@ -131,6 +131,7 @@ export type {
   SocialLink,
   NewsletterProps,
   BottomLink,
+  FooterCertification,
   FooterColorScheme,
 } from "./components/layout/Footer";
 

@@ -273,6 +273,34 @@ An optional second line below the greeting. The top bar expands from 64 px → 8
 | `renderLink` | `(item, children) => ReactNode` | `<a>` | Router integration |
 | `onLogout` | `() => void` | — | Logout callback |
 
+## Footer
+
+The `Footer` component provides the core navigation layout for the bottom of pages. It features an optional compliance `certifications` row and a brandable `colorScheme`.
+
+```tsx
+import { Footer } from "@medixdeck/ui";
+
+<Footer
+  colorScheme="purple"
+  certifications={[
+    { name: "NDPR Compliant", href: "https://nitda.gov.ng" },
+    { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
+    { name: "ISO 27001", href: "#" },
+  ]}
+/>
+```
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `colorScheme` | `"blue" \| "purple"` | `"blue"` | Brand accent colour for links and social icons |
+| `certifications` | `FooterCertification[]` | — | Compliance badges displayed above the copyright |
+| `logo` | `ReactNode` | `<Logo />` | Override the default logo |
+| `description` | `string` | — | Short company bio |
+| `sections` | `FooterSection[]` | — | Link columns |
+| `socialLinks` | `SocialLink[]` | — | Social media URLs |
+| `newsletter` | `NewsletterProps` | — | Email subscription form config |
+| `bottomLinks` | `BottomLink[]` | — | Terms/Privacy links next to copyright |
+| `renderLink` | `(item, children) => ReactNode` | `<a>` | Router integration |
 
 ## Theme color reference
 

@@ -48,6 +48,17 @@ export interface BottomLink {
   isExternal?: boolean;
 }
 
+export interface FooterCertification {
+  /** Certification name displayed alongside the badge (e.g. "NDPR Compliant"). */
+  name: string;
+  /** Optional URL to a verification or info page. */
+  href?: string;
+  /** Open the link in a new tab. @default true */
+  isExternal?: boolean;
+  /** Badge/logo image URL. When omitted a generic shield icon is rendered. */
+  imageSrc?: string;
+}
+
 export type FooterColorScheme = "blue" | "purple";
 
 const FOOTER_COLORS: Record<FooterColorScheme, { solid: string; solidHover: string; token: string; focusRing: string }> = {
@@ -77,6 +88,20 @@ export interface FooterProps extends Omit<BoxProps, "children"> {
    * @default "blue"
    */
   colorScheme?: FooterColorScheme;
+  /**
+   * Compliance certifications displayed in a horizontal row above the copyright bar.
+   * Each item shows a badge image (or a fallback shield icon) + certification name.
+   *
+   * @example
+   * ```tsx
+   * certifications={[
+   *   { name: "NDPR Compliant", imageSrc: "/badges/ndpr.png",   href: "https://nitda.gov.ng/ndpr" },
+   *   { name: "ISO 27001",      imageSrc: "/badges/iso.png" },
+   *   { name: "MDCN Certified", href: "https://mdcn.gov.ng" },
+   * ]}
+   * ```
+   */
+  certifications?: FooterCertification[];
 }
 
 // ─── Icons ───────────────────────────────────────────────────────────────────────
@@ -235,6 +260,7 @@ export function Footer({
   newsletter,
   renderLink = defaultRenderLink,
   colorScheme = "blue",
+  certifications,
   ...props
 }: FooterProps) {
   const currentYear = new Date().getFullYear();
@@ -506,6 +532,79 @@ export function Footer({
             </HStack>
           </Flex>
         </Box>
+
+        {/* Certifications row */}
+        {certifications && certifications.length > 0 && (
+          <Box
+            borderTop="1px solid"
+            borderColor="border"
+            pt={6}
+            mt={6}
+            pb={0}
+          >
+            <Flex
+              gap={{ base: 6, md: 10 }}
+              flexWrap="wrap"
+              justify={{ base: "center", md: "center" }}
+              align="center"
+            >
+              {certifications.map((cert) => {
+                const badge = (
+                  <Flex
+                    key={cert.name}
+                    align="center"
+                    gap="3"
+                    opacity={0.75}
+                    _hover={{ opacity: 1 }}
+                    transition="opacity 0.2s ease"
+                    style={{ cursor: cert.href ? "pointer" : "default" }}
+                  >
+                    {cert.imageSrc ? (
+                      <img
+                        src={cert.imageSrc}
+                        alt={cert.name}
+                        style={{
+                          height: 28,
+                          width: "auto",
+                          objectFit: "contain",
+                          display: "block",
+                        }}
+                      />
+                    ) : (
+                      <Box color="text.muted" flexShrink={0}>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                      </Box>
+                    )}
+                    <Text
+                      fontSize="xs"
+                      fontWeight="600"
+                      fontFamily="var(--font-body)"
+                      color="text.muted"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
+                      {cert.name}
+                    </Text>
+                  </Flex>
+                );
+
+                if (cert.href) {
+                  return (
+                    <Box key={cert.name}>
+                      {renderLink(
+                        { href: cert.href, isExternal: cert.isExternal ?? true },
+                        badge,
+                      )}
+                    </Box>
+                  );
+                }
+                return <Box key={cert.name}>{badge}</Box>;
+              })}
+            </Flex>
+          </Box>
+        )}
       </Container>
     </Box>
   );

@@ -86,10 +86,33 @@ All notable changes to `@medixdeck/ui` are documented here.
   </DashboardLayout>
   ```
 
+- **`Footer` — Compliance certifications row** (`certifications` prop)
+
+  An optional row rendered at the bottom of the Footer (just above the copyright section) to display compliance badges like NDPR, MDCN, ISO, etc.
+
+  ```tsx
+  <Footer
+    certifications={[
+      { name: "NDPR Compliant", href: "https://nitda.gov.ng", imageSrc: "/ndpr.png" },
+      { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
+      { name: "ISO 27001", href: "#" },
+    ]}
+  />
+  ```
+
+  | `FooterCertification` prop | Type | Description |
+  | --- | --- | --- |
+  | `name` | `string` | Text displayed alongside the badge |
+  | `href?` | `string` | Optional URL for verification (wrapped in `renderLink`) |
+  | `isExternal?` | `boolean` | Opens link in a new tab (`true` by default) |
+  | `imageSrc?` | `string` | Image URL. Falls back to a generic shield icon if omitted. |
+
 ### Changed
 
+- **`Footer`**: The default `copyright` text was updated to `"© {year} MedixDeck Health Solution Ltd. All Rights Reserved."`.
 - **`DashboardLayout` stories**: Expanded with 8 new stories covering `WithMobileNav`, `WithDoctorScoreCard`, five tier-specific card variants, `WithGreetingSubtext`, and `FullDoctorDashboard`.
-- **`lib/index.ts`**: `DashboardScoreCardData` added to public type exports.
+- **`Footer` stories**: Added `WithCertifications` story.
+- **`lib/index.ts`**: `DashboardScoreCardData` and `FooterCertification` added to public type exports.
 
 ---
 
