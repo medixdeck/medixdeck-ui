@@ -56,6 +56,7 @@ import { NotFoundPage } from "../lib/components/feedback/NotFoundPage";
 import { ServerErrorPage } from "../lib/components/feedback/ServerErrorPage";
 import { Toaster, toast } from "../lib/components/feedback/Notification";
 import { CookieConsentBanner } from "../lib/components/feedback/CookieConsentBanner";
+import { PWAInstallPrompt } from "../lib/components/feedback/PWAInstallPrompt";
 
 // Data Display
 import { Accordion } from "../lib/components/data/Accordion";
@@ -1518,6 +1519,11 @@ export default function App() {
       </Drawer>
 
       <CookieConsentBanner />
+      <PWAInstallPrompt
+        appName="MedixDeck"
+        title="Install MedixDeck"
+        description="Add MedixDeck to your home screen for faster access and a better healthcare experience."
+      />
     </>
   );
 }

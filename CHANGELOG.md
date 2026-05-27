@@ -121,12 +121,42 @@ All notable changes to `@medixdeck/ui` are documented here.
   </CookieConsentBanner>
   ```
 
+- **`PWAInstallPrompt` — Cross-platform PWA install nudge**
+
+  A Framer Motion–animated banner that detects platform and prompts users to install the app:
+  - **Android / Chromium:** Captures the `beforeinstallprompt` event and triggers the native install dialog.
+  - **iOS Safari:** Shows step-by-step "Add to Home Screen" instructions with a share icon visual.
+  - Auto-hides when already installed (standalone mode).
+  - Dismissals are persisted to `localStorage` with a configurable cooldown (default 14 days).
+
+  ```tsx
+  <PWAInstallPrompt
+    appName="MedixDeck"
+    title="Install MedixDeck"
+    description="Get faster access and offline support."
+    cooldownDays={14}
+  />
+  ```
+
+  | `PWAInstallPromptProps` | Type | Default | Description |
+  | --- | --- | --- | --- |
+  | `title` | `string` | `"Install this app"` | Banner heading |
+  | `description` | `string` | — | Body text (Android only) |
+  | `installLabel` | `string` | `"Install"` | Accept button text |
+  | `dismissLabel` | `string` | `"Not now"` | Dismiss button text |
+  | `cooldownDays` | `number` | `14` | Days to suppress after dismiss |
+  | `appName` | `string` | `"this app"` | Name used in iOS instructions |
+  | `icon` | `ReactNode` | — | Custom app icon element |
+  | `position` | `"top" \| "bottom"` | `"bottom"` | Screen position |
+  | `onInstall` | `() => void` | — | Fired on successful install |
+  | `onDismiss` | `() => void` | — | Fired on dismiss |
+
 ### Changed
 
 - **`Footer`**: The default `copyright` text was updated to `"© {year} MedixDeck Health Solution Ltd. All Rights Reserved."`.
 - **`DashboardLayout` stories**: Expanded with 8 new stories covering `WithMobileNav`, `WithDoctorScoreCard`, five tier-specific card variants, `WithGreetingSubtext`, and `FullDoctorDashboard`.
 - **`Footer` stories**: Added `WithCertifications` story.
-- **`lib/index.ts`**: `DashboardScoreCardData` and `FooterCertification` added to public type exports.
+- **`lib/index.ts`**: `DashboardScoreCardData`, `FooterCertification`, `CookieConsentBannerProps`, and `PWAInstallPromptProps` added to public type exports.
 
 ---
 
