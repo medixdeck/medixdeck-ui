@@ -2,7 +2,7 @@
 import React from "react";
 import { Box, Link, Text } from "@chakra-ui/react";
 import { useThemeMode } from "../lib";
-import { LuHouse, LuStethoscope, LuFileText, LuMessageCircle, LuUser } from "react-icons/lu";
+import { LuHouse, LuStethoscope, LuFileText, LuMessageCircle, LuUser, LuWallet } from "react-icons/lu";
 
 const PREVIEW_COMPONENT_COUNT = 45;
 
@@ -868,6 +868,17 @@ export default function App() {
                     { value: "pediatrics", label: "Pediatrics" },
                     { value: "neurology", label: "Neurology" },
                     { value: "psychiatry", label: "Psychiatry" },
+                  ]}
+                />
+              </FormControl>
+              <FormControl label="Price range">
+                <Select
+                  icon={<LuWallet size={16} />}
+                  placeholder="Any price"
+                  options={[
+                    { value: "0-50", label: "$0 - $50" },
+                    { value: "50-100", label: "$50 - $100" },
+                    { value: "100+", label: "$100+" },
                   ]}
                 />
               </FormControl>

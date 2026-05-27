@@ -8,6 +8,23 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 
+- **`Select` — Icon support** (`icon` prop)
+
+  Added an optional `icon` prop to the `Select` component to render a left-aligned icon, automatically adjusting the select field's padding.
+
+  ```tsx
+  import { LuWallet } from "react-icons/lu";
+
+  <Select
+    icon={<LuWallet size={16} />}
+    placeholder="Any price"
+    options={[
+      { value: "0-50", label: "$0 - $50" },
+      { value: "50-100", label: "$50 - $100" },
+    ]}
+  />
+  ```
+
 - **`DashboardLayout` — Mobile bottom navigation bar** (`mobileNavItems` prop)
 
   A fixed, glass-morphism bottom tab bar for mobile viewports (hidden on `md+`). Designed to match native-app UX.
@@ -156,6 +173,7 @@ All notable changes to `@medixdeck/ui` are documented here.
 - **`Footer`**: The default `copyright` text was updated to `"© {year} MedixDeck Health Solution Ltd. All Rights Reserved."`.
 - **`DashboardLayout` stories**: Expanded with 8 new stories covering `WithMobileNav`, `WithDoctorScoreCard`, five tier-specific card variants, `WithGreetingSubtext`, and `FullDoctorDashboard`.
 - **`Footer` stories**: Added `WithCertifications` story.
+- **`CookieConsentBanner` and `PWAInstallPrompt` stories**: Added Storybook documentation for the new feedback components.
 - **`lib/index.ts`**: `DashboardScoreCardData`, `FooterCertification`, `CookieConsentBannerProps`, and `PWAInstallPromptProps` added to public type exports.
 
 ---

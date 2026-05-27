@@ -33,3 +33,17 @@ export const Invalid: Story = {
 export const Disabled: Story = {
   args: { placeholder: "Select", options: specialtyOptions, label: "Specialty", isDisabled: true },
 };
+
+import { LuWallet } from "react-icons/lu";
+
+export const WithIcon: Story = {
+  args: { 
+    placeholder: "Any price", 
+    options: [
+      { value: "0-50", label: "$0 - $50" },
+      { value: "50-100", label: "$50 - $100" },
+      { value: "100+", label: "$100+" },
+    ],
+    icon: <LuWallet size={16} /> 
+  },
+};

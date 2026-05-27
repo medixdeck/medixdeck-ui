@@ -19,6 +19,8 @@ export interface SelectProps extends Omit<NativeSelectRootProps, "size"> {
   errorMessage?: string;
   size?: "sm" | "md" | "lg";
   children?: React.ReactNode;
+  /** Optional icon to render on the left side of the select field */
+  icon?: React.ReactNode;
 }
 
 const sizeStyles: Record<"sm" | "md" | "lg", { h: string; px: string; fontSize: string }> = {
@@ -31,15 +33,37 @@ const sizeStyles: Record<"sm" | "md" | "lg", { h: string; px: string; fontSize: 
  * MedixDeck Select
  */
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ options = [], placeholder, isInvalid, errorMessage, size = "md", children, ...props }, ref) => {
+  ({ options = [], placeholder, isInvalid, errorMessage, size = "md", children, icon, ...props }, ref) => {
     const sz = sizeStyles[size];
+    const iconSpacingMap = {
+      sm: "8",
+      md: "10",
+      lg: "12",
+    };
+
     return (
       <Box w="100%">
         <ChakraNativeSelect.Root {...props}>
+          {icon && (
+            <Box
+              position="absolute"
+              left={sz.px}
+              top="0"
+              bottom="0"
+              display="flex"
+              alignItems="center"
+              pointerEvents="none"
+              color="text.heading"
+              zIndex={1}
+            >
+              {icon}
+            </Box>
+          )}
           <ChakraNativeSelect.Field
             ref={ref}
             h={sz.h}
-            px={sz.px}
+            pl={icon ? iconSpacingMap[size] : sz.px}
+            pr="8"
             fontSize={sz.fontSize}
             bg="bg.surface"
             border="1px solid"
