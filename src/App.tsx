@@ -1425,11 +1425,6 @@ export default function App() {
           {/* Actual Site Footer */}
           <Footer
             mt={16}
-            certifications={[
-              { name: "NDPR Compliant", href: "https://nitda.gov.ng" },
-              { name: "ISO 27001", href: "#" },
-              { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
-            ]}
           />
         </Container>
       </Box>
