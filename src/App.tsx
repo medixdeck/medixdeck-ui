@@ -185,7 +185,14 @@ export default function App() {
     return (
       <DashboardLayout
         colorScheme="purple"
-        user={{ name: "Daniel", email: "daniel@medixdeck.com" }}
+        user={{ name: "Dr. Okedi Williams", email: "williams@medixdeck.com" }}
+        scoreCard={{
+          name: "Dr. Okedi Williams",
+          role: "Cardiologist",
+          tier: "gold",
+          medixScore: 847,
+          link: "#doctor-profile",
+        }}
         navGroups={[
           {
             items: [

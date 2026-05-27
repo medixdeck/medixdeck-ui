@@ -168,6 +168,25 @@ export interface DashboardMobileNavItem {
   badge?: number;
 }
 
+/**
+ * Data for the doctor identity card shown at the top of the sidebar.
+ * Only rendered when this prop is supplied — intended for doctor-role users.
+ */
+export interface DashboardScoreCardData {
+  /** Doctor's full name. */
+  name: string;
+  /** Doctor's specialty / role shown as the primary label (e.g. "Cardiologist"). */
+  role: string;
+  /** Optional avatar image URL. Falls back to initials. */
+  avatarSrc?: string;
+  /** Optional href to navigate to the doctor's profile when the card is clicked. */
+  link?: string;
+  /** Clinician tier — determines avatar ring colour and badge text colour. */
+  tier: "bronze" | "silver" | "gold" | "platinum" | "diamond";
+  /** Numeric MedixScore displayed next to the tier label. */
+  medixScore: number;
+}
+
 export interface DashboardUser {
   /** Display name shown in the top bar greeting and dropdown. */
   name: string;
@@ -284,6 +303,24 @@ export interface DashboardLayoutProps extends Omit<BoxProps, "children"> {
    * ```
    */
   mobileNavItems?: DashboardMobileNavItem[];
+
+  /**
+   * Optional doctor identity / score card shown at the top of the sidebar
+   * (desktop only). Pass this when the authenticated user is a doctor.
+   *
+   * @example
+   * ```tsx
+   * scoreCard={{
+   *   name: "Okedi Williams",
+   *   role: "Cardiologist",
+   *   avatarSrc: "/dr-okedi.jpg",
+   *   tier: "gold",
+   *   medixScore: 847,
+   *   link: "/doctor/profile",
+   * }}
+   * ```
+   */
+  scoreCard?: DashboardScoreCardData;
 }
 
 // ─── Helper: default link renderer ───────────────────────────────────────────
@@ -888,6 +925,165 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
   );
 }
 
+// ─── MedixScoreCard (internal sidebar component) ─────────────────────────────
+
+const TIER_CONFIG = {
+  bronze: { label: "Bronze Clinician", color: "#92400E", ring: "#D97706", bg: "rgba(217,119,6,0.10)" },
+  silver: { label: "Silver Clinician", color: "#475569", ring: "#94A3B8", bg: "rgba(148,163,184,0.10)" },
+  gold: { label: "Gold Clinician", color: "#D97706", ring: "#F59E0B", bg: "rgba(245,158,11,0.10)" },
+  platinum: { label: "Platinum Clinician", color: "#0284C7", ring: "#38BDF8", bg: "rgba(56,189,248,0.10)" },
+  diamond: { label: "Diamond Clinician", color: "#7C3AED", ring: "#A78BFA", bg: "rgba(167,139,250,0.10)" },
+} as const;
+
+const AwardIcon = ({ color }: { color: string }) => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="8" r="6" />
+    <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
+  </svg>
+);
+
+const ChevronRightIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+);
+
+function SidebarScoreCard({
+  data,
+  renderLink,
+}: {
+  data: DashboardScoreCardData;
+  renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
+}) {
+  const tier = TIER_CONFIG[data.tier];
+  const initials = data.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+
+  const cardInner = (
+    <Box
+      mx="3"
+      my="4"
+      borderRadius="card"
+      border="1px solid"
+      borderColor="border"
+      bg="bg"
+      overflow="hidden"
+      style={{ cursor: data.link ? "pointer" : "default" }}
+      _hover={data.link ? { borderColor: tier.ring, boxShadow: `0 0 0 1px ${tier.ring}40` } : undefined}
+      transition="border-color 0.15s ease, box-shadow 0.15s ease"
+    >
+      {/* ── Top row: avatar + role/name + chevron ── */}
+      <Box display="flex" alignItems="center" gap="3" px="3" pt="3" pb="2.5">
+        {/* Avatar with tier-coloured gradient ring */}
+        <div
+          style={{
+            flexShrink: 0,
+            padding: 2,
+            borderRadius: "50%",
+            background: `linear-gradient(135deg, ${tier.ring}, ${tier.color})`,
+          }}
+        >
+          {data.avatarSrc ? (
+            <img
+              src={data.avatarSrc}
+              alt={data.name}
+              style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", display: "block" }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 40, height: 40, borderRadius: "50%",
+                background: tier.bg,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 13, fontWeight: 700,
+                color: tier.color,
+                fontFamily: "var(--font-heading)",
+              }}
+            >
+              {initials}
+            </div>
+          )}
+        </div>
+
+        {/* Text */}
+        <Box flex="1" minW="0">
+          <Box
+            fontSize="sm"
+            fontWeight="700"
+            fontFamily="var(--font-heading)"
+            color="text.heading"
+            lineHeight="1.2"
+            style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+          >
+            {data.role}
+          </Box>
+          <Box
+            fontSize="xs"
+            color="text.muted"
+            fontFamily="var(--font-body)"
+            lineHeight="1.3"
+            mt="0.5"
+            style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+          >
+            {data.name}
+          </Box>
+        </Box>
+
+        {/* Chevron */}
+        {data.link && (
+          <Box color="text.muted" flexShrink={0}>
+            <ChevronRightIcon />
+          </Box>
+        )}
+      </Box>
+
+      {/* ── Divider ── */}
+      <Box borderTop="1px solid" borderColor="border" />
+
+      {/* ── Score row ── */}
+      <Box px="3" pt="2" pb="2.5">
+        <Box
+          fontSize="10px"
+          fontWeight="600"
+          letterSpacing="wider"
+          color="text.muted"
+          fontFamily="var(--font-body)"
+          mb="1"
+        >
+          MedixScore
+        </Box>
+        <Box display="flex" alignItems="center" gap="2" flexWrap="nowrap">
+          <AwardIcon color={tier.color} />
+          <Box
+            fontSize="sm"
+            fontWeight="500"
+            fontFamily="var(--font-body)"
+            style={{ color: tier.color, whiteSpace: "nowrap" }}
+          >
+            {tier.label}
+          </Box>
+          <Box
+            fontSize="sm"
+            fontWeight="500"
+            color="text.heading"
+            fontFamily="var(--font-body)"
+            ml="1"
+            style={{ whiteSpace: "nowrap" }}
+          >
+            {data.medixScore.toLocaleString()} {Number(data.medixScore) > 2 ? 'pts' : 'pt'}
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+
+  if (data.link) {
+    return <>{renderLink({ label: data.role, href: data.link }, cardInner)}</>;
+  }
+  return <>{cardInner}</>;
+}
+
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 interface SidebarProps {
@@ -899,6 +1095,8 @@ interface SidebarProps {
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   sidebarWidth: number;
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
+  /** Optional doctor score card rendered below the logo on desktop only. */
+  scoreCard?: DashboardScoreCardData;
 }
 
 function Sidebar({
@@ -910,6 +1108,7 @@ function Sidebar({
   renderLink,
   sidebarWidth,
   scheme,
+  scoreCard,
 }: SidebarProps) {
   const [logoutHovered, setLogoutHovered] = useState(false);
 
@@ -963,6 +1162,17 @@ function Sidebar({
         >
           {logo}
         </Box>
+
+        {/* ── Doctor score card (desktop only, optional) ── */}
+        {scoreCard && (
+          <Box
+            display={{ base: "none", md: "block" }}
+            flexShrink={0}
+            pt="3"
+          >
+            <SidebarScoreCard data={scoreCard} renderLink={renderLink} />
+          </Box>
+        )}
 
         {/* ── Nav groups ── */}
         <Box flex="1" overflowY="auto" py="3" px="3">
@@ -1132,9 +1342,9 @@ function TopBar({
         <Box
           as="p"
           fontSize={{ base: "sm", md: "md" }}
-          fontWeight="500"
+          fontWeight="700"
           fontFamily="var(--font-body)"
-          color="text.body"
+          color="text.heading"
         >
           {greeting},{" "}
           <Box as="span" fontWeight="700" color="text.heading">
@@ -1405,6 +1615,7 @@ export function DashboardLayout({
   sidebarWidth = 220,
   colorScheme = "blue",
   mobileNavItems,
+  scoreCard,
   ...rest
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -1431,6 +1642,7 @@ export function DashboardLayout({
         renderLink={renderLink}
         sidebarWidth={sidebarWidth}
         scheme={scheme}
+        scoreCard={scoreCard}
       />
 
       {/* ── Main content area (offset by sidebar width on desktop) ── */}

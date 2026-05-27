@@ -113,6 +113,7 @@ export type {
   DashboardNavItem,
   DashboardNavGroup,
   DashboardMobileNavItem,
+  DashboardScoreCardData,
   DashboardUser,
   DashboardDropdownItem,
   DashboardColorScheme,
