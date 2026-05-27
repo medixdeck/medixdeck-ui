@@ -4,7 +4,97 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.15] — 2026-05-27
+
+### Added
+
+- **`DashboardLayout` — Mobile bottom navigation bar** (`mobileNavItems` prop)
+
+  A fixed, glass-morphism bottom tab bar for mobile viewports (hidden on `md+`). Designed to match native-app UX.
+
+  ```tsx
+  import { LuHouse, LuMessageCircle, LuUser } from "react-icons/lu";
+
+  <DashboardLayout
+    mobileNavItems={[
+      { label: "Home",     href: "/",         icon: <LuHouse size={22} />,         isActive: true },
+      { label: "Messages", href: "/messages", icon: <LuMessageCircle size={22} />, badge: 6 },
+      { label: "Profile",  href: "/profile",  icon: <LuUser size={22} /> },
+    ]}
+  >
+    {/* ... */}
+  </DashboardLayout>
+  ```
+
+  | `DashboardMobileNavItem` prop | Type | Description |
+  | --- | --- | --- |
+  | `label` | `string` | Text shown below the icon |
+  | `href` | `string` | Key + target URL (via `renderLink`) |
+  | `icon` | `ReactNode` | Icon element (22 × 22 recommended) |
+  | `isActive?` | `boolean` | Highlights the active tab with a pill indicator |
+  | `badge?` | `number` | Count bubble on the icon (capped at `99+`) |
+
+  Implementation highlights:
+  - Entrance animation via CSS keyframe `slideUpNav` injected once into `document.head`
+  - Active tab: `framer-motion` spring-animated pill behind the icon
+  - Press feedback: `whileTap={{ scale: 0.88 }}`
+  - iPhone notch: `padding-bottom: env(safe-area-inset-bottom, 0px)`
+  - Page bottom padding auto-increases to `pb="20"` on mobile when `mobileNavItems` is set
+
+- **`DashboardLayout` — Doctor identity / score card** (`scoreCard` prop)
+
+  Optional clinician card above the sidebar nav on desktop only (`display={{ base: "none", md: "block" }}`). Intended for doctor-role users.
+
+  ```tsx
+  <DashboardLayout
+    scoreCard={{
+      name: "Dr. Okedi Williams",
+      role: "Cardiologist",
+      avatarSrc: "/dr-okedi.jpg",   // optional — falls back to initials
+      tier: "gold",                  // "bronze" | "silver" | "gold" | "platinum" | "diamond"
+      medixScore: 847,
+      link: "/doctor/profile",       // optional — makes the card clickable via renderLink
+    }}
+  >
+    {/* ... */}
+  </DashboardLayout>
+  ```
+
+  Tier colour system:
+
+  | Tier | Badge / label colour | Avatar ring |
+  | --- | --- | --- |
+  | `bronze` | `#92400E` | `#D97706` |
+  | `silver` | `#475569` | `#94A3B8` |
+  | `gold` | `#D97706` | `#F59E0B` |
+  | `platinum` | `#0284C7` | `#38BDF8` |
+  | `diamond` | `#7C3AED` | `#A78BFA` |
+
+  New exported type: `DashboardScoreCardData`
+
+- **`DashboardLayout` — Greeting subtitle** (`greetingSubtext` prop)
+
+  Optional second line below the user's name in the top bar. Top bar height expands from 64 px to 80 px automatically.
+
+  ```tsx
+  <DashboardLayout
+    greetingSubtext={`${new Date().toLocaleDateString("en-GB", {
+      weekday: "long", day: "numeric", month: "long", year: "numeric",
+    })} · 8 consultations scheduled today`}
+  >
+    {/* ... */}
+  </DashboardLayout>
+  ```
+
+### Changed
+
+- **`DashboardLayout` stories**: Expanded with 8 new stories covering `WithMobileNav`, `WithDoctorScoreCard`, five tier-specific card variants, `WithGreetingSubtext`, and `FullDoctorDashboard`.
+- **`lib/index.ts`**: `DashboardScoreCardData` added to public type exports.
+
+---
+
 ## [0.1.14] — 2026-05-13
+
 
 ### Added
 

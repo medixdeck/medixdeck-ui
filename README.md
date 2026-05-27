@@ -150,6 +150,130 @@ function Page() {
 | `isBlue` | `boolean` | `true` when scheme is `"blue"` |
 | `isPurple` | `boolean` | `true` when scheme is `"purple"` |
 
+## DashboardLayout
+
+The full-screen authenticated application shell. Renders a fixed sidebar, sticky top bar, and an optional mobile bottom nav.
+
+### Basic usage
+
+```tsx
+import { DashboardLayout } from "@medixdeck/ui";
+
+<DashboardLayout
+  colorScheme="purple"
+  user={{ name: "Dr. Okedi Williams", email: "williams@medixdeck.com" }}
+  navGroups={[
+    {
+      items: [
+        { label: "Home",     href: "/",         isActive: true },
+        { label: "Messages", href: "/messages", badge: 6 },
+      ],
+    },
+    {
+      groupLabel: "Account",
+      items: [
+        { label: "Profile",       href: "/profile" },
+        { label: "Notifications", href: "/notifications", hasDot: true },
+      ],
+    },
+  ]}
+  onLogout={() => auth.signOut()}
+  renderLink={(item, children) => <Link href={item.href}>{children}</Link>}
+>
+  {/* page content */}
+</DashboardLayout>
+```
+
+### Mobile bottom navigation (`mobileNavItems`)
+
+A fixed bottom tab bar (mobile only, hidden on `md+`). Uses `react-icons/lu` or any icon component.
+
+```tsx
+import { LuHouse, LuMessageCircle, LuUser } from "react-icons/lu";
+
+<DashboardLayout
+  mobileNavItems={[
+    { label: "Home",     href: "/",         icon: <LuHouse size={22} />,         isActive: true },
+    { label: "Messages", href: "/messages", icon: <LuMessageCircle size={22} />, badge: 6 },
+    { label: "Profile",  href: "/profile",  icon: <LuUser size={22} /> },
+  ]}
+>
+  {/* ... */}
+</DashboardLayout>
+```
+
+`DashboardMobileNavItem` props:
+
+| Prop | Type | Required | Description |
+| --- | --- | --- | --- |
+| `label` | `string` | ✓ | Text below the icon |
+| `href` | `string` | ✓ | Unique key + navigation target |
+| `icon` | `ReactNode` | ✓ | Icon (22 × 22 px recommended) |
+| `isActive` | `boolean` | — | Highlights the active tab |
+| `badge` | `number` | — | Count bubble on icon (capped at `99+`) |
+
+### Doctor score card (`scoreCard`)
+
+Shown above the sidebar nav on **desktop only**. Only pass this prop for doctor-role users.
+
+```tsx
+<DashboardLayout
+  scoreCard={{
+    name: "Dr. Okedi Williams",
+    role: "Cardiologist",
+    avatarSrc: "/dr-okedi.jpg",   // optional — initials fallback
+    tier: "gold",                  // "bronze" | "silver" | "gold" | "platinum" | "diamond"
+    medixScore: 847,
+    link: "/doctor/profile",       // optional — makes the card clickable
+  }}
+>
+  {/* ... */}
+</DashboardLayout>
+```
+
+Tier colours:
+
+| Tier | Label colour | Avatar ring |
+| --- | --- | --- |
+| `bronze` | `#92400E` | `#D97706` |
+| `silver` | `#475569` | `#94A3B8` |
+| `gold` | `#D97706` | `#F59E0B` |
+| `platinum` | `#0284C7` | `#38BDF8` |
+| `diamond` | `#7C3AED` | `#A78BFA` |
+
+### Greeting subtitle (`greetingSubtext`)
+
+An optional second line below the greeting. The top bar expands from 64 px → 80 px automatically.
+
+```tsx
+<DashboardLayout
+  greetingSubtext={`${new Date().toLocaleDateString("en-GB", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  })} · 8 consultations scheduled today`}
+>
+  {/* ... */}
+</DashboardLayout>
+```
+
+### All `DashboardLayout` props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `user` | `DashboardUser` | — | Name, email, optional avatar |
+| `navGroups` | `DashboardNavGroup[]` | — | Sidebar navigation tree |
+| `colorScheme` | `"blue" \| "purple"` | `"blue"` | Brand accent colour |
+| `logo` | `ReactNode` | `<Logo />` | Override the sidebar logo |
+| `greeting` | `string` | auto | Override "Good morning / afternoon / evening" |
+| `greetingSubtext` | `string` | — | Subtitle line below the greeting |
+| `mobileNavItems` | `DashboardMobileNavItem[]` | — | Mobile bottom tab bar items |
+| `scoreCard` | `DashboardScoreCardData` | — | Doctor identity card (desktop only) |
+| `topBarSlot` | `ReactNode` | — | Slot right of greeting (search, bell, etc.) |
+| `dropdownItems` | `DashboardDropdownItem[]` | — | Extra user dropdown items |
+| `sidebarWidth` | `number` | `220` | Sidebar width in px |
+| `renderLink` | `(item, children) => ReactNode` | `<a>` | Router integration |
+| `onLogout` | `() => void` | — | Logout callback |
+
+
 ## Theme color reference
 
 

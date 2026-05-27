@@ -1325,7 +1325,7 @@ function TopBar({
       bg="bg"
       borderBottom="1px solid"
       borderColor="border"
-      h={greetingSubtext ? "20" : "16"}
+      h="16"
       display="flex"
       alignItems="center"
       px={{ base: "4", md: "6" }}
