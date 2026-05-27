@@ -184,7 +184,7 @@ export default function App() {
   if (showDashboard) {
     return (
       <DashboardLayout
-        colorScheme="blue"
+        colorScheme="purple"
         user={{ name: "Daniel", email: "daniel@medixdeck.com" }}
         navGroups={[
           {
