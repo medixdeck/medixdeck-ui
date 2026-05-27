@@ -241,6 +241,17 @@ export interface DashboardLayoutProps extends Omit<BoxProps, "children"> {
    */
   greeting?: string;
 
+  /**
+   * Optional subtitle rendered below the greeting in the top bar.
+   * Use it to surface contextual info like the date or a daily summary.
+   *
+   * @example
+   * ```tsx
+   * greetingSubtext="Thursday, 15 May 2026 · 8 consultations scheduled today"
+   * ```
+   */
+  greetingSubtext?: string;
+
   /** Called when the sidebar logout button is clicked. */
   onLogout?: () => void;
 
@@ -1265,6 +1276,8 @@ function Sidebar({
 interface TopBarProps {
   user: DashboardUser;
   greeting: string;
+  /** Optional subtitle shown below the greeting (e.g. date + schedule summary). */
+  greetingSubtext?: string;
   isSidebarOpen: boolean;
   onMenuToggle: () => void;
   sidebarWidth: number;
@@ -1277,6 +1290,7 @@ interface TopBarProps {
 function TopBar({
   user,
   greeting,
+  greetingSubtext,
   isSidebarOpen,
   onMenuToggle,
   sidebarWidth,
@@ -1311,7 +1325,7 @@ function TopBar({
       bg="bg"
       borderBottom="1px solid"
       borderColor="border"
-      h="16"
+      h={greetingSubtext ? "20" : "16"}
       display="flex"
       alignItems="center"
       px={{ base: "4", md: "6" }}
@@ -1338,19 +1352,34 @@ function TopBar({
       </Box>
 
       {/* Greeting */}
-      <Box flex="1">
+      <Box flex="1" minW="0">
         <Box
           as="p"
           fontSize={{ base: "sm", md: "md" }}
           fontWeight="700"
           fontFamily="var(--font-body)"
           color="text.heading"
+          lineHeight="1.3"
         >
           {greeting},{" "}
           <Box as="span" fontWeight="700" color="text.heading">
             {user.name}
           </Box>
         </Box>
+        {greetingSubtext && (
+          <Box
+            as="p"
+            fontSize={{ base: "2xs", md: "xs" }}
+            fontWeight="400"
+            fontFamily="var(--font-body)"
+            color="text.heading"
+            mt="0.5"
+            lineHeight="1.4"
+            style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+          >
+            {greetingSubtext}
+          </Box>
+        )}
       </Box>
 
       {/* Optional right slot */}
@@ -1608,6 +1637,7 @@ export function DashboardLayout({
   navGroups,
   user,
   greeting,
+  greetingSubtext,
   onLogout,
   renderLink = defaultRenderLink,
   dropdownItems,
@@ -1658,6 +1688,7 @@ export function DashboardLayout({
         <TopBar
           user={user}
           greeting={resolvedGreeting}
+          greetingSubtext={greetingSubtext}
           isSidebarOpen={sidebarOpen}
           onMenuToggle={() => setSidebarOpen((o) => !o)}
           sidebarWidth={sidebarWidth}

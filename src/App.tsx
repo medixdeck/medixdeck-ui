@@ -186,6 +186,7 @@ export default function App() {
       <DashboardLayout
         colorScheme="purple"
         user={{ name: "Dr. Okedi Williams", email: "williams@medixdeck.com" }}
+        greetingSubtext={`${new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} · 8 consultations scheduled today`}
         scoreCard={{
           name: "Dr. Okedi Williams",
           role: "Cardiologist",
