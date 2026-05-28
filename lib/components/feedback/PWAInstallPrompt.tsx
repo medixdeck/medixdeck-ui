@@ -53,6 +53,14 @@ export interface PWAInstallPromptProps {
    * @default "bottom"
    */
   position?: "top" | "bottom";
+  /**
+   * For documentation/storybook purposes. Forces the banner to be visible.
+   */
+  forceVisible?: boolean;
+  /**
+   * For documentation/storybook purposes. Forces the iOS rendering mode.
+   */
+  forceIOS?: boolean;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────────
@@ -146,6 +154,8 @@ export function PWAInstallPrompt({
   appName = "this app",
   icon,
   position = "bottom",
+  forceVisible,
+  forceIOS,
 }: PWAInstallPromptProps) {
   const isDark = useIsDarkMode();
   const [visible, setVisible] = useState(false);
@@ -154,6 +164,12 @@ export function PWAInstallPrompt({
 
   // ── Initialisation ──────────────────────────────────────────────────────────
   useEffect(() => {
+    if (forceVisible) {
+      if (forceIOS) setIsIOS(true);
+      setVisible(true);
+      return;
+    }
+
     // Already installed — never show
     if (isInStandaloneMode()) return;
 

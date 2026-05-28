@@ -244,6 +244,7 @@ export interface DashboardLayoutProps extends Omit<BoxProps, "children"> {
   /**
    * Optional subtitle rendered below the greeting in the top bar.
    * Use it to surface contextual info like the date or a daily summary.
+   * Note: The top bar height remains fixed at 64px (`h="16"`) even when the subtitle is present.
    *
    * @example
    * ```tsx
