@@ -8,9 +8,8 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 
-- **`PWAInstallPrompt` — New presentation and delay props**
+- **`PWAInstallPrompt` — Delayed prompt behavior**
   - Added `delaySeconds` to allow deferring the prompt appearance after conditions are met (e.g. `delaySeconds={5}`).
-  - Added `forceVisible` and `forceIOS` props to simplify rendering the component in Storybook or testing environments where PWA conditions (like valid manifests or `beforeinstallprompt`) are unmet.
 
 ---
 
