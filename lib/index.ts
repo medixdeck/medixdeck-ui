@@ -112,6 +112,8 @@ export type {
   DashboardLayoutProps,
   DashboardNavItem,
   DashboardNavGroup,
+  DashboardMobileNavItem,
+  DashboardScoreCardData,
   DashboardUser,
   DashboardDropdownItem,
   DashboardColorScheme,
@@ -129,6 +131,7 @@ export type {
   SocialLink,
   NewsletterProps,
   BottomLink,
+  FooterCertification,
   FooterColorScheme,
 } from "./components/layout/Footer";
 
@@ -174,6 +177,12 @@ export type { DrawerProps, DrawerPlacement, DrawerSize } from "./components/feed
 
 export { Toaster, toast, dismissToast } from "./components/feedback/Notification";
 export type { ToastOptions, ToastType } from "./components/feedback/Notification";
+
+export { CookieConsentBanner } from "./components/feedback/CookieConsentBanner";
+export type { CookieConsentBannerProps } from "./components/feedback/CookieConsentBanner";
+
+export { PWAInstallPrompt } from "./components/feedback/PWAInstallPrompt";
+export type { PWAInstallPromptProps } from "./components/feedback/PWAInstallPrompt";
 
 // ─── Data Display Components ───────────────────────────────────────────────────
 export { Accordion } from "./components/data/Accordion";

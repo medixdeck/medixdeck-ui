@@ -2,6 +2,7 @@
 import React from "react";
 import { Box, Link, Text } from "@chakra-ui/react";
 import { useThemeMode } from "../lib";
+import { LuHouse, LuStethoscope, LuFileText, LuMessageCircle, LuUser, LuWallet } from "react-icons/lu";
 
 const PREVIEW_COMPONENT_COUNT = 45;
 
@@ -54,6 +55,8 @@ import { EmptyState } from "../lib/components/feedback/EmptyState";
 import { NotFoundPage } from "../lib/components/feedback/NotFoundPage";
 import { ServerErrorPage } from "../lib/components/feedback/ServerErrorPage";
 import { Toaster, toast } from "../lib/components/feedback/Notification";
+import { CookieConsentBanner } from "../lib/components/feedback/CookieConsentBanner";
+import { PWAInstallPrompt } from "../lib/components/feedback/PWAInstallPrompt";
 
 // Data Display
 import { Accordion } from "../lib/components/data/Accordion";
@@ -184,7 +187,15 @@ export default function App() {
     return (
       <DashboardLayout
         colorScheme="purple"
-        user={{ name: "Daniel", email: "daniel@medixdeck.com" }}
+        user={{ name: "Dr. Okedi Williams", email: "williams@medixdeck.com" }}
+        greetingSubtext={`${new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} · 8 consultations scheduled today`}
+        scoreCard={{
+          name: "Dr. Okedi Williams",
+          role: "Cardiologist",
+          tier: "gold",
+          medixScore: 847,
+          link: "#doctor-profile",
+        }}
         navGroups={[
           {
             items: [
@@ -209,6 +220,13 @@ export default function App() {
               { label: 'Notifications', href: '#notifications', hasDot: true },
             ]
           }
+        ]}
+        mobileNavItems={[
+          { label: 'Home', href: '#home', icon: <LuHouse size={22} /> },
+          { label: 'Consult', href: '#consult', badge: 3, icon: <LuStethoscope size={22} /> },
+          { label: 'Records', href: '#records', icon: <LuFileText size={22} /> },
+          { label: 'Messages', href: '#messages', isActive: true, badge: 6, icon: <LuMessageCircle size={22} /> },
+          { label: 'Profile', href: '#profile', icon: <LuUser size={22} /> },
         ]}
       >
         <Box h="full">
@@ -275,7 +293,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.14 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v0.1.15 · {PREVIEW_COMPONENT_COUNT} components
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
                 Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
@@ -853,6 +871,17 @@ export default function App() {
                   ]}
                 />
               </FormControl>
+              <FormControl label="Price range">
+                <Select
+                  icon={<LuWallet size={16} />}
+                  placeholder="Any price"
+                  options={[
+                    { value: "0-50", label: "$0 - $50" },
+                    { value: "50-100", label: "$50 - $100" },
+                    { value: "100+", label: "$100+" },
+                  ]}
+                />
+              </FormControl>
               <FormControl label="Hospital Branch">
                 <Combobox
                   placeholder="Search branches..."
@@ -1388,13 +1417,28 @@ export default function App() {
           {/* Footer Showcase */}
           <Section title="Footer" id="footer" storybookPath="?path=/docs/layout-footer--docs">
             <Box w="100%" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
-              <Footer colorScheme="purple" />
-              <Footer />
+              <Footer
+                colorScheme="purple"
+                certifications={[
+                  { name: "NDPR Compliant", href: "https://nitda.gov.ng" },
+                  { name: "ISO 27001", href: "#" },
+                  { name: "MDCN Certified", href: "https://mdcn.gov.ng" },
+                ]}
+              />
+              <Footer
+                certifications={[
+                  { name: "NDPR Compliant Platform", href: "https://nitda.gov.ng" },
+                  { name: "ISO 27001", href: "#" },
+                  { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
+                ]}
+              />
             </Box>
           </Section>
 
           {/* Actual Site Footer */}
-          <Footer mt={16} />
+          <Footer
+            mt={16}
+          />
         </Container>
       </Box>
 
@@ -1409,7 +1453,7 @@ export default function App() {
           >
             @medixdeck/ui
           </Link>{" "}
-          · v0.1.14 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
+          · v0.1.15 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
           {" "}
           ⚡ by{" "}
           <Link
@@ -1484,6 +1528,13 @@ export default function App() {
           />
         </Box>
       </Drawer>
+
+      <CookieConsentBanner />
+      <PWAInstallPrompt
+        appName="MedixDeck"
+        title="Install MedixDeck"
+        description="Add MedixDeck to your home screen for faster access and a better healthcare experience."
+      />
     </>
   );
 }

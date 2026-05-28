@@ -38,3 +38,14 @@ export const NoNewsletter: Story = {
     />
   ),
 };
+
+export const WithCertifications: Story = {
+  args: {
+    certifications: [
+      { name: "NDPR Compliant", href: "https://nitda.gov.ng" },
+      { name: "ISO 27001", href: "#" },
+      { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
+    ],
+  },
+  render: (args) => <Footer {...args} />,
+};

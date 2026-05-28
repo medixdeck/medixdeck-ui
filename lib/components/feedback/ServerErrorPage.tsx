@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Text, type BoxProps } from "@chakra-ui/react";
 import { Button } from "../primitive/Button";
 
@@ -85,7 +84,7 @@ export function ServerErrorPage({
       >
         {title}
       </Text>
-      
+
       <Text
         fontSize="md"
         color="text.muted"
@@ -115,7 +114,7 @@ export function ServerErrorPage({
           {errorMessage}
         </Box>
       )}
-      
+
       <Box display="flex" gap="4">
         {actionLabel && (
           <Button variant="solid" colorScheme="blue" onClick={onAction}>
