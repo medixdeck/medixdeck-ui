@@ -71,10 +71,14 @@ function isIOSDevice(): boolean {
 
 function isDismissedRecently(cooldownDays: number): boolean {
   if (typeof localStorage === "undefined") return false;
-  const dismissed = localStorage.getItem(STORAGE_KEY);
-  if (!dismissed) return false;
-  const cooldownMs = cooldownDays * 24 * 60 * 60 * 1000;
-  return Date.now() - Number(dismissed) < cooldownMs;
+  try {
+    const dismissed = localStorage.getItem(STORAGE_KEY);
+    if (!dismissed) return false;
+    const cooldownMs = cooldownDays * 24 * 60 * 60 * 1000;
+    return Date.now() - Number(dismissed) < cooldownMs;
+  } catch {
+    return false;
+  }
 }
 
 function saveDismissal(): void {
