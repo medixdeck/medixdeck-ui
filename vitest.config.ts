@@ -14,5 +14,10 @@ export default defineConfig({
     globals: true,
     setupFiles: "./lib/test/setup.ts",
     include: ["lib/**/*.test.{ts,tsx}"],
+    server: {
+      deps: {
+        inline: ["@exodus/bytes"],
+      },
+    },
   },
 });
