@@ -177,7 +177,7 @@ export function PWAInstallPrompt({
     if (isDismissedRecently(cooldownDays)) return;
 
     // iOS path
-    if (isIOSDevice() || forceIOS) {
+    if (isIOSDevice()) {
       setIsIOS(true);
       setVisible(true);
       return;
