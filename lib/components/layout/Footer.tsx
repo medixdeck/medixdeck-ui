@@ -48,6 +48,17 @@ export interface BottomLink {
   isExternal?: boolean;
 }
 
+export interface FooterCertification {
+  /** Certification name displayed alongside the badge (e.g. "NDPR Compliant"). */
+  name: string;
+  /** Optional URL to a verification or info page. */
+  href?: string;
+  /** Open the link in a new tab. @default true */
+  isExternal?: boolean;
+  /** Badge/logo image URL. When omitted a generic shield icon is rendered. */
+  imageSrc?: string;
+}
+
 export type FooterColorScheme = "blue" | "purple";
 
 const FOOTER_COLORS: Record<FooterColorScheme, { solid: string; solidHover: string; token: string; focusRing: string }> = {
@@ -64,7 +75,7 @@ export interface FooterProps extends Omit<BoxProps, "children"> {
   sections?: FooterSection[];
   /** Social media links */
   socialLinks?: SocialLink[];
-  /** Copyright text. Defaults to "© {year} MedixDeck. MDCN & FMoH Certified Platform." */
+  /** Copyright text. Defaults to "© {year} MedixDeck Health Solution Ltd. All Rights Reserved." */
   copyright?: string;
   /** Links at the bottom right corner */
   bottomLinks?: BottomLink[];
@@ -77,6 +88,20 @@ export interface FooterProps extends Omit<BoxProps, "children"> {
    * @default "blue"
    */
   colorScheme?: FooterColorScheme;
+  /**
+   * Compliance certifications displayed in a horizontal row above the copyright bar.
+   * Each item shows a badge image (or a fallback shield icon) + certification name.
+   *
+   * @example
+   * ```tsx
+   * certifications={[
+   *   { name: "NDPR Compliant", imageSrc: "/badges/ndpr.png",   href: "https://nitda.gov.ng/ndpr" },
+   *   { name: "ISO 27001",      imageSrc: "/badges/iso.png" },
+   *   { name: "MDCN Certified", href: "https://mdcn.gov.ng" },
+   * ]}
+   * ```
+   */
+  certifications?: FooterCertification[];
 }
 
 // ─── Icons ───────────────────────────────────────────────────────────────────────
@@ -171,7 +196,7 @@ const defaultSections: FooterSection[] = [
       { label: "Home", href: "/" },
       { label: "About", href: "/about" },
       { label: "For Doctors", href: "/doctors" },
-      { label: "For Businesses", href: "/businesses" },
+      { label: "For Businesses", href: "/business" },
       { label: "For Patients", href: "/patients" },
     ],
   },
@@ -235,10 +260,11 @@ export function Footer({
   newsletter,
   renderLink = defaultRenderLink,
   colorScheme = "blue",
+  certifications,
   ...props
 }: FooterProps) {
   const currentYear = new Date().getFullYear();
-  const resolvedCopyright = copyright ?? `© ${currentYear} MedixDeck. MDCN & FMoH Certified Platform.`;
+  const resolvedCopyright = copyright ?? `© ${currentYear} MedixDeck Health Solution Ltd. All Rights Reserved.`;
   const [email, setEmail] = useState("");
   const [newsletterButtonHovered, setNewsletterButtonHovered] = useState(false);
   const [newsletterButtonFocused, setNewsletterButtonFocused] = useState(false);
@@ -274,7 +300,7 @@ export function Footer({
             </Box>
             <Text
               fontSize="sm"
-              color="text.muted"
+              color="text.body"
               maxW="320px"
               lineHeight="1.6"
               fontFamily="var(--font-body)"
@@ -328,7 +354,7 @@ export function Footer({
                         <Box
                           as="span"
                           fontSize="sm"
-                          color="text.muted"
+                          color="text.body"
                           fontFamily="var(--font-body)"
                           _hover={{ color: scheme.token }}
                           transition="color 0.2s ease"
@@ -367,7 +393,7 @@ export function Footer({
                 </Text>
                 <Text
                   fontSize="sm"
-                  color="text.muted"
+                  color="text.body"
                   mb={5}
                   fontFamily="var(--font-body)"
                   lineHeight="1.5"
@@ -394,7 +420,7 @@ export function Footer({
                     fontSize="sm"
                     fontFamily="var(--font-body)"
                     color="text.body"
-                    _placeholder={{ color: "text.muted" }}
+                    _placeholder={{ color: "text.body" }}
                     _focus={{ outline: "none", borderColor: scheme.token, boxShadow: `0 0 0 1px ${scheme.solid}` }}
                     transition="all 0.2s"
                     required
@@ -448,7 +474,7 @@ export function Footer({
           >
             <Text
               fontSize="xs"
-              color="text.muted"
+              color="text.body"
               fontFamily="var(--font-body)"
               textAlign={{ base: "center", md: "left" }}
             >
@@ -463,7 +489,7 @@ export function Footer({
                     <Box
                       as="span"
                       fontSize="xs"
-                      color="text.muted"
+                      color="text.body"
                       fontFamily="var(--font-body)"
                       _hover={{ color: "text.heading" }}
                       transition="color 0.2s ease"
@@ -489,7 +515,7 @@ export function Footer({
                   bg="bg.surface"
                   border="1px solid"
                   borderColor="border"
-                  color="text.muted"
+                  color="text.body"
                   _hover={{ color: "text.heading", bg: "bg" }}
                   cursor="pointer"
                   transition="all 0.2s"
@@ -506,6 +532,79 @@ export function Footer({
             </HStack>
           </Flex>
         </Box>
+
+        {/* Certifications row */}
+        {certifications && certifications.length > 0 && (
+          <Box
+            borderTop="1px solid"
+            borderColor="border"
+            pt={6}
+            mt={6}
+            pb={0}
+          >
+            <Flex
+              gap={{ base: 6, md: 10 }}
+              flexWrap="wrap"
+              justify={{ base: "center", md: "center" }}
+              align="center"
+            >
+              {certifications.map((cert) => {
+                const badge = (
+                  <Flex
+                    key={cert.name}
+                    align="center"
+                    gap="3"
+                    opacity={0.75}
+                    _hover={{ opacity: 1 }}
+                    transition="opacity 0.2s ease"
+                    style={{ cursor: cert.href ? "pointer" : "default" }}
+                  >
+                    {cert.imageSrc ? (
+                      <img
+                        src={cert.imageSrc}
+                        alt={cert.name}
+                        style={{
+                          height: 28,
+                          width: "auto",
+                          objectFit: "contain",
+                          display: "block",
+                        }}
+                      />
+                    ) : (
+                      <Box color="text.muted" flexShrink={0}>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                      </Box>
+                    )}
+                    <Text
+                      fontSize="xs"
+                      fontWeight="600"
+                      fontFamily="var(--font-body)"
+                      color="text.muted"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
+                      {cert.name}
+                    </Text>
+                  </Flex>
+                );
+
+                if (cert.href) {
+                  return (
+                    <Box key={cert.name}>
+                      {renderLink(
+                        { href: cert.href, isExternal: cert.isExternal ?? true },
+                        badge,
+                      )}
+                    </Box>
+                  );
+                }
+                return <Box key={cert.name}>{badge}</Box>;
+              })}
+            </Flex>
+          </Box>
+        )}
       </Container>
     </Box>
   );

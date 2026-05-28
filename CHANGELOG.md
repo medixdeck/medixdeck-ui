@@ -4,7 +4,187 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.15] — 2026-05-27
+
+### Changed
+
+- **Runtime requirement**
+  - Updated `engines.node` to `>=20.16` in `package.json`.
+
+### Added
+
+- **`Select` — Icon support** (`icon` prop)
+
+  Added an optional `icon` prop to the `Select` component to render a left-aligned icon, automatically adjusting the select field's padding.
+
+  ```tsx
+  import { LuWallet } from "react-icons/lu";
+
+  <Select
+    icon={<LuWallet size={16} />}
+    placeholder="Any price"
+    options={[
+      { value: "0-50", label: "$0 - $50" },
+      { value: "50-100", label: "$50 - $100" },
+    ]}
+  />
+  ```
+
+- **`DashboardLayout` — Mobile bottom navigation bar** (`mobileNavItems` prop)
+
+  A fixed, glass-morphism bottom tab bar for mobile viewports (hidden on `md+`). Designed to match native-app UX.
+
+  ```tsx
+  import { LuHouse, LuMessageCircle, LuUser } from "react-icons/lu";
+
+  <DashboardLayout
+    mobileNavItems={[
+      { label: "Home",     href: "/",         icon: <LuHouse size={22} />,         isActive: true },
+      { label: "Messages", href: "/messages", icon: <LuMessageCircle size={22} />, badge: 6 },
+      { label: "Profile",  href: "/profile",  icon: <LuUser size={22} /> },
+    ]}
+  >
+    {/* ... */}
+  </DashboardLayout>
+  ```
+
+  | `DashboardMobileNavItem` prop | Type | Description |
+  | --- | --- | --- |
+  | `label` | `string` | Text shown below the icon |
+  | `href` | `string` | Key + target URL (via `renderLink`) |
+  | `icon` | `ReactNode` | Icon element (22 × 22 recommended) |
+  | `isActive?` | `boolean` | Highlights the active tab with a pill indicator |
+  | `badge?` | `number` | Count bubble on the icon (capped at `99+`) |
+
+  Implementation highlights:
+  - Entrance animation via CSS keyframe `slideUpNav` injected once into `document.head`
+  - Active tab: `framer-motion` spring-animated pill behind the icon
+  - Press feedback: `whileTap={{ scale: 0.88 }}`
+  - iPhone notch: `padding-bottom: env(safe-area-inset-bottom, 0px)`
+  - Page bottom padding auto-increases to `pb="20"` on mobile when `mobileNavItems` is set
+
+- **`DashboardLayout` — Doctor identity / score card** (`scoreCard` prop)
+
+  Optional clinician card above the sidebar nav on desktop only (`display={{ base: "none", md: "block" }}`). Intended for doctor-role users.
+
+  ```tsx
+  <DashboardLayout
+    scoreCard={{
+      name: "Dr. Okedi Williams",
+      role: "Cardiologist",
+      avatarSrc: "/dr-okedi.jpg",   // optional — falls back to initials
+      tier: "gold",                  // "bronze" | "silver" | "gold" | "platinum" | "diamond"
+      medixScore: 847,
+      link: "/doctor/profile",       // optional — makes the card clickable via renderLink
+    }}
+  >
+    {/* ... */}
+  </DashboardLayout>
+  ```
+
+  Tier colour system:
+
+  | Tier | Badge / label colour | Avatar ring |
+  | --- | --- | --- |
+  | `bronze` | `#92400E` | `#D97706` |
+  | `silver` | `#475569` | `#94A3B8` |
+  | `gold` | `#D97706` | `#F59E0B` |
+  | `platinum` | `#0284C7` | `#38BDF8` |
+  | `diamond` | `#7C3AED` | `#A78BFA` |
+
+  New exported type: `DashboardScoreCardData`
+
+- **`DashboardLayout` — Greeting subtitle** (`greetingSubtext` prop)
+
+  Optional second line below the user's name in the top bar. Top bar height expands from 64 px to 80 px automatically.
+
+  ```tsx
+  <DashboardLayout
+    greetingSubtext={`${new Date().toLocaleDateString("en-GB", {
+      weekday: "long", day: "numeric", month: "long", year: "numeric",
+    })} · 8 consultations scheduled today`}
+  >
+    {/* ... */}
+  </DashboardLayout>
+  ```
+
+- **`Footer` — Compliance certifications row** (`certifications` prop)
+
+  An optional row rendered at the bottom of the Footer (just above the copyright section) to display compliance badges like NDPR, MDCN, ISO, etc.
+
+  ```tsx
+  <Footer
+    certifications={[
+      { name: "NDPR Compliant", href: "https://nitda.gov.ng", imageSrc: "/ndpr.png" },
+      { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
+      { name: "ISO 27001", href: "#" },
+    ]}
+  />
+  ```
+
+  | `FooterCertification` prop | Type | Description |
+  | --- | --- | --- |
+  | `name` | `string` | Text displayed alongside the badge |
+  | `href?` | `string` | Optional URL for verification (wrapped in `renderLink`) |
+  | `isExternal?` | `boolean` | Opens link in a new tab (`true` by default) |
+  | `imageSrc?` | `string` | Image URL. Falls back to a generic shield icon if omitted. |
+
+- **`CookieConsentBanner` — GDPR / NDPR compliant banner**
+
+  A customizable cookie consent banner powered by `react-cookie-consent`, pre-styled to match the MedixDeck design system.
+
+  ```tsx
+  <CookieConsentBanner
+    title="Privacy & Cookies"
+    acceptText="Accept All"
+    declineText="Reject Non-Essential"
+  >
+    We use cookies to securely manage your session, enhance your browsing experience, and analyze our platform's performance. By clicking "Accept All", you consent to our use of cookies.
+  </CookieConsentBanner>
+  ```
+
+- **`PWAInstallPrompt` — Cross-platform PWA install nudge**
+
+  A Framer Motion–animated banner that detects platform and prompts users to install the app:
+  - **Android / Chromium:** Captures the `beforeinstallprompt` event and triggers the native install dialog.
+  - **iOS Safari:** Shows step-by-step "Add to Home Screen" instructions with a share icon visual.
+  - Auto-hides when already installed (standalone mode).
+  - Dismissals are persisted to `localStorage` with a configurable cooldown (default 14 days).
+
+  ```tsx
+  <PWAInstallPrompt
+    appName="MedixDeck"
+    title="Install MedixDeck"
+    description="Get faster access and offline support."
+    cooldownDays={14}
+  />
+  ```
+
+  | `PWAInstallPromptProps` | Type | Default | Description |
+  | --- | --- | --- | --- |
+  | `title` | `string` | `"Install this app"` | Banner heading |
+  | `description` | `string` | — | Body text (Android only) |
+  | `installLabel` | `string` | `"Install"` | Accept button text |
+  | `dismissLabel` | `string` | `"Not now"` | Dismiss button text |
+  | `cooldownDays` | `number` | `14` | Days to suppress after dismiss |
+  | `appName` | `string` | `"this app"` | Name used in iOS instructions |
+  | `icon` | `ReactNode` | — | Custom app icon element |
+  | `position` | `"top" \| "bottom"` | `"bottom"` | Screen position |
+  | `onInstall` | `() => void` | — | Fired on successful install |
+  | `onDismiss` | `() => void` | — | Fired on dismiss |
+
+### Changed
+
+- **`Footer`**: The default `copyright` text was updated to `"© {year} MedixDeck Health Solution Ltd. All Rights Reserved."`.
+- **`DashboardLayout` stories**: Expanded with 8 new stories covering `WithMobileNav`, `WithDoctorScoreCard`, five tier-specific card variants, `WithGreetingSubtext`, and `FullDoctorDashboard`.
+- **`Footer` stories**: Added `WithCertifications` story.
+- **`CookieConsentBanner` and `PWAInstallPrompt` stories**: Added Storybook documentation for the new feedback components.
+- **`lib/index.ts`**: `DashboardScoreCardData`, `FooterCertification`, `CookieConsentBannerProps`, and `PWAInstallPromptProps` added to public type exports.
+
+---
+
 ## [0.1.14] — 2026-05-13
+
 
 ### Added
 

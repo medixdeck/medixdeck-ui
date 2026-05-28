@@ -42,6 +42,14 @@ const FONT_URLS = [
 // 3. color-scheme + autofill overrides for native browser controls.
 // ─────────────────────────────────────────────────────────────────────────────
 const GLOBAL_STYLES = `
+  /* ── Fluid typography base ───────────────────────────────────────────────── */
+  /* font-size: 100% keeps 1rem = user's browser preference (default 16px).    */
+  /* All token font sizes use clamp() so they scale fluidly between mobile and  */
+  /* desktop with no media queries required by consuming components.            */
+  :root {
+    font-size: 100%;
+  }
+
   /* ── Font custom properties ─────────────────────────────────────────────── */
   :root {
     --font-heading: 'Satoshi', 'Inter', -apple-system, BlinkMacSystemFont,

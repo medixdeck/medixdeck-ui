@@ -104,7 +104,7 @@ export function SectionHeader({
       {eyebrow && (
         <Box
           as="span"
-          fontSize="xs"
+          fontSize="md"
           fontWeight="bold"
           color={eyebrowColor}
           letterSpacing="wider"

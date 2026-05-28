@@ -2,6 +2,15 @@
  * MedixDeck Typography Tokens
  * Font: Satoshi (from Fontshare)
  * Scale derived from style guide.
+ *
+ * Font sizes use CSS clamp() for fluid, responsive scaling.
+ * Formula: clamp(min-size, preferred-fluid, max-size)
+ *   - min-size : smallest the text will ever be (mobile)
+ *   - preferred : viewport-relative growth (vw + rem mix)
+ *   - max-size : largest the text will ever be (desktop)
+ *
+ * Consuming components automatically get responsive text by
+ * referencing any token — no media queries needed.
  */
 export const typographyTokens = {
   fonts: {
@@ -11,17 +20,18 @@ export const typographyTokens = {
   },
 
   fontSizes: {
-    "2xs": { value: "0.625rem" },   // 10px
-    xs: { value: "0.6875rem" },     // 11px – Label
-    sm: { value: "0.75rem" },       // 12px – Small
-    md: { value: "0.875rem" },      // 14px – Body ★
-    lg: { value: "1rem" },          // 16px
-    xl: { value: "1.125rem" },      // 18px
-    "2xl": { value: "1.3125rem" },  // 21px – H3 ★
-    "3xl": { value: "1.5rem" },     // 24px
-    "4xl": { value: "1.75rem" },    // 28px – H2 ★
-    "5xl": { value: "2.25rem" },    // 36px – H1 ★
-    "6xl": { value: "3.25rem" },    // 52px – Display ★
+    //                  clamp(mobile-min,  fluid-preferred,        desktop-max)
+    "2xs": { value: "clamp(0.5625rem,   0.5rem   + 0.2vw,  0.625rem)"   }, // 9–10px
+    xs:   { value: "clamp(0.625rem,    0.5625rem + 0.25vw, 0.75rem)"    }, // 10–12px  Label
+    sm:   { value: "clamp(0.6875rem,   0.625rem  + 0.3vw,  0.8125rem)"  }, // 11–13px  Small
+    md:   { value: "clamp(0.8125rem,   0.75rem   + 0.35vw, 0.9375rem)"  }, // 13–15px  Body ★
+    lg:   { value: "clamp(0.9375rem,   0.875rem  + 0.4vw,  1.0625rem)"  }, // 15–17px
+    xl:   { value: "clamp(1rem,        0.9375rem + 0.5vw,  1.1875rem)"  }, // 16–19px
+    "2xl": { value: "clamp(1.125rem,   1rem      + 0.6vw,  1.4375rem)"  }, // 18–23px  H3 ★
+    "3xl": { value: "clamp(1.25rem,    1.125rem  + 0.75vw, 1.625rem)"   }, // 20–26px
+    "4xl": { value: "clamp(1.5rem,     1.25rem   + 1vw,    2rem)"       }, // 24–32px  H2 ★
+    "5xl": { value: "clamp(1.75rem,    1.5rem    + 1.5vw,  2.5rem)"     }, // 28–40px  H1 ★
+    "6xl": { value: "clamp(2.25rem,    1.75rem   + 2.5vw,  3.5rem)"     }, // 36–56px  Display ★
   },
 
   fontWeights: {

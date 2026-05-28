@@ -46,7 +46,7 @@ lib/                     ← ALL library source code lives here
     form/                ← Input, Select, Checkbox, OTPInput, PhoneInput, DatePicker, DateRangePicker, Combobox, FileUpload
     layout/              ← Card, StatCard, Container, SectionHeader
     navigation/          ← Navbar, Breadcrumb, Tabs, Pagination, Stepper
-    feedback/            ← Alert, Skeleton, Progress, Modal, Drawer, Tooltip, EmptyState, Notification
+    feedback/            ← Alert, Skeleton, Progress, Modal, Drawer, Tooltip, EmptyState, Notification, CookieConsentBanner, PWAInstallPrompt
     data/                ← Accordion, TestimonialCard, BlogCard, DataTable
     healthcare/          ← DoctorCard, VitalBadge, AppointmentCard
 

@@ -155,6 +155,38 @@ export interface DashboardNavGroup {
   items: DashboardNavItem[];
 }
 
+export interface DashboardMobileNavItem {
+  /** Label shown below the icon in the mobile bottom bar. */
+  label: string;
+  /** href used by `renderLink` and as a unique key. */
+  href: string;
+  /** Icon element rendered above the label (recommended: 22×22 SVG). */
+  icon: React.ReactNode;
+  /** Mark this tab as active. */
+  isActive?: boolean;
+  /** Numeric count badge shown on the icon (capped at 99+). */
+  badge?: number;
+}
+
+/**
+ * Data for the doctor identity card shown at the top of the sidebar.
+ * Only rendered when this prop is supplied — intended for doctor-role users.
+ */
+export interface DashboardScoreCardData {
+  /** Doctor's full name. */
+  name: string;
+  /** Doctor's specialty / role shown as the primary label (e.g. "Cardiologist"). */
+  role: string;
+  /** Optional avatar image URL. Falls back to initials. */
+  avatarSrc?: string;
+  /** Optional href to navigate to the doctor's profile when the card is clicked. */
+  link?: string;
+  /** Clinician tier — determines avatar ring colour and badge text colour. */
+  tier: "bronze" | "silver" | "gold" | "platinum" | "diamond";
+  /** Numeric MedixScore displayed next to the tier label. */
+  medixScore: number;
+}
+
 export interface DashboardUser {
   /** Display name shown in the top bar greeting and dropdown. */
   name: string;
@@ -209,6 +241,18 @@ export interface DashboardLayoutProps extends Omit<BoxProps, "children"> {
    */
   greeting?: string;
 
+  /**
+   * Optional subtitle rendered below the greeting in the top bar.
+   * Use it to surface contextual info like the date or a daily summary.
+   * Note: The top bar height remains fixed at 64px (`h="16"`) even when the subtitle is present.
+   *
+   * @example
+   * ```tsx
+   * greetingSubtext="Thursday, 15 May 2026 · 8 consultations scheduled today"
+   * ```
+   */
+  greetingSubtext?: string;
+
   /** Called when the sidebar logout button is clicked. */
   onLogout?: () => void;
 
@@ -251,6 +295,44 @@ export interface DashboardLayoutProps extends Omit<BoxProps, "children"> {
    * @default "blue"
    */
   colorScheme?: DashboardColorScheme;
+
+  /**
+   * Optional flat list of up to 5 items for the mobile bottom navigation bar.
+   * When provided, a fixed bottom tab bar is shown on mobile (hidden on md+).
+   * Each item requires an `icon` and a `label`. Set `isActive` on the current
+   * route's item to highlight it.
+   *
+   * The same `renderLink` prop is used to wrap each tab, so router integration
+   * works out-of-the-box.
+   *
+   * @example
+   * ```tsx
+   * mobileNavItems={[
+   *   { label: "Home",     href: "/",          icon: <HomeIcon />,    isActive: true },
+   *   { label: "Messages", href: "/messages",  icon: <ChatIcon />,   badge: 3 },
+   *   { label: "Profile",  href: "/profile",   icon: <UserIcon /> },
+   * ]}
+   * ```
+   */
+  mobileNavItems?: DashboardMobileNavItem[];
+
+  /**
+   * Optional doctor identity / score card shown at the top of the sidebar
+   * (desktop only). Pass this when the authenticated user is a doctor.
+   *
+   * @example
+   * ```tsx
+   * scoreCard={{
+   *   name: "Okedi Williams",
+   *   role: "Cardiologist",
+   *   avatarSrc: "/dr-okedi.jpg",
+   *   tier: "gold",
+   *   medixScore: 847,
+   *   link: "/doctor/profile",
+   * }}
+   * ```
+   */
+  scoreCard?: DashboardScoreCardData;
 }
 
 // ─── Helper: default link renderer ───────────────────────────────────────────
@@ -485,11 +567,16 @@ function SidebarNavItem({
   const hasSubItems = !!(item.subItems && item.subItems.length > 0);
   const subMenuId = useId();
 
+  // Sync expanded when active state changes from outside (e.g. route change).
+  // But do NOT keep expanded=true after navigating away — only expand when
+  // this item (or one of its children) is actually the active route.
   useEffect(() => {
-    if (isActive || hasActiveSubItem) {
-      setExpanded(true);
-    }
+    setExpanded(isActive || hasActiveSubItem);
   }, [isActive, hasActiveSubItem]);
+
+  // Use isActive for colour; use (isActive || expanded) only for the chevron
+  // direction so that manually-opened accordions don't inherit the brand colour.
+  const isColoured = isActive;
 
   // Visual row — pure styling, no interactive semantics
   const rowContent = (
@@ -533,11 +620,11 @@ function SidebarNavItem({
         <Box
           flexShrink={0}
           style={{
-            color: isActive || expanded ? scheme.solid : undefined,
-            opacity: isActive || expanded ? 1 : hovered ? 0.85 : 0.6,
+            color: isColoured ? scheme.solid : undefined,
+            opacity: isColoured ? 1 : hovered ? 0.85 : 0.6,
             transition: "color 0.15s ease, opacity 0.15s ease",
           }}
-          color={isActive || expanded ? scheme.chakraToken : "text.body"}
+          color={isColoured ? scheme.chakraToken : "text.body"}
         >
           {item.icon}
         </Box>
@@ -548,13 +635,13 @@ function SidebarNavItem({
         as="span"
         flex="1"
         fontSize="sm"
-        fontWeight={isActive || expanded ? "600" : "500"}
+        fontWeight={isColoured ? "600" : "500"}
         fontFamily="var(--font-body)"
         style={{
-          color: isActive || expanded ? scheme.solid : undefined,
+          color: isColoured ? scheme.solid : undefined,
           transition: "color 0.15s ease",
         }}
-        color={isActive || expanded ? scheme.chakraToken : "text.body"}
+        color={isColoured ? scheme.chakraToken : "text.body"}
       >
         {item.label}
       </Box>
@@ -672,6 +759,343 @@ function SidebarNavItem({
   );
 }
 
+// ─── MobileBottomNav ─────────────────────────────────────────────────────────
+
+interface MobileBottomNavProps {
+  items: DashboardMobileNavItem[];
+  renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
+  scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
+}
+
+// ─── Keyframe singleton injector ────────────────────────────────────────────────────
+
+let mobileNavKfInjected = false;
+function injectMobileNavKeyframe() {
+  if (typeof document === "undefined" || mobileNavKfInjected) return;
+  const s = document.createElement("style");
+  s.setAttribute("data-medixdeck", "mobile-nav");
+  s.textContent = `
+    @keyframes medixMobileNavIn {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+  `;
+  document.head.appendChild(s);
+  mobileNavKfInjected = true;
+}
+
+function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
+  React.useEffect(() => { injectMobileNavKeyframe(); }, []);
+
+  return (
+    <Box
+      as="nav"
+      aria-label="Mobile bottom navigation"
+      // Responsive: visible on mobile, hidden on md+
+      display={{ base: "flex", md: "none" }}
+      position="fixed"
+      bottom="0"
+      left="0"
+      right="0"
+      zIndex="docked"
+      bg="bg"
+      borderTop="1px solid"
+      borderColor="border"
+      alignItems="center"
+      style={{
+        height: 64,
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        boxShadow: "0 -8px 40px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.04)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        animation: "medixMobileNavIn 0.42s cubic-bezier(0.22,1,0.36,1) both",
+      }}
+    >
+      {items.slice(0, 5).map((item) => {
+        const isActive = item.isActive ?? false;
+
+        const tabContent = (
+          <motion.div
+            whileTap={{ scale: 0.82 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30, mass: 0.7 }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+              height: "100%",
+              padding: "6px 4px 4px",
+              cursor: "pointer",
+              position: "relative",
+              gap: 4,
+              textDecoration: "none",
+              WebkitTapHighlightColor: "transparent",
+            }}
+          >
+            {/* Animated pill capsule — scales in behind the active icon */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                top: 7,
+                left: "50%",
+                width: 44,
+                height: 28,
+                borderRadius: 14,
+                background: scheme.activeBgLight,
+                transform: `translateX(-50%) scaleX(${isActive ? 1 : 0})`,
+                opacity: isActive ? 1 : 0,
+                transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.2s ease",
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* Icon — relative wrapper so the badge bubble can be absolutely positioned */}
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              position="relative"
+              zIndex={1}
+              color={isActive ? scheme.chakraToken : "text.muted"}
+              style={{
+                transition: "color 0.18s ease",
+                opacity: isActive ? 1 : 0.6,
+              }}
+            >
+              {item.icon}
+
+              {/* Badge bubble */}
+              {typeof item.badge === "number" && item.badge > 0 && (
+                <span
+                  aria-label={`${item.badge} unread`}
+                  style={{
+                    position: "absolute",
+                    top: -5,
+                    right: -6,
+                    minWidth: 16,
+                    height: 16,
+                    borderRadius: 8,
+                    background: scheme.solid,
+                    color: "#fff",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    fontFamily: "var(--font-body)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "0 3px",
+                    lineHeight: 1,
+                    boxShadow: "0 0 0 2px var(--chakra-colors-bg, #fff)",
+                    pointerEvents: "none",
+                  }}
+                >
+                  {item.badge > 99 ? "99+" : item.badge}
+                </span>
+              )}
+            </Box>
+
+            {/* Label */}
+            <Box
+              as="span"
+              fontSize="2xs"
+              fontWeight={isActive ? "700" : "500"}
+              fontFamily="var(--font-body)"
+              textAlign="center"
+              lineHeight="1"
+              position="relative"
+              zIndex={1}
+              color={isActive ? scheme.chakraToken : "text.muted"}
+              style={{
+                transition: "color 0.18s ease",
+                letterSpacing: isActive ? "-0.01em" : "0",
+              }}
+            >
+              {item.label}
+            </Box>
+          </motion.div>
+        );
+
+        const navItem: DashboardNavItem = { label: item.label, href: item.href, isActive: item.isActive };
+
+        return (
+          <Box
+            key={item.href}
+            flex="1"
+            display="flex"
+            alignItems="stretch"
+            justifyContent="center"
+            h="16"
+            style={{ textDecoration: "none" }}
+          >
+            {renderLink(navItem, tabContent)}
+          </Box>
+        );
+      })}
+    </Box>
+  );
+}
+
+// ─── MedixScoreCard (internal sidebar component) ─────────────────────────────
+
+const TIER_CONFIG = {
+  bronze: { label: "Bronze Clinician", color: "#92400E", ring: "#D97706", bg: "rgba(217,119,6,0.10)" },
+  silver: { label: "Silver Clinician", color: "#475569", ring: "#94A3B8", bg: "rgba(148,163,184,0.10)" },
+  gold: { label: "Gold Clinician", color: "#D97706", ring: "#F59E0B", bg: "rgba(245,158,11,0.10)" },
+  platinum: { label: "Platinum Clinician", color: "#0284C7", ring: "#38BDF8", bg: "rgba(56,189,248,0.10)" },
+  diamond: { label: "Diamond Clinician", color: "#7C3AED", ring: "#A78BFA", bg: "rgba(167,139,250,0.10)" },
+} as const;
+
+const AwardIcon = ({ color }: { color: string }) => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+    stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="8" r="6" />
+    <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
+  </svg>
+);
+
+const ChevronRightIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+);
+
+function SidebarScoreCard({
+  data,
+  renderLink,
+}: {
+  data: DashboardScoreCardData;
+  renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
+}) {
+  const tier = TIER_CONFIG[data.tier];
+  const initials = data.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+
+  const cardInner = (
+    <Box
+      mx="3"
+      my="4"
+      borderRadius="card"
+      border="1px solid"
+      borderColor="border"
+      bg="bg"
+      overflow="hidden"
+      style={{ cursor: data.link ? "pointer" : "default" }}
+      _hover={data.link ? { borderColor: tier.ring, boxShadow: `0 0 0 1px ${tier.ring}40` } : undefined}
+      transition="border-color 0.15s ease, box-shadow 0.15s ease"
+    >
+      {/* ── Top row: avatar + role/name + chevron ── */}
+      <Box display="flex" alignItems="center" gap="3" px="3" pt="3" pb="2.5">
+        {/* Avatar with tier-coloured gradient ring */}
+        <div
+          style={{
+            flexShrink: 0,
+            padding: 2,
+            borderRadius: "50%",
+            background: `linear-gradient(135deg, ${tier.ring}, ${tier.color})`,
+          }}
+        >
+          {data.avatarSrc ? (
+            <img
+              src={data.avatarSrc}
+              alt={data.name}
+              style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", display: "block" }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 40, height: 40, borderRadius: "50%",
+                background: tier.bg,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 13, fontWeight: 700,
+                color: tier.color,
+                fontFamily: "var(--font-heading)",
+              }}
+            >
+              {initials}
+            </div>
+          )}
+        </div>
+
+        {/* Text */}
+        <Box flex="1" minW="0">
+          <Box
+            fontSize="sm"
+            fontWeight="700"
+            fontFamily="var(--font-heading)"
+            color="text.heading"
+            lineHeight="1.2"
+            style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+          >
+            {data.role}
+          </Box>
+          <Box
+            fontSize="xs"
+            color="text.muted"
+            fontFamily="var(--font-body)"
+            lineHeight="1.3"
+            mt="0.5"
+            style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+          >
+            {data.name}
+          </Box>
+        </Box>
+
+        {/* Chevron */}
+        {data.link && (
+          <Box color="text.muted" flexShrink={0}>
+            <ChevronRightIcon />
+          </Box>
+        )}
+      </Box>
+
+      {/* ── Divider ── */}
+      <Box borderTop="1px solid" borderColor="border" />
+
+      {/* ── Score row ── */}
+      <Box px="3" pt="2" pb="2.5">
+        <Box
+          fontSize="10px"
+          fontWeight="600"
+          letterSpacing="wider"
+          color="text.muted"
+          fontFamily="var(--font-body)"
+          mb="1"
+        >
+          MedixScore
+        </Box>
+        <Box display="flex" alignItems="center" gap="2" flexWrap="nowrap">
+          <AwardIcon color={tier.color} />
+          <Box
+            fontSize="sm"
+            fontWeight="500"
+            fontFamily="var(--font-body)"
+            style={{ color: tier.color, whiteSpace: "nowrap" }}
+          >
+            {tier.label}
+          </Box>
+          <Box
+            fontSize="sm"
+            fontWeight="500"
+            color="text.heading"
+            fontFamily="var(--font-body)"
+            ml="1"
+            style={{ whiteSpace: "nowrap" }}
+          >
+            {data.medixScore.toLocaleString()} {Number(data.medixScore) === 1 ? "pt" : "pts"}
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+
+  if (data.link) {
+    return <>{renderLink({ label: data.role, href: data.link }, cardInner)}</>;
+  }
+  return <>{cardInner}</>;
+}
+
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 interface SidebarProps {
@@ -683,6 +1107,8 @@ interface SidebarProps {
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   sidebarWidth: number;
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
+  /** Optional doctor score card rendered below the logo on desktop only. */
+  scoreCard?: DashboardScoreCardData;
 }
 
 function Sidebar({
@@ -694,6 +1120,7 @@ function Sidebar({
   renderLink,
   sidebarWidth,
   scheme,
+  scoreCard,
 }: SidebarProps) {
   const [logoutHovered, setLogoutHovered] = useState(false);
 
@@ -747,6 +1174,17 @@ function Sidebar({
         >
           {logo}
         </Box>
+
+        {/* ── Doctor score card (desktop only, optional) ── */}
+        {scoreCard && (
+          <Box
+            display={{ base: "none", md: "block" }}
+            flexShrink={0}
+            pt="3"
+          >
+            <SidebarScoreCard data={scoreCard} renderLink={renderLink} />
+          </Box>
+        )}
 
         {/* ── Nav groups ── */}
         <Box flex="1" overflowY="auto" py="3" px="3">
@@ -839,6 +1277,8 @@ function Sidebar({
 interface TopBarProps {
   user: DashboardUser;
   greeting: string;
+  /** Optional subtitle shown below the greeting (e.g. date + schedule summary). */
+  greetingSubtext?: string;
   isSidebarOpen: boolean;
   onMenuToggle: () => void;
   sidebarWidth: number;
@@ -851,6 +1291,7 @@ interface TopBarProps {
 function TopBar({
   user,
   greeting,
+  greetingSubtext,
   isSidebarOpen,
   onMenuToggle,
   sidebarWidth,
@@ -912,19 +1353,34 @@ function TopBar({
       </Box>
 
       {/* Greeting */}
-      <Box flex="1">
+      <Box flex="1" minW="0">
         <Box
           as="p"
           fontSize={{ base: "sm", md: "md" }}
-          fontWeight="500"
+          fontWeight="700"
           fontFamily="var(--font-body)"
-          color="text.body"
+          color="text.heading"
+          lineHeight="1.3"
         >
           {greeting},{" "}
           <Box as="span" fontWeight="700" color="text.heading">
             {user.name}
           </Box>
         </Box>
+        {greetingSubtext && (
+          <Box
+            as="p"
+            fontSize={{ base: "2xs", md: "xs" }}
+            fontWeight="400"
+            fontFamily="var(--font-body)"
+            color="text.heading"
+            mt="0.5"
+            lineHeight="1.4"
+            style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+          >
+            {greetingSubtext}
+          </Box>
+        )}
       </Box>
 
       {/* Optional right slot */}
@@ -1182,16 +1638,20 @@ export function DashboardLayout({
   navGroups,
   user,
   greeting,
+  greetingSubtext,
   onLogout,
   renderLink = defaultRenderLink,
   dropdownItems,
   topBarSlot,
   sidebarWidth = 220,
   colorScheme = "blue",
+  mobileNavItems,
+  scoreCard,
   ...rest
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const scheme = SCHEME_COLORS[colorScheme];
+  const hasMobileNav = !!(mobileNavItems && mobileNavItems.length > 0);
 
   const resolvedGreeting = greeting ?? autoGreeting();
   const resolvedLogo = logo ?? <Logo variant={colorScheme} height={26} />;
@@ -1213,6 +1673,7 @@ export function DashboardLayout({
         renderLink={renderLink}
         sidebarWidth={sidebarWidth}
         scheme={scheme}
+        scoreCard={scoreCard}
       />
 
       {/* ── Main content area (offset by sidebar width on desktop) ── */}
@@ -1228,6 +1689,7 @@ export function DashboardLayout({
         <TopBar
           user={user}
           greeting={resolvedGreeting}
+          greetingSubtext={greetingSubtext}
           isSidebarOpen={sidebarOpen}
           onMenuToggle={() => setSidebarOpen((o) => !o)}
           sidebarWidth={sidebarWidth}
@@ -1246,10 +1708,22 @@ export function DashboardLayout({
           overflowY="auto"
           bg="bg.subtle"
           p={{ base: "4", md: "6", lg: "8" }}
+          // Add bottom padding on mobile when bottom nav is present so content
+          // is never hidden behind the fixed bar (h=16 = 4rem, +1rem clearance)
+          pb={hasMobileNav ? { base: "20", md: "6", lg: "8" } : { base: "4", md: "6", lg: "8" }}
         >
           {children}
         </Box>
       </Box>
+
+      {/* ── Mobile bottom navigation ── */}
+      {hasMobileNav && (
+        <MobileBottomNav
+          items={mobileNavItems!}
+          renderLink={renderLink}
+          scheme={scheme}
+        />
+      )}
     </Box>
   );
 }
