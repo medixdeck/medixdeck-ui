@@ -216,15 +216,14 @@ export function PWAInstallPrompt({
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: position === "bottom" ? 80 : -80 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: position === "bottom" ? 80 : -80 }}
+          initial={{ opacity: 0, y: position === "bottom" ? 80 : -80, x: "-50%" }}
+          animate={{ opacity: 1, y: 0, x: "-50%" }}
+          exit={{ opacity: 0, y: position === "bottom" ? 80 : -80, x: "-50%" }}
           transition={{ duration: 0.35, ease: EASE_IN_OUT }}
           style={{
             position: "fixed",
             [position]: 16,
             left: "50%",
-            transform: "translateX(-50%)",
             zIndex: 10000,
             width: "calc(100% - 32px)",
             maxWidth: 480,
