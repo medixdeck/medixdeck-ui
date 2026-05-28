@@ -54,6 +54,11 @@ export interface PWAInstallPromptProps {
    */
   position?: "top" | "bottom";
   /**
+   * Number of seconds to delay the prompt after the conditions are met.
+   * @default 0
+   */
+  delaySeconds?: number;
+  /**
    * For documentation/storybook purposes. Forces the banner to be visible.
    */
   forceVisible?: boolean;
@@ -140,6 +145,7 @@ function DefaultAppIcon() {
  *   appName="MedixDeck"
  *   title="Install MedixDeck"
  *   description="Get faster access and offline support."
+ *   delaySeconds={5}
  * />
  * ```
  */
@@ -154,6 +160,7 @@ export function PWAInstallPrompt({
   appName = "this app",
   icon,
   position = "bottom",
+  delaySeconds = 0,
   forceVisible,
   forceIOS,
 }: PWAInstallPromptProps) {
@@ -161,26 +168,39 @@ export function PWAInstallPrompt({
   const [visible, setVisible] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const deferredPromptRef = useRef<BeforeInstallPromptEvent | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Initialisation ──────────────────────────────────────────────────────────
   useEffect(() => {
+    const showPrompt = () => {
+      if (delaySeconds > 0) {
+        timeoutRef.current = setTimeout(() => setVisible(true), delaySeconds * 1000);
+      } else {
+        setVisible(true);
+      }
+    };
+
+    const cleanupTimeout = () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+
     if (forceVisible) {
       if (forceIOS) setIsIOS(true);
-      setVisible(true);
-      return;
+      showPrompt();
+      return cleanupTimeout;
     }
 
     // Already installed — never show
-    if (isInStandaloneMode()) return;
+    if (isInStandaloneMode()) return cleanupTimeout;
 
     // User recently dismissed — respect cooldown
-    if (isDismissedRecently(cooldownDays)) return;
+    if (isDismissedRecently(cooldownDays)) return cleanupTimeout;
 
     // iOS path
     if (isIOSDevice()) {
       setIsIOS(true);
-      setVisible(true);
-      return;
+      showPrompt();
+      return cleanupTimeout;
     }
 
     // Chromium-based browsers (Desktop Chrome, Edge, Opera, Brave + Android)
@@ -188,7 +208,7 @@ export function PWAInstallPrompt({
     const handler = (e: Event) => {
       e.preventDefault();
       deferredPromptRef.current = e as BeforeInstallPromptEvent;
-      setVisible(true);
+      showPrompt();
     };
 
     window.addEventListener("beforeinstallprompt", handler);
@@ -200,8 +220,9 @@ export function PWAInstallPrompt({
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
       window.removeEventListener("appinstalled", installed);
+      cleanupTimeout();
     };
-  }, [cooldownDays]);
+  }, [cooldownDays, delaySeconds, forceVisible, forceIOS]);
 
   // ── Actions ─────────────────────────────────────────────────────────────────
   const handleInstall = useCallback(async () => {

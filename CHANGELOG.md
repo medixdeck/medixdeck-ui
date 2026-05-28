@@ -4,6 +4,15 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.16] — 2026-05-28
+
+### Added
+
+- **`PWAInstallPrompt` — Delayed prompt behavior**
+  - Added `delaySeconds` to allow deferring the prompt appearance after conditions are met (e.g. `delaySeconds={5}`).
+
+---
+
 ## [0.1.15] — 2026-05-27
 
 ### Changed
@@ -185,7 +194,6 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ## [0.1.14] — 2026-05-13
 
-
 ### Added
 
 - **`colorScheme` prop on themed components**: `Navbar`, `Footer`, `Accordion`, and `BlogCard` now all accept a `colorScheme?: "blue" | "purple"` prop (default `"blue"`). Passing `"purple"` switches every brand accent on that component — CTA buttons, active/hover link colours, toggle icon fills, category pills, date badge numbers, social icon backgrounds, and the newsletter button — to the MedixDeck secondary purple (#7700CC) without changing any other behaviour or layout.
@@ -228,10 +236,12 @@ All notable changes to `@medixdeck/ui` are documented here.
 ## [0.1.13] — 2026-05-03
 
 ### Added
+
 - **`Calendar` Component**: Built a reusable, standalone Calendar component mimicking standard native behaviors, fully customized for MedixDeck UI with support for dynamic month navigation, active state highlights, and muted secondary month days.
 - **Error Pages**: Added `NotFoundPage` (404) and `ServerErrorPage` (500) components for standard application error handling. These are full-height layouts that developers can render inside their routing error boundaries.
 
 ### Changed
+
 - **`DatePicker`**: Upgraded from a native `input type="date"` to a custom popover using the new `Calendar` component. It now handles dynamic absolute positioning, formatted string displays (e.g. "May 15, 2026"), and closes on outside click.
 - **`DateRangePicker`**: Converted to utilize dual calendar popovers for both "Start date" and "End date" inputs. Clicking an input now triggers a localized `Calendar` picker rather than the native system widget.
 
