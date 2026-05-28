@@ -58,3 +58,13 @@ export const IOSVariant: Story = {
     appName: "MedixDeck",
   },
 };
+
+export const WithDelay: Story = {
+  args: {
+    forceVisible: true,
+    delaySeconds: 5,
+    title: "Install MedixDeck",
+    description: "This prompt appeared 5 seconds after page load.",
+    appName: "MedixDeck",
+  },
+};

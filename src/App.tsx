@@ -293,7 +293,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.15 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v0.1.16 · {PREVIEW_COMPONENT_COUNT} components
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
                 Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
@@ -1453,7 +1453,7 @@ export default function App() {
           >
             @medixdeck/ui
           </Link>{" "}
-          · v0.1.15 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
+          · v0.1.16 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
           {" "}
           ⚡ by{" "}
           <Link
@@ -1532,9 +1532,10 @@ export default function App() {
       <CookieConsentBanner />
       <PWAInstallPrompt
         position="top"
-        appName="MedixDeck"
-        title="Install MedixDeck"
-        description="Add MedixDeck to your home screen for faster access and a better healthcare experience."
+        delaySeconds={5}
+        appName="MedixDeck UI"
+        title="Install MedixDeck UI"
+        description="Add MedixDeck UI to your home screen for faster access to the UI documentation."
       />
     </>
   );
