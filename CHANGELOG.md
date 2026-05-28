@@ -6,6 +6,11 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ## [0.1.15] — 2026-05-27
 
+### Changed
+
+- **Runtime requirement**
+  - Updated `engines.node` to `>=20.16` in `package.json`.
+
 ### Added
 
 - **`Select` — Icon support** (`icon` prop)
