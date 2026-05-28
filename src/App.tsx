@@ -1532,6 +1532,7 @@ export default function App() {
       <CookieConsentBanner />
       <PWAInstallPrompt
         position="top"
+        delaySeconds={5}
         appName="MedixDeck UI"
         title="Install MedixDeck UI"
         description="Add MedixDeck UI to your home screen for faster access and a better healthcare experience."

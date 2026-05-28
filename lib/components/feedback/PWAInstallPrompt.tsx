@@ -54,6 +54,11 @@ export interface PWAInstallPromptProps {
    */
   position?: "top" | "bottom";
   /**
+   * Number of seconds to delay the prompt after the conditions are met.
+   * @default 0
+   */
+  delaySeconds?: number;
+  /**
    * For documentation/storybook purposes. Forces the banner to be visible.
    */
   forceVisible?: boolean;
@@ -154,6 +159,7 @@ export function PWAInstallPrompt({
   appName = "this app",
   icon,
   position = "bottom",
+  delaySeconds = 0,
   forceVisible,
   forceIOS,
 }: PWAInstallPromptProps) {
@@ -161,12 +167,21 @@ export function PWAInstallPrompt({
   const [visible, setVisible] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const deferredPromptRef = useRef<BeforeInstallPromptEvent | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Initialisation ──────────────────────────────────────────────────────────
   useEffect(() => {
+    const showPrompt = () => {
+      if (delaySeconds > 0) {
+        timeoutRef.current = setTimeout(() => setVisible(true), delaySeconds * 1000);
+      } else {
+        setVisible(true);
+      }
+    };
+
     if (forceVisible) {
       if (forceIOS) setIsIOS(true);
-      setVisible(true);
+      showPrompt();
       return;
     }
 
@@ -179,7 +194,7 @@ export function PWAInstallPrompt({
     // iOS path
     if (isIOSDevice()) {
       setIsIOS(true);
-      setVisible(true);
+      showPrompt();
       return;
     }
 
@@ -188,7 +203,7 @@ export function PWAInstallPrompt({
     const handler = (e: Event) => {
       e.preventDefault();
       deferredPromptRef.current = e as BeforeInstallPromptEvent;
-      setVisible(true);
+      showPrompt();
     };
 
     window.addEventListener("beforeinstallprompt", handler);
@@ -200,8 +215,9 @@ export function PWAInstallPrompt({
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
       window.removeEventListener("appinstalled", installed);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [cooldownDays]);
+  }, [cooldownDays, delaySeconds, forceVisible, forceIOS]);
 
   // ── Actions ─────────────────────────────────────────────────────────────────
   const handleInstall = useCallback(async () => {
