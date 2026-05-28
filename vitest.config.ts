@@ -10,14 +10,9 @@ export default defineConfig({
     },
   },
   test: {
-    environment: "jsdom",
+    environment: "happy-dom",
     globals: true,
     setupFiles: "./lib/test/setup.ts",
     include: ["lib/**/*.test.{ts,tsx}"],
-    server: {
-      deps: {
-        inline: ["@exodus/bytes"],
-      },
-    },
   },
 });
