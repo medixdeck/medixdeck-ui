@@ -1531,6 +1531,7 @@ export default function App() {
 
       <CookieConsentBanner />
       <PWAInstallPrompt
+        forceVisible
         position="top"
         appName="MedixDeck"
         title="Install MedixDeck"
