@@ -21,6 +21,7 @@ type Story = StoryObj<typeof PWAInstallPrompt>;
 
 export const Default: Story = {
   args: {
+    forceVisible: true,
     title: "Install MedixDeck",
     description:
       "Add MedixDeck to your home screen for faster access and a better healthcare experience.",
@@ -30,6 +31,7 @@ export const Default: Story = {
 
 export const WithCustomIcon: Story = {
   args: {
+    forceVisible: true,
     title: "Install MedixDeck",
     description: "Get faster access and offline support.",
     appName: "MedixDeck",
@@ -39,9 +41,20 @@ export const WithCustomIcon: Story = {
 
 export const TopPosition: Story = {
   args: {
+    forceVisible: true,
     title: "Install MedixDeck",
     description: "Pin MedixDeck to your device for one-tap access.",
     position: "top",
+    appName: "MedixDeck",
+  },
+};
+
+export const IOSVariant: Story = {
+  args: {
+    forceVisible: true,
+    forceIOS: true,
+    title: "Install MedixDeck",
+    description: "Add MedixDeck to your home screen for faster access and a better healthcare experience.",
     appName: "MedixDeck",
   },
 };
