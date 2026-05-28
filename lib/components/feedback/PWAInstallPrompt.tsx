@@ -145,6 +145,7 @@ function DefaultAppIcon() {
  *   appName="MedixDeck"
  *   title="Install MedixDeck"
  *   description="Get faster access and offline support."
+ *   delaySeconds={5}
  * />
  * ```
  */

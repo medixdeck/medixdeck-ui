@@ -1535,7 +1535,7 @@ export default function App() {
         delaySeconds={5}
         appName="MedixDeck UI"
         title="Install MedixDeck UI"
-        description="Add MedixDeck UI to your home screen for faster access and a better healthcare experience."
+        description="Add MedixDeck UI to your home screen for faster access to the UI documentation."
       />
     </>
   );
