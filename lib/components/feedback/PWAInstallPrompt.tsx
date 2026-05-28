@@ -180,23 +180,27 @@ export function PWAInstallPrompt({
       }
     };
 
+    const cleanupTimeout = () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+
     if (forceVisible) {
       if (forceIOS) setIsIOS(true);
       showPrompt();
-      return;
+      return cleanupTimeout;
     }
 
     // Already installed — never show
-    if (isInStandaloneMode()) return;
+    if (isInStandaloneMode()) return cleanupTimeout;
 
     // User recently dismissed — respect cooldown
-    if (isDismissedRecently(cooldownDays)) return;
+    if (isDismissedRecently(cooldownDays)) return cleanupTimeout;
 
     // iOS path
     if (isIOSDevice()) {
       setIsIOS(true);
       showPrompt();
-      return;
+      return cleanupTimeout;
     }
 
     // Chromium-based browsers (Desktop Chrome, Edge, Opera, Brave + Android)
@@ -216,7 +220,7 @@ export function PWAInstallPrompt({
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
       window.removeEventListener("appinstalled", installed);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      cleanupTimeout();
     };
   }, [cooldownDays, delaySeconds, forceVisible, forceIOS]);
 
