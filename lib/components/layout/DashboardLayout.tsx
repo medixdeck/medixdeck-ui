@@ -1082,7 +1082,7 @@ function SidebarScoreCard({
             ml="1"
             style={{ whiteSpace: "nowrap" }}
           >
-            {data.medixScore.toLocaleString()} {Number(data.medixScore) > 2 ? 'pts' : 'pt'}
+            {data.medixScore.toLocaleString()} {Number(data.medixScore) === 1 ? "pt" : "pts"}
           </Box>
         </Box>
       </Box>

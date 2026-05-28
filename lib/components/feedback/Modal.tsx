@@ -147,7 +147,6 @@ export function Modal({
                 _hover={{ bg: "bg.subtle", color: "text.heading" }}
                 transition="all 0.15s"
                 aria-label="Close modal"
-                onClick={onClose}
                 type="button"
                 cursor="pointer"
               >
