@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# Note: pre-commit checks have been moved to pre-push to allow faster local commits.

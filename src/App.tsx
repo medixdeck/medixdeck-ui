@@ -11,12 +11,12 @@ import {
   LuWallet,
 } from 'react-icons/lu';
 
-import * as MedixUI from '../lib';
+import * as MedixDeckUI from '../lib';
 
 // @ts-expect-error vite env variable
 const PACKAGE_VERSION = import.meta.env.PACKAGE_VERSION ?? '0.0.0';
 
-const PREVIEW_COMPONENT_COUNT = Object.keys(MedixUI).filter((key) => {
+const PREVIEW_COMPONENT_COUNT = Object.keys(MedixDeckUI).filter((key) => {
   // Only count exported components (capitalized names)
   if (!/^[A-Z]/.test(key)) return false;
   // Exclude raw Chakra UI primitive re-exports
