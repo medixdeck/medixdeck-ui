@@ -1,5 +1,10 @@
-import React from "react";
-import { Textarea as ChakraTextarea, type TextareaProps as ChakraTextareaProps, Box, Text } from "@chakra-ui/react";
+import React from 'react';
+import {
+  Textarea as ChakraTextarea,
+  type TextareaProps as ChakraTextareaProps,
+  Box,
+  Text,
+} from '@chakra-ui/react';
 
 export interface TextareaProps extends ChakraTextareaProps {
   /** Error state */
@@ -24,9 +29,7 @@ export interface TextareaProps extends ChakraTextareaProps {
  */
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ isInvalid, errorMessage, maxLength, showCount = false, onChange, value, ...props }, ref) => {
-    const [charCount, setCharCount] = React.useState(
-      typeof value === "string" ? value.length : 0
-    );
+    const [charCount, setCharCount] = React.useState(typeof value === 'string' ? value.length : 0);
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setCharCount(e.target.value.length);
@@ -39,7 +42,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           bg="bg.surface"
           border="1px solid"
-          borderColor={isInvalid ? "red.500" : "border"}
+          borderColor={isInvalid ? 'red.500' : 'border'}
           borderRadius="md"
           color="text.heading"
           fontFamily="var(--font-body)"
@@ -50,19 +53,19 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           maxLength={maxLength}
           value={value}
           onChange={handleChange}
-          _placeholder={{ color: "text.muted" }}
+          _placeholder={{ color: 'text.muted' }}
           _focus={{
-            borderColor: isInvalid ? "red.500" : "blue.500",
+            borderColor: isInvalid ? 'red.500' : 'blue.500',
             boxShadow: isInvalid
-              ? "0 0 0 3px rgba(220, 38, 38, 0.15)"
-              : "0 0 0 3px rgba(6, 133, 255, 0.15)",
-            outline: "none",
+              ? '0 0 0 3px rgba(220, 38, 38, 0.15)'
+              : '0 0 0 3px rgba(6, 133, 255, 0.15)',
+            outline: 'none',
           }}
           _dark={{
-            bg: "bg.surface",
-            borderColor: isInvalid ? "red.500" : "border",
-            color: "text.heading",
-            _placeholder: { color: "text.muted" },
+            bg: 'bg.surface',
+            borderColor: isInvalid ? 'red.500' : 'border',
+            color: 'text.heading',
+            _placeholder: { color: 'text.muted' },
           }}
           {...props}
         />
@@ -82,7 +85,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         </Box>
       </Box>
     );
-  }
+  },
 );
 
-Textarea.displayName = "MedixTextarea";
+Textarea.displayName = 'MedixTextarea';

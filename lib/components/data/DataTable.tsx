@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import React from 'react';
+import { Box, Text } from '@chakra-ui/react';
 
 export interface Column<T = Record<string, unknown>> {
   /** Unique key matching the data field */
@@ -15,7 +15,7 @@ export interface Column<T = Record<string, unknown>> {
   /** Custom cell renderer */
   render?: (value: unknown, row: T, index: number) => React.ReactNode;
   /** Text alignment */
-  align?: "left" | "center" | "right";
+  align?: 'left' | 'center' | 'right';
 }
 
 export interface DataTableProps<T = Record<string, unknown>> {
@@ -26,8 +26,8 @@ export interface DataTableProps<T = Record<string, unknown>> {
   emptyMessage?: string;
   sortable?: boolean;
   sortKey?: string;
-  sortDirection?: "asc" | "desc";
-  onSort?: (key: string, direction: "asc" | "desc") => void;
+  sortDirection?: 'asc' | 'desc';
+  onSort?: (key: string, direction: 'asc' | 'desc') => void;
   striped?: boolean;
   onRowClick?: (row: T, index: number) => void;
   caption?: string;
@@ -58,12 +58,12 @@ export interface DataTableProps<T = Record<string, unknown>> {
 export function DataTable<T extends Record<string, unknown>>({
   columns,
   data,
-  rowKey = "id",
+  rowKey = 'id',
   isLoading = false,
-  emptyMessage = "No data available",
+  emptyMessage = 'No data available',
   sortable = false,
   sortKey,
-  sortDirection = "asc",
+  sortDirection = 'asc',
   onSort,
   striped = false,
   onRowClick,
@@ -72,13 +72,13 @@ export function DataTable<T extends Record<string, unknown>>({
   className,
 }: DataTableProps<T>) {
   const [internalSortKey, setInternalSortKey] = React.useState<string | undefined>(sortKey);
-  const [internalDirection, setInternalDirection] = React.useState<"asc" | "desc">(sortDirection);
+  const [internalDirection, setInternalDirection] = React.useState<'asc' | 'desc'>(sortDirection);
 
   const activeSortKey = sortKey ?? internalSortKey;
   const activeDirection = sortKey ? sortDirection : internalDirection;
 
   const handleSort = (key: string) => {
-    const newDir = activeSortKey === key && activeDirection === "asc" ? "desc" : "asc";
+    const newDir = activeSortKey === key && activeDirection === 'asc' ? 'desc' : 'asc';
     setInternalSortKey(key);
     setInternalDirection(newDir);
     onSort?.(key, newDir);
@@ -89,10 +89,10 @@ export function DataTable<T extends Record<string, unknown>>({
     return [...data].sort((a, b) => {
       const aVal = a[activeSortKey];
       const bVal = b[activeSortKey];
-      const aStr = String(aVal ?? "");
-      const bStr = String(bVal ?? "");
-      const cmp = aStr.localeCompare(bStr, undefined, { numeric: true, sensitivity: "base" });
-      return activeDirection === "asc" ? cmp : -cmp;
+      const aStr = String(aVal ?? '');
+      const bStr = String(bVal ?? '');
+      const cmp = aStr.localeCompare(bStr, undefined, { numeric: true, sensitivity: 'base' });
+      return activeDirection === 'asc' ? cmp : -cmp;
     });
   }, [data, activeSortKey, activeDirection, onSort]);
 
@@ -100,29 +100,29 @@ export function DataTable<T extends Record<string, unknown>>({
     if (activeSortKey !== colKey) {
       return <span style={{ opacity: 0.3, marginLeft: 4 }}>↕</span>;
     }
-    return <span style={{ marginLeft: 4 }}>{activeDirection === "asc" ? "↑" : "↓"}</span>;
+    return <span style={{ marginLeft: 4 }}>{activeDirection === 'asc' ? '↑' : '↓'}</span>;
   };
 
   const thStyle: React.CSSProperties = {
-    padding: "12px 16px",
-    textAlign: "left",
-    fontSize: "12px",
+    padding: '12px 16px',
+    textAlign: 'left',
+    fontSize: '12px',
     fontWeight: 600,
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
-    color: "var(--chakra-colors-text-muted, #6B7280)",
-    fontFamily: "var(--font-body)",
-    borderBottom: "1px solid var(--chakra-colors-border, #E2E8F0)",
-    whiteSpace: "nowrap",
-    userSelect: "none",
+    letterSpacing: '0.05em',
+    textTransform: 'uppercase',
+    color: 'var(--chakra-colors-text-muted, #6B7280)',
+    fontFamily: 'var(--font-body)',
+    borderBottom: '1px solid var(--chakra-colors-border, #E2E8F0)',
+    whiteSpace: 'nowrap',
+    userSelect: 'none',
   };
 
   const tdStyle: React.CSSProperties = {
-    padding: "14px 16px",
-    fontSize: "14px",
-    color: "var(--chakra-colors-text-body, #374151)",
-    fontFamily: "var(--font-body)",
-    verticalAlign: "middle",
+    padding: '14px 16px',
+    fontSize: '14px',
+    color: 'var(--chakra-colors-text-body, #374151)',
+    fontFamily: 'var(--font-body)',
+    verticalAlign: 'middle',
   };
 
   return (
@@ -133,37 +133,34 @@ export function DataTable<T extends Record<string, unknown>>({
       overflow="hidden"
       bg="bg.surface"
       boxShadow="card-light"
-      _dark={{ boxShadow: "card-dark" }}
+      _dark={{ boxShadow: 'card-dark' }}
       style={style}
       className={className}
     >
       <Box overflowX="auto">
-        <table
-          style={{ width: "100%", borderCollapse: "collapse" }}
-          aria-label={caption}
-        >
-          {caption && <caption style={{ display: "none" }}>{caption}</caption>}
+        <table style={{ width: '100%', borderCollapse: 'collapse' }} aria-label={caption}>
+          {caption && <caption style={{ display: 'none' }}>{caption}</caption>}
           <thead>
-            <tr style={{ background: "var(--chakra-colors-bg-subtle, #F6F6F6)" }}>
+            <tr style={{ background: 'var(--chakra-colors-bg-subtle, #F6F6F6)' }}>
               {columns.map((col) => (
                 <th
                   key={col.key}
                   style={{
                     ...thStyle,
-                    textAlign: col.align ?? "left",
+                    textAlign: col.align ?? 'left',
                     minWidth: col.minWidth,
-                    cursor: col.sortable || sortable ? "pointer" : "default",
+                    cursor: col.sortable || sortable ? 'pointer' : 'default',
                   }}
-                  onClick={() => (col.sortable || sortable) ? handleSort(col.key) : undefined}
+                  onClick={() => (col.sortable || sortable ? handleSort(col.key) : undefined)}
                   aria-sort={
                     activeSortKey === col.key
-                      ? activeDirection === "asc"
-                        ? "ascending"
-                        : "descending"
+                      ? activeDirection === 'asc'
+                        ? 'ascending'
+                        : 'descending'
                       : undefined
                   }
                 >
-                  <span style={{ display: "inline-flex", alignItems: "center" }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center' }}>
                     {col.label}
                     {(col.sortable || sortable) && <SortIcon colKey={col.key} />}
                   </span>
@@ -182,7 +179,7 @@ export function DataTable<T extends Record<string, unknown>>({
                         bg="bg.subtle"
                         borderRadius="full"
                         w={`${60 + Math.random() * 30}%`}
-                        style={{ animation: "medix-shimmer 1.5s infinite" }}
+                        style={{ animation: 'medix-shimmer 1.5s infinite' }}
                       />
                     </td>
                   ))}
@@ -190,8 +187,13 @@ export function DataTable<T extends Record<string, unknown>>({
               ))
             ) : sortedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} style={{ ...tdStyle, textAlign: "center", padding: "48px 16px" }}>
-                  <Text color="text.muted" fontFamily="var(--font-body)">{emptyMessage}</Text>
+                <td
+                  colSpan={columns.length}
+                  style={{ ...tdStyle, textAlign: 'center', padding: '48px 16px' }}
+                >
+                  <Text color="text.muted" fontFamily="var(--font-body)">
+                    {emptyMessage}
+                  </Text>
                 </td>
               </tr>
             ) : (
@@ -202,28 +204,29 @@ export function DataTable<T extends Record<string, unknown>>({
                     key={key}
                     onClick={() => onRowClick?.(row, rowIdx)}
                     style={{
-                      background: striped && rowIdx % 2 === 1
-                        ? "var(--chakra-colors-bg-subtle, #F6F6F6)"
-                        : undefined,
-                      cursor: onRowClick ? "pointer" : "default",
-                      borderBottom: "1px solid var(--chakra-colors-border, #E2E8F0)",
-                      transition: "background 0.1s",
+                      background:
+                        striped && rowIdx % 2 === 1
+                          ? 'var(--chakra-colors-bg-subtle, #F6F6F6)'
+                          : undefined,
+                      cursor: onRowClick ? 'pointer' : 'default',
+                      borderBottom: '1px solid var(--chakra-colors-border, #E2E8F0)',
+                      transition: 'background 0.1s',
                     }}
                     onMouseEnter={(e) => {
-                      if (onRowClick) (e.currentTarget as HTMLTableRowElement).style.background = "var(--chakra-colors-bg-subtle, #F6F6F6)";
+                      if (onRowClick)
+                        (e.currentTarget as HTMLTableRowElement).style.background =
+                          'var(--chakra-colors-bg-subtle, #F6F6F6)';
                     }}
                     onMouseLeave={(e) => {
-                      if (onRowClick) (e.currentTarget as HTMLTableRowElement).style.background = "";
+                      if (onRowClick)
+                        (e.currentTarget as HTMLTableRowElement).style.background = '';
                     }}
                   >
                     {columns.map((col) => (
-                      <td
-                        key={col.key}
-                        style={{ ...tdStyle, textAlign: col.align ?? "left" }}
-                      >
+                      <td key={col.key} style={{ ...tdStyle, textAlign: col.align ?? 'left' }}>
                         {col.render
                           ? col.render(row[col.key], row, rowIdx)
-                          : String(row[col.key] ?? "—")}
+                          : String(row[col.key] ?? '—')}
                       </td>
                     ))}
                   </tr>

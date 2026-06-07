@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
 
 export interface Step {
   id: string | number;
@@ -18,10 +18,10 @@ export interface StepperProps extends BoxProps {
    * e.g. currentStep={2} means step 2 is active).
    */
   currentStep: number;
-  variant?: "default" | "compact";
-  orientation?: "horizontal" | "vertical";
+  variant?: 'default' | 'compact';
+  orientation?: 'horizontal' | 'vertical';
   /** Brand color used for active/completed states */
-  colorScheme?: "blue" | "purple";
+  colorScheme?: 'blue' | 'purple';
 }
 
 const CHECK_ICON = (
@@ -58,15 +58,15 @@ const CHECK_ICON = (
 export function Stepper({
   steps,
   currentStep,
-  variant = "default",
-  orientation = "horizontal",
-  colorScheme = "blue",
+  variant = 'default',
+  orientation = 'horizontal',
+  colorScheme = 'blue',
   ...props
 }: StepperProps) {
-  const brandColor = colorScheme === "blue" ? "#0685FF" : "#7700CC";
-  const brandBg = colorScheme === "blue" ? "rgba(6,133,255,0.10)" : "rgba(119,0,204,0.10)";
+  const brandColor = colorScheme === 'blue' ? '#0685FF' : '#7700CC';
+  const brandBg = colorScheme === 'blue' ? 'rgba(6,133,255,0.10)' : 'rgba(119,0,204,0.10)';
 
-  const isVertical = orientation === "vertical";
+  const isVertical = orientation === 'vertical';
 
   // ── Vertical fallback (unchanged style) ───────────────────────────────────
   if (isVertical) {
@@ -76,20 +76,22 @@ export function Stepper({
           const isCompleted = idx + 1 < currentStep;
           const isCurrent = idx + 1 === currentStep;
           const isLast = idx === steps.length - 1;
-          const circleColor = isCompleted || isCurrent ? brandColor : "var(--chakra-colors-border, #E2E8F0)";
+          const circleColor =
+            isCompleted || isCurrent ? brandColor : 'var(--chakra-colors-border, #E2E8F0)';
 
           return (
             <Box key={step.id} display="flex" flexDirection="row" alignItems="flex-start" gap="3">
               <Box display="flex" flexDirection="column" alignItems="center">
                 {/* Circle */}
                 <Box
-                  w="8" h="8"
+                  w="8"
+                  h="8"
                   borderRadius="full"
                   flexShrink={0}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
-                  bg={isCompleted || isCurrent ? brandColor : "bg.subtle"}
+                  bg={isCompleted || isCurrent ? brandColor : 'bg.subtle'}
                   border="2px solid"
                   borderColor={circleColor}
                   color="white"
@@ -98,7 +100,7 @@ export function Stepper({
                   fontFamily="var(--font-body)"
                   transition="all 0.25s"
                 >
-                  {isCompleted ? CHECK_ICON : step.icon ?? (idx + 1)}
+                  {isCompleted ? CHECK_ICON : (step.icon ?? idx + 1)}
                 </Box>
 
                 {/* Vertical connector */}
@@ -107,7 +109,7 @@ export function Stepper({
                     w="2px"
                     flex="1"
                     minH="8"
-                    bg={isCompleted ? brandColor : "border"}
+                    bg={isCompleted ? brandColor : 'border'}
                     my="1"
                     transition="background 0.25s"
                   />
@@ -115,12 +117,12 @@ export function Stepper({
               </Box>
 
               {/* Label */}
-              {variant !== "compact" && (
-                <Box pt="1" pb={!isLast ? "8" : "0"}>
+              {variant !== 'compact' && (
+                <Box pt="1" pb={!isLast ? '8' : '0'}>
                   <Box
                     fontSize="sm"
-                    fontWeight={isCurrent ? "semibold" : "medium"}
-                    color={isCompleted || isCurrent ? brandColor : "text.muted"}
+                    fontWeight={isCurrent ? 'semibold' : 'medium'}
+                    color={isCompleted || isCurrent ? brandColor : 'text.muted'}
                     fontFamily="var(--font-body)"
                     transition="color 0.25s"
                   >
@@ -158,7 +160,7 @@ export function Stepper({
 
         // ── Circle ────────────────────────────────────────────────────────
         // bg.subtle = #F0F4F8 light / #0F1C2E dark — visually distinct from bg
-        const circleBg = isUpcoming ? "bg.subtle" : brandColor;
+        const circleBg = isUpcoming ? 'bg.subtle' : brandColor;
 
         const circleContent = isCompleted ? (
           CHECK_ICON
@@ -171,7 +173,7 @@ export function Stepper({
             fontSize="13px"
             fontWeight="700"
             fontFamily="var(--font-body)"
-            color={isUpcoming ? "text.muted" : "white"}
+            color={isUpcoming ? 'text.muted' : 'white'}
             lineHeight="1"
           >
             {idx + 1}
@@ -179,16 +181,16 @@ export function Stepper({
         );
 
         // ── Label pill ────────────────────────────────────────────────────
-        const showPill = !isUpcoming && variant !== "compact";
+        const showPill = !isUpcoming && variant !== 'compact';
         // Upcoming → muted; active/completed → brand color
-        const labelColor = isUpcoming ? "text.muted" : brandColor;
+        const labelColor = isUpcoming ? 'text.muted' : brandColor;
 
         return (
           <React.Fragment key={step.id}>
             {/* Step item */}
             <Box
               role="listitem"
-              aria-current={isCurrent ? "step" : undefined}
+              aria-current={isCurrent ? 'step' : undefined}
               display="inline-flex"
               alignItems="center"
               gap="0"
@@ -198,9 +200,9 @@ export function Stepper({
                 display="inline-flex"
                 alignItems="center"
                 gap="2"
-                px={showPill ? "2" : "0"}
-                py={showPill ? "1.5" : "0"}
-                bg={showPill ? brandBg : "transparent"}
+                px={showPill ? '2' : '0'}
+                py={showPill ? '1.5' : '0'}
+                bg={showPill ? brandBg : 'transparent'}
                 borderRadius="full"
                 transition="all 0.25s ease"
               >
@@ -214,7 +216,7 @@ export function Stepper({
                   alignItems="center"
                   justifyContent="center"
                   bg={circleBg}
-                  border={isUpcoming ? "1.5px solid" : "none"}
+                  border={isUpcoming ? '1.5px solid' : 'none'}
                   borderColor="var(--chakra-colors-border, #E2E8F0)"
                   transition="all 0.25s ease"
                   flexDirection="row"
@@ -223,11 +225,11 @@ export function Stepper({
                 </Box>
 
                 {/* Label */}
-                {variant !== "compact" && (
+                {variant !== 'compact' && (
                   <Box
                     as="span"
                     fontSize="sm"
-                    fontWeight={isCurrent || isCompleted ? "semibold" : "medium"}
+                    fontWeight={isCurrent || isCompleted ? 'semibold' : 'medium'}
                     fontFamily="var(--font-body)"
                     color={labelColor}
                     whiteSpace="nowrap"
@@ -241,16 +243,11 @@ export function Stepper({
 
             {/* Connector line between steps */}
             {!isLast && (
-              <Box
-                display="inline-flex"
-                alignItems="center"
-                px="1"
-                flexShrink={0}
-              >
+              <Box display="inline-flex" alignItems="center" px="1" flexShrink={0}>
                 <Box
                   h="1.5px"
                   w="10"
-                  bg={isCompleted ? brandColor : "var(--chakra-colors-border, #E2E8F0)"}
+                  bg={isCompleted ? brandColor : 'var(--chakra-colors-border, #E2E8F0)'}
                   borderRadius="full"
                   transition="background 0.25s ease"
                 />

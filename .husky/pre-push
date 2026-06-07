@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+echo "🎨  [pre-push] Running Prettier formatter..."
+npm run format
+
+echo "🔍  [pre-push] Running ESLint auto-fix..."
+npm run lint:fix
+LINT_EXIT=$?
+
+# ── Commit any changes the tools just made ────────────────────────────────────
+# Check both unstaged (modified) and untracked files that Prettier/ESLint wrote.
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "📦  [pre-push] Auto-fixed changes detected — staging and committing..."
+  git add -A
+  git commit -m "chore: auto-format and lint fixes [skip ci]"
+  echo "✔   Committed auto-fixes."
+fi
+
+# ── Abort if ESLint still has unfixable errors ────────────────────────────────
+if [ $LINT_EXIT -ne 0 ]; then
+  echo ""
+  echo "❌  ESLint found errors it could not auto-fix (see above)."
+  echo "    Resolve them manually, commit, then push again."
+  exit 1
+fi
+
+echo "✅  All checks passed. Pushing..."

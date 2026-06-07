@@ -1,78 +1,118 @@
-"use client";
-import React from "react";
-import { Box, Link, Text } from "@chakra-ui/react";
-import { useThemeMode } from "../lib";
-import { LuHouse, LuStethoscope, LuFileText, LuMessageCircle, LuUser, LuWallet } from "react-icons/lu";
+'use client';
+import React from 'react';
+import { Box, Link, Text } from '@chakra-ui/react';
+import { useThemeMode } from '../lib';
+import {
+  LuHouse,
+  LuStethoscope,
+  LuFileText,
+  LuMessageCircle,
+  LuUser,
+  LuWallet,
+} from 'react-icons/lu';
 
-const PREVIEW_COMPONENT_COUNT = 45;
+import * as MedixDeckUI from '../lib';
+
+// @ts-expect-error vite env variable
+const PACKAGE_VERSION = import.meta.env.PACKAGE_VERSION ?? '0.0.0';
+
+const PREVIEW_COMPONENT_COUNT = Object.keys(MedixDeckUI).filter((key) => {
+  // Only count exported components (capitalized names)
+  if (!/^[A-Z]/.test(key)) return false;
+  // Exclude raw Chakra UI primitive re-exports
+  const chakraExports = [
+    'Box',
+    'Flex',
+    'Grid',
+    'GridItem',
+    'Stack',
+    'VStack',
+    'HStack',
+    'SimpleGrid',
+    'Text',
+    'Heading',
+    'Link',
+    'Image',
+    'Icon',
+    'Center',
+    'Wrap',
+    'WrapItem',
+  ];
+  return !chakraExports.includes(key);
+}).length;
 
 // Primitives
-import { Button } from "../lib/components/primitive/Button";
-import { Badge } from "../lib/components/primitive/Badge";
-import { Avatar, AvatarGroup } from "../lib/components/primitive/Avatar";
-import { Tag } from "../lib/components/primitive/Tag";
-import { Spinner } from "../lib/components/primitive/Spinner";
-import { Divider } from "../lib/components/primitive/Divider";
-import { Logo } from "../lib/components/primitive/Logo";
+import { Button } from '../lib/components/primitive/Button';
+import { Badge } from '../lib/components/primitive/Badge';
+import { Avatar, AvatarGroup } from '../lib/components/primitive/Avatar';
+import { Tag } from '../lib/components/primitive/Tag';
+import { Spinner } from '../lib/components/primitive/Spinner';
+import { Divider } from '../lib/components/primitive/Divider';
+import { Logo } from '../lib/components/primitive/Logo';
 
 // Forms
-import { Input, SearchInput } from "../lib/components/form/Input";
-import { Textarea } from "../lib/components/form/Textarea";
-import { Select } from "../lib/components/form/Select";
-import { Checkbox, RadioGroup } from "../lib/components/form/CheckboxRadio";
-import { Switch } from "../lib/components/form/Switch";
-import { FormControl } from "../lib/components/form/FormControl";
-import { OTPInput } from "../lib/components/form/OTPInput";
-import { PhoneInput } from "../lib/components/form/PhoneInput";
-import { Calendar } from "../lib/components/form/Calendar";
-import { DatePicker } from "../lib/components/form/DatePicker";
-import { DateRangePicker } from "../lib/components/form/DateRangePicker";
-import { Combobox } from "../lib/components/form/Combobox";
-import { FileUpload } from "../lib/components/form/FileUpload";
+import { Input, SearchInput } from '../lib/components/form/Input';
+import { Textarea } from '../lib/components/form/Textarea';
+import { Select } from '../lib/components/form/Select';
+import { Checkbox, RadioGroup } from '../lib/components/form/CheckboxRadio';
+import { Switch } from '../lib/components/form/Switch';
+import { FormControl } from '../lib/components/form/FormControl';
+import { OTPInput } from '../lib/components/form/OTPInput';
+import { PhoneInput } from '../lib/components/form/PhoneInput';
+import { Calendar } from '../lib/components/form/Calendar';
+import { DatePicker } from '../lib/components/form/DatePicker';
+import { DateRangePicker } from '../lib/components/form/DateRangePicker';
+import { Combobox } from '../lib/components/form/Combobox';
+import { FileUpload } from '../lib/components/form/FileUpload';
 
 // Layout
-import { Card, CardHeader, CardBody, CardFooter } from "../lib/components/layout/Card";
-import { StatCard } from "../lib/components/layout/StatCard";
-import { Container, SectionHeader } from "../lib/components/layout/Container";
-import { DashboardLayout } from "../lib/components/layout/DashboardLayout";
+import { Card, CardHeader, CardBody, CardFooter } from '../lib/components/layout/Card';
+import { StatCard } from '../lib/components/layout/StatCard';
+import { Container, SectionHeader } from '../lib/components/layout/Container';
+import { DashboardLayout } from '../lib/components/layout/DashboardLayout';
 
 // Navigation
-import { Navbar } from "../lib/components/navigation/Navbar";
-import { Footer } from "../lib/components/layout/Footer";
-import { Breadcrumb } from "../lib/components/navigation/Breadcrumb";
-import { Tabs } from "../lib/components/navigation/Tabs";
-import { Pagination } from "../lib/components/navigation/Pagination";
-import { Stepper } from "../lib/components/navigation/Stepper";
+import { Navbar } from '../lib/components/navigation/Navbar';
+import { Footer } from '../lib/components/layout/Footer';
+import { Breadcrumb } from '../lib/components/navigation/Breadcrumb';
+import { Tabs } from '../lib/components/navigation/Tabs';
+import { Pagination } from '../lib/components/navigation/Pagination';
+import { Stepper } from '../lib/components/navigation/Stepper';
 
 // Feedback & Overlays
-import { Alert } from "../lib/components/feedback/Alert";
-import { Skeleton, SkeletonCard } from "../lib/components/feedback/Skeleton";
-import { Progress } from "../lib/components/feedback/Progress";
-import { Modal } from "../lib/components/feedback/Modal";
-import { Drawer } from "../lib/components/feedback/Drawer";
-import { Tooltip } from "../lib/components/feedback/Tooltip";
-import { EmptyState } from "../lib/components/feedback/EmptyState";
-import { NotFoundPage } from "../lib/components/feedback/NotFoundPage";
-import { ServerErrorPage } from "../lib/components/feedback/ServerErrorPage";
-import { Toaster, toast } from "../lib/components/feedback/Notification";
-import { CookieConsentBanner } from "../lib/components/feedback/CookieConsentBanner";
-import { PWAInstallPrompt } from "../lib/components/feedback/PWAInstallPrompt";
+import { Alert } from '../lib/components/feedback/Alert';
+import { Skeleton, SkeletonCard } from '../lib/components/feedback/Skeleton';
+import { Progress } from '../lib/components/feedback/Progress';
+import { Modal } from '../lib/components/feedback/Modal';
+import { Drawer } from '../lib/components/feedback/Drawer';
+import { Tooltip } from '../lib/components/feedback/Tooltip';
+import { EmptyState } from '../lib/components/feedback/EmptyState';
+import { NotFoundPage } from '../lib/components/feedback/NotFoundPage';
+import { ServerErrorPage } from '../lib/components/feedback/ServerErrorPage';
+import { Toaster, toast } from '../lib/components/feedback/Toast';
+import { CookieConsentBanner } from '../lib/components/feedback/CookieConsentBanner';
+import { PWAInstallPrompt } from '../lib/components/feedback/PWAInstallPrompt';
 
 // Data Display
-import { Accordion } from "../lib/components/data/Accordion";
-import { TestimonialCard, BlogCard } from "../lib/components/data/Cards";
-import { DataTable } from "../lib/components/data/DataTable";
+import { Accordion } from '../lib/components/data/Accordion';
+import { TestimonialCard, BlogCard } from '../lib/components/data/Cards';
+import { DataTable } from '../lib/components/data/DataTable';
 
 // Healthcare
-import { DoctorCard, VitalBadge, AppointmentCard } from "../lib/components/healthcare/DoctorCard";
+import { DoctorCard, VitalBadge, AppointmentCard } from '../lib/components/healthcare/DoctorCard';
 
 // ─── Storybook base URL (from .env) ─────────────────────────────────────────
 // @ts-expect-error unknown import error
-const STORYBOOK_URL = import.meta.env.VITE_STORYBOOK_URL ?? "http://localhost:6006";
+const STORYBOOK_URL = import.meta.env.VITE_STORYBOOK_URL ?? 'http://localhost:6006';
 
 // ─── Section wrapper ──────────────────────────────────────────────────────────
 
-function Section({ title, id, storybookPath, children }: {
+function Section({
+  title,
+  id,
+  storybookPath,
+  children,
+}: {
   title: string;
   id: string;
   /** The Storybook story/docs path, e.g. "?path=/docs/primitives-button--docs" */
@@ -106,23 +146,36 @@ function Section({ title, id, storybookPath, children }: {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              display: "inline-flex",
-              alignItems: "center",
+              display: 'inline-flex',
+              alignItems: 'center',
               gap: 5,
               fontSize: 11,
-              fontFamily: "var(--font-body)",
-              color: "#0685FF",
-              background: "rgba(6,133,255,0.08)",
-              border: "1px solid rgba(6,133,255,0.2)",
+              fontFamily: 'var(--font-body)',
+              color: '#0685FF',
+              background: 'rgba(6,133,255,0.08)',
+              border: '1px solid rgba(6,133,255,0.2)',
               borderRadius: 20,
-              padding: "3px 10px",
-              textDecoration: "none",
-              whiteSpace: "nowrap",
+              padding: '3px 10px',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
               fontWeight: 500,
-              letterSpacing: "0.01em",
+              letterSpacing: '0.01em',
             }}
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
             Storybook
           </a>
         )}
@@ -140,13 +193,13 @@ function Chip({ href, label }: { href: string; label: string }) {
       href={href}
       style={{
         fontSize: 12,
-        padding: "4px 12px",
+        padding: '4px 12px',
         borderRadius: 20,
-        border: "1px solid var(--chakra-colors-border, #E2E8F0)",
-        color: "var(--chakra-colors-text-body, #374151)",
-        textDecoration: "none",
-        fontFamily: "var(--font-body)",
-        whiteSpace: "nowrap",
+        border: '1px solid var(--chakra-colors-border, #E2E8F0)',
+        color: 'var(--chakra-colors-text-body, #374151)',
+        textDecoration: 'none',
+        fontFamily: 'var(--font-body)',
+        whiteSpace: 'nowrap',
       }}
     >
       {label}
@@ -162,39 +215,77 @@ export default function App() {
   const [page, setPage] = React.useState(3);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [otpValue, setOtpValue] = React.useState("");
-  const [pinValue, setPinValue] = React.useState("");
-  const [phoneValue, setPhoneValue] = React.useState("");
-  const [appointmentDate, setAppointmentDate] = React.useState("");
+  const [otpValue, setOtpValue] = React.useState('');
+  const [pinValue, setPinValue] = React.useState('');
+  const [phoneValue, setPhoneValue] = React.useState('');
+  const [appointmentDate, setAppointmentDate] = React.useState('');
+  const [appointmentDateTime, setAppointmentDateTime] = React.useState('');
+  const [leaveStart, setLeaveStart] = React.useState('');
+  const [leaveEnd, setLeaveEnd] = React.useState('');
   const [calendarDate, setCalendarDate] = React.useState<Date | undefined>(new Date());
 
   const patientRows = [
-    { id: "1", name: "Ngozi Adeyemi", age: 34, specialty: "Cardiology", status: "Active", date: "Apr 18, 2026" },
-    { id: "2", name: "Emeka Okafor", age: 52, specialty: "Neurology", status: "Pending", date: "Apr 17, 2026" },
-    { id: "3", name: "Fatima Bello", age: 28, specialty: "Pediatrics", status: "Completed", date: "Apr 15, 2026" },
-    { id: "4", name: "Chidi Eze", age: 45, specialty: "Psychiatry", status: "Active", date: "Apr 14, 2026" },
-    { id: "5", name: "Amaka Igwe", age: 31, specialty: "Dermatology", status: "Cancelled", date: "Apr 12, 2026" },
+    {
+      id: '1',
+      name: 'Ngozi Adeyemi',
+      age: 34,
+      specialty: 'Cardiology',
+      status: 'Active',
+      date: 'Apr 18, 2026',
+    },
+    {
+      id: '2',
+      name: 'Emeka Okafor',
+      age: 52,
+      specialty: 'Neurology',
+      status: 'Pending',
+      date: 'Apr 17, 2026',
+    },
+    {
+      id: '3',
+      name: 'Fatima Bello',
+      age: 28,
+      specialty: 'Pediatrics',
+      status: 'Completed',
+      date: 'Apr 15, 2026',
+    },
+    {
+      id: '4',
+      name: 'Chidi Eze',
+      age: 45,
+      specialty: 'Psychiatry',
+      status: 'Active',
+      date: 'Apr 14, 2026',
+    },
+    {
+      id: '5',
+      name: 'Amaka Igwe',
+      age: 31,
+      specialty: 'Dermatology',
+      status: 'Cancelled',
+      date: 'Apr 12, 2026',
+    },
   ];
 
   const statusColor: Record<string, string> = {
-    Active: "#1B7A38",
-    Pending: "#D97706",
-    Completed: "#0685FF",
-    Cancelled: "#DC2626",
+    Active: '#1B7A38',
+    Pending: '#D97706',
+    Completed: '#0685FF',
+    Cancelled: '#DC2626',
   };
 
   if (showDashboard) {
     return (
       <DashboardLayout
         colorScheme="purple"
-        user={{ name: "Dr. Okedi Williams", email: "williams@medixdeck.com" }}
-        greetingSubtext={`${new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} · 8 consultations scheduled today`}
+        user={{ name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' }}
+        greetingSubtext={`${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · 8 consultations scheduled today`}
         scoreCard={{
-          name: "Dr. Okedi Williams",
-          role: "Cardiologist",
-          tier: "gold",
+          name: 'Dr. Okedi Williams',
+          role: 'Cardiologist',
+          tier: 'gold',
           medixScore: 847,
-          link: "#doctor-profile",
+          link: '#doctor-profile',
         }}
         navGroups={[
           {
@@ -205,41 +296,64 @@ export default function App() {
                 label: 'Records',
                 href: '#records',
                 subItems: [
-                  { label: "Medical History", href: "#records-history" },
-                  { label: "Prescriptions", href: "#records-prescriptions" },
-                  { label: "Test Results", href: "#records-test-results", badge: 2 },
+                  { label: 'Medical History', href: '#records-history' },
+                  { label: 'Prescriptions', href: '#records-prescriptions' },
+                  { label: 'Test Results', href: '#records-test-results', badge: 2 },
                 ],
               },
               { label: 'Messages', href: '#messages', badge: 6 },
-            ]
+            ],
           },
           {
             groupLabel: 'Account',
             items: [
               { label: 'Profile', href: '#profile' },
               { label: 'Notifications', href: '#notifications', hasDot: true },
-            ]
-          }
+            ],
+          },
         ]}
         mobileNavItems={[
           { label: 'Home', href: '#home', icon: <LuHouse size={22} /> },
           { label: 'Consult', href: '#consult', badge: 3, icon: <LuStethoscope size={22} /> },
           { label: 'Records', href: '#records', icon: <LuFileText size={22} /> },
-          { label: 'Messages', href: '#messages', isActive: true, badge: 6, icon: <LuMessageCircle size={22} /> },
+          {
+            label: 'Messages',
+            href: '#messages',
+            isActive: true,
+            badge: 6,
+            icon: <LuMessageCircle size={22} />,
+          },
           { label: 'Profile', href: '#profile', icon: <LuUser size={22} /> },
         ]}
       >
         <Box h="full">
-          <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap="4">
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            flexWrap="wrap"
+            gap="4"
+          >
             <Box>
-              <Text color="text.heading" fontWeight="600" fontSize="lg">Welcome to your dashboard</Text>
-              <Text mt="1" color="text.body" fontSize="sm">This is the full-screen dashboard preview.</Text>
+              <Text color="text.heading" fontWeight="600" fontSize="lg">
+                Welcome to your dashboard
+              </Text>
+              <Text mt="1" color="text.body" fontSize="sm">
+                This is the full-screen dashboard preview.
+              </Text>
             </Box>
             <Button onClick={() => setShowDashboard(false)} variant="solid" colorScheme="blue">
               Exit Dashboard
             </Button>
           </Box>
-          <Box mt="6" h="800px" bg="bg" borderRadius="card" border="1px dashed" borderColor="border" />
+          <Box
+            mt="6"
+            h="800px"
+            bg="bg"
+            borderRadius="card"
+            border="1px dashed"
+            borderColor="border"
+          />
         </Box>
       </DashboardLayout>
     );
@@ -252,57 +366,64 @@ export default function App() {
       {/* ── Navbar — default CTA pattern: [Talk to a doctor] [↗] ── */}
       <Navbar
         navItems={[
-          { label: "Logo", href: "#logo" },
-          { label: "Theme", href: "/theme-colors" },
-          { label: "Buttons", href: "#buttons" },
-          { label: "Forms", href: "#forms" },
-          { label: "Navigation", href: "#navigation" },
+          { label: 'Logo', href: '#logo' },
+          { label: 'Theme', href: '/theme-colors' },
+          { label: 'Buttons', href: '#buttons' },
+          { label: 'Forms', href: '#forms' },
+          { label: 'Navigation', href: '#navigation' },
         ]}
         ctaLabel="View on GitHub"
-        onCtaClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
+        onCtaClick={() => window.open('https://github.com/medixdeck/medixdeck-ui', '_blank')}
         ctaIconHref="https://github.com/medixdeck/medixdeck-ui"
-        onCtaIconClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
+        onCtaIconClick={() => window.open('https://github.com/medixdeck/medixdeck-ui', '_blank')}
         secondaryCtaLabel="Storybook Docs"
         secondaryCtaHref={STORYBOOK_URL}
-        onSecondaryCtaClick={() => window.open(STORYBOOK_URL, "_blank")}
+        onSecondaryCtaClick={() => window.open(STORYBOOK_URL, '_blank')}
         isSticky
       />
 
       {/* ── Main container ── */}
-      <Box
-        as="main"
-        bg="bg"
-        minH="100vh"
-        pt="6"
-        pb="24"
-        transition="background 0.3s ease"
-      >
+      <Box as="main" bg="bg" minH="100vh" pt="6" pb="24" transition="background 0.3s ease">
         <Container maxWidth="xl">
-
           {/* ── Header ── */}
-          <Box as="header" display="flex" justifyContent="space-between" alignItems="flex-start" mb="6" flexWrap="wrap" gap="4">
+          <Box
+            as="header"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="flex-start"
+            mb="6"
+            flexWrap="wrap"
+            gap="4"
+          >
             <Box>
-              <Text as="h1" fontSize="3xl" fontWeight="bold" color="text.heading" fontFamily="var(--font-heading)">
+              <Text
+                as="h1"
+                fontSize="3xl"
+                fontWeight="bold"
+                color="text.heading"
+                fontFamily="var(--font-heading)"
+              >
                 <Link
                   href="https://www.npmjs.com/package/@medixdeck/ui"
                   color="blue.fg"
                   textDecorationColor="currentColor"
-                  _hover={{ color: "blue.fg", opacity: 0.9 }}
+                  _hover={{ color: 'blue.fg', opacity: 0.9 }}
                 >
                   @medixdeck/ui
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.16 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v{PACKAGE_VERSION} · {PREVIEW_COMPONENT_COUNT}{' '}
+                components
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
-                Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
+                Theme hooks: resolved <strong>{mounted ? themeMode : 'light'}</strong> · preference{' '}
                 <strong>{themeSetting}</strong>
               </Text>
             </Box>
             <Box display="flex" gap="3" alignItems="center" flexWrap="wrap">
               <Box display="flex" gap="2" alignItems="center" flexWrap="wrap">
-                {(["light", "dark", "system"] as const).map((mode) => (
+                {(['light', 'dark', 'system'] as const).map((mode) => (
                   <Box
                     key={mode}
                     as="button"
@@ -310,18 +431,23 @@ export default function App() {
                     type="button"
                     aria-pressed={themeSetting === mode}
                     onClick={() => setThemeMode(mode)}
-                    px="3" py="2"
-                    bg={themeSetting === mode ? "bg.subtle" : "bg.surface"}
-                    color={themeSetting === mode ? "text.heading" : "text.body"}
+                    px="3"
+                    py="2"
+                    bg={themeSetting === mode ? 'bg.subtle' : 'bg.surface'}
+                    color={themeSetting === mode ? 'text.heading' : 'text.body'}
                     borderRadius="md"
                     border="1px solid"
-                    borderColor={themeSetting === mode ? "blue.500" : "border"}
+                    borderColor={themeSetting === mode ? 'blue.500' : 'border'}
                     fontSize="sm"
                     fontFamily="var(--font-body)"
                     cursor="pointer"
                     textTransform="capitalize"
-                    _hover={{ borderColor: "blue.400" }}
-                    _focusVisible={{ outline: "2px solid", outlineColor: "blue.500", outlineOffset: "2px" }}
+                    _hover={{ borderColor: 'blue.400' }}
+                    _focusVisible={{
+                      outline: '2px solid',
+                      outlineColor: 'blue.500',
+                      outlineOffset: '2px',
+                    }}
                   >
                     {mode}
                   </Box>
@@ -330,39 +456,53 @@ export default function App() {
               <Box
                 as="button"
                 onClick={() => setModalOpen(true)}
-                px="3" py="2"
-                bg="bg.surface" color="text.body"
-                borderRadius="md" border="1px solid" borderColor="border"
-                fontSize="sm" fontFamily="var(--font-body)"
+                px="3"
+                py="2"
+                bg="bg.surface"
+                color="text.body"
+                borderRadius="md"
+                border="1px solid"
+                borderColor="border"
+                fontSize="sm"
+                fontFamily="var(--font-body)"
                 cursor="pointer"
-                _hover={{ borderColor: "blue.400" }}
+                _hover={{ borderColor: 'blue.400' }}
               >
                 Open Modal ↗
               </Box>
               <Box
                 as="button"
                 onClick={() => setDrawerOpen(true)}
-                px="3" py="2"
-                bg="bg.surface" color="text.body"
-                borderRadius="md" border="1px solid" borderColor="border"
-                fontSize="sm" fontFamily="var(--font-body)"
+                px="3"
+                py="2"
+                bg="bg.surface"
+                color="text.body"
+                borderRadius="md"
+                border="1px solid"
+                borderColor="border"
+                fontSize="sm"
+                fontFamily="var(--font-body)"
                 cursor="pointer"
-                _hover={{ borderColor: "blue.400" }}
+                _hover={{ borderColor: 'blue.400' }}
               >
                 Open Drawer ↗
               </Box>
               <Box
                 as="button"
                 onClick={toggleThemeMode}
-                px="4" py="2"
-                bg="blue.500" color="white"
-                borderRadius="md" border="none"
-                fontSize="sm" fontWeight="medium"
+                px="4"
+                py="2"
+                bg="blue.500"
+                color="white"
+                borderRadius="md"
+                border="none"
+                fontSize="sm"
+                fontWeight="medium"
                 cursor="pointer"
                 fontFamily="var(--font-body)"
-                _hover={{ bg: "blue.600" }}
+                _hover={{ bg: 'blue.600' }}
               >
-                {themeMode === "light" ? "🌙 Dark" : "☀️ Light"}
+                {themeMode === 'light' ? '🌙 Dark' : '☀️ Light'}
               </Box>
             </Box>
           </Box>
@@ -370,39 +510,43 @@ export default function App() {
           {/* Quick-jump chips */}
           <Box display="flex" flexWrap="wrap" gap="2" mb="10">
             {[
-              { href: "#logo", label: "Logo" },
-              { href: "#buttons", label: "Buttons" },
-              { href: "#primitives", label: "Primitives" },
-              { href: "#forms", label: "Forms" },
-              { href: "#otp", label: "OTP Input" },
-              { href: "#phone", label: "Phone Input" },
-              { href: "#datepicker", label: "Date Picker" },
-              { href: "#layout", label: "Layout" },
-              { href: "#navbar", label: "Navbar" },
-              { href: "#navigation", label: "Tabs & More" },
-              { href: "#feedback", label: "Feedback" },
-              { href: "#notifications", label: "Notifications" },
-              { href: "#drawer", label: "Drawer" },
-              { href: "#datatable", label: "DataTable" },
-              { href: "#healthcare", label: "Healthcare" },
-            ].map((c) => <Chip key={c.href} {...c} />)}
+              { href: '#logo', label: 'Logo' },
+              { href: '#buttons', label: 'Buttons' },
+              { href: '#primitives', label: 'Primitives' },
+              { href: '#forms', label: 'Forms' },
+              { href: '#otp', label: 'OTP Input' },
+              { href: '#phone', label: 'Phone Input' },
+              { href: '#datepicker', label: 'Date Picker' },
+              { href: '#layout', label: 'Layout' },
+              { href: '#navbar', label: 'Navbar' },
+              { href: '#navigation', label: 'Tabs & More' },
+              { href: '#feedback', label: 'Feedback' },
+              { href: '#notifications', label: 'Notifications' },
+              { href: '#drawer', label: 'Drawer' },
+              { href: '#datatable', label: 'DataTable' },
+              { href: '#healthcare', label: 'Healthcare' },
+            ].map((c) => (
+              <Chip key={c.href} {...c} />
+            ))}
           </Box>
 
           <Section title="Breadcrumb" id="breadcrumb">
             <Breadcrumb
-              items={[{ label: "Home", href: "#" }, { label: "Components", href: "#" }, { label: "Preview" }]}
+              items={[
+                { label: 'Home', href: '#' },
+                { label: 'Components', href: '#' },
+                { label: 'Preview' },
+              ]}
               mb="10"
             />
 
             <Breadcrumb
-              items={
-                [
-                  { label: "Home", href: "#" },
-                  { label: "Blog", href: "#" },
-                  { label: "Health & Wellness Blog", href: "#" },
-                  { label: "10 Tips for Better Sleep: How To Sleep For Longer Hours" }
-                ]
-              }
+              items={[
+                { label: 'Home', href: '#' },
+                { label: 'Blog', href: '#' },
+                { label: 'Health & Wellness Blog', href: '#' },
+                { label: '10 Tips for Better Sleep: How To Sleep For Longer Hours' },
+              ]}
               mb="10"
             />
           </Section>
@@ -414,20 +558,45 @@ export default function App() {
             {/* Full variants */}
             <Box display="flex" flexDirection="column" gap="6" w="100%">
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3" textTransform="uppercase" letterSpacing="0.06em">
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
                   Full logo — all color variants
                 </Text>
                 <Box display="flex" flexWrap="wrap" gap="6" alignItems="center">
-                  <Box bg="bg.surface" p="4" borderRadius="card" border="1px solid" borderColor="border">
+                  <Box
+                    bg="bg.surface"
+                    p="4"
+                    borderRadius="card"
+                    border="1px solid"
+                    borderColor="border"
+                  >
                     <Logo variant="blue" type="full" height={32} />
                   </Box>
-                  <Box bg="bg.surface" p="4" borderRadius="card" border="1px solid" borderColor="border">
+                  <Box
+                    bg="bg.surface"
+                    p="4"
+                    borderRadius="card"
+                    border="1px solid"
+                    borderColor="border"
+                  >
                     <Logo variant="purple" type="full" height={32} />
                   </Box>
                   <Box bg="#111926" p="4" borderRadius="card">
                     <Logo variant="white" type="full" height={32} />
                   </Box>
-                  <Box bg="bg.surface" p="4" borderRadius="card" border="1px solid" borderColor="border">
+                  <Box
+                    bg="bg.surface"
+                    p="4"
+                    borderRadius="card"
+                    border="1px solid"
+                    borderColor="border"
+                  >
                     <Logo variant="black" type="full" height={32} />
                   </Box>
                 </Box>
@@ -435,20 +604,45 @@ export default function App() {
 
               {/* Icon-only variants */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3" textTransform="uppercase" letterSpacing="0.06em">
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
                   Icon-only — all color variants
                 </Text>
                 <Box display="flex" flexWrap="wrap" gap="4" alignItems="center">
-                  <Box bg="bg.surface" p="4" borderRadius="card" border="1px solid" borderColor="border">
+                  <Box
+                    bg="bg.surface"
+                    p="4"
+                    borderRadius="card"
+                    border="1px solid"
+                    borderColor="border"
+                  >
                     <Logo variant="blue" type="icon" height={40} />
                   </Box>
-                  <Box bg="bg.surface" p="4" borderRadius="card" border="1px solid" borderColor="border">
+                  <Box
+                    bg="bg.surface"
+                    p="4"
+                    borderRadius="card"
+                    border="1px solid"
+                    borderColor="border"
+                  >
                     <Logo variant="purple" type="icon" height={40} />
                   </Box>
                   <Box bg="#111926" p="4" borderRadius="card">
                     <Logo variant="white" type="icon" height={40} />
                   </Box>
-                  <Box bg="bg.surface" p="4" borderRadius="card" border="1px solid" borderColor="border">
+                  <Box
+                    bg="bg.surface"
+                    p="4"
+                    borderRadius="card"
+                    border="1px solid"
+                    borderColor="border"
+                  >
                     <Logo variant="black" type="icon" height={40} />
                   </Box>
                 </Box>
@@ -456,7 +650,14 @@ export default function App() {
 
               {/* Different sizes */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3" textTransform="uppercase" letterSpacing="0.06em">
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
                   Sizes — full blue logo
                 </Text>
                 <Box display="flex" flexWrap="wrap" gap="6" alignItems="center">
@@ -477,23 +678,30 @@ export default function App() {
           {/* ── Navbar variants ── */}
           <Section title="Navbar" id="navbar">
             <Box w="100%" display="flex" flexDirection="column" gap="8">
-
               {/* 1 — href navigation */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
-                  textTransform="uppercase" letterSpacing="0.06em">1 — href navigation</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="1"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  1 — href navigation
+                </Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  ctaHref="/consult" — both buttons act as standard anchor links (no JS handler needed).
-                  Also, `colorScheme="purple"`
+                  ctaHref="/consult" — both buttons act as standard anchor links (no JS handler
+                  needed). Also, `colorScheme="purple"`
                 </Text>
                 <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
                   <Navbar
                     colorScheme="purple"
                     navItems={[
-                      { label: "Logo", href: "#logo" },
-                      { label: "Buttons", href: "#buttons" },
-                      { label: "Forms", href: "#forms" },
-                      { label: "Navigation", href: "#navigation" },
+                      { label: 'Logo', href: '#logo' },
+                      { label: 'Buttons', href: '#buttons' },
+                      { label: 'Forms', href: '#forms' },
+                      { label: 'Navigation', href: '#navigation' },
                     ]}
                     ctaLabel="Talk to a doctor"
                     ctaHref="#"
@@ -504,22 +712,35 @@ export default function App() {
 
               {/* 2 — click handler */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
-                  textTransform="uppercase" letterSpacing="0.06em">2 — click handlers (label + icon separate)</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="1"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  2 — click handlers (label + icon separate)
+                </Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  onCtaClick opens a modal. onCtaIconClick opens the external app (different destination).
+                  onCtaClick opens a modal. onCtaIconClick opens the external app (different
+                  destination).
                 </Text>
                 <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
                   <Navbar
                     navItems={[
-                      { label: "Logo", href: "#logo" },
-                      { label: "Buttons", href: "#buttons" },
-                      { label: "Forms", href: "#forms" },
+                      { label: 'Logo', href: '#logo' },
+                      { label: 'Buttons', href: '#buttons' },
+                      { label: 'Forms', href: '#forms' },
                     ]}
                     ctaLabel="View on GitHub"
-                    onCtaClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
+                    onCtaClick={() =>
+                      window.open('https://github.com/medixdeck/medixdeck-ui', '_blank')
+                    }
                     ctaIconHref="https://github.com/medixdeck/medixdeck-ui"
-                    onCtaIconClick={() => window.open("https://github.com/medixdeck/medixdeck-ui", "_blank")}
+                    onCtaIconClick={() =>
+                      window.open('https://github.com/medixdeck/medixdeck-ui', '_blank')
+                    }
                     position="relative"
                   />
                 </Box>
@@ -527,23 +748,32 @@ export default function App() {
 
               {/* 3 — with secondary CTA */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
-                  textTransform="uppercase" letterSpacing="0.06em">3 — with secondary CTA</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="1"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  3 — with secondary CTA
+                </Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  secondaryCtaLabel + secondaryCtaHref + onSecondaryCtaClick — ghost "Sign In" to the left.
+                  secondaryCtaLabel + secondaryCtaHref + onSecondaryCtaClick — ghost "Sign In" to
+                  the left.
                 </Text>
                 <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
                   <Navbar
                     navItems={[
-                      { label: "Logo", href: "#logo" },
-                      { label: "Buttons", href: "#buttons" },
-                      { label: "Forms", href: "#forms" },
+                      { label: 'Logo', href: '#logo' },
+                      { label: 'Buttons', href: '#buttons' },
+                      { label: 'Forms', href: '#forms' },
                     ]}
                     ctaLabel="Talk to a doctor"
                     ctaHref="#"
                     secondaryCtaLabel="Sign In"
                     secondaryCtaHref="#"
-                    onSecondaryCtaClick={() => alert("Sign In clicked")}
+                    onSecondaryCtaClick={() => alert('Sign In clicked')}
                     position="relative"
                   />
                 </Box>
@@ -551,26 +781,51 @@ export default function App() {
 
               {/* 4 — custom ctaSlot */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
-                  textTransform="uppercase" letterSpacing="0.06em">4 — custom ctaSlot (full control)</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="1"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  4 — custom ctaSlot (full control)
+                </Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
                   Pass any ReactNode — replaces the default CTA area entirely.
                 </Text>
                 <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
                   <Navbar
                     navItems={[
-                      { label: "Logo", href: "#logo" },
-                      { label: "Buttons", href: "#buttons" },
+                      { label: 'Logo', href: '#logo' },
+                      { label: 'Buttons', href: '#buttons' },
                     ]}
                     ctaSlot={
                       <Box display="flex" gap="2" alignItems="center">
-                        <Button variant="ghost" colorScheme="blue" size="sm"
-                          onClick={() => alert("Sign In clicked")}>Sign In</Button>
-                        <Button variant="solid" colorScheme="purple" size="sm"
-                          onClick={() => alert("Get Started clicked")}
+                        <Button
+                          variant="ghost"
+                          colorScheme="blue"
+                          size="sm"
+                          onClick={() => alert('Sign In clicked')}
+                        >
+                          Sign In
+                        </Button>
+                        <Button
+                          variant="solid"
+                          colorScheme="purple"
+                          size="sm"
+                          onClick={() => alert('Get Started clicked')}
                           rightIcon={
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <svg
+                              width="13"
+                              height="13"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
                               <path d="M5 12h14M12 5l7 7-7 7" />
                             </svg>
                           }
@@ -586,12 +841,22 @@ export default function App() {
 
               {/* Navbar with custom logo override */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3" textTransform="uppercase" letterSpacing="0.06em">
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
                   Navbar default (no logo prop — auto Logo component)
                 </Text>
                 <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
                   <Navbar
-                    navItems={[{ label: "Home", href: "#" }, { label: "About", href: "#" }]}
+                    navItems={[
+                      { label: 'Home', href: '#' },
+                      { label: 'About', href: '#' },
+                    ]}
                     isSticky={false}
                     secondaryCtaLabel=""
                   />
@@ -599,13 +864,23 @@ export default function App() {
               </Box>
 
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3" textTransform="uppercase" letterSpacing="0.06em">
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
                   Navbar with custom logo prop override
                 </Text>
                 <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
                   <Navbar
                     logo={<Logo variant="purple" height={28} />}
-                    navItems={[{ label: "Home", href: "#" }, { label: "About", href: "#" }]}
+                    navItems={[
+                      { label: 'Home', href: '#' },
+                      { label: 'About', href: '#' },
+                    ]}
                     isSticky={false}
                     secondaryCtaLabel=""
                   />
@@ -614,20 +889,39 @@ export default function App() {
 
               {/* 5 — DashboardLayout Pattern */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="1"
-                  textTransform="uppercase" letterSpacing="0.06em">Dashboard Layout Shell</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="1"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  Dashboard Layout Shell
+                </Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
                   A responsive dashboard shell with a fixed sidebar, top bar, and main content area.
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden" p="10" display="flex" alignItems="center" justifyContent="center">
-                  <Button onClick={() => setShowDashboard(true)} variant="solid" colorScheme="purple">
+                <Box
+                  border="1px solid"
+                  borderColor="border"
+                  borderRadius="card"
+                  overflow="hidden"
+                  p="10"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Button
+                    onClick={() => setShowDashboard(true)}
+                    variant="solid"
+                    colorScheme="purple"
+                  >
                     Launch Full-Screen Dashboard Layout
                   </Button>
                 </Box>
               </Box>
-
             </Box>
-
           </Section>
 
           {/* ────────────────────────────────────────────────────
@@ -635,82 +929,190 @@ export default function App() {
           ──────────────────────────────────────────────────── */}
           <Section title="Buttons" id="buttons" storybookPath="?path=/docs/primitives-button--docs">
             <Box display="flex" flexDirection="column" gap="8" w="100%">
-
               {/* Row label helper */}
               {/* ── Variants × default blue ── */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3"
-                  textTransform="uppercase" letterSpacing="0.06em">Variants — colorScheme="blue" (default)</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  Variants — colorScheme="blue" (default)
+                </Text>
                 <Box display="flex" flexWrap="wrap" gap="3" alignItems="center">
-                  <Button variant="solid" colorScheme="blue">Solid</Button>
-                  <Button variant="outline" colorScheme="blue">Outline</Button>
-                  <Button variant="ghost" colorScheme="blue">Ghost</Button>
-                  <Button variant="secondary" colorScheme="blue">Secondary</Button>
-                  <Button variant="link" colorScheme="blue">Link</Button>
+                  <Button variant="solid" colorScheme="blue">
+                    Solid
+                  </Button>
+                  <Button variant="outline" colorScheme="blue">
+                    Outline
+                  </Button>
+                  <Button variant="ghost" colorScheme="blue">
+                    Ghost
+                  </Button>
+                  <Button variant="secondary" colorScheme="blue">
+                    Secondary
+                  </Button>
+                  <Button variant="link" colorScheme="blue">
+                    Link
+                  </Button>
                 </Box>
               </Box>
 
               {/* ── Color schemes × solid ── */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3"
-                  textTransform="uppercase" letterSpacing="0.06em">Color schemes — variant="solid"</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  Color schemes — variant="solid"
+                </Text>
                 <Box display="flex" flexWrap="wrap" gap="3" alignItems="center">
-                  <Button variant="solid" colorScheme="blue">Blue (primary)</Button>
-                  <Button variant="solid" colorScheme="purple">Purple (secondary)</Button>
-                  <Button variant="solid" colorScheme="green">Green (success)</Button>
-                  <Button variant="solid" colorScheme="red">Red (danger)</Button>
-                  <Button variant="solid" colorScheme="amber">Amber (warning)</Button>
+                  <Button variant="solid" colorScheme="blue">
+                    Blue (primary)
+                  </Button>
+                  <Button variant="solid" colorScheme="purple">
+                    Purple (secondary)
+                  </Button>
+                  <Button variant="solid" colorScheme="green">
+                    Green (success)
+                  </Button>
+                  <Button variant="solid" colorScheme="red">
+                    Red (danger)
+                  </Button>
+                  <Button variant="solid" colorScheme="amber">
+                    Amber (warning)
+                  </Button>
                 </Box>
               </Box>
 
               {/* ── Color schemes × outline ── */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3"
-                  textTransform="uppercase" letterSpacing="0.06em">Color schemes — variant="outline"</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  Color schemes — variant="outline"
+                </Text>
                 <Box display="flex" flexWrap="wrap" gap="3" alignItems="center">
-                  <Button variant="outline" colorScheme="blue">Blue</Button>
-                  <Button variant="outline" colorScheme="purple">Purple</Button>
-                  <Button variant="outline" colorScheme="green">Green</Button>
-                  <Button variant="outline" colorScheme="red">Red</Button>
-                  <Button variant="outline" colorScheme="amber">Amber</Button>
+                  <Button variant="outline" colorScheme="blue">
+                    Blue
+                  </Button>
+                  <Button variant="outline" colorScheme="purple">
+                    Purple
+                  </Button>
+                  <Button variant="outline" colorScheme="green">
+                    Green
+                  </Button>
+                  <Button variant="outline" colorScheme="red">
+                    Red
+                  </Button>
+                  <Button variant="outline" colorScheme="amber">
+                    Amber
+                  </Button>
                 </Box>
               </Box>
 
               {/* ── Color schemes × ghost ── */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3"
-                  textTransform="uppercase" letterSpacing="0.06em">Color schemes — variant="ghost"</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  Color schemes — variant="ghost"
+                </Text>
                 <Box display="flex" flexWrap="wrap" gap="3" alignItems="center">
-                  <Button variant="ghost" colorScheme="blue">Blue</Button>
-                  <Button variant="ghost" colorScheme="purple">Purple</Button>
-                  <Button variant="ghost" colorScheme="green">Green</Button>
-                  <Button variant="ghost" colorScheme="red">Red</Button>
-                  <Button variant="ghost" colorScheme="amber">Amber</Button>
+                  <Button variant="ghost" colorScheme="blue">
+                    Blue
+                  </Button>
+                  <Button variant="ghost" colorScheme="purple">
+                    Purple
+                  </Button>
+                  <Button variant="ghost" colorScheme="green">
+                    Green
+                  </Button>
+                  <Button variant="ghost" colorScheme="red">
+                    Red
+                  </Button>
+                  <Button variant="ghost" colorScheme="amber">
+                    Amber
+                  </Button>
                 </Box>
               </Box>
 
               {/* ── Sizes ── */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3"
-                  textTransform="uppercase" letterSpacing="0.06em">Sizes — variant="solid" colorScheme="blue"</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  Sizes — variant="solid" colorScheme="blue"
+                </Text>
                 <Box display="flex" flexWrap="wrap" gap="3" alignItems="center">
-                  <Button variant="solid" colorScheme="blue" size="xs">XSmall</Button>
-                  <Button variant="solid" colorScheme="blue" size="sm">Small</Button>
-                  <Button variant="solid" colorScheme="blue" size="md">Medium (default)</Button>
-                  <Button variant="solid" colorScheme="blue" size="lg">Large</Button>
+                  <Button variant="solid" colorScheme="blue" size="xs">
+                    XSmall
+                  </Button>
+                  <Button variant="solid" colorScheme="blue" size="sm">
+                    Small
+                  </Button>
+                  <Button variant="solid" colorScheme="blue" size="md">
+                    Medium (default)
+                  </Button>
+                  <Button variant="solid" colorScheme="blue" size="lg">
+                    Large
+                  </Button>
                 </Box>
               </Box>
 
               {/* ── With icons ── */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3"
-                  textTransform="uppercase" letterSpacing="0.06em">With left / right icons</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  With left / right icons
+                </Text>
                 <Box display="flex" flexWrap="wrap" gap="3" alignItems="center">
                   {/* Left icon */}
                   <Button
                     variant="solid"
                     colorScheme="blue"
-                    leftIcon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z" /></svg>}
+                    leftIcon={
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.02z" />
+                      </svg>
+                    }
                   >
                     Book a Call
                   </Button>
@@ -719,7 +1121,21 @@ export default function App() {
                   <Button
                     variant="solid"
                     colorScheme="blue"
-                    rightIcon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg>}
+                    rightIcon={
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <line x1="7" y1="17" x2="17" y2="7" />
+                        <polyline points="7 7 17 7 17 17" />
+                      </svg>
+                    }
                   >
                     Talk to a doctor
                   </Button>
@@ -732,8 +1148,18 @@ export default function App() {
                     aria-label="Open link"
                     style={{ width: 40, height: 40, padding: 0, borderRadius: 8, flexShrink: 0 }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
                     </svg>
                   </Button>
 
@@ -741,7 +1167,20 @@ export default function App() {
                   <Button
                     variant="outline"
                     colorScheme="purple"
-                    rightIcon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>}
+                    rightIcon={
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    }
                   >
                     Learn More
                   </Button>
@@ -750,10 +1189,20 @@ export default function App() {
 
               {/* ── Navbar CTA pattern (label + icon-only beside it) ── */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3"
-                  textTransform="uppercase" letterSpacing="0.06em">Navbar CTA pattern — label button + icon-only button</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  Navbar CTA pattern — label button + icon-only button
+                </Text>
                 <Box display="flex" gap="2" alignItems="center">
-                  <Button variant="solid" colorScheme="blue" size="md">Talk to a doctor</Button>
+                  <Button variant="solid" colorScheme="blue" size="md">
+                    Talk to a doctor
+                  </Button>
                   <Button
                     variant="solid"
                     colorScheme="blue"
@@ -761,8 +1210,18 @@ export default function App() {
                     aria-label="Open in new tab"
                     style={{ width: 40, height: 40, padding: 0, borderRadius: 8 }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
                     </svg>
                   </Button>
                 </Box>
@@ -770,17 +1229,34 @@ export default function App() {
 
               {/* ── States ── */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3"
-                  textTransform="uppercase" letterSpacing="0.06em">States</Text>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  States
+                </Text>
                 <Box display="flex" flexWrap="wrap" gap="3" alignItems="center">
-                  <Button variant="solid" colorScheme="blue" isLoading>Loading</Button>
-                  <Button variant="outline" colorScheme="blue" isLoading>Loading</Button>
-                  <Button variant="solid" colorScheme="blue" disabled>Disabled solid</Button>
-                  <Button variant="outline" colorScheme="purple" disabled>Disabled outline</Button>
-                  <Button variant="ghost" colorScheme="red" disabled>Disabled ghost</Button>
+                  <Button variant="solid" colorScheme="blue" isLoading>
+                    Loading
+                  </Button>
+                  <Button variant="outline" colorScheme="blue" isLoading>
+                    Loading
+                  </Button>
+                  <Button variant="solid" colorScheme="blue" disabled>
+                    Disabled solid
+                  </Button>
+                  <Button variant="outline" colorScheme="purple" disabled>
+                    Disabled outline
+                  </Button>
+                  <Button variant="ghost" colorScheme="red" disabled>
+                    Disabled ghost
+                  </Button>
                 </Box>
               </Box>
-
             </Box>
           </Section>
 
@@ -788,43 +1264,93 @@ export default function App() {
               PRIMITIVES
           ──────────────────────────────────────────────────── */}
 
-          <Section title="Badges & Tags" id="badges" storybookPath="?path=/docs/primitives-badge--docs">
+          <Section
+            title="Badges & Tags"
+            id="badges"
+            storybookPath="?path=/docs/primitives-badge--docs"
+          >
             <Box mb="2">
-              <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)"
-                textTransform="uppercase" letterSpacing="0.06em">Badges with `rounded` prop</Text>
+              <Text
+                fontSize="xs"
+                color="text.muted"
+                fontFamily="var(--font-body)"
+                textTransform="uppercase"
+                letterSpacing="0.06em"
+              >
+                Badges with `rounded` prop
+              </Text>
             </Box>
             <Box display="flex" flexWrap="wrap" gap="4" w="100%">
-              <Badge rounded={true} status="success">Verified</Badge>
-              <Badge rounded={true} status="warning" variant="subtle">Pending</Badge>
-              <Badge rounded={true} status="error" variant="solid">Cancelled</Badge>
-              <Badge rounded={true} status="info">New</Badge>
-              <Badge rounded={true} status="neutral" variant="outline">Draft</Badge>
+              <Badge rounded={true} status="success">
+                Verified
+              </Badge>
+              <Badge rounded={true} status="warning" variant="subtle">
+                Pending
+              </Badge>
+              <Badge rounded={true} status="error" variant="solid">
+                Cancelled
+              </Badge>
+              <Badge rounded={true} status="info">
+                New
+              </Badge>
+              <Badge rounded={true} status="neutral" variant="outline">
+                Draft
+              </Badge>
             </Box>
 
             <Box mb="2" mt={6}>
-              <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)"
-                textTransform="uppercase" letterSpacing="0.06em">Badges without `rounded` prop</Text>
+              <Text
+                fontSize="xs"
+                color="text.muted"
+                fontFamily="var(--font-body)"
+                textTransform="uppercase"
+                letterSpacing="0.06em"
+              >
+                Badges without `rounded` prop
+              </Text>
             </Box>
             <Box display="flex" flexWrap="wrap" gap="4" w="100%">
-              <Badge rounded={false} status="success">Verified</Badge>
-              <Badge rounded={false} status="warning" variant="subtle">Pending</Badge>
-              <Badge rounded={false} status="error" variant="solid">Cancelled</Badge>
-              <Badge rounded={false} status="info">New</Badge>
-              <Badge rounded={false} status="neutral" variant="outline">Draft</Badge>
+              <Badge rounded={false} status="success">
+                Verified
+              </Badge>
+              <Badge rounded={false} status="warning" variant="subtle">
+                Pending
+              </Badge>
+              <Badge rounded={false} status="error" variant="solid">
+                Cancelled
+              </Badge>
+              <Badge rounded={false} status="info">
+                New
+              </Badge>
+              <Badge rounded={false} status="neutral" variant="outline">
+                Draft
+              </Badge>
             </Box>
 
             <Divider label="Tags" w="100%" my="6" />
 
             <Box display="flex" flexWrap="wrap" gap="4" w="100%">
-              <Tag colorScheme="blue" variant="subtle">Cardiology</Tag>
-              <Tag colorScheme="purple" variant="solid">Psychiatry</Tag>
-              <Tag colorScheme="green" onClose={() => { }}>Pediatrics ×</Tag>
-              <Tag colorScheme="gray" variant="outline">General Practice</Tag>
+              <Tag colorScheme="blue" variant="subtle">
+                Cardiology
+              </Tag>
+              <Tag colorScheme="purple" variant="solid">
+                Psychiatry
+              </Tag>
+              <Tag colorScheme="green" onClose={() => {}}>
+                Pediatrics ×
+              </Tag>
+              <Tag colorScheme="gray" variant="outline">
+                General Practice
+              </Tag>
             </Box>
           </Section>
 
           <Section title="Avatars" id="avatars" storybookPath="?path=/docs/primitives-avatar--docs">
-            <Avatar name="Dr. Amaka Okonkwo" size="xs" src="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg" />
+            <Avatar
+              name="Dr. Amaka Okonkwo"
+              size="xs"
+              src="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
+            />
             <Avatar name="Dr. Tunde Bello" size="sm" />
             <Avatar name="Ngozi A." size="md" showStatus statusColor="green.500" />
             <Avatar name="Emeka O." size="lg" />
@@ -864,10 +1390,10 @@ export default function App() {
                 <Select
                   placeholder="Select specialty"
                   options={[
-                    { value: "cardiology", label: "Cardiology" },
-                    { value: "pediatrics", label: "Pediatrics" },
-                    { value: "neurology", label: "Neurology" },
-                    { value: "psychiatry", label: "Psychiatry" },
+                    { value: 'cardiology', label: 'Cardiology' },
+                    { value: 'pediatrics', label: 'Pediatrics' },
+                    { value: 'neurology', label: 'Neurology' },
+                    { value: 'psychiatry', label: 'Psychiatry' },
                   ]}
                 />
               </FormControl>
@@ -876,9 +1402,9 @@ export default function App() {
                   icon={<LuWallet size={16} />}
                   placeholder="Any price"
                   options={[
-                    { value: "0-50", label: "$0 - $50" },
-                    { value: "50-100", label: "$50 - $100" },
-                    { value: "100+", label: "$100+" },
+                    { value: '0-50', label: '$0 - $50' },
+                    { value: '50-100', label: '$50 - $100' },
+                    { value: '100+', label: '$100+' },
                   ]}
                 />
               </FormControl>
@@ -886,26 +1412,34 @@ export default function App() {
                 <Combobox
                   placeholder="Search branches..."
                   options={[
-                    { value: "lagos-main", label: "Lagos Main Branch" },
-                    { value: "lekki", label: "Lekki Phase 1 Clinic" },
-                    { value: "ikeja", label: "Ikeja General" },
-                    { value: "abuja", label: "Abuja Central" },
-                    { value: "ph", label: "Port Harcourt Base" },
+                    { value: 'lagos-main', label: 'Lagos Main Branch' },
+                    { value: 'lekki', label: 'Lekki Phase 1 Clinic' },
+                    { value: 'ikeja', label: 'Ikeja General' },
+                    { value: 'abuja', label: 'Abuja Central' },
+                    { value: 'ph', label: 'Port Harcourt Base' },
                   ]}
                 />
               </FormControl>
               <FormControl label="Patient Notes">
-                <Textarea placeholder="Describe your symptoms…" rows={3} maxLength={300} showCount />
+                <Textarea
+                  placeholder="Describe your symptoms…"
+                  rows={3}
+                  maxLength={300}
+                  showCount
+                />
               </FormControl>
               <Checkbox colorScheme="blue">I agree to share my medical records</Checkbox>
               <RadioGroup
                 name="appointment-type"
                 options={[
-                  { value: "video", label: "Video Consultation", description: "From anywhere" },
-                  { value: "in-person", label: "In-Person Visit", description: "At the clinic" },
+                  { value: 'video', label: 'Video Consultation', description: 'From anywhere' },
+                  { value: 'in-person', label: 'In-Person Visit', description: 'At the clinic' },
                 ]}
               />
-              <Switch label="Email notifications" description="Get reminders for upcoming appointments" />
+              <Switch
+                label="Email notifications"
+                description="Get reminders for upcoming appointments"
+              />
             </Box>
           </Section>
 
@@ -918,7 +1452,7 @@ export default function App() {
                 helperText="We sent a 6-digit code to your phone"
                 value={otpValue}
                 onChange={setOtpValue}
-                onComplete={(val) => console.log("OTP complete:", val)}
+                onComplete={(val) => console.log('OTP complete:', val)}
               />
               <OTPInput
                 length={4}
@@ -929,10 +1463,7 @@ export default function App() {
                 isInvalid={pinValue.length > 0 && pinValue.length < 4}
                 errorMessage="PIN must be 4 digits"
               />
-              <OTPInput
-                length={5}
-                label="Enter Pass"
-              />
+              <OTPInput length={5} label="Enter Pass" />
             </Box>
           </Section>
 
@@ -958,23 +1489,33 @@ export default function App() {
           </Section>
 
           {/* ── Date Picker ── */}
-          <Section title="Date Picker" id="datepicker" storybookPath="?path=/docs/form-datepicker--docs">
+          <Section
+            title="Date Picker"
+            id="datepicker"
+            storybookPath="?path=/docs/form-datepicker--docs"
+          >
             <Box display="flex" flexDirection="column" gap="4" maxW="380px" w="100%">
               <DatePicker
                 label="Appointment Date"
                 value={appointmentDate}
                 onChange={setAppointmentDate}
-                min={new Date().toISOString().split("T")[0]}
+                min={new Date().toISOString().split('T')[0]}
                 helperText="Select a future date"
               />
               <DatePicker
                 label="Appointment Date & Time"
+                value={appointmentDateTime}
+                onChange={setAppointmentDateTime}
                 includeTime
                 helperText="Select date and time for your appointment"
               />
 
               <DateRangePicker
                 label="Leave/Absence Period"
+                startValue={leaveStart}
+                onStartChange={setLeaveStart}
+                endValue={leaveEnd}
+                onEndChange={setLeaveEnd}
                 startPlaceholder="Start Date"
                 endPlaceholder="End Date"
                 helperText="Select the start and end dates"
@@ -983,7 +1524,11 @@ export default function App() {
           </Section>
 
           {/* ── File Upload ── */}
-          <Section title="File Upload" id="upload" storybookPath="?path=/docs/form-fileupload--docs">
+          <Section
+            title="File Upload"
+            id="upload"
+            storybookPath="?path=/docs/form-fileupload--docs"
+          >
             <Box maxW="500px" w="100%">
               <FileUpload
                 label="Medical Records & Scans"
@@ -991,7 +1536,7 @@ export default function App() {
                 multiple
                 maxSize={5 * 1024 * 1024} // 5MB
                 helperText="Upload any necessary documents (Max 5MB each)"
-                onChange={(files) => console.log("Files uploaded:", files)}
+                onChange={(files) => console.log('Files uploaded:', files)}
               />
             </Box>
           </Section>
@@ -1015,13 +1560,21 @@ export default function App() {
                 </Text>
               </CardBody>
               <CardFooter justifyContent="flex-end">
-                <Button size="sm" variant="outline">View Records</Button>
+                <Button size="sm" variant="outline">
+                  View Records
+                </Button>
               </CardFooter>
             </Card>
 
             <Card w="300px" hoverable>
               <CardBody>
-                <VitalBadge label="Blood Pressure" value="138/89" unit="mmHg" status="warning" mb="3" />
+                <VitalBadge
+                  label="Blood Pressure"
+                  value="138/89"
+                  unit="mmHg"
+                  status="warning"
+                  mb="3"
+                />
                 <VitalBadge label="SpO₂" value="98%" unit="" status="normal" mb="3" />
                 <VitalBadge label="Heart Rate" value="82" unit="bpm" status="normal" />
               </CardBody>
@@ -1040,33 +1593,53 @@ export default function App() {
           </Section>
 
           {/* ── Notifications ── */}
-          <Section title="Notifications & Toasts" id="notifications" storybookPath="?path=/docs/feedback-notification-toast--docs">
+          <Section
+            title="Notifications & Toasts"
+            id="notifications"
+            storybookPath="?path=/docs/feedback-notification-toast--docs"
+          >
             <Box display="flex" flexWrap="wrap" gap="4">
               <Button
                 variant="solid"
                 colorScheme="blue"
-                onClick={() => toast.success("Appointment Confirmed", { description: "Your booking for April 24 has been successfully scheduled." })}
+                onClick={() =>
+                  toast.success('Appointment Confirmed', {
+                    description: 'Your booking for April 24 has been successfully scheduled.',
+                  })
+                }
               >
                 Success Toast
               </Button>
               <Button
                 variant="outline"
                 colorScheme="blue"
-                onClick={() => toast.info("New Message", { description: "You have a new message from Dr. Okonkwo." })}
+                onClick={() =>
+                  toast.info('New Message', {
+                    description: 'You have a new message from Dr. Okonkwo.',
+                  })
+                }
               >
                 Info Toast
               </Button>
               <Button
                 variant="solid"
                 colorScheme="black"
-                onClick={() => toast.warning("Connection Unstable", { description: "Please check your internet connection and try again." })}
+                onClick={() =>
+                  toast.warning('Connection Unstable', {
+                    description: 'Please check your internet connection and try again.',
+                  })
+                }
               >
                 Warning Toast
               </Button>
               <Button
                 variant="solid"
                 colorScheme="red"
-                onClick={() => toast.error("Booking Failed", { description: "The selected time slot is no longer available." })}
+                onClick={() =>
+                  toast.error('Booking Failed', {
+                    description: 'The selected time slot is no longer available.',
+                  })
+                }
               >
                 Error Toast
               </Button>
@@ -1077,9 +1650,34 @@ export default function App() {
             <Box w="100%">
               <Tabs
                 tabs={[
-                  { id: "overview", label: "Overview", content: <Box p="2" color="text.body" fontFamily="var(--font-body)">Patient overview content…</Box> },
-                  { id: "records", label: "Records", badge: "3", content: <Box p="2" color="text.body">Medical records…</Box> },
-                  { id: "appointments", label: "Appointments", content: <Box p="2" color="text.body">Upcoming appointments…</Box> },
+                  {
+                    id: 'overview',
+                    label: 'Overview',
+                    content: (
+                      <Box p="2" color="text.body" fontFamily="var(--font-body)">
+                        Patient overview content…
+                      </Box>
+                    ),
+                  },
+                  {
+                    id: 'records',
+                    label: 'Records',
+                    badge: '3',
+                    content: (
+                      <Box p="2" color="text.body">
+                        Medical records…
+                      </Box>
+                    ),
+                  },
+                  {
+                    id: 'appointments',
+                    label: 'Appointments',
+                    content: (
+                      <Box p="2" color="text.body">
+                        Upcoming appointments…
+                      </Box>
+                    ),
+                  },
                 ]}
               />
             </Box>
@@ -1087,28 +1685,38 @@ export default function App() {
               <Tabs
                 variant="pill"
                 tabs={[
-                  { id: "patients", label: "Patients" },
-                  { id: "doctors", label: "Doctors" },
-                  { id: "admins", label: "Admins" },
+                  { id: 'patients', label: 'Patients' },
+                  { id: 'doctors', label: 'Doctors' },
+                  { id: 'admins', label: 'Admins' },
                 ]}
               />
             </Box>
           </Section>
 
-          <Section title="Stepper" id="stepper" storybookPath="?path=/docs/navigation-stepper--docs">
+          <Section
+            title="Stepper"
+            id="stepper"
+            storybookPath="?path=/docs/navigation-stepper--docs"
+          >
             <Box w="100%" display="flex" flexDirection="column" gap="6">
-
               {/* Booking flow — step 2 active (step 1 done) */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3" textTransform="uppercase" letterSpacing="0.06em">
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
                   Appointment Booking — Step 2 of 4
                 </Text>
                 <Stepper
                   steps={[
-                    { id: 1, title: "Verified" },
-                    { id: 2, title: "Personal Info" },
-                    { id: 3, title: "Health Info" },
-                    { id: 4, title: "Confirm" },
+                    { id: 1, title: 'Verified' },
+                    { id: 2, title: 'Personal Info' },
+                    { id: 3, title: 'Health Info' },
+                    { id: 4, title: 'Confirm' },
                   ]}
                   currentStep={2}
                 />
@@ -1116,15 +1724,22 @@ export default function App() {
 
               {/* Registration flow — step 3 active */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3" textTransform="uppercase" letterSpacing="0.06em">
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
                   Registration — Step 3 of 4
                 </Text>
                 <Stepper
                   steps={[
-                    { id: 1, title: "Account" },
-                    { id: 2, title: "Profile" },
-                    { id: 3, title: "Verification" },
-                    { id: 4, title: "Done" },
+                    { id: 1, title: 'Account' },
+                    { id: 2, title: 'Profile' },
+                    { id: 3, title: 'Verification' },
+                    { id: 4, title: 'Done' },
                   ]}
                   currentStep={3}
                 />
@@ -1132,24 +1747,34 @@ export default function App() {
 
               {/* Purple variant */}
               <Box>
-                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3" textTransform="uppercase" letterSpacing="0.06em">
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="3"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
                   Purple — Step 1 of 3 (active)
                 </Text>
                 <Stepper
                   steps={[
-                    { id: 1, title: "Find Doctor" },
-                    { id: 2, title: "Book Slot" },
-                    { id: 3, title: "Confirm" },
+                    { id: 1, title: 'Find Doctor' },
+                    { id: 2, title: 'Book Slot' },
+                    { id: 3, title: 'Confirm' },
                   ]}
                   currentStep={1}
                   colorScheme="purple"
                 />
               </Box>
-
             </Box>
           </Section>
 
-          <Section title="Pagination" id="pagination" storybookPath="?path=/docs/navigation-pagination--docs">
+          <Section
+            title="Pagination"
+            id="pagination"
+            storybookPath="?path=/docs/navigation-pagination--docs"
+          >
             <Pagination total={245} pageSize={10} currentPage={page} onChange={setPage} />
             <Pagination total={50} pageSize={10} currentPage={2} compact />
           </Section>
@@ -1158,24 +1783,62 @@ export default function App() {
               FEEDBACK
           ──────────────────────────────────────────────────── */}
           <Section title="Alerts" id="feedback" storybookPath="?path=/docs/feedback-alert--docs">
-            <Alert status="success" title="Appointment confirmed!" description="Dr. Okonkwo will see you at 2:00 PM today." closable w="400px" />
-            <Alert status="warning" title="Incomplete profile" description="Please complete your medical history." w="400px" />
-            <Alert status="error" title="Payment failed" description="Your card was declined. Please try another method." closable w="400px" />
-            <Alert status="info" variant="left-accent" title="New feature" description="Video consultations are now available 24/7." w="400px" />
+            <Alert
+              status="success"
+              title="Appointment confirmed!"
+              description="Dr. Okonkwo will see you at 2:00 PM today."
+              closable
+              w="400px"
+            />
+            <Alert
+              status="warning"
+              title="Incomplete profile"
+              description="Please complete your medical history."
+              w="400px"
+            />
+            <Alert
+              status="error"
+              title="Payment failed"
+              description="Your card was declined. Please try another method."
+              closable
+              w="400px"
+            />
+            <Alert
+              status="info"
+              variant="left-accent"
+              title="New feature"
+              description="Video consultations are now available 24/7."
+              w="400px"
+            />
           </Section>
 
           <Section title="Tooltip" id="tooltip" storybookPath="?path=/docs/feedback-tooltip--docs">
             <Tooltip label="MDCN Verified — This doctor is licensed and verified">
-              <Button variant="outline" colorScheme="blue">Hover me</Button>
+              <Button variant="outline" colorScheme="blue">
+                Hover me
+              </Button>
             </Tooltip>
             <Tooltip label="Copy patient ID" placement="bottom">
-              <Button variant="ghost" colorScheme="blue">📋 Copy ID</Button>
+              <Button variant="ghost" colorScheme="blue">
+                📋 Copy ID
+              </Button>
             </Tooltip>
           </Section>
 
-          <Section title="Skeleton Loading" id="skeleton" storybookPath="?path=/docs/feedback-skeleton--docs">
+          <Section
+            title="Skeleton Loading"
+            id="skeleton"
+            storybookPath="?path=/docs/feedback-skeleton--docs"
+          >
             <SkeletonCard w="280px" />
-            <Box w="280px" p="4" bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card">
+            <Box
+              w="280px"
+              p="4"
+              bg="bg.surface"
+              border="1px solid"
+              borderColor="border"
+              borderRadius="card"
+            >
               <Skeleton h="4" w="60%" borderRadius="full" mb="3" />
               <Skeleton h="3" w="100%" borderRadius="full" mb="2" />
               <Skeleton h="3" w="80%" borderRadius="full" mb="2" />
@@ -1183,7 +1846,11 @@ export default function App() {
             </Box>
           </Section>
 
-          <Section title="Progress" id="progress" storybookPath="?path=/docs/feedback-progress--docs">
+          <Section
+            title="Progress"
+            id="progress"
+            storybookPath="?path=/docs/feedback-progress--docs"
+          >
             <Box w="100%" display="flex" flexDirection="column" gap="4">
               <Progress value={75} colorScheme="blue" size="md" showLabel />
               <Progress value={45} colorScheme="purple" size="sm" />
@@ -1193,15 +1860,33 @@ export default function App() {
           </Section>
 
           {/* ── Modal & Drawer triggers ── */}
-          <Section title="Modal & Drawer" id="drawer" storybookPath="?path=/docs/feedback-modal--docs">
+          <Section
+            title="Modal & Drawer"
+            id="drawer"
+            storybookPath="?path=/docs/feedback-modal--docs"
+          >
             <Box display="flex" gap="3" flexWrap="wrap">
-              <Button variant="solid" onClick={() => setModalOpen(true)}>Open Modal</Button>
-              <Button variant="outline" onClick={() => setDrawerOpen(true)}>Open Right Drawer</Button>
+              <Button variant="solid" onClick={() => setModalOpen(true)}>
+                Open Modal
+              </Button>
+              <Button variant="outline" onClick={() => setDrawerOpen(true)}>
+                Open Right Drawer
+              </Button>
             </Box>
           </Section>
 
-          <Section title="Empty State" id="emptystate" storybookPath="?path=/docs/feedback-emptystate--docs">
-            <Box w="100%" bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card">
+          <Section
+            title="Empty State"
+            id="emptystate"
+            storybookPath="?path=/docs/feedback-emptystate--docs"
+          >
+            <Box
+              w="100%"
+              bg="bg.surface"
+              border="1px solid"
+              borderColor="border"
+              borderRadius="card"
+            >
               <EmptyState
                 icon="📋"
                 title="No appointments scheduled"
@@ -1214,7 +1899,15 @@ export default function App() {
 
           <Section title="Error Pages" id="errorpages">
             <Box display="flex" flexDirection="column" gap="8" w="100%">
-              <Box bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden" position="relative" minH="500px">
+              <Box
+                bg="bg.surface"
+                border="1px solid"
+                borderColor="border"
+                borderRadius="card"
+                overflow="hidden"
+                position="relative"
+                minH="500px"
+              >
                 <NotFoundPage
                   title="Page Not Found"
                   description="We couldn't find the page you were looking for."
@@ -1222,7 +1915,15 @@ export default function App() {
                   minH="500px"
                 />
               </Box>
-              <Box bg="bg.surface" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden" position="relative" minH="500px">
+              <Box
+                bg="bg.surface"
+                border="1px solid"
+                borderColor="border"
+                borderRadius="card"
+                overflow="hidden"
+                position="relative"
+                minH="500px"
+              >
                 <ServerErrorPage
                   errorMessage="Failed to fetch user data: Network timeout"
                   actionLabel="Try Again"
@@ -1240,30 +1941,30 @@ export default function App() {
               <DataTable
                 caption="Patient records"
                 columns={[
-                  { key: "name", label: "Patient Name", sortable: true, minWidth: "160px" },
-                  { key: "age", label: "Age", sortable: true, align: "center" },
-                  { key: "specialty", label: "Specialty", sortable: true },
+                  { key: 'name', label: 'Patient Name', sortable: true, minWidth: '160px' },
+                  { key: 'age', label: 'Age', sortable: true, align: 'center' },
+                  { key: 'specialty', label: 'Specialty', sortable: true },
                   {
-                    key: "status",
-                    label: "Status",
+                    key: 'status',
+                    label: 'Status',
                     render: (val) => (
                       <span
                         style={{
-                          display: "inline-block",
-                          padding: "2px 10px",
+                          display: 'inline-block',
+                          padding: '2px 10px',
                           borderRadius: 20,
                           fontSize: 12,
                           fontWeight: 600,
                           background: `${statusColor[val as string]}18`,
-                          color: statusColor[val as string] ?? "#374151",
-                          fontFamily: "var(--font-body)",
+                          color: statusColor[val as string] ?? '#374151',
+                          fontFamily: 'var(--font-body)',
                         }}
                       >
                         {String(val)}
                       </span>
                     ),
                   },
-                  { key: "date", label: "Date", sortable: true },
+                  { key: 'date', label: 'Date', sortable: true },
                 ]}
                 data={patientRows}
                 rowKey="id"
@@ -1273,25 +1974,70 @@ export default function App() {
             </Box>
           </Section>
 
-          <Section title="Accordion / FAQ" id="accordion" storybookPath="?path=/docs/data-accordion--docs">
+          <Section
+            title="Accordion / FAQ"
+            id="accordion"
+            storybookPath="?path=/docs/data-accordion--docs"
+          >
             <Box w="100%" maxW="640px">
               <Accordion
                 items={[
-                  { id: "q1", question: "What is MedixDeck?", answer: "MedixDeck is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations." },
-                  { id: "q2", question: "Are the doctors on MedixDeck qualified?", answer: "Yes. Every doctor on MedixDeck is MDCN (Medical and Dental Council of Nigeria) verified before being listed on the platform." },
-                  { id: "q3", question: "What do I need to get started?", answer: "Simply create an account, complete your health profile, and you can begin searching for doctors immediately — no waitlist." },
-                  { id: "q4", question: "Is my medical data safe?", answer: "Absolutely. MedixDeck uses end-to-end encryption and complies with Nigerian data protection regulations (NDPR) to keep your health data private." },
+                  {
+                    id: 'q1',
+                    question: 'What is MedixDeck?',
+                    answer:
+                      '<b>MedixDeck</b> is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations.',
+                  },
+                  {
+                    id: 'q2',
+                    question: 'Are the doctors on MedixDeck qualified?',
+                    answer:
+                      'Yes. Every doctor on MedixDeck is MDCN (Medical and Dental Council of Nigeria) verified before being listed on the platform.',
+                  },
+                  {
+                    id: 'q3',
+                    question: 'What do I need to get started?',
+                    answer:
+                      'Simply create an account, complete your health profile, and you can begin searching for doctors immediately — no waitlist.',
+                  },
+                  {
+                    id: 'q4',
+                    question: 'Is my medical data safe?',
+                    answer:
+                      'Absolutely. MedixDeck uses end-to-end encryption and complies with Nigerian data protection regulations (NDPR) to keep your health data private.',
+                  },
                 ]}
               />
             </Box>
             <Box w="100%" maxW="640px">
               <Accordion
+                answerType="MD"
                 colorScheme="purple"
                 items={[
-                  { id: "q1", question: "What is MedixDeck?", answer: "MedixDeck is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations." },
-                  { id: "q2", question: "Are the doctors on MedixDeck qualified?", answer: "Yes. Every doctor on MedixDeck is MDCN (Medical and Dental Council of Nigeria) verified before being listed on the platform." },
-                  { id: "q3", question: "What do I need to get started?", answer: "Simply create an account, complete your health profile, and you can begin searching for doctors immediately — no waitlist." },
-                  { id: "q4", question: "Is my medical data safe?", answer: "Absolutely. MedixDeck uses end-to-end encryption and complies with Nigerian data protection regulations (NDPR) to keep your health data private." },
+                  {
+                    id: 'q1',
+                    question: 'What is MedixDeck?',
+                    answer:
+                      '**MedixDeck** is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations.',
+                  },
+                  {
+                    id: 'q2',
+                    question: 'Are the doctors on MedixDeck qualified?',
+                    answer:
+                      'Yes. Every doctor on MedixDeck is MDCN (Medical and Dental Council of Nigeria) verified before being listed on the platform.',
+                  },
+                  {
+                    id: 'q3',
+                    question: 'What do I need to get started?',
+                    answer:
+                      'Simply create an account, complete your health profile, and you can begin searching for doctors immediately — no waitlist.',
+                  },
+                  {
+                    id: 'q4',
+                    question: 'Is my medical data safe?',
+                    answer:
+                      'Absolutely. MedixDeck uses end-to-end encryption and complies with Nigerian data protection regulations (NDPR) to keep your health data private.',
+                  },
                 ]}
               />
             </Box>
@@ -1300,7 +2046,11 @@ export default function App() {
           {/* ────────────────────────────────────────────────────
               HEALTHCARE
           ──────────────────────────────────────────────────── */}
-          <Section title="Doctor Cards" id="healthcare" storybookPath="?path=/docs/healthcare-doctorcard--docs">
+          <Section
+            title="Doctor Cards"
+            id="healthcare"
+            storybookPath="?path=/docs/healthcare-doctorcard--docs"
+          >
             <Box display="flex" flexWrap="wrap" gap="6" w="100%">
               <DoctorCard
                 variant="featured"
@@ -1313,8 +2063,8 @@ export default function App() {
                 consultationFee="₦5,000"
                 isVerified
                 isAvailable
-                onBookClick={() => alert("Booking!")}
-                onViewClick={() => alert("View profile")}
+                onBookClick={() => alert('Booking!')}
+                onViewClick={() => alert('View profile')}
                 w="360px"
                 avatar="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
               />
@@ -1329,8 +2079,8 @@ export default function App() {
                 consultationFee="₦5,000"
                 isVerified
                 isAvailable
-                onBookClick={() => alert("Booking!")}
-                onViewClick={() => alert("View profile")}
+                onBookClick={() => alert('Booking!')}
+                onViewClick={() => alert('View profile')}
                 w="360px"
                 avatar="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
                 h="300px"
@@ -1344,8 +2094,8 @@ export default function App() {
                 reviewCount={128}
                 experience="8 yrs"
                 consultationFee="₦5,000"
-                onBookClick={() => alert("Booking!")}
-                onViewClick={() => alert("View profile")}
+                onBookClick={() => alert('Booking!')}
+                onViewClick={() => alert('View profile')}
                 w="360px"
                 avatar="https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg"
                 h="250px"
@@ -1353,7 +2103,11 @@ export default function App() {
             </Box>
           </Section>
 
-          <Section title="Appointment Cards" id="appointments" storybookPath="?path=/docs/healthcare-doctorcard--docs">
+          <Section
+            title="Appointment Cards"
+            id="appointments"
+            storybookPath="?path=/docs/healthcare-doctorcard--docs"
+          >
             <AppointmentCard
               doctorName="Dr. Amaka Okonkwo"
               doctorSpecialty="Cardiologist"
@@ -1361,9 +2115,9 @@ export default function App() {
               time="2:00 PM – 2:30 PM"
               type="video"
               status="upcoming"
-              onJoin={() => alert("Joining call…")}
-              onReschedule={() => alert("Rescheduling…")}
-              onCancel={() => alert("Cancelling…")}
+              onJoin={() => alert('Joining call…')}
+              onReschedule={() => alert('Rescheduling…')}
+              onCancel={() => alert('Cancelling…')}
               w="400px"
             />
             <AppointmentCard
@@ -1377,7 +2131,11 @@ export default function App() {
             />
           </Section>
 
-          <Section title="Vital Badges" id="vitals" storybookPath="?path=/docs/healthcare-doctorcard--docs">
+          <Section
+            title="Vital Badges"
+            id="vitals"
+            storybookPath="?path=/docs/healthcare-doctorcard--docs"
+          >
             <VitalBadge label="Blood Pressure" value="138/89" unit="mmHg" status="warning" />
             <VitalBadge label="SpO₂" value="98%" unit="" status="normal" />
             <VitalBadge label="Heart Rate" value="105" unit="bpm" status="critical" />
@@ -1386,19 +2144,50 @@ export default function App() {
 
           <Section title="Testimonial Cards" id="testimonials">
             {[
-              { name: "Rachael Ayo", title: "Patient", quote: "Getting medical help used to be incredibly stressful. Now I can consult with a qualified doctor in minutes.", rating: 5 },
-              { name: "Dr. H. Adeyemi", title: "Family Practitioner", quote: "MedixDeck simplifies everything from patient summaries to prescriptions. I can focus on healing, not paperwork.", rating: 5 },
-              { name: "Omoye D.", title: "Diabetic Patient", quote: "What stood out for me is the follow-up system. My doctor didn't just treat me — they kept checking in.", rating: 4 },
+              {
+                name: 'Rachael Ayo',
+                title: 'Patient',
+                quote:
+                  'Getting medical help used to be incredibly stressful. Now I can consult with a qualified doctor in minutes.',
+                rating: 5,
+              },
+              {
+                name: 'Dr. H. Adeyemi',
+                title: 'Family Practitioner',
+                quote:
+                  'MedixDeck simplifies everything from patient summaries to prescriptions. I can focus on healing, not paperwork.',
+                rating: 5,
+              },
+              {
+                name: 'Omoye D.',
+                title: 'Diabetic Patient',
+                quote:
+                  "What stood out for me is the follow-up system. My doctor didn't just treat me — they kept checking in.",
+                rating: 4,
+              },
             ].map((t) => (
-              <TestimonialCard key={t.name} authorName={t.name} authorTitle={t.title} quote={t.quote} rating={t.rating} w="280px" />
+              <TestimonialCard
+                key={t.name}
+                authorName={t.name}
+                authorTitle={t.title}
+                quote={t.quote}
+                rating={t.rating}
+                w="280px"
+              />
             ))}
           </Section>
 
           <Section title="Blog Cards" id="blog">
             {[
-              { title: "Recognizing Critical Moments: Key Indicators for Emergency Room Visits", date: "2025-11-20" },
-              { title: "How to Choose the Right Specialist for Your Condition", date: "2025-11-18" },
-              { title: "5 Signs You Should See a Doctor Today", date: "2025-11-15" },
+              {
+                title: 'Recognizing Critical Moments: Key Indicators for Emergency Room Visits',
+                date: '2025-11-20',
+              },
+              {
+                title: 'How to Choose the Right Specialist for Your Condition',
+                date: '2025-11-18',
+              },
+              { title: '5 Signs You Should See a Doctor Today', date: '2025-11-15' },
             ].map((item, i) => (
               <BlogCard
                 colorScheme="purple"
@@ -1416,29 +2205,33 @@ export default function App() {
 
           {/* Footer Showcase */}
           <Section title="Footer" id="footer" storybookPath="?path=/docs/layout-footer--docs">
-            <Box w="100%" border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+            <Box
+              w="100%"
+              border="1px solid"
+              borderColor="border"
+              borderRadius="card"
+              overflow="hidden"
+            >
               <Footer
                 colorScheme="purple"
                 certifications={[
-                  { name: "NDPR Compliant", href: "https://nitda.gov.ng" },
-                  { name: "ISO 27001", href: "#" },
-                  { name: "MDCN Certified", href: "https://mdcn.gov.ng" },
+                  { name: 'NDPR Compliant', href: 'https://nitda.gov.ng' },
+                  { name: 'ISO 27001', href: '#' },
+                  { name: 'MDCN Certified', href: 'https://mdcn.gov.ng' },
                 ]}
               />
               <Footer
                 certifications={[
-                  { name: "NDPR Compliant Platform", href: "https://nitda.gov.ng" },
-                  { name: "ISO 27001", href: "#" },
-                  { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
+                  { name: 'NDPR Compliant Platform', href: 'https://nitda.gov.ng' },
+                  { name: 'ISO 27001', href: '#' },
+                  { name: 'MDCN Certified Platform', href: 'https://mdcn.gov.ng' },
                 ]}
               />
             </Box>
           </Section>
 
           {/* Actual Site Footer */}
-          <Footer
-            mt={16}
-          />
+          <Footer mt={16} />
         </Container>
       </Box>
 
@@ -1449,18 +2242,17 @@ export default function App() {
             href="https://x.com/medixdeck"
             color="blue.fg"
             textDecorationColor="currentColor"
-            _hover={{ color: "blue.fg", opacity: 0.9 }}
+            _hover={{ color: 'blue.fg', opacity: 0.9 }}
           >
             @medixdeck/ui
-          </Link>{" "}
-          · v0.1.16 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
-          {" "}
-          ⚡ by{" "}
+          </Link>{' '}
+          · v{PACKAGE_VERSION} · Built with Chakra UI v3 + Vite · Satoshi font ·{' '}
+          {PREVIEW_COMPONENT_COUNT} components · With ⚡ by{' '}
           <Link
             href="https://x.com/eunit99"
             color="blue.fg"
             textDecorationColor="currentColor"
-            _hover={{ color: "blue.fg", opacity: 0.9 }}
+            _hover={{ color: 'blue.fg', opacity: 0.9 }}
           >
             Eunit
           </Link>
@@ -1475,8 +2267,12 @@ export default function App() {
         description="Fill in your details to schedule a consultation with a licensed doctor."
         footer={
           <>
-            <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button variant="solid" colorScheme="blue" onClick={() => setModalOpen(false)}>Confirm Booking</Button>
+            <Button variant="outline" onClick={() => setModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="solid" colorScheme="blue" onClick={() => setModalOpen(false)}>
+              Confirm Booking
+            </Button>
           </>
         }
       >
@@ -1485,10 +2281,19 @@ export default function App() {
             <Input placeholder="Enter your name" />
           </FormControl>
           <FormControl label="Appointment Date">
-            <DatePicker helperText="Select a future date" min={new Date().toISOString().split("T")[0]} />
+            <DatePicker
+              helperText="Select a future date"
+              min={new Date().toISOString().split('T')[0]}
+            />
           </FormControl>
           <FormControl label="Specialty">
-            <Select placeholder="Select specialty" options={[{ value: "cardiology", label: "Cardiology" }, { value: "pediatrics", label: "Pediatrics" }]} />
+            <Select
+              placeholder="Select specialty"
+              options={[
+                { value: 'cardiology', label: 'Cardiology' },
+                { value: 'pediatrics', label: 'Pediatrics' },
+              ]}
+            />
           </FormControl>
         </Box>
       </Modal>
@@ -1502,16 +2307,24 @@ export default function App() {
         size="md"
         footer={
           <>
-            <Button variant="ghost" onClick={() => setDrawerOpen(false)}>Close</Button>
-            <Button variant="solid" colorScheme="blue">Save Changes</Button>
+            <Button variant="ghost" onClick={() => setDrawerOpen(false)}>
+              Close
+            </Button>
+            <Button variant="solid" colorScheme="blue">
+              Save Changes
+            </Button>
           </>
         }
       >
         <Box display="flex" flexDirection="column" gap="4">
           <Avatar name="Ngozi Adeyemi" size="xl" showStatus statusColor="green.500" />
           <Box>
-            <Text fontWeight="bold" color="text.heading" fontFamily="var(--font-heading)">Ngozi Adeyemi</Text>
-            <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">Patient ID: MX-2026-0047</Text>
+            <Text fontWeight="bold" color="text.heading" fontFamily="var(--font-heading)">
+              Ngozi Adeyemi
+            </Text>
+            <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
+              Patient ID: MX-2026-0047
+            </Text>
           </Box>
           <Divider />
           <VitalBadge label="Blood Pressure" value="120/80" unit="mmHg" status="normal" />

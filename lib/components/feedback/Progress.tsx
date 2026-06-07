@@ -1,13 +1,13 @@
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
 
 export interface ProgressProps extends BoxProps {
   /** Progress value 0–100 */
   value: number;
   /** Color scheme */
-  colorScheme?: "blue" | "purple" | "green" | "amber" | "red";
+  colorScheme?: 'blue' | 'purple' | 'green' | 'amber' | 'red';
   /** Height of the bar */
-  size?: "xs" | "sm" | "md" | "lg";
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   /** Show label */
   showLabel?: boolean;
   /** Animate on mount */
@@ -16,26 +16,26 @@ export interface ProgressProps extends BoxProps {
   isIndeterminate?: boolean;
 }
 
-const colorMap: Record<NonNullable<ProgressProps["colorScheme"]>, string> = {
-  blue: "#0685FF",
-  purple: "#7700CC",
-  green: "#1B7A38",
-  amber: "#D97706",
-  red: "#DC2626",
+const colorMap: Record<NonNullable<ProgressProps['colorScheme']>, string> = {
+  blue: '#0685FF',
+  purple: '#7700CC',
+  green: '#1B7A38',
+  amber: '#D97706',
+  red: '#DC2626',
 };
 
-const heightMap: Record<NonNullable<ProgressProps["size"]>, string> = {
-  xs: "2px",
-  sm: "4px",
-  md: "8px",
-  lg: "12px",
+const heightMap: Record<NonNullable<ProgressProps['size']>, string> = {
+  xs: '2px',
+  sm: '4px',
+  md: '8px',
+  lg: '12px',
 };
 
 // Inject indeterminate keyframes once
-if (typeof document !== "undefined") {
-  const styleId = "medix-progress-keyframes";
+if (typeof document !== 'undefined') {
+  const styleId = 'medix-progress-keyframes';
   if (!document.getElementById(styleId)) {
-    const style = document.createElement("style");
+    const style = document.createElement('style');
     style.id = styleId;
     style.textContent = `
       @keyframes medix-indeterminate {
@@ -59,14 +59,14 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
   (
     {
       value,
-      colorScheme = "blue",
-      size = "md",
+      colorScheme = 'blue',
+      size = 'md',
       showLabel = false,
       animated = true,
       isIndeterminate = false,
       ...props
     },
-    ref
+    ref,
   ) => {
     const clampedValue = Math.min(100, Math.max(0, value));
     const color = colorMap[colorScheme];
@@ -102,7 +102,7 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
               w="40%"
               bg={color}
               borderRadius="full"
-              style={{ animation: "medix-indeterminate 1.5s linear infinite" }}
+              style={{ animation: 'medix-indeterminate 1.5s linear infinite' }}
             />
           ) : (
             <Box
@@ -110,14 +110,14 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
               w={`${clampedValue}%`}
               bg={color}
               borderRadius="full"
-              transition={animated ? "width 0.6s cubic-bezier(0.4, 0, 0.2, 1)" : "none"}
+              transition={animated ? 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'}
               position="relative"
             />
           )}
         </Box>
       </Box>
     );
-  }
+  },
 );
 
-Progress.displayName = "MedixProgress";
+Progress.displayName = 'MedixProgress';

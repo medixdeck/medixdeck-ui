@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import React, { useState } from "react";
-import { Calendar } from "./Calendar";
+import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+import { Calendar } from './Calendar';
 
 const meta: Meta<typeof Calendar> = {
-  title: "Form/Calendar",
+  title: 'Form/Calendar',
   component: Calendar,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;

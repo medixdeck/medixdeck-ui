@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
 
 export interface SkeletonProps extends BoxProps {
   isLoaded?: boolean;
@@ -14,10 +14,10 @@ const shimmerKeyframes = `
 `;
 
 // Inject keyframes once
-if (typeof document !== "undefined") {
-  const styleId = "medix-skeleton-keyframes";
+if (typeof document !== 'undefined') {
+  const styleId = 'medix-skeleton-keyframes';
   if (!document.getElementById(styleId)) {
-    const style = document.createElement("style");
+    const style = document.createElement('style');
     style.id = styleId;
     style.textContent = shimmerKeyframes;
     document.head.appendChild(style);
@@ -49,25 +49,25 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
         // Light mode: #E2E8F0 — visibly darker than bg.surface (#F6F6F6) and bg.subtle (#F0F4F8)
         // Dark mode:  a subtle white-tinted layer over the dark surface
         bg="#E2E8F0"
-        _dark={{ bg: "rgba(255,255,255,0.08)" }}
+        _dark={{ bg: 'rgba(255,255,255,0.08)' }}
         _before={{
           content: '""',
-          position: "absolute",
-          inset: "0",
+          position: 'absolute',
+          inset: '0',
           // Light mode shimmer: transparent → slightly lighter → transparent
           // gives a bright sweep across the grey bar
           backgroundImage:
-            "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.65) 50%, transparent 100%)",
-          animation: "medix-shimmer 1.6s ease-in-out infinite",
-          transform: "translateX(-100%)",
+            'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.65) 50%, transparent 100%)',
+          animation: 'medix-shimmer 1.6s ease-in-out infinite',
+          transform: 'translateX(-100%)',
         }}
         {...props}
       />
     );
-  }
+  },
 );
 
-Skeleton.displayName = "MedixSkeleton";
+Skeleton.displayName = 'MedixSkeleton';
 
 // ─── SkeletonText ─────────────────────────────────────────────────────────────
 
@@ -82,19 +82,14 @@ export interface SkeletonTextProps extends BoxProps {
  */
 export function SkeletonText({
   lines = 3,
-  spacing = "3",
-  lastLineWidth = "60%",
+  spacing = '3',
+  lastLineWidth = '60%',
   ...props
 }: SkeletonTextProps) {
   return (
     <Box display="flex" flexDirection="column" gap={spacing} {...props}>
       {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton
-          key={i}
-          h="3"
-          w={i === lines - 1 ? lastLineWidth : "100%"}
-          borderRadius="full"
-        />
+        <Skeleton key={i} h="3" w={i === lines - 1 ? lastLineWidth : '100%'} borderRadius="full" />
       ))}
     </Box>
   );

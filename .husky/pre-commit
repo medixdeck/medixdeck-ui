@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# Pre-commit hook — intentionally left minimal.
+# Heavy checks (format + lint) run in the pre-push hook instead,
+# keeping commits fast.

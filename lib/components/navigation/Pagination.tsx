@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
 
 // Omit onChange to avoid conflict with BoxProps (which defines onChange as FormEventHandler)
-export interface PaginationProps extends Omit<BoxProps, "onChange"> {
+export interface PaginationProps extends Omit<BoxProps, 'onChange'> {
   /** Total number of items */
   total: number;
   /** Items per page */
@@ -24,8 +24,8 @@ export interface PaginationProps extends Omit<BoxProps, "onChange"> {
 function buildPages(
   currentPage: number,
   pageCount: number,
-  siblingCount: number
-): (number | "...")[] {
+  siblingCount: number,
+): (number | '...')[] {
   const totalPageNumbers = siblingCount * 2 + 5;
 
   if (totalPageNumbers >= pageCount) {
@@ -39,30 +39,23 @@ function buildPages(
 
   if (!showLeft && showRight) {
     const leftCount = 3 + 2 * siblingCount;
-    return [
-      ...Array.from({ length: leftCount }, (_, i) => i + 1),
-      "...",
-      pageCount,
-    ];
+    return [...Array.from({ length: leftCount }, (_, i) => i + 1), '...', pageCount];
   }
 
   if (showLeft && !showRight) {
     const rightCount = 3 + 2 * siblingCount;
     return [
       1,
-      "...",
+      '...',
       ...Array.from({ length: rightCount }, (_, i) => pageCount - rightCount + 1 + i),
     ];
   }
 
   return [
     1,
-    "...",
-    ...Array.from(
-      { length: rightIdx - leftIdx + 1 },
-      (_, i) => leftIdx + i
-    ),
-    "...",
+    '...',
+    ...Array.from({ length: rightIdx - leftIdx + 1 }, (_, i) => leftIdx + i),
+    '...',
     pageCount,
   ];
 }
@@ -91,19 +84,19 @@ export function Pagination({
   const pages = buildPages(currentPage, pageCount, siblingCount);
 
   const btnBase: BoxProps = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    w: "8",
-    h: "8",
-    borderRadius: "md",
-    fontSize: "sm",
-    fontFamily: "var(--font-body)",
-    fontWeight: "semibold",
-    cursor: "pointer",
-    transition: "all 0.15s",
-    border: "none",
-    userSelect: "none",
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    w: '8',
+    h: '8',
+    borderRadius: 'md',
+    fontSize: 'sm',
+    fontFamily: 'var(--font-body)',
+    fontWeight: 'semibold',
+    cursor: 'pointer',
+    transition: 'all 0.15s',
+    border: 'none',
+    userSelect: 'none',
   };
 
   const NavBtn = ({
@@ -140,26 +133,52 @@ export function Pagination({
       bg="transparent"
       color="text.muted"
       opacity={disabled ? 0.4 : 1}
-      pointerEvents={disabled ? "none" : undefined}
+      pointerEvents={disabled ? 'none' : undefined}
       onClick={onClick}
       aria-label={label}
-      _hover={{ color: "blue.500" }}
+      _hover={{ color: 'blue.500' }}
     >
-      {!isNext && icon && <Box as="span" display="flex" alignItems="center">{icon}</Box>}
+      {!isNext && icon && (
+        <Box as="span" display="flex" alignItems="center">
+          {icon}
+        </Box>
+      )}
       {children}
-      {isNext && icon && <Box as="span" display="flex" alignItems="center">{icon}</Box>}
+      {isNext && icon && (
+        <Box as="span" display="flex" alignItems="center">
+          {icon}
+        </Box>
+      )}
     </Box>
   );
 
   const ChevronLeft = (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 18l-6-6 6-6"/>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M15 18l-6-6 6-6" />
     </svg>
   );
-  
+
   const ChevronRight = (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 18l6-6-6-6"/>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 18l6-6-6-6" />
     </svg>
   );
 
@@ -175,7 +194,12 @@ export function Pagination({
       {...props}
     >
       {showEdges && (
-        <NavBtn disabled={currentPage === 1} onClick={() => onChange?.(1)} label="First page" icon={ChevronLeft}>
+        <NavBtn
+          disabled={currentPage === 1}
+          onClick={() => onChange?.(1)}
+          label="First page"
+          icon={ChevronLeft}
+        >
           First
         </NavBtn>
       )}
@@ -190,7 +214,7 @@ export function Pagination({
 
       {!compact &&
         pages.map((page, idx) =>
-          page === "..." ? (
+          page === '...' ? (
             <Box
               key={`dots-${idx}`}
               {...btnBase}
@@ -206,24 +230,24 @@ export function Pagination({
               key={page}
               as="button"
               {...btnBase}
-              bg={currentPage === page ? "blue.500" : "blue.100"}
-              color={currentPage === page ? "white" : "blue.500"}
+              bg={currentPage === page ? 'blue.500' : 'blue.100'}
+              color={currentPage === page ? 'white' : 'blue.500'}
               _dark={{
-                bg: currentPage === page ? "blue.500" : "rgba(6, 133, 255, 0.12)",
-                color: currentPage === page ? "white" : "blue.200",
+                bg: currentPage === page ? 'blue.500' : 'rgba(6, 133, 255, 0.12)',
+                color: currentPage === page ? 'white' : 'blue.200',
               }}
               onClick={() => onChange?.(page as number)}
               aria-label={`Page ${page}`}
-              aria-current={currentPage === page ? "page" : undefined}
+              aria-current={currentPage === page ? 'page' : undefined}
               _hover={
                 currentPage !== page
-                  ? { bg: "blue.200", _dark: { bg: "rgba(6, 133, 255, 0.2)" } }
+                  ? { bg: 'blue.200', _dark: { bg: 'rgba(6, 133, 255, 0.2)' } }
                   : undefined
               }
             >
               {page}
             </Box>
-          )
+          ),
         )}
 
       {compact && (

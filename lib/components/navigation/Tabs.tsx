@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Box, Text, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, Text, type BoxProps } from '@chakra-ui/react';
 
 export interface TabItem {
   id: string;
@@ -12,20 +12,20 @@ export interface TabItem {
 }
 
 // Omit onChange to avoid conflict with BoxProps (which defines onChange as FormEventHandler)
-export interface TabsProps extends Omit<BoxProps, "onChange"> {
+export interface TabsProps extends Omit<BoxProps, 'onChange'> {
   tabs: TabItem[];
   defaultActiveId?: string;
   activeId?: string;
   onChange?: (id: string) => void;
-  variant?: "line" | "pill";
-  size?: "sm" | "md" | "lg";
+  variant?: 'line' | 'pill';
+  size?: 'sm' | 'md' | 'lg';
   renderContent?: boolean;
 }
 
 const sizeMap = {
-  sm: { px: "3", py: "1.5", fontSize: "sm" },
-  md: { px: "4", py: "2", fontSize: "md" },
-  lg: { px: "5", py: "2.5", fontSize: "lg" },
+  sm: { px: '3', py: '1.5', fontSize: 'sm' },
+  md: { px: '4', py: '2', fontSize: 'md' },
+  lg: { px: '5', py: '2.5', fontSize: 'lg' },
 };
 
 /**
@@ -46,8 +46,8 @@ export function Tabs({
   defaultActiveId,
   activeId: controlledId,
   onChange,
-  variant = "line",
-  size = "md",
+  variant = 'line',
+  size = 'md',
   renderContent = true,
   ...props
 }: TabsProps) {
@@ -67,16 +67,16 @@ export function Tabs({
       <Box
         role="tablist"
         display="flex"
-        gap={variant === "pill" ? "1" : "0"}
-        borderBottom={variant === "line" ? "1px solid" : "none"}
-        border={variant === "pill" ? "1px solid" : "none"}
+        gap={variant === 'pill' ? '1' : '0'}
+        borderBottom={variant === 'line' ? '1px solid' : 'none'}
+        border={variant === 'pill' ? '1px solid' : 'none'}
         borderColor="border"
-        bg={variant === "pill" ? "bg.subtle" : "transparent"}
-        p={variant === "pill" ? "1" : "0"}
-        borderRadius={variant === "pill" ? "full" : "none"}
+        bg={variant === 'pill' ? 'bg.subtle' : 'transparent'}
+        p={variant === 'pill' ? '1' : '0'}
+        borderRadius={variant === 'pill' ? 'full' : 'none'}
         overflowX="auto"
         flexWrap="nowrap"
-        style={{ scrollbarWidth: "none" } as React.CSSProperties}
+        style={{ scrollbarWidth: 'none' } as React.CSSProperties}
       >
         {tabs.map((tab) => {
           const isActive = tab.id === activeId;
@@ -89,63 +89,55 @@ export function Tabs({
               tabIndex={tab.disabled ? -1 : 0}
               onClick={() => !tab.disabled && handleChange(tab.id)}
               onKeyDown={(e) => {
-                if ((e.key === "Enter" || e.key === " ") && !tab.disabled) handleChange(tab.id);
+                if ((e.key === 'Enter' || e.key === ' ') && !tab.disabled) handleChange(tab.id);
               }}
               display="flex"
               alignItems="center"
               gap="2"
               justifyContent="center"
-              px={variant === "pill" ? "4" : sz.px}
-              py={variant === "pill" ? "3" : sz.py}
+              px={variant === 'pill' ? '4' : sz.px}
+              py={variant === 'pill' ? '3' : sz.py}
               fontFamily="var(--font-body)"
-              fontWeight={isActive ? "semibold" : "medium"}
-              fontSize={variant === "pill" ? "sm" : sz.fontSize}
+              fontWeight={isActive ? 'semibold' : 'medium'}
+              fontSize={variant === 'pill' ? 'sm' : sz.fontSize}
               color={
                 tab.disabled
-                  ? "text.muted"
-                  : variant === "pill"
+                  ? 'text.muted'
+                  : variant === 'pill'
                     ? isActive
-                      ? "text.heading"
-                      : "text.body"
+                      ? 'text.heading'
+                      : 'text.body'
                     : isActive
-                      ? "blue.500"
-                      : "text.body"
+                      ? 'blue.500'
+                      : 'text.body'
               }
-              cursor={tab.disabled ? "not-allowed" : "pointer"}
+              cursor={tab.disabled ? 'not-allowed' : 'pointer'}
               opacity={tab.disabled ? 0.5 : 1}
               transition="all 0.2s ease"
               whiteSpace="nowrap"
-              flex={variant === "pill" ? "1" : undefined}
-              flexShrink={variant === "pill" ? 1 : 0}
-              bg={
-                variant === "pill"
-                  ? isActive
-                    ? "bg"
-                    : "bg.surface"
-                  : "transparent"
-              }
-              borderRadius={variant === "pill" ? "full" : "none"}
+              flex={variant === 'pill' ? '1' : undefined}
+              flexShrink={variant === 'pill' ? 1 : 0}
+              bg={variant === 'pill' ? (isActive ? 'bg' : 'bg.surface') : 'transparent'}
+              borderRadius={variant === 'pill' ? 'full' : 'none'}
               boxShadow="none"
-              borderBottom={variant === "line" ? "2px solid" : "none"}
-              borderColor={
-                variant === "line" ? (isActive ? "blue.500" : "transparent") : undefined
-              }
-              mb={variant === "line" ? "-1px" : "0"}
+              borderBottom={variant === 'line' ? '2px solid' : 'none'}
+              borderColor={variant === 'line' ? (isActive ? 'blue.500' : 'transparent') : undefined}
+              mb={variant === 'line' ? '-1px' : '0'}
               _hover={
                 !tab.disabled
-                  ? variant === "line"
-                    ? { color: "blue.500" }
+                  ? variant === 'line'
+                    ? { color: 'blue.500' }
                     : {
-                        bg: isActive ? "bg" : "bg.subtle",
-                        color: isActive ? "text.heading" : "text.heading",
+                        bg: isActive ? 'bg' : 'bg.subtle',
+                        color: isActive ? 'text.heading' : 'text.heading',
                       }
                   : undefined
               }
               _focusVisible={{
-                outline: "2px solid",
-                outlineColor: "blue.500",
-                outlineOffset: "2px",
-                borderRadius: variant === "pill" ? "full" : "sm",
+                outline: '2px solid',
+                outlineColor: 'blue.500',
+                outlineOffset: '2px',
+                borderRadius: variant === 'pill' ? 'full' : 'sm',
               }}
             >
               <Text fontSize="inherit" fontWeight="inherit" color="inherit">
@@ -164,22 +156,22 @@ export function Tabs({
                   fontSize="2xs"
                   fontWeight="bold"
                   bg={
-                    variant === "pill"
+                    variant === 'pill'
                       ? isActive
-                        ? "bg.subtle"
-                        : "bg"
+                        ? 'bg.subtle'
+                        : 'bg'
                       : isActive
-                        ? "blue.100"
-                        : "bg.subtle"
+                        ? 'blue.100'
+                        : 'bg.subtle'
                   }
                   color={
-                    variant === "pill"
+                    variant === 'pill'
                       ? isActive
-                        ? "text.heading"
-                        : "text.muted"
+                        ? 'text.heading'
+                        : 'text.muted'
                       : isActive
-                        ? "blue.700"
-                        : "text.muted"
+                        ? 'blue.700'
+                        : 'text.muted'
                   }
                 >
                   {tab.badge}

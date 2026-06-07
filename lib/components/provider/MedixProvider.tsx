@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { ChakraProvider } from "@chakra-ui/react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { system } from "../../theme";
+import React from 'react';
+import { ChakraProvider } from '@chakra-ui/react';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { system } from '../../theme';
 
 export interface MedixProviderProps {
   children: React.ReactNode;
@@ -11,11 +11,11 @@ export interface MedixProviderProps {
    * Default color mode. Matches next-themes attribute.
    * @default "system"
    */
-  defaultColorMode?: "light" | "dark" | "system";
+  defaultColorMode?: 'light' | 'dark' | 'system';
   /**
    * Force a specific color mode (disables user toggle)
    */
-  forcedColorMode?: "light" | "dark";
+  forcedColorMode?: 'light' | 'dark';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -24,8 +24,8 @@ export interface MedixProviderProps {
 // support across consuming projects.
 // ─────────────────────────────────────────────────────────────────────────────
 const FONT_URLS = [
-  "https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap",
-  "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+  'https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap',
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -119,28 +119,28 @@ let stylesInjected = false;
  * Safe to call multiple times — only runs once.
  */
 function injectFonts() {
-  if (typeof document === "undefined" || fontsInjected) return;
+  if (typeof document === 'undefined' || fontsInjected) return;
 
   // Preconnect hints
   const preconnects = [
-    "https://api.fontshare.com",
-    "https://fonts.googleapis.com",
-    "https://fonts.gstatic.com",
+    'https://api.fontshare.com',
+    'https://fonts.googleapis.com',
+    'https://fonts.gstatic.com',
   ];
   preconnects.forEach((href) => {
     if (document.head.querySelector(`link[href="${href}"]`)) return;
-    const link = document.createElement("link");
-    link.rel = "preconnect";
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
     link.href = href;
-    if (href.includes("gstatic")) link.crossOrigin = "anonymous";
+    if (href.includes('gstatic')) link.crossOrigin = 'anonymous';
     document.head.appendChild(link);
   });
 
   // Font stylesheets
   FONT_URLS.forEach((href) => {
     if (document.head.querySelector(`link[href="${href}"]`)) return;
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
     link.href = href;
     document.head.appendChild(link);
   });
@@ -153,9 +153,9 @@ function injectFonts() {
  * Safe to call multiple times — only runs once.
  */
 function injectGlobalStyles() {
-  if (typeof document === "undefined" || stylesInjected) return;
-  const style = document.createElement("style");
-  style.setAttribute("data-medixdeck", "global");
+  if (typeof document === 'undefined' || stylesInjected) return;
+  const style = document.createElement('style');
+  style.setAttribute('data-medixdeck', 'global');
   style.textContent = GLOBAL_STYLES;
   // Prepend so it is overridable by app-level styles
   document.head.insertBefore(style, document.head.firstChild);
@@ -189,7 +189,7 @@ function injectGlobalStyles() {
  */
 export function MedixProvider({
   children,
-  defaultColorMode = "system",
+  defaultColorMode = 'system',
   forcedColorMode,
 }: MedixProviderProps) {
   // Run on mount — safe in SSR (typeof document guard inside each fn)

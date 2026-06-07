@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   DialogRoot,
   DialogPositioner,
@@ -12,9 +12,9 @@ import {
   DialogDescription,
   DialogCloseTrigger,
   DialogBackdrop,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-export type ModalSize = "xs" | "sm" | "md" | "lg" | "xl" | "full";
+export type ModalSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -30,15 +30,15 @@ export interface ModalProps {
 }
 
 // Chakra UI v3 DialogRoot accepts only its own size union
-type ChakraDialogSize = "sm" | "md" | "lg" | "xl" | "xs" | "full" | "cover";
+type ChakraDialogSize = 'sm' | 'md' | 'lg' | 'xl' | 'xs' | 'full' | 'cover';
 
 const sizeMap: Record<ModalSize, ChakraDialogSize> = {
-  xs: "xs",
-  sm: "sm",
-  md: "md",
-  lg: "lg",
-  xl: "xl",
-  full: "full",
+  xs: 'xs',
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+  xl: 'xl',
+  full: 'full',
 };
 
 /**
@@ -63,7 +63,7 @@ export function Modal({
   onClose,
   title,
   description,
-  size = "md",
+  size = 'md',
   closeOnOverlayClick = true,
   footer,
   children,
@@ -78,17 +78,10 @@ export function Modal({
       size={sizeMap[size]}
     >
       {/* Backdrop renders behind the dialog */}
-      <DialogBackdrop
-        bg="rgba(10, 18, 32, 0.7)"
-        backdropFilter="blur(4px)"
-      />
+      <DialogBackdrop bg="rgba(10, 18, 32, 0.7)" backdropFilter="blur(4px)" />
 
       {/* Positioner is required in Chakra v3 to portal the dialog into <body> */}
-      <DialogPositioner
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
+      <DialogPositioner display="flex" alignItems="center" justifyContent="center">
         <DialogContent
           bg="bg"
           border="1px solid"
@@ -109,7 +102,9 @@ export function Modal({
               position="relative"
             >
               {/* Title + description stacked vertically */}
-              <div style={{ display: "flex", flexDirection: "column", flex: 1, paddingRight: "2rem" }}>
+              <div
+                style={{ display: 'flex', flexDirection: 'column', flex: 1, paddingRight: '2rem' }}
+              >
                 {title && (
                   <DialogTitle
                     fontFamily="var(--font-heading)"
@@ -144,7 +139,7 @@ export function Modal({
                 justifyContent="center"
                 borderRadius="md"
                 color="text.muted"
-                _hover={{ bg: "bg.subtle", color: "text.heading" }}
+                _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
                 transition="all 0.15s"
                 aria-label="Close modal"
                 type="button"
