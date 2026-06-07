@@ -14,75 +14,75 @@
 
 ### Brand
 
-| Token | Value |
-|---|---|
-| `brand.blue` | `#0685FF` |
+| Token            | Value     |
+| ---------------- | --------- |
+| `brand.blue`     | `#0685FF` |
 | `brand.gradient` | `#1A8FFF` |
-| `brand.sky` | `#D6EEFF` |
-| `brand.purple` | `#7700CC` |
+| `brand.sky`      | `#D6EEFF` |
+| `brand.purple`   | `#7700CC` |
 | `brand.lavender` | `#EDD6FF` |
 
 ### Neutral – Light Mode
 
-| Token | Value |
-|---|---|
-| `neutral.light.bg` | `#FEFEFE` |
-| `neutral.light.bg2` | `#F6F6F6` |
+| Token                   | Value     |
+| ----------------------- | --------- |
+| `neutral.light.bg`      | `#FEFEFE` |
+| `neutral.light.bg2`     | `#F6F6F6` |
 | `neutral.light.surface` | `#F6F6F6` |
-| `neutral.light.border` | `#E4E8F0` |
-| `neutral.light.muted` | `#9AAAB8` |
+| `neutral.light.border`  | `#E4E8F0` |
+| `neutral.light.muted`   | `#9AAAB8` |
 | `neutral.light.heading` | `#111926` |
-| `neutral.light.body` | `#3D4F63` |
+| `neutral.light.body`    | `#3D4F63` |
 
 ### Neutral – Dark Mode
 
-| Token | Value |
-|---|---|
-| `neutral.dark.bg` | `#0A1220` |
-| `neutral.dark.bg2` | `#182337` |
+| Token                  | Value     |
+| ---------------------- | --------- |
+| `neutral.dark.bg`      | `#0A1220` |
+| `neutral.dark.bg2`     | `#182337` |
 | `neutral.dark.surface` | `#152035` |
-| `neutral.dark.border` | `#1E3050` |
-| `neutral.dark.muted` | `#4A6480` |
+| `neutral.dark.border`  | `#1E3050` |
+| `neutral.dark.muted`   | `#4A6480` |
 | `neutral.dark.heading` | `#F0F6FF` |
-| `neutral.dark.body` | `#ABC0D6` |
+| `neutral.dark.body`    | `#ABC0D6` |
 
 ### Status
 
-| Token | Value |
-|---|---|
-| `status.green` | `#1B7A38` |
+| Token              | Value     |
+| ------------------ | --------- |
+| `status.green`     | `#1B7A38` |
 | `status.greenTint` | `#DCFCE7` |
-| `status.amber` | `#D97706` |
+| `status.amber`     | `#D97706` |
 | `status.amberTint` | `#FEF3C7` |
-| `status.red` | `#DC2626` |
-| `status.redTint` | `#FEE2E2` |
+| `status.red`       | `#DC2626` |
+| `status.redTint`   | `#FEE2E2` |
 
 ---
 
 ## Typography Scale (Satoshi Font)
 
-| Style | Size | Weight | Line Height |
-|---|---|---|---|
-| Display | 52px | 700 | 1.1 |
-| H1 | 36px | 600 | 1.2 |
-| H2 | 28px | 600 | 1.3 |
-| H3 | 21px | 500 | 1.4 |
-| Body | 14px | 400 | 1.6 |
-| Small | 12px | 400 | — |
-| Label | 11px | 500 (caps) | — |
-| Mono/Data | 13px | 400 | — |
+| Style     | Size | Weight     | Line Height |
+| --------- | ---- | ---------- | ----------- |
+| Display   | 52px | 700        | 1.1         |
+| H1        | 36px | 600        | 1.2         |
+| H2        | 28px | 600        | 1.3         |
+| H3        | 21px | 500        | 1.4         |
+| Body      | 14px | 400        | 1.6         |
+| Small     | 12px | 400        | —           |
+| Label     | 11px | 500 (caps) | —           |
+| Mono/Data | 13px | 400        | —           |
 
 ---
 
 ## Radius & Spacing
 
-| Token | Value |
-|---|---|
-| Badge | 4px |
-| Button / Input | 8px |
-| Card | 12px |
-| Modal / Sheet | 16px |
-| Avatar / FAB | 50% |
+| Token          | Value |
+| -------------- | ----- |
+| Badge          | 4px   |
+| Button / Input | 8px   |
+| Card           | 12px  |
+| Modal / Sheet  | 16px  |
+| Avatar / FAB   | 50%   |
 
 Spacing scale: 4, 8, 12, 16, 24, 32, 48, 64
 

@@ -18,17 +18,17 @@
 
 ## 2. Tech Stack (Do Not Change These)
 
-| Layer | Technology | Version |
-| --- | --- | --- |
-| Build tool | Vite (Library Mode) | 6.x |
-| Framework | React | 18.x |
-| Language | TypeScript | 5.x |
-| Component base | Chakra UI | **v3** (not v2!) |
-| Theming | Chakra `createSystem` (Panda CSS engine) | v3 |
-| Dark mode | `next-themes` | latest |
-| Animations | `framer-motion` | **v12** (optional peer dep) |
-| Font | Satoshi (Fontshare CDN) | — |
-| Package output | ESM + CJS + `.d.ts` | — |
+| Layer          | Technology                               | Version                     |
+| -------------- | ---------------------------------------- | --------------------------- |
+| Build tool     | Vite (Library Mode)                      | 6.x                         |
+| Framework      | React                                    | 18.x                        |
+| Language       | TypeScript                               | 5.x                         |
+| Component base | Chakra UI                                | **v3** (not v2!)            |
+| Theming        | Chakra `createSystem` (Panda CSS engine) | v3                          |
+| Dark mode      | `next-themes`                            | latest                      |
+| Animations     | `framer-motion`                          | **v12** (optional peer dep) |
+| Font           | Satoshi (Fontshare CDN)                  | —                           |
+| Package output | ESM + CJS + `.d.ts`                      | —                           |
 
 > **Critical:** This project uses **Chakra UI v3**, which has a completely different API from v2. Do not use v2 patterns. See Section 5 for Chakra v3 specifics.
 
@@ -96,13 +96,13 @@ When asked to add a new component (e.g., `FileUpload`, `DateRangePicker`):
 
 2. **Follow the component template**:
 
-   ```tsx
-   "use client"; // if using state/effects
+   ````tsx
+   'use client'; // if using state/effects
 
-   import React from "react";
-   import { Box, type BoxProps, Text } from "@chakra-ui/react";
+   import React from 'react';
+   import { Box, type BoxProps, Text } from '@chakra-ui/react';
 
-   export interface MyComponentProps extends Omit<BoxProps, "onChange"> {
+   export interface MyComponentProps extends Omit<BoxProps, 'onChange'> {
      /** JSDoc every prop */
      value?: string;
      onChange?: (value: string) => void;
@@ -117,19 +117,15 @@ When asked to add a new component (e.g., `FileUpload`, `DateRangePicker`):
     * ```
     */
    export function MyComponent({ value, onChange, ...props }: MyComponentProps) {
-     return (
-       <Box {...props}>
-         {/* implementation */}
-       </Box>
-     );
+     return <Box {...props}>{/* implementation */}</Box>;
    }
-   ```
+   ````
 
 3. **Export from `lib/index.ts`**:
 
    ```ts
-   export { MyComponent } from "./components/<category>/MyComponent";
-   export type { MyComponentProps } from "./components/<category>/MyComponent";
+   export { MyComponent } from './components/<category>/MyComponent';
+   export type { MyComponentProps } from './components/<category>/MyComponent';
    ```
 
 4. **Add to the dev showcase** in `src/App.tsx` — wrap in a `<Section>` block.
@@ -204,17 +200,17 @@ import { useColorMode, useToast } from "@chakra-ui/react"; // hooks don't exist 
 
 ### Type gotchas
 
-| Gotcha | Fix |
-| --- | --- |
-| `Box as="img"` doesn't accept `src` | Use native `<img>` with inline `style` |
-| `Box as="label"` doesn't accept `htmlFor` | Use native `<label>` with inline `style` |
-| `interface Foo extends BoxProps {}` where `Foo` has `onChange?: (val: string)` | Use `Omit<BoxProps, "onChange">` to avoid `FormEventHandler` conflict |
-| `sx` prop doesn't exist | Inject keyframes via `document.createElement("style")` or use `animation` prop directly |
+| Gotcha                                                                                         | Fix                                                                                                        |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---- | -------------- |
+| `Box as="img"` doesn't accept `src`                                                            | Use native `<img>` with inline `style`                                                                     |
+| `Box as="label"` doesn't accept `htmlFor`                                                      | Use native `<label>` with inline `style`                                                                   |
+| `interface Foo extends BoxProps {}` where `Foo` has `onChange?: (val: string)`                 | Use `Omit<BoxProps, "onChange">` to avoid `FormEventHandler` conflict                                      |
+| `sx` prop doesn't exist                                                                        | Inject keyframes via `document.createElement("style")` or use `animation` prop directly                    |
 | `AvatarProps`, `TooltipProps`, `CheckboxProps`, `SwitchProps`, `NativeSelectProps` don't exist | Use `AvatarRootProps`, `TooltipRootProps`, `CheckboxRootProps`, `SwitchRootProps`, `NativeSelectRootProps` |
-| `ChakraAvatar.Group` doesn't exist in v3 | Build manual stacking with `Box` |
-| `variant` / `size` type mismatch on Chakra components | Define explicit typed constants e.g. `const sizeMap: Record<..., "xs" | "sm" | "md"> = {...}` |
-| `globalCss` doesn't accept `@import` | Define `--font-*` CSS vars in MedixProvider's injected `<style>` block |
-| `WebkitFontSmoothing` in `globalCss` | Cast as `SystemStyleObject` or use lowercase `-webkit-font-smoothing` |
+| `ChakraAvatar.Group` doesn't exist in v3                                                       | Build manual stacking with `Box`                                                                           |
+| `variant` / `size` type mismatch on Chakra components                                          | Define explicit typed constants e.g. `const sizeMap: Record<..., "xs"                                      | "sm" | "md"> = {...}` |
+| `globalCss` doesn't accept `@import`                                                           | Define `--font-*` CSS vars in MedixProvider's injected `<style>` block                                     |
+| `WebkitFontSmoothing` in `globalCss`                                                           | Cast as `SystemStyleObject` or use lowercase `-webkit-font-smoothing`                                      |
 
 ### Font loading
 
@@ -226,7 +222,7 @@ import { useColorMode, useToast } from "@chakra-ui/react"; // hooks don't exist 
 
 ```tsx
 useEffect(() => {
-  document.documentElement.classList.toggle("dark", colorMode === "dark");
+  document.documentElement.classList.toggle('dark', colorMode === 'dark');
 }, [colorMode]);
 ```
 
@@ -248,36 +244,36 @@ Applying `className="dark"` on a `<Box>` that doesn't wrap sticky / portalled co
 
 ### Brand colors (semantic tokens available)
 
-| Token | Value |
-| --- | --- |
-| `blue.500` | #0685FF (Primary) |
-| `purple.500` | #7700CC (Secondary) |
-| `bg` | Background (light: #FEFEFE, dark: #0A1220) |
-| `bg.surface` | Surface (light: #F6F6F6, dark: #152035) |
-| `bg.subtle` | Subtle bg (light: #F0F4F8, dark: #0F1C2E) |
-| `text.heading` | #111926 / #F5F6F8 |
-| `text.body` | #374151 / #CBD5E1 |
-| `text.muted` | #6B7280 / #94A3B8 |
-| `border` | #E2E8F0 / #1E3554 |
+| Token          | Value                                      |
+| -------------- | ------------------------------------------ |
+| `blue.500`     | #0685FF (Primary)                          |
+| `purple.500`   | #7700CC (Secondary)                        |
+| `bg`           | Background (light: #FEFEFE, dark: #0A1220) |
+| `bg.surface`   | Surface (light: #F6F6F6, dark: #152035)    |
+| `bg.subtle`    | Subtle bg (light: #F0F4F8, dark: #0F1C2E)  |
+| `text.heading` | #111926 / #F5F6F8                          |
+| `text.body`    | #374151 / #CBD5E1                          |
+| `text.muted`   | #6B7280 / #94A3B8                          |
+| `border`       | #E2E8F0 / #1E3554                          |
 
 ### Typography
 
 Always use one of:
 
 ```tsx
-fontFamily="var(--font-body)"      // body text, labels, helper text
-fontFamily="var(--font-heading)"   // headings, card titles, nav items
+fontFamily = 'var(--font-body)'; // body text, labels, helper text
+fontFamily = 'var(--font-heading)'; // headings, card titles, nav items
 ```
 
 ### Spacing and Radius
 
-| Token | Value | Use for |
-| --- | --- | --- |
-| `borderRadius="card"` | 12px | Cards, containers |
-| `borderRadius="modal"` | 16px | Modals, drawers |
-| `borderRadius="badge"` | 4px | Badges, tags |
-| `borderRadius="md"` | 8px | Buttons, inputs |
-| `borderRadius="full"` | 9999px | Avatars, pills |
+| Token                  | Value  | Use for           |
+| ---------------------- | ------ | ----------------- |
+| `borderRadius="card"`  | 12px   | Cards, containers |
+| `borderRadius="modal"` | 16px   | Modals, drawers   |
+| `borderRadius="badge"` | 4px    | Badges, tags      |
+| `borderRadius="md"`    | 8px    | Buttons, inputs   |
+| `borderRadius="full"`  | 9999px | Avatars, pills    |
 
 ---
 
@@ -351,22 +347,22 @@ The dev preview (`src/App.tsx`) showcases every component. When you add a new co
 
 ## 11. Anti-Patterns to Avoid
 
-| ❌ Don't | ✅ Do instead |
-| --- | --- |
-| Add components to `src/` as library files | Add to `lib/components/` |
-| Forget to export from `lib/index.ts` | Always export both value and type |
-| Use raw hex colors | Use semantic tokens |
-| Use `Box as="img"` with `src` | Use native `<img>` with `style` |
-| Use `Box as="label"` with `htmlFor` | Use native `<label>` with `style` |
-| Extend `BoxProps` when adding `onChange`, `size`, `columns` | `Omit<BoxProps, "onChange" \| "size">` first |
-| Use `sx` prop | Inject keyframes via `document.createElement("style")` |
-| Import from v2 Chakra API | Use Chakra v3 compound API |
-| Leave build errors | Fix all before committing |
-| Write components that import from `src/` | Only import from `lib/` |
-| Apply `className="dark"` on an inner `<Box>` | Apply on `document.documentElement` so all components including Navbar get dark mode |
-| Add font `<link>` tags in consuming project's `<head>` | `MedixProvider` injects them automatically — nothing needed in host HTML |
+| ❌ Don't                                                                        | ✅ Do instead                                                                                                       |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Add components to `src/` as library files                                       | Add to `lib/components/`                                                                                            |
+| Forget to export from `lib/index.ts`                                            | Always export both value and type                                                                                   |
+| Use raw hex colors                                                              | Use semantic tokens                                                                                                 |
+| Use `Box as="img"` with `src`                                                   | Use native `<img>` with `style`                                                                                     |
+| Use `Box as="label"` with `htmlFor`                                             | Use native `<label>` with `style`                                                                                   |
+| Extend `BoxProps` when adding `onChange`, `size`, `columns`                     | `Omit<BoxProps, "onChange" \| "size">` first                                                                        |
+| Use `sx` prop                                                                   | Inject keyframes via `document.createElement("style")`                                                              |
+| Import from v2 Chakra API                                                       | Use Chakra v3 compound API                                                                                          |
+| Leave build errors                                                              | Fix all before committing                                                                                           |
+| Write components that import from `src/`                                        | Only import from `lib/`                                                                                             |
+| Apply `className="dark"` on an inner `<Box>`                                    | Apply on `document.documentElement` so all components including Navbar get dark mode                                |
+| Add font `<link>` tags in consuming project's `<head>`                          | `MedixProvider` injects them automatically — nothing needed in host HTML                                            |
 | Use Chakra `colorPalette` for interactive components (Button, Checkbox, Switch) | Build as native HTML with explicit brand hex values — Chakra recipe engine leaks default blue in hover/focus states |
-| Use string easing in Framer Motion v12 (`ease: "easeOut"`) | Use bezier tuples: `[0.0, 0.0, 0.2, 1.0] as [number,number,number,number]` |
+| Use string easing in Framer Motion v12 (`ease: "easeOut"`)                      | Use bezier tuples: `[0.0, 0.0, 0.2, 1.0] as [number,number,number,number]`                                          |
 
 ---
 
@@ -426,17 +422,17 @@ import { Button, Navbar, DoctorCard, Logo } from "@medixdeck/ui";
 
 ## 13. Component Conventions Summary
 
-| Convention | Rule |
-| --- | --- |
-| File naming | `PascalCase.tsx` |
-| Export style | Named exports only (no default exports from lib) |
-| Props interface | `ComponentNameProps` |
-| Forwarded refs | Use `React.forwardRef` only when necessary (inputs, etc.) |
-| Display names | Set `ComponentName.displayName = "MedixComponentName"` |
-| "use client" | Include at top of files using React state/effects |
+| Convention        | Rule                                                                        |
+| ----------------- | --------------------------------------------------------------------------- |
+| File naming       | `PascalCase.tsx`                                                            |
+| Export style      | Named exports only (no default exports from lib)                            |
+| Props interface   | `ComponentNameProps`                                                        |
+| Forwarded refs    | Use `React.forwardRef` only when necessary (inputs, etc.)                   |
+| Display names     | Set `ComponentName.displayName = "MedixComponentName"`                      |
+| "use client"      | Include at top of files using React state/effects                           |
 | Color prop naming | Use `colorScheme` in our API → maps to `colorPalette` internally for Chakra |
-| Size prop | Use `xs \| sm \| md \| lg` in our API → map to Chakra's internal sizes |
-| Variant prop | Use human-friendly names (`solid`, `outline`, `ghost`) → map internally |
+| Size prop         | Use `xs \| sm \| md \| lg` in our API → map to Chakra's internal sizes      |
+| Variant prop      | Use human-friendly names (`solid`, `outline`, `ghost`) → map internally     |
 
 ---
 
@@ -454,13 +450,13 @@ import { Button, Navbar, DoctorCard, Logo } from "@medixdeck/ui";
 
 Chakra UI v3's internal recipe engine leaks default blue (`#3B82F6`) in interactive states (hover, active, checked ring) even when semantic token overrides are applied. To guarantee 100% MedixDeck brand fidelity, **core interactive components are built as native HTML elements**:
 
-| Component | Implementation |
-| --- | --- |
-| `Button` / `IconButton` | Native `<button>` with inline style, brand hex hover/active states |
-| `Checkbox` | Native `<input type="checkbox">` with custom visual control overlay |
-| `RadioGroup` | Native `<input type="radio">` per option with custom indicator |
-| `Switch` | Native `role="switch"` with animated track + thumb |
-| `Badge` | Pure `<span>` with semantic color map — no Chakra recipe |
+| Component               | Implementation                                                      |
+| ----------------------- | ------------------------------------------------------------------- |
+| `Button` / `IconButton` | Native `<button>` with inline style, brand hex hover/active states  |
+| `Checkbox`              | Native `<input type="checkbox">` with custom visual control overlay |
+| `RadioGroup`            | Native `<input type="radio">` per option with custom indicator      |
+| `Switch`                | Native `role="switch"` with animated track + thumb                  |
+| `Badge`                 | Pure `<span>` with semantic color map — no Chakra recipe            |
 
 ### Pattern for new interactive components
 
@@ -472,8 +468,8 @@ When adding any new interactive component that has **checked / selected / active
 
 ```tsx
 const COLORS = {
-  blue:   { base: "#0685FF", hover: "#057AE8", ring: "rgba(6,133,255,0.2)" },
-  purple: { base: "#7700CC", hover: "#6600B3", ring: "rgba(119,0,204,0.2)" },
+  blue: { base: '#0685FF', hover: '#057AE8', ring: 'rgba(6,133,255,0.2)' },
+  purple: { base: '#7700CC', hover: '#6600B3', ring: 'rgba(119,0,204,0.2)' },
   // ...
 } as const;
 ```
