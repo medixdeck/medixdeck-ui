@@ -2,10 +2,16 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import { resolve } from "path";
+import fs from "fs";
+
+const packageJson = JSON.parse(fs.readFileSync(resolve(__dirname, "package.json"), "utf-8"));
 
 const isStorybook = process.argv.includes("storybook") || process.env.npm_lifecycle_event?.includes("storybook");
 
 export default defineConfig({
+  define: {
+    "import.meta.env.PACKAGE_VERSION": JSON.stringify(packageJson.version),
+  },
   plugins: [
     react(),
     !isStorybook && dts({

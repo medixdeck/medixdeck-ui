@@ -4,7 +4,22 @@ import { Box, Link, Text } from "@chakra-ui/react";
 import { useThemeMode } from "../lib";
 import { LuHouse, LuStethoscope, LuFileText, LuMessageCircle, LuUser, LuWallet } from "react-icons/lu";
 
-const PREVIEW_COMPONENT_COUNT = 45;
+import * as MedixUI from "../lib";
+
+// @ts-expect-error vite env variable
+const PACKAGE_VERSION = import.meta.env.PACKAGE_VERSION ?? "0.0.0";
+
+const PREVIEW_COMPONENT_COUNT = Object.keys(MedixUI).filter((key) => {
+  // Only count exported components (capitalized names)
+  if (!/^[A-Z]/.test(key)) return false;
+  // Exclude raw Chakra UI primitive re-exports
+  const chakraExports = [
+    "Box", "Flex", "Grid", "GridItem", "Stack", "VStack", "HStack", 
+    "SimpleGrid", "Text", "Heading", "Link", "Image", "Icon", "Center", 
+    "Wrap", "WrapItem"
+  ];
+  return !chakraExports.includes(key);
+}).length;
 
 // Primitives
 import { Button } from "../lib/components/primitive/Button";
@@ -296,7 +311,7 @@ export default function App() {
                 </Link>
               </Text>
               <Text fontSize="md" color="text.muted" mt="1" fontFamily="var(--font-body)">
-                Component Library Preview · v0.1.16 · {PREVIEW_COMPONENT_COUNT} components
+                Component Library Preview · v{PACKAGE_VERSION} · {PREVIEW_COMPONENT_COUNT} components
               </Text>
               <Text fontSize="sm" color="text.muted" mt="2" fontFamily="var(--font-body)">
                 Theme hooks: resolved <strong>{mounted ? themeMode : "light"}</strong> · preference{" "}
@@ -1463,7 +1478,7 @@ export default function App() {
           >
             @medixdeck/ui
           </Link>{" "}
-          · v0.1.16 · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
+          · v{PACKAGE_VERSION} · Built with Chakra UI v3 + Vite · Satoshi font · {PREVIEW_COMPONENT_COUNT} components · With
           {" "}
           ⚡ by{" "}
           <Link
