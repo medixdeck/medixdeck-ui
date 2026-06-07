@@ -29,7 +29,7 @@ export interface FooterSection {
 }
 
 export interface SocialLink {
-  platform: "facebook" | "instagram" | "linkedin" | "twitter" | "youtube" | "threads";
+  platform: "facebook" | "instagram" | "linkedin" | "twitter" | "youtube" | "threads" | "whatsapp";
   href: string;
 }
 
@@ -185,6 +185,14 @@ const SocialIcons = (iconColor: string) => ({
       </defs>
     </svg>
   ),
+  whatsapp: (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="26" height="26" rx="5" fill={iconColor} />
+      <g transform="translate(5.5, 5.5) scale(0.625)">
+        <path d="M13.601 2.326A10.454 10.454 0 0 0 3.17 12.784c0 1.896.496 3.743 1.442 5.378L3 24l5.968-1.564a10.428 10.428 0 0 0 4.633 1.082c5.76 0 10.44-4.683 10.44-10.446a10.45 10.45 0 0 0-10.44-10.746zm0 17.584c-1.579 0-3.125-.425-4.48-1.228l-.322-.191-3.332.874.887-3.25-.21-.334A8.75 8.75 0 0 1 4.843 12.78c0-4.832 3.93-8.766 8.761-8.766 2.342 0 4.542.912 6.196 2.569 1.654 1.657 2.566 3.86 2.566 6.205 0 4.836-3.931 8.769-8.765 8.769zm4.811-6.577c-.264-.132-1.564-.772-1.807-.86-.242-.088-.419-.132-.596.132-.176.264-.683.86-.838 1.036-.154.176-.309.198-.573.066-1.545-.774-2.73-1.874-3.593-3.32-.11-.186.11-.176.368-.693.088-.176.044-.33-.022-.462-.066-.132-.596-1.436-.816-1.966-.214-.515-.433-.445-.596-.453-.154-.008-.33-.01-.507-.01-.176 0-.463.066-.705.33-.242.264-.925.904-.925 2.204 0 1.3.947 2.556 1.08 2.732.132.176 1.862 2.844 4.512 3.987 1.84.795 2.52.848 3.424.717.925-.134 2.835-1.157 3.232-2.274.396-1.117.396-2.072.275-2.274-.12-.202-.44-.323-.705-.455z" fill="white" />
+      </g>
+    </svg>
+  ),
 });
 
 const defaultDescription = "Nigeria's leading digital platform for specialist healthcare. Bridging the gap between expert care and patient convenience.";
@@ -219,6 +227,7 @@ const defaultSections: FooterSection[] = [
 const defaultSocialLinks: SocialLink[] = [
   { platform: "instagram", href: "https://instagram.com/medixdeck" },
   { platform: "twitter", href: "https://twitter.com/medixdeck" },
+  { platform: "whatsapp", href: "https://chat.whatsapp.com/GZGcTWtpVHHKUIKzJz3owC" },
   { platform: "threads", href: "https://threads.net/@medixdeck" },
   { platform: "facebook", href: "https://facebook.com/medixdeck" },
   { platform: "youtube", href: "https://youtube.com/medixdeck" },
