@@ -1,20 +1,20 @@
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
 
 // ─── Container ───────────────────────────────────────────────────────────────
 
 export interface ContainerProps extends BoxProps {
   /** Max width preset */
-  maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "full";
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 }
 
 const maxWidthMap = {
-  sm: "640px",
-  md: "768px",
-  lg: "1024px",
-  xl: "1280px",
-  "2xl": "1440px",
-  full: "100%",
+  sm: '640px',
+  md: '768px',
+  lg: '1024px',
+  xl: '1280px',
+  '2xl': '1440px',
+  full: '100%',
 };
 
 /**
@@ -30,23 +30,23 @@ const maxWidthMap = {
  * ```
  */
 export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
-  ({ maxWidth = "xl", children, ...props }, ref) => {
+  ({ maxWidth = 'xl', children, ...props }, ref) => {
     return (
       <Box
         ref={ref}
         w="100%"
         maxW={maxWidthMap[maxWidth]}
         mx="auto"
-        px={{ base: "4", md: "6", lg: "8" }}
+        px={{ base: '4', md: '6', lg: '8' }}
         {...props}
       >
         {children}
       </Box>
     );
-  }
+  },
 );
 
-Container.displayName = "MedixContainer";
+Container.displayName = 'MedixContainer';
 
 // ─── SectionHeader ────────────────────────────────────────────────────────────
 
@@ -58,7 +58,7 @@ export interface SectionHeaderProps extends BoxProps {
   /** Description / subtitle */
   description?: string;
   /** Alignment */
-  align?: "left" | "center" | "right";
+  align?: 'left' | 'center' | 'right';
   /** Action slot (button) */
   action?: React.ReactNode;
   /** Eyebrow color */
@@ -83,14 +83,13 @@ export function SectionHeader({
   eyebrow,
   title,
   description,
-  align = "center",
+  align = 'center',
   action,
-  eyebrowColor = "blue.500",
+  eyebrowColor = 'blue.500',
   ...props
 }: SectionHeaderProps) {
-  const textAlign = align as "left" | "center" | "right";
-  const alignItems =
-    align === "center" ? "center" : align === "right" ? "flex-end" : "flex-start";
+  const textAlign = align as 'left' | 'center' | 'right';
+  const alignItems = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
 
   return (
     <Box
@@ -116,12 +115,12 @@ export function SectionHeader({
       )}
       <Box
         as="h2"
-        fontSize={{ base: "3xl", md: "4xl" }}
+        fontSize={{ base: '3xl', md: '4xl' }}
         fontWeight="semibold"
         color="text.heading"
         fontFamily="var(--font-heading)"
         lineHeight="snug"
-        maxW={align === "center" ? "720px" : undefined}
+        maxW={align === 'center' ? '720px' : undefined}
       >
         {title}
       </Box>
@@ -132,7 +131,7 @@ export function SectionHeader({
           color="text.body"
           fontFamily="var(--font-body)"
           lineHeight="loose"
-          maxW={align === "center" ? "640px" : undefined}
+          maxW={align === 'center' ? '640px' : undefined}
         >
           {description}
         </Box>

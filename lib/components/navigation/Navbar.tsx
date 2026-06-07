@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
-import { Button } from "../primitive/Button";
-import { Logo } from "../primitive/Logo";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { Button } from '../primitive/Button';
+import { Logo } from '../primitive/Logo';
 
 // ─── Bezier easing presets (Framer Motion v12 requires tuples, not strings) ───
 const EASE_OUT = [0.0, 0.0, 0.2, 1.0] as [number, number, number, number];
@@ -15,9 +15,21 @@ const EASE_SPRING = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 /** Mobile menu panel — slides down from the navbar edge */
 const menuVariants: Variants = {
-  hidden: { opacity: 0, y: -8, scaleY: 0.96, transformOrigin: "top" },
-  visible: { opacity: 1, y: 0, scaleY: 1, transformOrigin: "top", transition: { duration: 0.22, ease: EASE_SPRING } },
-  exit: { opacity: 0, y: -6, scaleY: 0.97, transformOrigin: "top", transition: { duration: 0.16, ease: EASE_IN } },
+  hidden: { opacity: 0, y: -8, scaleY: 0.96, transformOrigin: 'top' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scaleY: 1,
+    transformOrigin: 'top',
+    transition: { duration: 0.22, ease: EASE_SPRING },
+  },
+  exit: {
+    opacity: 0,
+    y: -6,
+    scaleY: 0.97,
+    transformOrigin: 'top',
+    transition: { duration: 0.16, ease: EASE_IN },
+  },
 };
 
 /** Stagger container for mobile nav links */
@@ -40,18 +52,39 @@ const ctaVariants: Variants = {
 
 // ─── Color scheme map ────────────────────────────────────────────────────────
 
-export type NavbarColorScheme = "blue" | "purple";
+export type NavbarColorScheme = 'blue' | 'purple';
 
-const NAVBAR_COLORS: Record<NavbarColorScheme, { solid: string; hover: string; hoverBg: string; hoverBgDark: string }> = {
-  blue: { solid: "#0685FF", hover: "#0685FF", hoverBg: "blue.50", hoverBgDark: "rgba(6,133,255,0.10)" },
-  purple: { solid: "#7700CC", hover: "#7700CC", hoverBg: "purple.50", hoverBgDark: "rgba(119,0,204,0.10)" },
+const NAVBAR_COLORS: Record<
+  NavbarColorScheme,
+  { solid: string; hover: string; hoverBg: string; hoverBgDark: string }
+> = {
+  blue: {
+    solid: '#0685FF',
+    hover: '#0685FF',
+    hoverBg: 'blue.50',
+    hoverBgDark: 'rgba(6,133,255,0.10)',
+  },
+  purple: {
+    solid: '#7700CC',
+    hover: '#7700CC',
+    hoverBg: 'purple.50',
+    hoverBgDark: 'rgba(119,0,204,0.10)',
+  },
 };
 
 // ─── Inline SVG icons ─────────────────────────────────────────────────────────
 
 const ArrowIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <line x1="7" y1="17" x2="17" y2="7" />
     <polyline points="7 7 17 7 17 17" />
   </svg>
@@ -61,9 +94,27 @@ function HamburgerIcon({ color }: { color: string }) {
   return (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="32" height="32" rx="8" fill={color} />
-      <path d="M9.25 10.75H22.75" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9.25 16H22.75" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9.25 21.25H22.75" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M9.25 10.75H22.75"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.25 16H22.75"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.25 21.25H22.75"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -89,7 +140,7 @@ export interface NavItem {
   children?: NavItem[];
 }
 
-export interface NavbarProps extends Omit<BoxProps, "children"> {
+export interface NavbarProps extends Omit<BoxProps, 'children'> {
   /** Logo element. Defaults to `<Logo />` when omitted. */
   logo?: React.ReactNode;
 
@@ -100,7 +151,7 @@ export interface NavbarProps extends Omit<BoxProps, "children"> {
    * Alignment of the navigation items on desktop.
    * @default "center"
    */
-  navItemsAlign?: "left" | "center" | "right";
+  navItemsAlign?: 'left' | 'center' | 'right';
 
   /**
    * Custom link renderer — lets you integrate React Router, Next.js `<Link>`, etc.
@@ -186,13 +237,13 @@ export interface NavbarProps extends Omit<BoxProps, "children"> {
    * - `"transparent"` — fully transparent (e.g. over a hero image)
    * - `"blur"` — frosted-glass dark overlay
    */
-  variant?: "solid" | "transparent" | "blur";
+  variant?: 'solid' | 'transparent' | 'blur';
 }
 
 // ─── Default link renderer ────────────────────────────────────────────────────
 
 const defaultRenderLink = (item: NavItem, children: React.ReactNode) => (
-  <a href={item.href} style={{ textDecoration: "none" }}>
+  <a href={item.href} style={{ textDecoration: 'none' }}>
     {children}
   </a>
 );
@@ -212,7 +263,12 @@ function MaybeLink({
 }) {
   if (!href) return <>{children}</>;
   return (
-    <a href={href} target={target} rel={rel} style={{ textDecoration: "none", display: "contents" }}>
+    <a
+      href={href}
+      target={target}
+      rel={rel}
+      style={{ textDecoration: 'none', display: 'contents' }}
+    >
       {children}
     </a>
   );
@@ -293,8 +349,8 @@ function MaybeLink({
 export function Navbar({
   logo,
   navItems = [],
-  navItemsAlign = "center",
-  ctaLabel = "Get Started",
+  navItemsAlign = 'center',
+  ctaLabel = 'Get Started',
   ctaHref,
   onCtaClick,
   ctaIconHref,
@@ -305,8 +361,8 @@ export function Navbar({
   ctaSlot,
   renderLink = defaultRenderLink,
   isSticky = false,
-  colorScheme = "blue",
-  variant = "solid",
+  colorScheme = 'blue',
+  variant = 'solid',
   ...props
 }: NavbarProps) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -318,48 +374,47 @@ export function Navbar({
 
   // Background
   const bgStyle: React.CSSProperties =
-    variant === "blur"
-      ? { background: "rgba(10,18,32,0.85)", backdropFilter: "blur(12px)" }
-      : {};
+    variant === 'blur' ? { background: 'rgba(10,18,32,0.85)', backdropFilter: 'blur(12px)' } : {};
 
   // ── Default CTA group ───────────────────────────────────────────────────────
   const DefaultCtaGroup = ({ mobile = false }: { mobile?: boolean }) => (
-    <Box
-      display="flex"
-      gap="2"
-      alignItems="center"
-      flexDirection={mobile ? "column" : "row"}
-    >
+    <Box display="flex" gap="2" alignItems="center" flexDirection={mobile ? 'column' : 'row'}>
       {secondaryCtaLabel && (
         <Button
-          as={secondaryCtaHref ? "a" : "button"}
+          as={secondaryCtaHref ? 'a' : 'button'}
           href={secondaryCtaHref}
-          variant={mobile ? "outline" : "ghost"}
+          variant={mobile ? 'outline' : 'ghost'}
           colorScheme={colorScheme}
-          size={mobile ? "md" : "sm"}
-          onClick={() => { onSecondaryCtaClick?.(); if (mobile) setIsOpen(false); }}
-          style={mobile ? { width: "100%" } : undefined}
+          size={mobile ? 'md' : 'sm'}
+          onClick={() => {
+            onSecondaryCtaClick?.();
+            if (mobile) setIsOpen(false);
+          }}
+          style={mobile ? { width: '100%' } : undefined}
         >
           {secondaryCtaLabel}
         </Button>
       )}
       <Button
-        as={ctaHref ? "a" : "button"}
+        as={ctaHref ? 'a' : 'button'}
         href={ctaHref}
         variant="solid"
         colorScheme={colorScheme}
-        size={mobile ? "md" : "sm"}
-        onClick={() => { onCtaClick?.(); if (mobile) setIsOpen(false); }}
-        style={mobile ? { width: "100%" } : undefined}
+        size={mobile ? 'md' : 'sm'}
+        onClick={() => {
+          onCtaClick?.();
+          if (mobile) setIsOpen(false);
+        }}
+        style={mobile ? { width: '100%' } : undefined}
       >
         {ctaLabel}
       </Button>
       {!mobile && (
         <Button
-          as={resolvedIconHref ? "a" : "button"}
+          as={resolvedIconHref ? 'a' : 'button'}
           href={resolvedIconHref}
-          target={resolvedIconHref && resolvedIconHref !== ctaHref ? "_blank" : undefined}
-          rel={resolvedIconHref && resolvedIconHref !== ctaHref ? "noopener noreferrer" : undefined}
+          target={resolvedIconHref && resolvedIconHref !== ctaHref ? '_blank' : undefined}
+          rel={resolvedIconHref && resolvedIconHref !== ctaHref ? 'noopener noreferrer' : undefined}
           variant="solid"
           colorScheme={colorScheme}
           size="sm"
@@ -378,13 +433,13 @@ export function Navbar({
       as="nav"
       role="navigation"
       aria-label="Main navigation"
-      position={isSticky ? "sticky" : "relative"}
-      top={isSticky ? "0" : undefined}
-      zIndex={isSticky ? "sticky" : undefined}
-      bg={variant === "transparent" ? "transparent" : variant === "blur" ? undefined : "bg"}
+      position={isSticky ? 'sticky' : 'relative'}
+      top={isSticky ? '0' : undefined}
+      zIndex={isSticky ? 'sticky' : undefined}
+      bg={variant === 'transparent' ? 'transparent' : variant === 'blur' ? undefined : 'bg'}
       style={bgStyle}
       borderBottom="1px solid"
-      borderColor={variant === "transparent" ? "transparent" : "border"}
+      borderColor={variant === 'transparent' ? 'transparent' : 'border'}
       transition="background 0.2s ease, border-color 0.2s ease"
       {...props}
     >
@@ -392,7 +447,7 @@ export function Navbar({
       <Box
         maxW="1280px"
         mx="auto"
-        px={{ base: "4", md: "6", lg: "8" }}
+        px={{ base: '4', md: '6', lg: '8' }}
         h="16"
         display="flex"
         alignItems="center"
@@ -401,16 +456,20 @@ export function Navbar({
       >
         {/* Logo */}
         <Box flexShrink={0}>
-          {logo ?? <Logo variant={colorScheme === "blue" ? "blue" : "purple"} height={28} />}
+          {logo ?? <Logo variant={colorScheme === 'blue' ? 'blue' : 'purple'} height={28} />}
         </Box>
 
         {/* ── Desktop nav links ─────────────────────────────────────────────── */}
         <Box
           as="ul"
-          display={{ base: "none", md: "flex" }}
+          display={{ base: 'none', md: 'flex' }}
           alignItems="center"
           justifyContent={
-            navItemsAlign === "left" ? "flex-start" : navItemsAlign === "right" ? "flex-end" : "center"
+            navItemsAlign === 'left'
+              ? 'flex-start'
+              : navItemsAlign === 'right'
+                ? 'flex-end'
+                : 'center'
           }
           gap="1"
           listStyleType="none"
@@ -430,7 +489,7 @@ export function Navbar({
                   fontSize="sm"
                   fontWeight="medium"
                   fontFamily="var(--font-body)"
-                  color={item.isActive ? scheme.hover : "text.body"}
+                  color={item.isActive ? scheme.hover : 'text.body'}
                   borderRadius="md"
                   transition="all 0.15s"
                   _hover={{ color: scheme.hover, bg: scheme.hoverBg }}
@@ -438,21 +497,21 @@ export function Navbar({
                   cursor="pointer"
                 >
                   {item.label}
-                </Box>
+                </Box>,
               )}
             </Box>
           ))}
         </Box>
 
         {/* ── Desktop CTA ───────────────────────────────────────────────────── */}
-        <Box display={{ base: "none", md: "flex" }} alignItems="center" flexShrink={0}>
+        <Box display={{ base: 'none', md: 'flex' }} alignItems="center" flexShrink={0}>
           {ctaSlot ?? <DefaultCtaGroup />}
         </Box>
 
         {/* ── Mobile hamburger / close — animated crossfade ─────────────────── */}
         <Box
           as="button"
-          display={{ base: "flex", md: "none" }}
+          display={{ base: 'flex', md: 'none' }}
           alignItems="center"
           justifyContent="center"
           border="none"
@@ -460,9 +519,9 @@ export function Navbar({
           p="0"
           cursor="pointer"
           onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? "Close menu" : "Open menu"}
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
-          style={{ flexShrink: 0, position: "relative", width: 32, height: 32 }}
+          style={{ flexShrink: 0, position: 'relative', width: 32, height: 32 }}
         >
           <AnimatePresence mode="wait" initial={false}>
             {isOpen ? (
@@ -471,8 +530,14 @@ export function Navbar({
                 initial={{ opacity: 0, rotate: -45, scale: 0.7 }}
                 animate={{ opacity: 1, rotate: 0, scale: 1 }}
                 exit={{ opacity: 0, rotate: 45, scale: 0.7 }}
-                transition={{ duration: 0.18, ease: "easeOut" }}
-                style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
                 <CloseIcon color={scheme.solid} />
               </motion.span>
@@ -482,8 +547,14 @@ export function Navbar({
                 initial={{ opacity: 0, rotate: 45, scale: 0.7 }}
                 animate={{ opacity: 1, rotate: 0, scale: 1 }}
                 exit={{ opacity: 0, rotate: -45, scale: 0.7 }}
-                transition={{ duration: 0.18, ease: "easeOut" }}
-                style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
                 <HamburgerIcon color={scheme.solid} />
               </motion.span>
@@ -501,10 +572,10 @@ export function Navbar({
             initial="hidden"
             animate="visible"
             exit="exit"
-            style={{ overflow: "hidden" }}
+            style={{ overflow: 'hidden' }}
           >
             <Box
-              display={{ base: "block", md: "none" }}
+              display={{ base: 'block', md: 'none' }}
               bg="bg"
               borderTop="1px solid"
               borderColor="border"
@@ -516,7 +587,14 @@ export function Navbar({
                 variants={linkListVariants}
                 initial="hidden"
                 animate="visible"
-                style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 4 }}
+                style={{
+                  listStyle: 'none',
+                  margin: 0,
+                  padding: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 4,
+                }}
               >
                 {navItems.map((item) => (
                   <motion.li key={item.href} variants={linkItemVariants}>
@@ -530,14 +608,14 @@ export function Navbar({
                         fontSize="md"
                         fontWeight="medium"
                         fontFamily="var(--font-body)"
-                        color={item.isActive ? scheme.hover : "text.body"}
+                        color={item.isActive ? scheme.hover : 'text.body'}
                         borderRadius="md"
-                        _hover={{ color: scheme.hover, bg: "bg.subtle" }}
+                        _hover={{ color: scheme.hover, bg: 'bg.subtle' }}
                         cursor="pointer"
                         onClick={() => setIsOpen(false)}
                       >
                         {item.label}
-                      </Box>
+                      </Box>,
                     )}
                   </motion.li>
                 ))}
@@ -545,9 +623,7 @@ export function Navbar({
 
               {/* Animated CTA area */}
               <motion.div variants={ctaVariants} initial="hidden" animate="visible">
-                <Box mt="4">
-                  {ctaSlot ?? <DefaultCtaGroup mobile />}
-                </Box>
+                <Box mt="4">{ctaSlot ?? <DefaultCtaGroup mobile />}</Box>
               </motion.div>
             </Box>
           </motion.div>

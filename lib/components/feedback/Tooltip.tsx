@@ -1,13 +1,21 @@
-import React from "react";
-import { Tooltip as ChakraTooltip, type TooltipRootProps } from "@chakra-ui/react";
+import React from 'react';
+import { Tooltip as ChakraTooltip, type TooltipRootProps } from '@chakra-ui/react';
 
 export type TooltipPlacement =
-  | "top" | "top-start" | "top-end"
-  | "bottom" | "bottom-start" | "bottom-end"
-  | "left" | "left-start" | "left-end"
-  | "right" | "right-start" | "right-end";
+  | 'top'
+  | 'top-start'
+  | 'top-end'
+  | 'bottom'
+  | 'bottom-start'
+  | 'bottom-end'
+  | 'left'
+  | 'left-start'
+  | 'left-end'
+  | 'right'
+  | 'right-start'
+  | 'right-end';
 
-export interface TooltipProps extends Omit<TooltipRootProps, "content"> {
+export interface TooltipProps extends Omit<TooltipRootProps, 'content'> {
   /** Text shown in the tooltip bubble */
   label: string;
   /** Element that triggers the tooltip */
@@ -36,12 +44,12 @@ export interface TooltipProps extends Omit<TooltipRootProps, "content"> {
  * </Tooltip>
  * ```
  */
-export function Tooltip({ label, children, placement = "top", ...props }: TooltipProps) {
+export function Tooltip({ label, children, placement = 'top', ...props }: TooltipProps) {
   return (
     <ChakraTooltip.Root positioning={{ placement }} {...props}>
       <ChakraTooltip.Trigger asChild>
         {/* Tooltip.Trigger needs a single child element */}
-        <span style={{ display: "inline-flex" }}>{children}</span>
+        <span style={{ display: 'inline-flex' }}>{children}</span>
       </ChakraTooltip.Trigger>
       <ChakraTooltip.Positioner>
         <ChakraTooltip.Content

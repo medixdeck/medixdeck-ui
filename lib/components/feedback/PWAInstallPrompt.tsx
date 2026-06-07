@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Button } from "../primitive/Button";
-import { Logo } from "../primitive/Logo";
-import { useIsDarkMode } from "../../hooks/useThemeMode";
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Button } from '../primitive/Button';
+import { Logo } from '../primitive/Logo';
+import { useIsDarkMode } from '../../hooks/useThemeMode';
 
 // ─── Constants ──────────────────────────────────────────────────────────────────
 
-const STORAGE_KEY = "medixdeck_pwa_dismissed";
+const STORAGE_KEY = 'medixdeck_pwa_dismissed';
 const DEFAULT_COOLDOWN_DAYS = 14;
 
 const EASE_OUT = [0.0, 0.0, 0.2, 1.0] as [number, number, number, number];
@@ -19,7 +19,7 @@ const EASE_IN_OUT = [0.4, 0.0, 0.2, 1.0] as [number, number, number, number];
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
-  readonly userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
+  readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
   prompt(): Promise<void>;
 }
 
@@ -52,7 +52,7 @@ export interface PWAInstallPromptProps {
    * Position of the banner on screen.
    * @default "bottom"
    */
-  position?: "top" | "bottom";
+  position?: 'top' | 'bottom';
   /**
    * Number of seconds to delay the prompt after the conditions are met.
    * @default 0
@@ -71,19 +71,19 @@ export interface PWAInstallPromptProps {
 // ─── Helpers ────────────────────────────────────────────────────────────────────
 
 function isInStandaloneMode(): boolean {
-  if (typeof window === "undefined") return false;
-  const standaloneQuery = window.matchMedia("(display-mode: standalone)").matches;
+  if (typeof window === 'undefined') return false;
+  const standaloneQuery = window.matchMedia('(display-mode: standalone)').matches;
   const iosStandalone = (window.navigator as any).standalone === true;
   return standaloneQuery || iosStandalone;
 }
 
 function isIOSDevice(): boolean {
-  if (typeof navigator === "undefined") return false;
+  if (typeof navigator === 'undefined') return false;
   return /iPhone|iPad|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
 }
 
 function isDismissedRecently(cooldownDays: number): boolean {
-  if (typeof localStorage === "undefined") return false;
+  if (typeof localStorage === 'undefined') return false;
   try {
     const dismissed = localStorage.getItem(STORAGE_KEY);
     if (!dismissed) return false;
@@ -104,9 +104,18 @@ function saveDismissal(): void {
 
 // ─── iOS Share Icon ─────────────────────────────────────────────────────────────
 
-function IOSShareIcon({ size = 18, color = "#0685FF" }: { size?: number; color?: string }) {
+function IOSShareIcon({ size = 18, color = '#0685FF' }: { size?: number; color?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
       <polyline points="16 6 12 2 8 6" />
       <line x1="12" y1="2" x2="12" y2="15" />
@@ -150,16 +159,16 @@ function DefaultAppIcon() {
  * ```
  */
 export function PWAInstallPrompt({
-  title = "Install this app",
-  description = "Add this app to your home screen for faster access and a better experience.",
-  installLabel = "Install",
-  dismissLabel = "Not now",
+  title = 'Install this app',
+  description = 'Add this app to your home screen for faster access and a better experience.',
+  installLabel = 'Install',
+  dismissLabel = 'Not now',
   cooldownDays = DEFAULT_COOLDOWN_DAYS,
   onInstall,
   onDismiss,
-  appName = "this app",
+  appName = 'this app',
   icon,
-  position = "bottom",
+  position = 'bottom',
   delaySeconds = 0,
   forceVisible,
   forceIOS,
@@ -211,15 +220,15 @@ export function PWAInstallPrompt({
       showPrompt();
     };
 
-    window.addEventListener("beforeinstallprompt", handler);
+    window.addEventListener('beforeinstallprompt', handler);
 
     // Also listen for the install completion to auto-hide
     const installed = () => setVisible(false);
-    window.addEventListener("appinstalled", installed);
+    window.addEventListener('appinstalled', installed);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handler);
-      window.removeEventListener("appinstalled", installed);
+      window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener('appinstalled', installed);
       cleanupTimeout();
     };
   }, [cooldownDays, delaySeconds, forceVisible, forceIOS]);
@@ -230,7 +239,7 @@ export function PWAInstallPrompt({
       try {
         await deferredPromptRef.current.prompt();
         const choice = await deferredPromptRef.current.userChoice;
-        if (choice.outcome === "accepted") {
+        if (choice.outcome === 'accepted') {
           onInstall?.();
         }
       } catch {
@@ -248,32 +257,32 @@ export function PWAInstallPrompt({
   }, [onDismiss]);
 
   // ── Theme colours (exact hex, same pattern as CookieConsentBanner) ──────────
-  const bgColor = isDark ? "#152035" : "#FFFFFF";
-  const borderColor = isDark ? "#1E3050" : "#E4E8F0";
-  const shadowColor = isDark ? "rgba(0,0,0,0.4)" : "rgba(0,0,0,0.08)";
+  const bgColor = isDark ? '#152035' : '#FFFFFF';
+  const borderColor = isDark ? '#1E3050' : '#E4E8F0';
+  const shadowColor = isDark ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.08)';
 
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: position === "bottom" ? 80 : -80, x: "-50%" }}
-          animate={{ opacity: 1, y: 0, x: "-50%" }}
-          exit={{ opacity: 0, y: position === "bottom" ? 80 : -80, x: "-50%" }}
+          initial={{ opacity: 0, y: position === 'bottom' ? 80 : -80, x: '-50%' }}
+          animate={{ opacity: 1, y: 0, x: '-50%' }}
+          exit={{ opacity: 0, y: position === 'bottom' ? 80 : -80, x: '-50%' }}
           transition={{ duration: 0.35, ease: EASE_IN_OUT }}
           style={{
-            position: "fixed",
+            position: 'fixed',
             [position]: 16,
-            left: "50%",
+            left: '50%',
             zIndex: 10000,
-            width: "calc(100% - 32px)",
+            width: 'calc(100% - 32px)',
             maxWidth: 480,
-            pointerEvents: "auto",
+            pointerEvents: 'auto',
           }}
         >
           <Box
             borderRadius="16px"
-            p={{ base: "4", md: "5" }}
+            p={{ base: '4', md: '5' }}
             style={{
               background: bgColor,
               border: `1px solid ${borderColor}`,
@@ -298,22 +307,31 @@ export function PWAInstallPrompt({
 
                 {isIOS ? (
                   <Box>
-                    <Text fontSize="sm" color="text.muted" lineHeight="1.5" fontFamily="var(--font-body)" mb="3">
-                      To install {appName}, tap the{" "}
-                      <span style={{ display: "inline-flex", verticalAlign: "middle", margin: "0 2px" }}>
-                        <IOSShareIcon size={16} color={isDark ? "#70B6FF" : "#0685FF"} />
-                      </span>{" "}
-                      Share button in Safari, then select{" "}
-                      <span style={{ fontWeight: 700, color: isDark ? "#F0F6FF" : "#111926" }}>
+                    <Text
+                      fontSize="sm"
+                      color="text.muted"
+                      lineHeight="1.5"
+                      fontFamily="var(--font-body)"
+                      mb="3"
+                    >
+                      To install {appName}, tap the{' '}
+                      <span
+                        style={{ display: 'inline-flex', verticalAlign: 'middle', margin: '0 2px' }}
+                      >
+                        <IOSShareIcon size={16} color={isDark ? '#70B6FF' : '#0685FF'} />
+                      </span>{' '}
+                      Share button in Safari, then select{' '}
+                      <span style={{ fontWeight: 700, color: isDark ? '#F0F6FF' : '#111926' }}>
                         "Add to Home Screen"
-                      </span>.
+                      </span>
+                      .
                     </Text>
 
                     {/* Step indicators */}
                     <Flex gap="3" mb="3" flexWrap="wrap">
                       {[
-                        { step: "1", text: "Tap Share" },
-                        { step: "2", text: "Add to Home Screen" },
+                        { step: '1', text: 'Tap Share' },
+                        { step: '2', text: 'Add to Home Screen' },
                       ].map((item) => (
                         <Flex
                           key={item.step}
@@ -333,16 +351,21 @@ export function PWAInstallPrompt({
                             borderRadius="full"
                             flexShrink={0}
                             style={{
-                              background: isDark ? "#0685FF" : "#0685FF",
-                              color: "#FFFFFF",
-                              fontSize: "11px",
+                              background: isDark ? '#0685FF' : '#0685FF',
+                              color: '#FFFFFF',
+                              fontSize: '11px',
                               fontWeight: 700,
-                              fontFamily: "var(--font-body)",
+                              fontFamily: 'var(--font-body)',
                             }}
                           >
                             {item.step}
                           </Box>
-                          <Text fontSize="xs" fontWeight="600" color="text.body" fontFamily="var(--font-body)">
+                          <Text
+                            fontSize="xs"
+                            fontWeight="600"
+                            color="text.body"
+                            fontFamily="var(--font-body)"
+                          >
                             {item.text}
                           </Text>
                         </Flex>
@@ -350,7 +373,13 @@ export function PWAInstallPrompt({
                     </Flex>
                   </Box>
                 ) : (
-                  <Text fontSize="sm" color="text.muted" lineHeight="1.5" fontFamily="var(--font-body)" mb="3">
+                  <Text
+                    fontSize="sm"
+                    color="text.muted"
+                    lineHeight="1.5"
+                    fontFamily="var(--font-body)"
+                    mb="3"
+                  >
                     {description}
                   </Text>
                 )}
@@ -358,22 +387,12 @@ export function PWAInstallPrompt({
                 {/* Buttons */}
                 <Flex gap="3" align="center">
                   {!isIOS && (
-                    <Button
-                      variant="solid"
-                      colorScheme="blue"
-                      size="sm"
-                      onClick={handleInstall}
-                    >
+                    <Button variant="solid" colorScheme="blue" size="sm" onClick={handleInstall}>
                       {installLabel}
                     </Button>
                   )}
-                  <Button
-                    variant="ghost"
-                    colorScheme="gray"
-                    size="sm"
-                    onClick={handleDismiss}
-                  >
-                    {isIOS ? "Got it" : dismissLabel}
+                  <Button variant="ghost" colorScheme="gray" size="sm" onClick={handleDismiss}>
+                    {isIOS ? 'Got it' : dismissLabel}
                   </Button>
                 </Flex>
               </Box>
@@ -393,11 +412,20 @@ export function PWAInstallPrompt({
                 color="text.muted"
                 flexShrink={0}
                 cursor="pointer"
-                _hover={{ color: "text.heading", bg: "bg.surface" }}
-                style={{ border: "none", transition: "all 0.2s ease" }}
+                _hover={{ color: 'text.heading', bg: 'bg.surface' }}
+                style={{ border: 'none', transition: 'all 0.2s ease' }}
                 mt="-1"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -410,4 +438,4 @@ export function PWAInstallPrompt({
   );
 }
 
-PWAInstallPrompt.displayName = "MedixPWAInstallPrompt";
+PWAInstallPrompt.displayName = 'MedixPWAInstallPrompt';

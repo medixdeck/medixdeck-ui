@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Container, SectionHeader } from "./Container";
-import { Button } from "../primitive/Button";
-import { Box } from "@chakra-ui/react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { Container, SectionHeader } from './Container';
+import { Button } from '../primitive/Button';
+import { Box } from '@chakra-ui/react';
 
 const meta: Meta<typeof Container> = {
-  title: "Layout/Container",
+  title: 'Layout/Container',
   component: Container,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
@@ -14,11 +14,18 @@ type Story = StoryObj<typeof Container>;
 
 export const Default: Story = {
   args: {
-    maxWidth: "xl",
+    maxWidth: 'xl',
   },
   render: (args) => (
     <Container {...args}>
-      <Box p={8} bg="bg.surface" borderRadius="md" border="1px dashed" borderColor="border" textAlign="center">
+      <Box
+        p={8}
+        bg="bg.surface"
+        borderRadius="md"
+        border="1px dashed"
+        borderColor="border"
+        textAlign="center"
+      >
         Container Content (maxWidth: {args.maxWidth})
       </Box>
     </Container>

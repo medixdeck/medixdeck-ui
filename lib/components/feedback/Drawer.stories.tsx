@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
-import { Drawer } from "./Drawer";
-import { Button } from "../primitive/Button";
+import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
+import { Drawer } from './Drawer';
+import { Button } from '../primitive/Button';
 
 const meta: Meta<typeof Drawer> = {
-  title: "Feedback/Drawer",
+  title: 'Feedback/Drawer',
   component: Drawer,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
-    placement: { control: "select", options: ["left", "right", "top", "bottom"] },
-    size: { control: "select", options: ["sm", "md", "lg", "xl"] },
+    placement: { control: 'select', options: ['left', 'right', 'top', 'bottom'] },
+    size: { control: 'select', options: ['sm', 'md', 'lg', 'xl'] },
   },
 };
 
@@ -30,12 +30,14 @@ export const RightDrawer: Story = {
           placement="right"
           footer={
             <>
-              <Button variant="ghost" onClick={() => setOpen(false)}>Close</Button>
+              <Button variant="ghost" onClick={() => setOpen(false)}>
+                Close
+              </Button>
               <Button colorScheme="blue">Save Changes</Button>
             </>
           }
         >
-          <p style={{ fontFamily: "var(--font-body)", color: "var(--chakra-colors-text-body)" }}>
+          <p style={{ fontFamily: 'var(--font-body)', color: 'var(--chakra-colors-text-body)' }}>
             Drawer content goes here.
           </p>
         </Drawer>

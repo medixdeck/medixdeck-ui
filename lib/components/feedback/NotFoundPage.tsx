@@ -1,12 +1,16 @@
-import React from "react";
-import { Box, Text, type BoxProps } from "@chakra-ui/react";
-import { Button } from "../primitive/Button";
+import React from 'react';
+import { Box, Text, type BoxProps } from '@chakra-ui/react';
+import { Button } from '../primitive/Button';
+
+declare const process: any;
 
 export interface NotFoundPageProps extends BoxProps {
   /** Optional custom title. Defaults to "Page Not Found" */
   title?: string;
   /** Optional custom description. Defaults to "The page you are looking for doesn't exist or has been moved." */
   description?: string;
+  /** Optional error message details to display in a code block (dev only) */
+  errorMessage?: string;
   /** CTA button label. Defaults to "Go back home" */
   actionLabel?: string;
   /** CTA button onClick handler */
@@ -35,9 +39,10 @@ export interface NotFoundPageProps extends BoxProps {
  * ```
  */
 export function NotFoundPage({
-  title = "Page Not Found",
+  title = 'Page Not Found',
   description = "The page you are looking for doesn't exist or has been moved.",
-  actionLabel = "Go back home",
+  errorMessage,
+  actionLabel = 'Go back home',
   onAction,
   secondaryLabel,
   onSecondaryAction,
@@ -80,11 +85,31 @@ export function NotFoundPage({
         color="text.muted"
         fontFamily="var(--font-body)"
         maxW="400px"
-        mb="8"
+        mb={errorMessage ? '4' : '8'}
       >
         {description}
       </Text>
-      
+
+      {errorMessage && process.env.NODE_ENV === 'development' && (
+        <Box
+          bg="bg.surface"
+          border="1px solid"
+          borderColor="border"
+          borderRadius="md"
+          p="3"
+          mb="8"
+          maxW="500px"
+          w="100%"
+          textAlign="left"
+          overflowX="auto"
+          fontFamily="var(--font-mono)"
+          fontSize="sm"
+          color="text.muted"
+        >
+          {errorMessage}
+        </Box>
+      )}
+
       <Box display="flex" gap="4">
         {actionLabel && (
           <Button variant="solid" colorScheme="blue" onClick={onAction}>

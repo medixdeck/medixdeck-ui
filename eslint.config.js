@@ -1,23 +1,17 @@
-import globals from "globals";
-import tseslint from "typescript-eslint";
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default [
   {
-    ignores: [
-      "dist/**",
-      "storybook-static/**",
-      "node_modules/**",
-      "src/**",
-      "lib/**/*.stories.*",
-    ],
+    ignores: ['dist/**', 'storybook-static/**', 'node_modules/**', 'src/**', 'lib/**/*.stories.*'],
   },
   {
-    files: ["lib/**/*.{ts,tsx}", "vite.config.ts", "vitest.config.ts"],
+    files: ['lib/**/*.{ts,tsx}', 'vite.config.ts', 'vitest.config.ts'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
+        ecmaVersion: 'latest',
+        sourceType: 'module',
         ecmaFeatures: {
           jsx: true,
         },
@@ -28,7 +22,7 @@ export default [
       },
     },
     plugins: {
-      "@typescript-eslint": tseslint.plugin,
+      '@typescript-eslint': tseslint.plugin,
     },
     rules: {},
   },

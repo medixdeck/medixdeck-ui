@@ -1,8 +1,8 @@
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
 
-export type AlertStatus = "info" | "success" | "warning" | "error";
-export type AlertVariant = "subtle" | "solid" | "left-accent";
+export type AlertStatus = 'info' | 'success' | 'warning' | 'error';
+export type AlertVariant = 'subtle' | 'solid' | 'left-accent';
 
 export interface AlertProps extends BoxProps {
   status?: AlertStatus;
@@ -19,28 +19,28 @@ const statusConfig: Record<
   { bg: string; border: string; color: string; icon: string }
 > = {
   info: {
-    bg: "rgba(6, 133, 255, 0.08)",
-    border: "rgba(6, 133, 255, 0.3)",
-    color: "#0685FF",
-    icon: "ℹ",
+    bg: 'rgba(6, 133, 255, 0.08)',
+    border: 'rgba(6, 133, 255, 0.3)',
+    color: '#0685FF',
+    icon: 'ℹ',
   },
   success: {
-    bg: "rgba(27, 122, 56, 0.08)",
-    border: "rgba(27, 122, 56, 0.3)",
-    color: "#1B7A38",
-    icon: "✓",
+    bg: 'rgba(27, 122, 56, 0.08)',
+    border: 'rgba(27, 122, 56, 0.3)',
+    color: '#1B7A38',
+    icon: '✓',
   },
   warning: {
-    bg: "rgba(217, 119, 6, 0.08)",
-    border: "rgba(217, 119, 6, 0.3)",
-    color: "#D97706",
-    icon: "⚠",
+    bg: 'rgba(217, 119, 6, 0.08)',
+    border: 'rgba(217, 119, 6, 0.3)',
+    color: '#D97706',
+    icon: '⚠',
   },
   error: {
-    bg: "rgba(220, 38, 38, 0.08)",
-    border: "rgba(220, 38, 38, 0.3)",
-    color: "#DC2626",
-    icon: "✕",
+    bg: 'rgba(220, 38, 38, 0.08)',
+    border: 'rgba(220, 38, 38, 0.3)',
+    color: '#DC2626',
+    icon: '✕',
   },
 };
 
@@ -57,8 +57,8 @@ const statusConfig: Record<
 export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
   (
     {
-      status = "info",
-      variant = "subtle",
+      status = 'info',
+      variant = 'subtle',
       title,
       description,
       icon,
@@ -67,16 +67,14 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const cfg = statusConfig[status];
 
-    const bgColor =
-      variant === "solid" ? cfg.color : cfg.bg;
-    const textColor = variant === "solid" ? "white" : "inherit";
-    const borderLeft =
-      variant === "left-accent" ? `4px solid ${cfg.color}` : undefined;
-    const border = variant === "subtle" ? `1px solid ${cfg.border}` : undefined;
+    const bgColor = variant === 'solid' ? cfg.color : cfg.bg;
+    const textColor = variant === 'solid' ? 'white' : 'inherit';
+    const borderLeft = variant === 'left-accent' ? `4px solid ${cfg.color}` : undefined;
+    const border = variant === 'subtle' ? `1px solid ${cfg.border}` : undefined;
 
     return (
       <Box
@@ -104,7 +102,7 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
           justifyContent="center"
           fontSize="xs"
           fontWeight="bold"
-          bg={variant === "solid" ? "rgba(255,255,255,0.2)" : cfg.color}
+          bg={variant === 'solid' ? 'rgba(255,255,255,0.2)' : cfg.color}
           color="white"
           mt="0.5"
         >
@@ -118,17 +116,17 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
               fontWeight="semibold"
               fontSize="sm"
               fontFamily="var(--font-body)"
-              color={variant === "solid" ? "white" : cfg.color}
+              color={variant === 'solid' ? 'white' : cfg.color}
             >
               {title}
             </Box>
           )}
           {description && (
             <Box
-              mt={title ? "0.5" : "0"}
+              mt={title ? '0.5' : '0'}
               fontSize="sm"
               fontFamily="var(--font-body)"
-              color={variant === "solid" ? "rgba(255,255,255,0.85)" : "text.body"}
+              color={variant === 'solid' ? 'rgba(255,255,255,0.85)' : 'text.body'}
               lineHeight="1.5"
             >
               {description}
@@ -147,14 +145,14 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
             border="none"
             bg="transparent"
             cursor="pointer"
-            color={variant === "solid" ? "rgba(255,255,255,0.7)" : "text.muted"}
+            color={variant === 'solid' ? 'rgba(255,255,255,0.7)' : 'text.muted'}
             fontSize="lg"
             lineHeight="1"
             display="flex"
             alignItems="center"
             justifyContent="center"
             borderRadius="sm"
-            _hover={{ color: variant === "solid" ? "white" : "text.heading" }}
+            _hover={{ color: variant === 'solid' ? 'white' : 'text.heading' }}
             onClick={onClose}
             aria-label="Dismiss alert"
           >
@@ -163,7 +161,7 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         )}
       </Box>
     );
-  }
+  },
 );
 
-Alert.displayName = "MedixAlert";
+Alert.displayName = 'MedixAlert';

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { useState, useRef, useEffect } from "react";
-import { Box, Text } from "@chakra-ui/react";
+import React, { useState, useRef, useEffect } from 'react';
+import { Box, Text } from '@chakra-ui/react';
 
 export interface ComboboxOption {
   label: string;
@@ -21,7 +21,16 @@ export interface ComboboxProps {
 }
 
 const CHEVRON_DOWN = (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <polyline points="6 9 12 15 18 9"></polyline>
   </svg>
 );
@@ -30,7 +39,7 @@ export function Combobox({
   options,
   value,
   onChange,
-  placeholder = "Search...",
+  placeholder = 'Search...',
   label,
   helperText,
   errorMessage,
@@ -38,7 +47,7 @@ export function Combobox({
   isDisabled = false,
 }: ComboboxProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,32 +67,34 @@ export function Combobox({
           const selected = options.find((opt) => opt.value === value);
           if (selected) setSearch(selected.label);
         } else {
-          setSearch("");
+          setSearch('');
         }
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [value, options]);
 
   const filteredOptions = options.filter((opt) =>
-    opt.label.toLowerCase().includes(search.toLowerCase())
+    opt.label.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const activeBorderColor = isInvalid
-    ? "#DC2626"
-    : isOpen
-    ? "#0685FF"
-    : "var(--medix-form-border)";
-    
+  const activeBorderColor = isInvalid ? '#DC2626' : isOpen ? '#0685FF' : 'var(--medix-form-border)';
+
   const boxShadow = isOpen
-    ? `0 0 0 3px ${isInvalid ? "rgba(220,38,38,0.15)" : "rgba(6,133,255,0.15)"}`
-    : "none";
+    ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
+    : 'none';
 
   return (
     <Box w="100%" position="relative" ref={containerRef}>
       {label && (
-        <Text mb="1.5" fontSize="sm" fontWeight="medium" color="text.heading" fontFamily="var(--font-body)">
+        <Text
+          mb="1.5"
+          fontSize="sm"
+          fontWeight="medium"
+          color="text.heading"
+          fontFamily="var(--font-body)"
+        >
           {label}
         </Text>
       )}
@@ -97,27 +108,27 @@ export function Combobox({
           onChange={(e) => {
             setSearch(e.target.value);
             setIsOpen(true);
-            if (!e.target.value) onChange?.(""); // clear if empty
+            if (!e.target.value) onChange?.(''); // clear if empty
           }}
           onFocus={() => setIsOpen(true)}
           style={{
-            width: "100%",
-            height: "40px",
-            padding: "0 40px 0 16px",
-            borderRadius: "10px",
+            width: '100%',
+            height: '40px',
+            padding: '0 40px 0 16px',
+            borderRadius: '10px',
             border: `1.5px solid ${activeBorderColor}`,
             boxShadow,
-            background: "var(--medix-form-bg)",
-            color: "var(--medix-form-text)",
-            fontSize: "15px",
-            fontFamily: "var(--font-body)",
-            outline: "none",
-            transition: "border-color 0.15s, box-shadow 0.15s",
-            cursor: isDisabled ? "not-allowed" : "text",
+            background: 'var(--medix-form-bg)',
+            color: 'var(--medix-form-text)',
+            fontSize: '15px',
+            fontFamily: 'var(--font-body)',
+            outline: 'none',
+            transition: 'border-color 0.15s, box-shadow 0.15s',
+            cursor: isDisabled ? 'not-allowed' : 'text',
             opacity: isDisabled ? 0.5 : 1,
           }}
         />
-        
+
         <Box
           position="absolute"
           right="3"
@@ -157,7 +168,7 @@ export function Combobox({
                 fontFamily="var(--font-body)"
                 color="text.body"
                 cursor="pointer"
-                _hover={{ bg: "bg.subtle" }}
+                _hover={{ bg: 'bg.subtle' }}
                 onClick={() => {
                   onChange?.(opt.value);
                   setSearch(opt.label);
@@ -176,7 +187,12 @@ export function Combobox({
       )}
 
       {(helperText || errorMessage) && (
-        <Text mt="1.5" fontSize="xs" color={isInvalid ? "red.500" : "text.muted"} fontFamily="var(--font-body)">
+        <Text
+          mt="1.5"
+          fontSize="xs"
+          color={isInvalid ? 'red.500' : 'text.muted'}
+          fontFamily="var(--font-body)"
+        >
           {isInvalid ? errorMessage : helperText}
         </Text>
       )}

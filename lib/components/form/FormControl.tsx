@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import React from 'react';
+import { Box, Text } from '@chakra-ui/react';
 
 export interface FormControlProps {
   /** Unique ID for the field (links label to input) */
@@ -47,7 +47,7 @@ export function FormControl({
       flexDirection="column"
       gap="1.5"
       opacity={isDisabled ? 0.5 : 1}
-      pointerEvents={isDisabled ? "none" : undefined}
+      pointerEvents={isDisabled ? 'none' : undefined}
       w="100%"
     >
       {label && (

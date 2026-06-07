@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
 
 export interface TestimonialCardProps extends BoxProps {
   quote: string;
@@ -31,13 +31,13 @@ export function TestimonialCard({
       flexDirection="column"
       gap="4"
       boxShadow="card-light"
-      _dark={{ boxShadow: "card-dark" }}
+      _dark={{ boxShadow: 'card-dark' }}
       {...props}
     >
       {rating !== undefined && (
         <Box display="flex" gap="0.5">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Box key={i} as="span" fontSize="sm" color={i < rating ? "#F59E0B" : "text.muted"}>
+            <Box key={i} as="span" fontSize="sm" color={i < rating ? '#F59E0B' : 'text.muted'}>
               ★
             </Box>
           ))}
@@ -62,7 +62,7 @@ export function TestimonialCard({
           <img
             src={authorAvatar}
             alt={authorName}
-            style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover" }}
+            style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }}
           />
         ) : (
           <Box
@@ -82,7 +82,12 @@ export function TestimonialCard({
           </Box>
         )}
         <Box>
-          <Box fontSize="sm" fontWeight="semibold" color="text.heading" fontFamily="var(--font-body)">
+          <Box
+            fontSize="sm"
+            fontWeight="semibold"
+            color="text.heading"
+            fontFamily="var(--font-body)"
+          >
             {authorName}
           </Box>
           {authorTitle && (
@@ -98,14 +103,14 @@ export function TestimonialCard({
 
 // ─── BlogCard ─────────────────────────────────────────────────────────────────
 
-export type BlogCardColorScheme = "blue" | "purple";
+export type BlogCardColorScheme = 'blue' | 'purple';
 
 const BLOG_CARD_COLORS: Record<BlogCardColorScheme, { solid: string; token: string }> = {
-  blue:   { solid: "#0685FF", token: "blue.500" },
-  purple: { solid: "#7700CC", token: "purple.500" },
+  blue: { solid: '#0685FF', token: 'blue.500' },
+  purple: { solid: '#7700CC', token: 'purple.500' },
 };
 
-export interface BlogCardProps extends Omit<BoxProps, "onClick"> {
+export interface BlogCardProps extends Omit<BoxProps, 'onClick'> {
   /** Article headline */
   title: string;
   /** Short excerpt shown below the title (optional, max 2 lines clamped) */
@@ -144,7 +149,7 @@ function parseDateBadge(date: string | undefined): { day: string; weekday: strin
     if (isNaN(d.getTime())) return null;
     return {
       day: String(d.getUTCDate()),
-      weekday: d.toLocaleDateString("en-US", { weekday: "short", timeZone: "UTC" }).toUpperCase(),
+      weekday: d.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' }).toUpperCase(),
     };
   } catch {
     return null;
@@ -177,7 +182,7 @@ export function BlogCard({
   coverImage,
   href,
   onClick,
-  colorScheme = "blue",
+  colorScheme = 'blue',
   ...props
 }: BlogCardProps) {
   const isInteractive = Boolean(href || onClick);
@@ -185,13 +190,13 @@ export function BlogCard({
   const scheme = BLOG_CARD_COLORS[colorScheme];
 
   const cardStyles: React.CSSProperties = {
-    display: "block",
-    textDecoration: "none",
-    background: "transparent",
-    border: "none",
+    display: 'block',
+    textDecoration: 'none',
+    background: 'transparent',
+    border: 'none',
     padding: 0,
-    cursor: isInteractive ? "pointer" : "default",
-    textAlign: "left",
+    cursor: isInteractive ? 'pointer' : 'default',
+    textAlign: 'left',
   };
 
   const inner = (
@@ -200,12 +205,8 @@ export function BlogCard({
       borderRadius="card"
       overflow="hidden"
       transition="transform 0.22s ease, box-shadow 0.22s ease"
-      _dark={{ bg: "bg.primary" }}
-      _hover={
-        isInteractive
-          ? { transform: "translateY(-4px)" }
-          : undefined
-      }
+      _dark={{ bg: 'bg.primary' }}
+      _hover={isInteractive ? { transform: 'translateY(-4px)' } : undefined}
       {...props}
     >
       {/* ── Image area ──────────────────────────────────── */}
@@ -214,14 +215,23 @@ export function BlogCard({
           <img
             src={coverImage}
             alt={title}
-            style={{ width: "100%", height: 300, objectFit: "cover", display: "block", borderRadius: "20px" }}
+            style={{
+              width: '100%',
+              height: 300,
+              objectFit: 'cover',
+              display: 'block',
+              borderRadius: '20px',
+            }}
           />
         ) : (
           /* Gradient placeholder when no image is provided */
           <Box
             borderRadius="card"
             h="300px"
-            style={{ background: "linear-gradient(135deg, #0685FF 0%, #7700CC 100%)", borderRadius: "20px" }}
+            style={{
+              background: 'linear-gradient(135deg, #0685FF 0%, #7700CC 100%)',
+              borderRadius: '20px',
+            }}
           />
         )}
 
@@ -248,7 +258,7 @@ export function BlogCard({
                 fontWeight: 700,
                 color: scheme.solid,
                 lineHeight: 1,
-                fontFamily: "var(--font-heading)",
+                fontFamily: 'var(--font-heading)',
               }}
             >
               {dateBadge.day}
@@ -258,10 +268,10 @@ export function BlogCard({
               style={{
                 fontSize: 10,
                 fontWeight: 600,
-                color: "#6B7280",
-                letterSpacing: "0.08em",
+                color: '#6B7280',
+                letterSpacing: '0.08em',
                 marginTop: 2,
-                fontFamily: "var(--font-body)",
+                fontFamily: 'var(--font-body)',
               }}
             >
               {dateBadge.weekday}
@@ -299,7 +309,7 @@ export function BlogCard({
           color="text.heading"
           fontFamily="var(--font-heading)"
           lineHeight="snug"
-          mb={excerpt ? "2" : "0"}
+          mb={excerpt ? '2' : '0'}
         >
           {title}
         </Box>
@@ -312,10 +322,10 @@ export function BlogCard({
             fontFamily="var(--font-body)"
             lineHeight="relaxed"
             style={{
-              display: "-webkit-box",
+              display: '-webkit-box',
               WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
             }}
           >
             {excerpt}

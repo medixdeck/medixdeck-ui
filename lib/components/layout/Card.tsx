@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
 
 export interface CardProps extends BoxProps {
   /** Remove default padding */
@@ -32,16 +32,16 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         border="1px solid"
         borderColor="border"
         boxShadow="card-light"
-        _dark={{ boxShadow: "card-dark" }}
+        _dark={{ boxShadow: 'card-dark' }}
         overflow="hidden"
         transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
         {...(hoverable && {
           _hover: {
-            transform: "translateY(-2px)",
-            boxShadow: "lg",
-            borderColor: "blue.200",
+            transform: 'translateY(-2px)',
+            boxShadow: 'lg',
+            borderColor: 'blue.200',
           },
-          cursor: "pointer",
+          cursor: 'pointer',
         })}
         {...props}
       >
@@ -51,10 +51,10 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         })}
       </Box>
     );
-  }
+  },
 );
 
-Card.displayName = "MedixCard";
+Card.displayName = 'MedixCard';
 
 // ─── CardHeader ──────────────────────────────────────────────────────────────
 
@@ -91,13 +91,7 @@ export function CardHeader({ title, subtitle, action, children, ...props }: Card
           </Box>
         )}
         {subtitle && (
-          <Box
-            as="p"
-            mt="0.5"
-            fontSize="sm"
-            color="text.muted"
-            fontFamily="var(--font-body)"
-          >
+          <Box as="p" mt="0.5" fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
             {subtitle}
           </Box>
         )}

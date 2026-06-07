@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useState, useRef, useEffect, useId } from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
-import { motion } from "framer-motion";
-import { useThemeMode, type ThemeModeSetting } from "../../hooks/useThemeMode";
-import { Logo } from "../primitive/Logo";
-import { Avatar } from "../primitive/Avatar";
+import React, { useState, useRef, useEffect, useId } from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+import { useThemeMode, type ThemeModeSetting } from '../../hooks/useThemeMode';
+import { Logo } from '../primitive/Logo';
+import { Avatar } from '../primitive/Avatar';
 
 // ─── Brand colours (native-first pattern per AGENTS.md §15) ──────────────────
 
-export type DashboardColorScheme = "blue" | "purple";
+export type DashboardColorScheme = 'blue' | 'purple';
 
 const SCHEME_COLORS: Record<
   DashboardColorScheme,
@@ -24,33 +24,41 @@ const SCHEME_COLORS: Record<
   }
 > = {
   blue: {
-    solid: "#0685FF",
-    hoverBgLight: "rgba(6,133,255,0.08)",
-    hoverBgDark: "rgba(6,133,255,0.12)",
-    activeBgLight: "rgba(6,133,255,0.10)",
-    activeBgDark: "rgba(6,133,255,0.15)",
-    activeBgDarkStrong: "rgba(6,133,255,0.18)",
-    chakraToken: "blue.500",
+    solid: '#0685FF',
+    hoverBgLight: 'rgba(6,133,255,0.08)',
+    hoverBgDark: 'rgba(6,133,255,0.12)',
+    activeBgLight: 'rgba(6,133,255,0.10)',
+    activeBgDark: 'rgba(6,133,255,0.15)',
+    activeBgDarkStrong: 'rgba(6,133,255,0.18)',
+    chakraToken: 'blue.500',
   },
   purple: {
-    solid: "#7700CC",
-    hoverBgLight: "rgba(119,0,204,0.08)",
-    hoverBgDark: "rgba(119,0,204,0.12)",
-    activeBgLight: "rgba(119,0,204,0.10)",
-    activeBgDark: "rgba(119,0,204,0.15)",
-    activeBgDarkStrong: "rgba(119,0,204,0.18)",
-    chakraToken: "purple.500",
+    solid: '#7700CC',
+    hoverBgLight: 'rgba(119,0,204,0.08)',
+    hoverBgDark: 'rgba(119,0,204,0.12)',
+    activeBgLight: 'rgba(119,0,204,0.10)',
+    activeBgDark: 'rgba(119,0,204,0.15)',
+    activeBgDarkStrong: 'rgba(119,0,204,0.18)',
+    chakraToken: 'purple.500',
   },
 };
 
-const RED = "#EF4444";
-const RED_HOVER_BG = "rgba(239,68,68,0.08)";
+const RED = '#EF4444';
+const RED_HOVER_BG = 'rgba(239,68,68,0.08)';
 
 // ─── Inline SVG icons ─────────────────────────────────────────────────────────
 
 const MenuIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <line x1="3" y1="6" x2="21" y2="6" />
     <line x1="3" y1="12" x2="21" y2="12" />
     <line x1="3" y1="18" x2="21" y2="18" />
@@ -58,24 +66,51 @@ const MenuIcon = () => (
 );
 
 const CloseMenuIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
 const ChevronDownIcon = ({ open }: { open: boolean }) => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-    style={{ transition: "transform 0.2s ease", transform: open ? "rotate(180deg)" : "rotate(0deg)" }}>
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{
+      transition: 'transform 0.2s ease',
+      transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+    }}
+  >
     <polyline points="6 9 12 15 18 9" />
   </svg>
 );
 
 const LogoutIcon = () => (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="17"
+    height="17"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
     <polyline points="16 17 21 12 16 7" />
     <line x1="21" y1="12" x2="9" y2="12" />
@@ -83,24 +118,48 @@ const LogoutIcon = () => (
 );
 
 const ProfileIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
     <circle cx="12" cy="7" r="4" />
   </svg>
 );
 
 const SettingsIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <circle cx="12" cy="12" r="3" />
     <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
   </svg>
 );
 
 const SunIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <circle cx="12" cy="12" r="4" />
     <line x1="12" y1="2" x2="12" y2="4" />
     <line x1="12" y1="20" x2="12" y2="22" />
@@ -114,15 +173,31 @@ const SunIcon = () => (
 );
 
 const MoonIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
   </svg>
 );
 
 const SystemIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <rect x="3" y="4" width="18" height="12" rx="2" />
     <line x1="8" y1="20" x2="16" y2="20" />
     <line x1="12" y1="16" x2="12" y2="20" />
@@ -182,7 +257,7 @@ export interface DashboardScoreCardData {
   /** Optional href to navigate to the doctor's profile when the card is clicked. */
   link?: string;
   /** Clinician tier — determines avatar ring colour and badge text colour. */
-  tier: "bronze" | "silver" | "gold" | "platinum" | "diamond";
+  tier: 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
   /** Numeric MedixScore displayed next to the tier label. */
   medixScore: number;
 }
@@ -207,7 +282,7 @@ export interface DashboardDropdownItem {
   isDanger?: boolean;
 }
 
-export interface DashboardLayoutProps extends Omit<BoxProps, "children"> {
+export interface DashboardLayoutProps extends Omit<BoxProps, 'children'> {
   /** Page content rendered inside the main area. */
   children: React.ReactNode;
 
@@ -338,7 +413,7 @@ export interface DashboardLayoutProps extends Omit<BoxProps, "children"> {
 // ─── Helper: default link renderer ───────────────────────────────────────────
 
 const defaultRenderLink = (item: DashboardNavItem, children: React.ReactNode) => (
-  <a href={item.href} style={{ textDecoration: "none", display: "block" }}>
+  <a href={item.href} style={{ textDecoration: 'none', display: 'block' }}>
     {children}
   </a>
 );
@@ -347,9 +422,9 @@ const defaultRenderLink = (item: DashboardNavItem, children: React.ReactNode) =>
 
 function autoGreeting(): string {
   const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  return "Good evening";
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
 }
 
 const themeOptions: Array<{
@@ -358,10 +433,10 @@ const themeOptions: Array<{
   shortLabel: string;
   icon: React.ReactNode;
 }> = [
-    { value: "light", label: "Light mode", shortLabel: "Light", icon: <SunIcon /> },
-    { value: "dark", label: "Dark mode", shortLabel: "Dark", icon: <MoonIcon /> },
-    { value: "system", label: "System theme", shortLabel: "System", icon: <SystemIcon /> },
-  ];
+  { value: 'light', label: 'Light mode', shortLabel: 'Light', icon: <SunIcon /> },
+  { value: 'dark', label: 'Dark mode', shortLabel: 'Dark', icon: <MoonIcon /> },
+  { value: 'system', label: 'System theme', shortLabel: 'System', icon: <SystemIcon /> },
+];
 
 function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[DashboardColorScheme] }) {
   const { mounted, themeMode, themeSetting, setThemeMode } = useThemeMode();
@@ -377,14 +452,14 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
         setDropdownOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Shared inner content for the horizontal pill
   const desktopPill = (
     <Box
-      display={{ base: "none", md: "flex" }}
+      display={{ base: 'none', md: 'flex' }}
       alignItems="center"
       gap="1"
       bg="bg.surface"
@@ -396,11 +471,12 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
     >
       {themeOptions.map((option) => {
         const isActive = activeMode === option.value;
-        const activeFill = option.value === "dark"
-          ? scheme.activeBgDarkStrong
-          : option.value === "system"
-            ? scheme.hoverBgDark
-            : scheme.hoverBgLight;
+        const activeFill =
+          option.value === 'dark'
+            ? scheme.activeBgDarkStrong
+            : option.value === 'system'
+              ? scheme.hoverBgDark
+              : scheme.hoverBgLight;
 
         return (
           <Box
@@ -412,7 +488,11 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
             }}
             aria-pressed={isActive}
             aria-label={option.label}
-            title={mounted && option.value === "system" ? `System theme (currently ${themeMode})` : option.label}
+            title={
+              mounted && option.value === 'system'
+                ? `System theme (currently ${themeMode})`
+                : option.label
+            }
             display="inline-flex"
             alignItems="center"
             gap="2"
@@ -420,13 +500,19 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
             px="3"
             borderRadius="full"
             border="none"
-            bg={isActive ? activeFill : "transparent"}
-            color={isActive ? scheme.chakraToken : "text.muted"}
+            bg={isActive ? activeFill : 'transparent'}
+            color={isActive ? scheme.chakraToken : 'text.muted'}
             opacity={mounted ? 1 : 0.6}
-            cursor={mounted ? "pointer" : "default"}
+            cursor={mounted ? 'pointer' : 'default'}
             transition="background 0.18s ease, color 0.18s ease, opacity 0.18s ease"
-            _hover={mounted ? { bg: isActive ? activeFill : "bg", color: "text.heading" } : undefined}
-            _focusVisible={{ outline: "2px solid", outlineColor: scheme.chakraToken, outlineOffset: "2px" }}
+            _hover={
+              mounted ? { bg: isActive ? activeFill : 'bg', color: 'text.heading' } : undefined
+            }
+            _focusVisible={{
+              outline: '2px solid',
+              outlineColor: scheme.chakraToken,
+              outlineOffset: '2px',
+            }}
           >
             <Box display="inline-flex" alignItems="center" justifyContent="center" flexShrink={0}>
               {option.icon}
@@ -434,7 +520,7 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
             <Box
               as="span"
               fontSize="xs"
-              fontWeight={isActive ? "700" : "600"}
+              fontWeight={isActive ? '700' : '600'}
               fontFamily="var(--font-body)"
               whiteSpace="nowrap"
             >
@@ -448,7 +534,7 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
 
   // Mobile dropdown
   const mobileDropdown = (
-    <Box display={{ base: "block", md: "none" }} position="relative" ref={dropdownRef}>
+    <Box display={{ base: 'block', md: 'none' }} position="relative" ref={dropdownRef}>
       <Box
         as="button"
         display="flex"
@@ -461,9 +547,9 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
         border="1px solid"
         borderColor="border"
         color={scheme.chakraToken}
-        cursor={mounted ? "pointer" : "default"}
+        cursor={mounted ? 'pointer' : 'default'}
         opacity={mounted ? 1 : 0.6}
-        _hover={mounted ? { bg: "bg" } : undefined}
+        _hover={mounted ? { bg: 'bg' } : undefined}
         onClick={() => {
           if (!mounted) return;
           setDropdownOpen((o) => !o);
@@ -505,8 +591,8 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
                 px="4"
                 py="2.5"
                 border="none"
-                bg={isActive ? scheme.hoverBgLight : "transparent"}
-                color={isActive ? scheme.chakraToken : "text.body"}
+                bg={isActive ? scheme.hoverBgLight : 'transparent'}
+                color={isActive ? scheme.chakraToken : 'text.body'}
                 cursor="pointer"
                 textAlign="left"
                 onClick={() => {
@@ -515,17 +601,15 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
                 }}
                 _hover={{ bg: scheme.hoverBgLight, color: scheme.chakraToken }}
                 _dark={{
-                  bg: isActive ? scheme.hoverBgDark : "transparent",
+                  bg: isActive ? scheme.hoverBgDark : 'transparent',
                   _hover: { bg: scheme.hoverBgDark },
                 }}
               >
-                <Box flexShrink={0}>
-                  {option.icon}
-                </Box>
+                <Box flexShrink={0}>{option.icon}</Box>
                 <Box
                   as="span"
                   fontSize="sm"
-                  fontWeight={isActive ? "600" : "500"}
+                  fontWeight={isActive ? '600' : '500'}
                   fontFamily="var(--font-body)"
                 >
                   {option.label}
@@ -587,9 +671,9 @@ function SidebarNavItem({
       px="3"
       py="2.5"
       borderRadius="lg"
-      borderLeftRadius={hasSubItems ? "lg" : "none"}
-      borderTopLeftRadius={hasSubItems ? "lg" : "none"}
-      borderBottomLeftRadius={hasSubItems ? "lg" : "none"}
+      borderLeftRadius={hasSubItems ? 'lg' : 'none'}
+      borderTopLeftRadius={hasSubItems ? 'lg' : 'none'}
+      borderBottomLeftRadius={hasSubItems ? 'lg' : 'none'}
       position="relative"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -597,22 +681,14 @@ function SidebarNavItem({
       // the wrapped link element produced by render().
       onClick={!hasSubItems ? onClick : undefined}
       style={{
-        background: isActive
-          ? scheme.activeBgLight
-          : hovered
-            ? scheme.hoverBgLight
-            : "transparent",
+        background: isActive ? scheme.activeBgLight : hovered ? scheme.hoverBgLight : 'transparent',
         boxShadow: isActive && !hasSubItems ? `inset 3px 0 0 ${scheme.solid}` : undefined,
         outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
-        outlineOffset: focusVisible ? "2px" : undefined,
-        transition: "background 0.15s ease, box-shadow 0.15s ease",
+        outlineOffset: focusVisible ? '2px' : undefined,
+        transition: 'background 0.15s ease, box-shadow 0.15s ease',
       }}
       _dark={{
-        bg: isActive
-          ? scheme.activeBgDark
-          : hovered
-            ? scheme.hoverBgDark
-            : "transparent",
+        bg: isActive ? scheme.activeBgDark : hovered ? scheme.hoverBgDark : 'transparent',
       }}
     >
       {/* Icon */}
@@ -622,9 +698,9 @@ function SidebarNavItem({
           style={{
             color: isColoured ? scheme.solid : undefined,
             opacity: isColoured ? 1 : hovered ? 0.85 : 0.6,
-            transition: "color 0.15s ease, opacity 0.15s ease",
+            transition: 'color 0.15s ease, opacity 0.15s ease',
           }}
-          color={isColoured ? scheme.chakraToken : "text.body"}
+          color={isColoured ? scheme.chakraToken : 'text.body'}
         >
           {item.icon}
         </Box>
@@ -635,19 +711,19 @@ function SidebarNavItem({
         as="span"
         flex="1"
         fontSize="sm"
-        fontWeight={isColoured ? "600" : "500"}
+        fontWeight={isColoured ? '600' : '500'}
         fontFamily="var(--font-body)"
         style={{
           color: isColoured ? scheme.solid : undefined,
-          transition: "color 0.15s ease",
+          transition: 'color 0.15s ease',
         }}
-        color={isColoured ? scheme.chakraToken : "text.body"}
+        color={isColoured ? scheme.chakraToken : 'text.body'}
       >
         {item.label}
       </Box>
 
       {/* Numeric badge */}
-      {typeof item.badge === "number" && !hasSubItems && (
+      {typeof item.badge === 'number' && !hasSubItems && (
         <Box
           as="span"
           display="inline-flex"
@@ -662,7 +738,7 @@ function SidebarNavItem({
           lineHeight="1"
           style={{
             background: scheme.solid,
-            color: "#fff",
+            color: '#fff',
           }}
         >
           {item.badge}
@@ -685,10 +761,7 @@ function SidebarNavItem({
 
       {/* Chevron for sub-items */}
       {hasSubItems && (
-        <Box
-          flexShrink={0}
-          color="text.muted"
-        >
+        <Box flexShrink={0} color="text.muted">
           <ChevronDownIcon open={expanded} />
         </Box>
       )}
@@ -706,17 +779,17 @@ function SidebarNavItem({
           aria-controls={subMenuId}
           onClick={() => setExpanded((e) => !e)}
           onFocus={(e) => {
-            setFocusVisible(e.currentTarget.matches(":focus-visible"));
+            setFocusVisible(e.currentTarget.matches(':focus-visible'));
           }}
           onBlur={() => setFocusVisible(false)}
           style={{
-            display: "block",
-            width: "100%",
-            background: "none",
-            border: "none",
+            display: 'block',
+            width: '100%',
+            background: 'none',
+            border: 'none',
             padding: 0,
-            cursor: "pointer",
-            textAlign: "left",
+            cursor: 'pointer',
+            textAlign: 'left',
           }}
         >
           {rowContent}
@@ -730,9 +803,9 @@ function SidebarNavItem({
         <motion.div
           id={subMenuId}
           initial={false}
-          animate={expanded ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+          animate={expanded ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
           transition={{ duration: 0.2, ease: [0.0, 0.0, 0.2, 1.0] }}
-          style={{ overflow: "hidden" }}
+          style={{ overflow: 'hidden' }}
           aria-hidden={!expanded}
         >
           <Box
@@ -771,9 +844,9 @@ interface MobileBottomNavProps {
 
 let mobileNavKfInjected = false;
 function injectMobileNavKeyframe() {
-  if (typeof document === "undefined" || mobileNavKfInjected) return;
-  const s = document.createElement("style");
-  s.setAttribute("data-medixdeck", "mobile-nav");
+  if (typeof document === 'undefined' || mobileNavKfInjected) return;
+  const s = document.createElement('style');
+  s.setAttribute('data-medixdeck', 'mobile-nav');
   s.textContent = `
     @keyframes medixMobileNavIn {
       from { transform: translateY(100%); opacity: 0; }
@@ -785,14 +858,16 @@ function injectMobileNavKeyframe() {
 }
 
 function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
-  React.useEffect(() => { injectMobileNavKeyframe(); }, []);
+  React.useEffect(() => {
+    injectMobileNavKeyframe();
+  }, []);
 
   return (
     <Box
       as="nav"
       aria-label="Mobile bottom navigation"
       // Responsive: visible on mobile, hidden on md+
-      display={{ base: "flex", md: "none" }}
+      display={{ base: 'flex', md: 'none' }}
       position="fixed"
       bottom="0"
       left="0"
@@ -804,11 +879,11 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
       alignItems="center"
       style={{
         height: 64,
-        paddingBottom: "env(safe-area-inset-bottom, 0px)",
-        boxShadow: "0 -8px 40px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.04)",
-        backdropFilter: "blur(14px)",
-        WebkitBackdropFilter: "blur(14px)",
-        animation: "medixMobileNavIn 0.42s cubic-bezier(0.22,1,0.36,1) both",
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        boxShadow: '0 -8px 40px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.04)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        animation: 'medixMobileNavIn 0.42s cubic-bezier(0.22,1,0.36,1) both',
       }}
     >
       {items.slice(0, 5).map((item) => {
@@ -817,37 +892,37 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
         const tabContent = (
           <motion.div
             whileTap={{ scale: 0.82 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30, mass: 0.7 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 0.7 }}
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
               flex: 1,
-              height: "100%",
-              padding: "6px 4px 4px",
-              cursor: "pointer",
-              position: "relative",
+              height: '100%',
+              padding: '6px 4px 4px',
+              cursor: 'pointer',
+              position: 'relative',
               gap: 4,
-              textDecoration: "none",
-              WebkitTapHighlightColor: "transparent",
+              textDecoration: 'none',
+              WebkitTapHighlightColor: 'transparent',
             }}
           >
             {/* Animated pill capsule — scales in behind the active icon */}
             <div
               aria-hidden="true"
               style={{
-                position: "absolute",
+                position: 'absolute',
                 top: 7,
-                left: "50%",
+                left: '50%',
                 width: 44,
                 height: 28,
                 borderRadius: 14,
                 background: scheme.activeBgLight,
                 transform: `translateX(-50%) scaleX(${isActive ? 1 : 0})`,
                 opacity: isActive ? 1 : 0,
-                transition: "transform 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.2s ease",
-                pointerEvents: "none",
+                transition: 'transform 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.2s ease',
+                pointerEvents: 'none',
               }}
             />
 
@@ -858,40 +933,40 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
               justifyContent="center"
               position="relative"
               zIndex={1}
-              color={isActive ? scheme.chakraToken : "text.muted"}
+              color={isActive ? scheme.chakraToken : 'text.muted'}
               style={{
-                transition: "color 0.18s ease",
+                transition: 'color 0.18s ease',
                 opacity: isActive ? 1 : 0.6,
               }}
             >
               {item.icon}
 
               {/* Badge bubble */}
-              {typeof item.badge === "number" && item.badge > 0 && (
+              {typeof item.badge === 'number' && item.badge > 0 && (
                 <span
                   aria-label={`${item.badge} unread`}
                   style={{
-                    position: "absolute",
+                    position: 'absolute',
                     top: -5,
                     right: -6,
                     minWidth: 16,
                     height: 16,
                     borderRadius: 8,
                     background: scheme.solid,
-                    color: "#fff",
+                    color: '#fff',
                     fontSize: 9,
                     fontWeight: 700,
-                    fontFamily: "var(--font-body)",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "0 3px",
+                    fontFamily: 'var(--font-body)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '0 3px',
                     lineHeight: 1,
-                    boxShadow: "0 0 0 2px var(--chakra-colors-bg, #fff)",
-                    pointerEvents: "none",
+                    boxShadow: '0 0 0 2px var(--chakra-colors-bg, #fff)',
+                    pointerEvents: 'none',
                   }}
                 >
-                  {item.badge > 99 ? "99+" : item.badge}
+                  {item.badge > 99 ? '99+' : item.badge}
                 </span>
               )}
             </Box>
@@ -900,16 +975,16 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
             <Box
               as="span"
               fontSize="2xs"
-              fontWeight={isActive ? "700" : "500"}
+              fontWeight={isActive ? '700' : '500'}
               fontFamily="var(--font-body)"
               textAlign="center"
               lineHeight="1"
               position="relative"
               zIndex={1}
-              color={isActive ? scheme.chakraToken : "text.muted"}
+              color={isActive ? scheme.chakraToken : 'text.muted'}
               style={{
-                transition: "color 0.18s ease",
-                letterSpacing: isActive ? "-0.01em" : "0",
+                transition: 'color 0.18s ease',
+                letterSpacing: isActive ? '-0.01em' : '0',
               }}
             >
               {item.label}
@@ -917,7 +992,11 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
           </motion.div>
         );
 
-        const navItem: DashboardNavItem = { label: item.label, href: item.href, isActive: item.isActive };
+        const navItem: DashboardNavItem = {
+          label: item.label,
+          href: item.href,
+          isActive: item.isActive,
+        };
 
         return (
           <Box
@@ -927,7 +1006,7 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
             alignItems="stretch"
             justifyContent="center"
             h="16"
-            style={{ textDecoration: "none" }}
+            style={{ textDecoration: 'none' }}
           >
             {renderLink(navItem, tabContent)}
           </Box>
@@ -940,24 +1019,60 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
 // ─── MedixScoreCard (internal sidebar component) ─────────────────────────────
 
 const TIER_CONFIG = {
-  bronze: { label: "Bronze Clinician", color: "#92400E", ring: "#D97706", bg: "rgba(217,119,6,0.10)" },
-  silver: { label: "Silver Clinician", color: "#475569", ring: "#94A3B8", bg: "rgba(148,163,184,0.10)" },
-  gold: { label: "Gold Clinician", color: "#D97706", ring: "#F59E0B", bg: "rgba(245,158,11,0.10)" },
-  platinum: { label: "Platinum Clinician", color: "#0284C7", ring: "#38BDF8", bg: "rgba(56,189,248,0.10)" },
-  diamond: { label: "Diamond Clinician", color: "#7C3AED", ring: "#A78BFA", bg: "rgba(167,139,250,0.10)" },
+  bronze: {
+    label: 'Bronze Clinician',
+    color: '#92400E',
+    ring: '#D97706',
+    bg: 'rgba(217,119,6,0.10)',
+  },
+  silver: {
+    label: 'Silver Clinician',
+    color: '#475569',
+    ring: '#94A3B8',
+    bg: 'rgba(148,163,184,0.10)',
+  },
+  gold: { label: 'Gold Clinician', color: '#D97706', ring: '#F59E0B', bg: 'rgba(245,158,11,0.10)' },
+  platinum: {
+    label: 'Platinum Clinician',
+    color: '#0284C7',
+    ring: '#38BDF8',
+    bg: 'rgba(56,189,248,0.10)',
+  },
+  diamond: {
+    label: 'Diamond Clinician',
+    color: '#7C3AED',
+    ring: '#A78BFA',
+    bg: 'rgba(167,139,250,0.10)',
+  },
 } as const;
 
 const AwardIcon = ({ color }: { color: string }) => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-    stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color}
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <circle cx="12" cy="8" r="6" />
     <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
   </svg>
 );
 
 const ChevronRightIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <polyline points="9 18 15 12 9 6" />
   </svg>
 );
@@ -970,7 +1085,12 @@ function SidebarScoreCard({
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
 }) {
   const tier = TIER_CONFIG[data.tier];
-  const initials = data.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const initials = data.name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
   const cardInner = (
     <Box
@@ -981,8 +1101,10 @@ function SidebarScoreCard({
       borderColor="border"
       bg="bg"
       overflow="hidden"
-      style={{ cursor: data.link ? "pointer" : "default" }}
-      _hover={data.link ? { borderColor: tier.ring, boxShadow: `0 0 0 1px ${tier.ring}40` } : undefined}
+      style={{ cursor: data.link ? 'pointer' : 'default' }}
+      _hover={
+        data.link ? { borderColor: tier.ring, boxShadow: `0 0 0 1px ${tier.ring}40` } : undefined
+      }
       transition="border-color 0.15s ease, box-shadow 0.15s ease"
     >
       {/* ── Top row: avatar + role/name + chevron ── */}
@@ -992,7 +1114,7 @@ function SidebarScoreCard({
           style={{
             flexShrink: 0,
             padding: 2,
-            borderRadius: "50%",
+            borderRadius: '50%',
             background: `linear-gradient(135deg, ${tier.ring}, ${tier.color})`,
           }}
         >
@@ -1000,17 +1122,28 @@ function SidebarScoreCard({
             <img
               src={data.avatarSrc}
               alt={data.name}
-              style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", display: "block" }}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                objectFit: 'cover',
+                display: 'block',
+              }}
             />
           ) : (
             <div
               style={{
-                width: 40, height: 40, borderRadius: "50%",
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
                 background: tier.bg,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 13, fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 13,
+                fontWeight: 700,
                 color: tier.color,
-                fontFamily: "var(--font-heading)",
+                fontFamily: 'var(--font-heading)',
               }}
             >
               {initials}
@@ -1026,7 +1159,7 @@ function SidebarScoreCard({
             fontFamily="var(--font-heading)"
             color="text.heading"
             lineHeight="1.2"
-            style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+            style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
           >
             {data.role}
           </Box>
@@ -1036,7 +1169,7 @@ function SidebarScoreCard({
             fontFamily="var(--font-body)"
             lineHeight="1.3"
             mt="0.5"
-            style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+            style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
           >
             {data.name}
           </Box>
@@ -1071,7 +1204,7 @@ function SidebarScoreCard({
             fontSize="sm"
             fontWeight="500"
             fontFamily="var(--font-body)"
-            style={{ color: tier.color, whiteSpace: "nowrap" }}
+            style={{ color: tier.color, whiteSpace: 'nowrap' }}
           >
             {tier.label}
           </Box>
@@ -1081,9 +1214,9 @@ function SidebarScoreCard({
             color="text.heading"
             fontFamily="var(--font-body)"
             ml="1"
-            style={{ whiteSpace: "nowrap" }}
+            style={{ whiteSpace: 'nowrap' }}
           >
-            {data.medixScore.toLocaleString()} {Number(data.medixScore) === 1 ? "pt" : "pts"}
+            {data.medixScore.toLocaleString()} {Number(data.medixScore) === 1 ? 'pt' : 'pts'}
           </Box>
         </Box>
       </Box>
@@ -1129,7 +1262,7 @@ function Sidebar({
       {/* Mobile overlay */}
       {isOpen && (
         <Box
-          display={{ base: "block", md: "none" }}
+          display={{ base: 'block', md: 'none' }}
           position="fixed"
           inset="0"
           zIndex="overlay"
@@ -1148,7 +1281,7 @@ function Sidebar({
         left="0"
         bottom="0"
         w={`${sidebarWidth}px`}
-        zIndex={{ base: "modal", md: "sticky" }}
+        zIndex={{ base: 'modal', md: 'sticky' }}
         bg="bg"
         borderRight="1px solid"
         borderColor="border"
@@ -1156,8 +1289,8 @@ function Sidebar({
         flexDirection="column"
         // Mobile: slide in/out
         transform={{
-          base: isOpen ? "translateX(0)" : `translateX(-${sidebarWidth + 10}px)`,
-          md: "translateX(0)",
+          base: isOpen ? 'translateX(0)' : `translateX(-${sidebarWidth + 10}px)`,
+          md: 'translateX(0)',
         }}
         transition="transform 0.25s cubic-bezier(0.22,1,0.36,1)"
       >
@@ -1177,11 +1310,7 @@ function Sidebar({
 
         {/* ── Doctor score card (desktop only, optional) ── */}
         {scoreCard && (
-          <Box
-            display={{ base: "none", md: "block" }}
-            flexShrink={0}
-            pt="3"
-          >
+          <Box display={{ base: 'none', md: 'block' }} flexShrink={0} pt="3">
             <SidebarScoreCard data={scoreCard} renderLink={renderLink} />
           </Box>
         )}
@@ -1194,7 +1323,7 @@ function Sidebar({
                 <Box
                   px="3"
                   pb="2"
-                  pt={gi > 0 ? "2" : undefined}
+                  pt={gi > 0 ? '2' : undefined}
                   fontSize="10px"
                   fontWeight="700"
                   letterSpacing="widest"
@@ -1221,14 +1350,7 @@ function Sidebar({
         </Box>
 
         {/* ── Logout ── */}
-        <Box
-          px="3"
-          pb="4"
-          pt="2"
-          flexShrink={0}
-          borderTop="1px solid"
-          borderColor="border"
-        >
+        <Box px="3" pb="4" pt="2" flexShrink={0} borderTop="1px solid" borderColor="border">
           <Box
             as="button"
             display="flex"
@@ -1248,9 +1370,9 @@ function Sidebar({
               onLogout?.();
             }}
             style={{
-              background: logoutHovered ? RED_HOVER_BG : "transparent",
+              background: logoutHovered ? RED_HOVER_BG : 'transparent',
               color: RED,
-              transition: "background 0.15s ease",
+              transition: 'background 0.15s ease',
             }}
           >
             <Box flexShrink={0} style={{ color: RED }}>
@@ -1312,8 +1434,8 @@ function TopBar({
         setDropdownOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
@@ -1329,13 +1451,13 @@ function TopBar({
       h="16"
       display="flex"
       alignItems="center"
-      px={{ base: "4", md: "6" }}
+      px={{ base: '4', md: '6' }}
       gap="4"
     >
       {/* Mobile hamburger */}
       <Box
         as="button"
-        display={{ base: "flex", md: "none" }}
+        display={{ base: 'flex', md: 'none' }}
         alignItems="center"
         justifyContent="center"
         border="none"
@@ -1344,9 +1466,9 @@ function TopBar({
         cursor="pointer"
         color="text.body"
         borderRadius="md"
-        _hover={{ bg: "bg.subtle" }}
+        _hover={{ bg: 'bg.subtle' }}
         onClick={onMenuToggle}
-        aria-label={isSidebarOpen ? "Close navigation menu" : "Open navigation menu"}
+        aria-label={isSidebarOpen ? 'Close navigation menu' : 'Open navigation menu'}
         aria-expanded={isSidebarOpen}
       >
         {isSidebarOpen ? <CloseMenuIcon /> : <MenuIcon />}
@@ -1356,13 +1478,13 @@ function TopBar({
       <Box flex="1" minW="0">
         <Box
           as="p"
-          fontSize={{ base: "sm", md: "md" }}
+          fontSize={{ base: 'sm', md: 'md' }}
           fontWeight="700"
           fontFamily="var(--font-body)"
           color="text.heading"
           lineHeight="1.3"
         >
-          {greeting},{" "}
+          {greeting},{' '}
           <Box as="span" fontWeight="700" color="text.heading">
             {user.name}
           </Box>
@@ -1370,13 +1492,13 @@ function TopBar({
         {greetingSubtext && (
           <Box
             as="p"
-            fontSize={{ base: "2xs", md: "xs" }}
+            fontSize={{ base: '2xs', md: 'xs' }}
             fontWeight="400"
             fontFamily="var(--font-body)"
             color="text.heading"
             mt="0.5"
             lineHeight="1.4"
-            style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+            style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
           >
             {greetingSubtext}
           </Box>
@@ -1401,18 +1523,14 @@ function TopBar({
           cursor="pointer"
           borderRadius="full"
           p="1"
-          _hover={{ bg: "bg.subtle" }}
+          _hover={{ bg: 'bg.subtle' }}
           onClick={() => setDropdownOpen((o) => !o)}
           aria-haspopup="menu"
           aria-expanded={dropdownOpen}
           aria-controls={dropdownOpen ? menuDropdownId : undefined}
           aria-label="User menu"
         >
-          <Avatar
-            name={user.name}
-            src={user.avatarSrc}
-            size="sm"
-          />
+          <Avatar name={user.name} src={user.avatarSrc} size="sm" />
           <Box color="text.muted">
             <ChevronDownIcon open={dropdownOpen} />
           </Box>
@@ -1448,12 +1566,7 @@ function TopBar({
                 {user.name}
               </Box>
               {user.email && (
-                <Box
-                  fontSize="xs"
-                  color="text.muted"
-                  fontFamily="var(--font-body)"
-                  mt="0.5"
-                >
+                <Box fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mt="0.5">
                   {user.email}
                 </Box>
               )}
@@ -1546,9 +1659,9 @@ function DropdownItem({
       onMouseLeave={() => setHovered(false)}
       onClick={onClick}
       style={{
-        background: hovered ? (isDanger ? RED_HOVER_BG : scheme.hoverBgLight) : "transparent",
+        background: hovered ? (isDanger ? RED_HOVER_BG : scheme.hoverBgLight) : 'transparent',
         color: isDanger ? RED : undefined,
-        transition: "background 0.12s ease",
+        transition: 'background 0.12s ease',
       }}
     >
       {icon && (
@@ -1562,7 +1675,7 @@ function DropdownItem({
         fontWeight="500"
         fontFamily="var(--font-body)"
         style={{ color: isDanger ? RED : undefined }}
-        color={isDanger ? undefined : "text.body"}
+        color={isDanger ? undefined : 'text.body'}
       >
         {label}
       </Box>
@@ -1644,7 +1757,7 @@ export function DashboardLayout({
   dropdownItems,
   topBarSlot,
   sidebarWidth = 220,
-  colorScheme = "blue",
+  colorScheme = 'blue',
   mobileNavItems,
   scoreCard,
   ...rest
@@ -1657,12 +1770,7 @@ export function DashboardLayout({
   const resolvedLogo = logo ?? <Logo variant={colorScheme} height={26} />;
 
   return (
-    <Box
-      display="flex"
-      minH="100vh"
-      bg="bg"
-      {...rest}
-    >
+    <Box display="flex" minH="100vh" bg="bg" {...rest}>
       {/* ── Sidebar ── */}
       <Sidebar
         logo={resolvedLogo}
@@ -1682,7 +1790,7 @@ export function DashboardLayout({
         display="flex"
         flexDirection="column"
         minW="0"
-        ml={{ base: "0", md: `${sidebarWidth}px` }}
+        ml={{ base: '0', md: `${sidebarWidth}px` }}
         transition="margin-left 0.25s cubic-bezier(0.22,1,0.36,1)"
       >
         {/* Top bar */}
@@ -1707,10 +1815,10 @@ export function DashboardLayout({
           flex="1"
           overflowY="auto"
           bg="bg.subtle"
-          p={{ base: "4", md: "6", lg: "8" }}
+          p={{ base: '4', md: '6', lg: '8' }}
           // Add bottom padding on mobile when bottom nav is present so content
           // is never hidden behind the fixed bar (h=16 = 4rem, +1rem clearance)
-          pb={hasMobileNav ? { base: "20", md: "6", lg: "8" } : { base: "4", md: "6", lg: "8" }}
+          pb={hasMobileNav ? { base: '20', md: '6', lg: '8' } : { base: '4', md: '6', lg: '8' }}
         >
           {children}
         </Box>
@@ -1718,14 +1826,10 @@ export function DashboardLayout({
 
       {/* ── Mobile bottom navigation ── */}
       {hasMobileNav && (
-        <MobileBottomNav
-          items={mobileNavItems!}
-          renderLink={renderLink}
-          scheme={scheme}
-        />
+        <MobileBottomNav items={mobileNavItems!} renderLink={renderLink} scheme={scheme} />
       )}
     </Box>
   );
 }
 
-DashboardLayout.displayName = "MedixDashboardLayout";
+DashboardLayout.displayName = 'MedixDashboardLayout';

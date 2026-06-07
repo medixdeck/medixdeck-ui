@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import React from 'react';
+import { Box, Text } from '@chakra-ui/react';
 
 // ─── Brand palette (mirrors Button.tsx exactly) ───────────────────────────────
 const COLORS = {
-  blue:   { solid: "#0685FF", ring: "rgba(6,133,255,0.30)",  tint: "#E8F3FF" },
-  purple: { solid: "#7700CC", ring: "rgba(119,0,204,0.25)",  tint: "#F9F0FF" },
-  green:  { solid: "#1B7A38", ring: "rgba(27,122,56,0.25)",  tint: "#F0FDF4" },
+  blue: { solid: '#0685FF', ring: 'rgba(6,133,255,0.30)', tint: '#E8F3FF' },
+  purple: { solid: '#7700CC', ring: 'rgba(119,0,204,0.25)', tint: '#F9F0FF' },
+  green: { solid: '#1B7A38', ring: 'rgba(27,122,56,0.25)', tint: '#F0FDF4' },
 } as const;
 
 type ColorScheme = keyof typeof COLORS;
@@ -48,7 +48,7 @@ export interface CheckboxProps {
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {
-      colorScheme = "blue",
+      colorScheme = 'blue',
       checked: controlledChecked,
       defaultChecked = false,
       onChange,
@@ -60,7 +60,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       value,
       id,
     },
-    ref
+    ref,
   ) => {
     const c = COLORS[colorScheme];
     const uid = id ?? React.useId();
@@ -80,16 +80,16 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       width: 18,
       height: 18,
       borderRadius: 4,
-      border: `2px solid ${isOn || indeterminate ? c.solid : "var(--medix-form-border, #CBD5E1)"}`,
-      background: isOn || indeterminate ? c.solid : "transparent",
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
+      border: `2px solid ${isOn || indeterminate ? c.solid : 'var(--medix-form-border, #CBD5E1)'}`,
+      background: isOn || indeterminate ? c.solid : 'transparent',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       flexShrink: 0,
       marginTop: 2,
-      transition: "background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease",
-      boxShadow: focused ? `0 0 0 3px ${c.ring}` : "none",
-      pointerEvents: "none",
+      transition: 'background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease',
+      boxShadow: focused ? `0 0 0 3px ${c.ring}` : 'none',
+      pointerEvents: 'none',
     };
 
     return (
@@ -97,11 +97,11 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         <label
           htmlFor={uid}
           style={{
-            display: "inline-flex",
-            alignItems: "flex-start",
+            display: 'inline-flex',
+            alignItems: 'flex-start',
             gap: 10,
-            cursor: disabled ? "not-allowed" : "pointer",
-            userSelect: "none",
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            userSelect: 'none',
           }}
         >
           {/* Hidden native input — provides all a11y + form behaviour */}
@@ -117,13 +117,13 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             style={{
-              position: "absolute",
+              position: 'absolute',
               width: 1,
               height: 1,
               opacity: 0,
               margin: 0,
               padding: 0,
-              pointerEvents: "none",
+              pointerEvents: 'none',
             }}
           />
 
@@ -151,11 +151,23 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           {/* Label + description */}
           {children && (
             <Box>
-              <Text as="span" fontFamily="var(--font-body)" fontSize="md" color="text.body" lineHeight="1.5">
+              <Text
+                as="span"
+                fontFamily="var(--font-body)"
+                fontSize="md"
+                color="text.body"
+                lineHeight="1.5"
+              >
                 {children}
               </Text>
               {description && (
-                <Text display="block" fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mt="0.5">
+                <Text
+                  display="block"
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mt="0.5"
+                >
                   {description}
                 </Text>
               )}
@@ -171,10 +183,10 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         )}
       </Box>
     );
-  }
+  },
 );
 
-Checkbox.displayName = "MedixCheckbox";
+Checkbox.displayName = 'MedixCheckbox';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RADIOGROUP
@@ -194,8 +206,8 @@ export interface RadioGroupProps {
   onChange?: (value: string) => void;
   options: RadioOption[];
   /** Brand color for the selected dot */
-  colorScheme?: "blue" | "purple";
-  direction?: "row" | "column";
+  colorScheme?: 'blue' | 'purple';
+  direction?: 'row' | 'column';
 }
 
 /**
@@ -218,11 +230,11 @@ export function RadioGroup({
   value: controlledValue,
   onChange,
   options,
-  colorScheme = "blue",
-  direction = "column",
+  colorScheme = 'blue',
+  direction = 'column',
 }: RadioGroupProps) {
   const c = COLORS[colorScheme];
-  const [localValue, setLocalValue] = React.useState<string>("");
+  const [localValue, setLocalValue] = React.useState<string>('');
   const selectedValue = controlledValue !== undefined ? controlledValue : localValue;
 
   const handleChange = (val: string) => {
@@ -234,7 +246,7 @@ export function RadioGroup({
     <Box
       display="flex"
       flexDirection={direction}
-      gap={direction === "row" ? "5" : "3"}
+      gap={direction === 'row' ? '5' : '3'}
       role="radiogroup"
     >
       {options.map((opt) => {
@@ -277,12 +289,12 @@ function RadioItem({
   return (
     <label
       style={{
-        display: "inline-flex",
-        alignItems: "flex-start",
+        display: 'inline-flex',
+        alignItems: 'flex-start',
         gap: 10,
-        cursor: option.disabled ? "not-allowed" : "pointer",
+        cursor: option.disabled ? 'not-allowed' : 'pointer',
         opacity: option.disabled ? 0.55 : 1,
-        userSelect: "none",
+        userSelect: 'none',
       }}
     >
       {/* Hidden native radio input */}
@@ -296,13 +308,13 @@ function RadioItem({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         style={{
-          position: "absolute",
+          position: 'absolute',
           width: 1,
           height: 1,
           opacity: 0,
           margin: 0,
           padding: 0,
-          pointerEvents: "none",
+          pointerEvents: 'none',
         }}
       />
 
@@ -312,37 +324,49 @@ function RadioItem({
         style={{
           width: 18,
           height: 18,
-          borderRadius: "50%",
-          border: `2px solid ${isSelected ? solidColor : "var(--medix-form-border, #CBD5E1)"}`,
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
+          borderRadius: '50%',
+          border: `2px solid ${isSelected ? solidColor : 'var(--medix-form-border, #CBD5E1)'}`,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           flexShrink: 0,
           marginTop: 2,
-          transition: "border-color 0.15s ease, box-shadow 0.15s ease",
-          boxShadow: focused ? `0 0 0 3px ${ring}` : "none",
-          pointerEvents: "none",
+          transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+          boxShadow: focused ? `0 0 0 3px ${ring}` : 'none',
+          pointerEvents: 'none',
         }}
       >
         <span
           style={{
             width: 8,
             height: 8,
-            borderRadius: "50%",
+            borderRadius: '50%',
             background: solidColor,
-            transform: isSelected ? "scale(1)" : "scale(0)",
-            transition: "transform 0.15s ease",
+            transform: isSelected ? 'scale(1)' : 'scale(0)',
+            transition: 'transform 0.15s ease',
           }}
         />
       </span>
 
       {/* Label text */}
       <Box>
-        <Text as="span" fontFamily="var(--font-body)" fontSize="md" color="text.body" lineHeight="1.5">
+        <Text
+          as="span"
+          fontFamily="var(--font-body)"
+          fontSize="md"
+          color="text.body"
+          lineHeight="1.5"
+        >
           {option.label}
         </Text>
         {option.description && (
-          <Text display="block" fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mt="0.5">
+          <Text
+            display="block"
+            fontSize="xs"
+            color="text.muted"
+            fontFamily="var(--font-body)"
+            mt="0.5"
+          >
             {option.description}
           </Text>
         )}

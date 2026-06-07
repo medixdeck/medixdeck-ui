@@ -1,8 +1,8 @@
-import React from "react";
-import { Box, Tag as ChakraTag, TagLabel, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, Tag as ChakraTag, TagLabel, type BoxProps } from '@chakra-ui/react';
 
-export type TagVariant = "solid" | "subtle" | "outline";
-export type TagColorScheme = "blue" | "purple" | "green" | "gray" | "red" | "amber";
+export type TagVariant = 'solid' | 'subtle' | 'outline';
+export type TagColorScheme = 'blue' | 'purple' | 'green' | 'gray' | 'red' | 'amber';
 
 export interface TagProps extends BoxProps {
   variant?: TagVariant;
@@ -13,18 +13,18 @@ export interface TagProps extends BoxProps {
 }
 
 const colorPaletteMap: Record<TagColorScheme, string> = {
-  blue: "blue",
-  purple: "purple",
-  green: "green",
-  gray: "gray",
-  red: "red",
-  amber: "amber",
+  blue: 'blue',
+  purple: 'purple',
+  green: 'green',
+  gray: 'gray',
+  red: 'red',
+  amber: 'amber',
 };
 
 const variantStyleMap: Record<TagVariant, Record<string, string>> = {
-  solid: { bg: "blue.500", color: "white" },
-  subtle: { bg: "blue.100", color: "blue.700" },
-  outline: { bg: "transparent", borderColor: "blue.400", color: "blue.600" },
+  solid: { bg: 'blue.500', color: 'white' },
+  subtle: { bg: 'blue.100', color: 'blue.700' },
+  outline: { bg: 'transparent', borderColor: 'blue.400', color: 'blue.600' },
 };
 
 /**
@@ -38,7 +38,7 @@ const variantStyleMap: Record<TagVariant, Record<string, string>> = {
  * ```
  */
 export const Tag = React.forwardRef<HTMLDivElement, TagProps>(
-  ({ variant = "subtle", colorScheme = "blue", onClose, children, ...props }, ref) => {
+  ({ variant = 'subtle', colorScheme = 'blue', onClose, children, ...props }, ref) => {
     return (
       <Box
         ref={ref}
@@ -53,17 +53,17 @@ export const Tag = React.forwardRef<HTMLDivElement, TagProps>(
         fontWeight="medium"
         fontFamily="var(--font-body)"
         border="1px solid"
-        borderColor={variant === "outline" ? `${colorScheme}.400` : "transparent"}
+        borderColor={variant === 'outline' ? `${colorScheme}.400` : 'transparent'}
         bg={
-          variant === "solid"
+          variant === 'solid'
             ? `${colorScheme}.500`
-            : variant === "subtle"
-            ? `${colorScheme}.100`
-            : "transparent"
+            : variant === 'subtle'
+              ? `${colorScheme}.100`
+              : 'transparent'
         }
-        color={variant === "solid" ? "white" : `${colorScheme}.700`}
+        color={variant === 'solid' ? 'white' : `${colorScheme}.700`}
         transition="all 0.15s"
-        cursor={onClose ? "default" : undefined}
+        cursor={onClose ? 'default' : undefined}
         {...props}
       >
         {children}
@@ -88,7 +88,7 @@ export const Tag = React.forwardRef<HTMLDivElement, TagProps>(
         )}
       </Box>
     );
-  }
+  },
 );
 
-Tag.displayName = "MedixTag";
+Tag.displayName = 'MedixTag';

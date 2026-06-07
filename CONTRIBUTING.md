@@ -46,13 +46,13 @@ Follow the pattern below — **every component gets**:
 - A `displayName` for React DevTools
 - `"use client"` if it uses state or effects
 
-```tsx
-"use client";
+````tsx
+'use client';
 
-import React from "react";
-import { Box, type BoxProps, Text } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps, Text } from '@chakra-ui/react';
 
-export interface MyComponentProps extends Omit<BoxProps, "onChange"> {
+export interface MyComponentProps extends Omit<BoxProps, 'onChange'> {
   /** The current value */
   value?: string;
   /** Called when value changes */
@@ -77,15 +77,15 @@ export function MyComponent({ value, onChange, ...props }: MyComponentProps) {
   );
 }
 
-MyComponent.displayName = "MedixMyComponent";
-```
+MyComponent.displayName = 'MedixMyComponent';
+````
 
 ### 3. Export from `lib/index.ts`
 
 ```ts
 // At the appropriate section in lib/index.ts:
-export { MyComponent } from "./components/<category>/MyComponent";
-export type { MyComponentProps } from "./components/<category>/MyComponent";
+export { MyComponent } from './components/<category>/MyComponent';
+export type { MyComponentProps } from './components/<category>/MyComponent';
 ```
 
 ### 4. Add to the dev preview
@@ -136,8 +136,8 @@ If you add, rename, or remove any public export, update all of these in the same
 ### Typography
 
 ```tsx
-fontFamily="var(--font-body)"     // for body text, labels, form fields
-fontFamily="var(--font-heading)"  // for titles and headings
+fontFamily = 'var(--font-body)'; // for body text, labels, form fields
+fontFamily = 'var(--font-heading)'; // for titles and headings
 ```
 
 ### Dark mode
@@ -158,15 +158,15 @@ _focusVisible={{ outline: "2px solid", outlineColor: "blue.500", outlineOffset: 
 Use **Framer Motion** for entrance/exit animations (e.g. panels, menus, modals):
 
 ```tsx
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
 // ⚠️ Framer Motion v12 requires bezier tuples, not string easing names
 const EASE_OUT = [0.0, 0.0, 0.2, 1.0] as [number, number, number, number];
 
 const panelVariants: Variants = {
-  hidden:  { opacity: 0, y: -8 },
+  hidden: { opacity: 0, y: -8 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.22, ease: EASE_OUT } },
-  exit:    { opacity: 0, y: -6, transition: { duration: 0.16, ease: EASE_OUT } },
+  exit: { opacity: 0, y: -6, transition: { duration: 0.16, ease: EASE_OUT } },
 };
 
 <AnimatePresence>
@@ -175,7 +175,7 @@ const panelVariants: Variants = {
       {/* content */}
     </motion.div>
   )}
-</AnimatePresence>
+</AnimatePresence>;
 ```
 
 For pure CSS loops (spinners, shimmer), inject a `<style>` tag into `document.head` instead.
@@ -186,8 +186,8 @@ Chakra UI v3's recipe engine leaks default blue in hover/focus states. For any c
 
 ```tsx
 const COLORS = {
-  blue:   { base: "#0685FF", hover: "#057AE8", ring: "rgba(6,133,255,0.2)" },
-  purple: { base: "#7700CC", hover: "#6600B3", ring: "rgba(119,0,204,0.2)" },
+  blue: { base: '#0685FF', hover: '#057AE8', ring: 'rgba(6,133,255,0.2)' },
+  purple: { base: '#7700CC', hover: '#6600B3', ring: 'rgba(119,0,204,0.2)' },
 } as const;
 // Use in inline style / onMouseEnter-Leave handlers, not Chakra colorPalette
 ```
@@ -198,29 +198,29 @@ See `Button.tsx`, `CheckboxRadio.tsx`, `Switch.tsx` for reference implementation
 
 ## Chakra UI v3 Cheatsheet
 
-| What you need | v3 API |
-| --- | --- |
-| Avatar | `<Avatar.Root> <Avatar.Fallback> <Avatar.Image>` |
-| Checkbox | `<Checkbox.Root> <Checkbox.HiddenInput> <Checkbox.Control> <Checkbox.Indicator> <Checkbox.Label>` |
-| Radio | `<RadioGroup.Root> <RadioGroup.Item> <RadioGroup.ItemHiddenInput> <RadioGroup.ItemIndicator> <RadioGroup.ItemText>` |
-| Switch | `<Switch.Root> <Switch.HiddenInput> <Switch.Control> <Switch.Thumb>` |
-| Dialog/Modal | `<DialogRoot> <DialogBackdrop> <DialogContent> <DialogHeader> <DialogTitle> <DialogBody> <DialogFooter> <DialogCloseTrigger>` |
-| Drawer | `<DrawerRoot> <DrawerBackdrop> <DrawerContent> <DrawerHeader> etc.` |
-| Tooltip | `<Tooltip.Root> <Tooltip.Trigger> <Tooltip.Positioner> <Tooltip.Content>` |
-| Select | `<NativeSelect.Root> <NativeSelect.Field> <NativeSelect.Indicator>` |
-| colorScheme → | `colorPalette` |
+| What you need | v3 API                                                                                                                        |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Avatar        | `<Avatar.Root> <Avatar.Fallback> <Avatar.Image>`                                                                              |
+| Checkbox      | `<Checkbox.Root> <Checkbox.HiddenInput> <Checkbox.Control> <Checkbox.Indicator> <Checkbox.Label>`                             |
+| Radio         | `<RadioGroup.Root> <RadioGroup.Item> <RadioGroup.ItemHiddenInput> <RadioGroup.ItemIndicator> <RadioGroup.ItemText>`           |
+| Switch        | `<Switch.Root> <Switch.HiddenInput> <Switch.Control> <Switch.Thumb>`                                                          |
+| Dialog/Modal  | `<DialogRoot> <DialogBackdrop> <DialogContent> <DialogHeader> <DialogTitle> <DialogBody> <DialogFooter> <DialogCloseTrigger>` |
+| Drawer        | `<DrawerRoot> <DrawerBackdrop> <DrawerContent> <DrawerHeader> etc.`                                                           |
+| Tooltip       | `<Tooltip.Root> <Tooltip.Trigger> <Tooltip.Positioner> <Tooltip.Content>`                                                     |
+| Select        | `<NativeSelect.Root> <NativeSelect.Field> <NativeSelect.Indicator>`                                                           |
+| colorScheme → | `colorPalette`                                                                                                                |
 
 ---
 
 ## Common TypeScript Gotchas
 
-| Problem | Solution |
-| --- | --- |
-| `Box as="img"` doesn't accept `src` | Use native `<img style={{...}}>` |
+| Problem                                   | Solution                           |
+| ----------------------------------------- | ---------------------------------- | ----- | -------------------------- |
+| `Box as="img"` doesn't accept `src`       | Use native `<img style={{...}}>`   |
 | `Box as="label"` doesn't accept `htmlFor` | Use native `<label style={{...}}>` |
-| `onChange` conflicts with BoxProps | `Omit<BoxProps, "onChange">` |
-| `columns` conflicts with BoxProps | Remove `extends BoxProps` entirely |
-| Type `string` not assignable to `"sm" | "md" | "lg"` | Create typed constant maps |
+| `onChange` conflicts with BoxProps        | `Omit<BoxProps, "onChange">`       |
+| `columns` conflicts with BoxProps         | Remove `extends BoxProps` entirely |
+| Type `string` not assignable to `"sm"     | "md"                               | "lg"` | Create typed constant maps |
 
 ---
 
