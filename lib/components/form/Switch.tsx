@@ -5,9 +5,9 @@ import { Box, Text } from "@chakra-ui/react";
 
 // ─── Brand palette ────────────────────────────────────────────────────────────
 const COLORS = {
-  blue:   { solid: "#0685FF", ring: "rgba(6,133,255,0.30)",  track: "#0685FF" },
-  purple: { solid: "#7700CC", ring: "rgba(119,0,204,0.25)",  track: "#7700CC" },
-  green:  { solid: "#1B7A38", ring: "rgba(27,122,56,0.25)",  track: "#1B7A38" },
+  blue: { solid: "#0685FF", ring: "rgba(6,133,255,0.30)", track: "#0685FF" },
+  purple: { solid: "#7700CC", ring: "rgba(119,0,204,0.25)", track: "#7700CC" },
+  green: { solid: "#1B7A38", ring: "rgba(27,122,56,0.25)", track: "#1B7A38" },
 } as const;
 
 type ColorScheme = keyof typeof COLORS;

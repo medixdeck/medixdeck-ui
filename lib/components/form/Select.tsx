@@ -12,7 +12,20 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-export interface SelectProps extends Omit<NativeSelectRootProps, "size"> {
+export interface SelectProps
+  extends Omit<
+    NativeSelectRootProps,
+    | "size"
+    | "value"
+    | "defaultValue"
+    | "onChange"
+    | "name"
+    | "id"
+    | "disabled"
+    | "onBlur"
+    | "onFocus"
+    | "multiple"
+  > {
   options?: SelectOption[];
   placeholder?: string;
   isInvalid?: boolean;
@@ -21,6 +34,17 @@ export interface SelectProps extends Omit<NativeSelectRootProps, "size"> {
   children?: React.ReactNode;
   /** Optional icon to render on the left side of the select field */
   icon?: React.ReactNode;
+  
+  // Explicit form props to attach to the inner <select> element
+  value?: string | string[];
+  defaultValue?: string | string[];
+  onChange?: (value: string | string[]) => void;
+  name?: string;
+  id?: string;
+  disabled?: boolean;
+  multiple?: boolean;
+  onBlur?: React.FocusEventHandler<HTMLSelectElement>;
+  onFocus?: React.FocusEventHandler<HTMLSelectElement>;
 }
 
 const sizeStyles: Record<"sm" | "md" | "lg", { h: string; px: string; fontSize: string }> = {
@@ -33,7 +57,28 @@ const sizeStyles: Record<"sm" | "md" | "lg", { h: string; px: string; fontSize: 
  * MedixDeck Select
  */
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ options = [], placeholder, isInvalid, errorMessage, size = "md", children, icon, ...props }, ref) => {
+  (
+    {
+      options = [],
+      placeholder,
+      isInvalid,
+      errorMessage,
+      size = "md",
+      children,
+      icon,
+      value,
+      defaultValue,
+      onChange,
+      name,
+      id,
+      disabled,
+      multiple,
+      onBlur,
+      onFocus,
+      ...props
+    },
+    ref
+  ) => {
     const sz = sizeStyles[size];
     const iconSpacingMap = {
       sm: "8",
@@ -43,7 +88,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 
     return (
       <Box w="100%">
-        <ChakraNativeSelect.Root {...props}>
+        <ChakraNativeSelect.Root {...props} disabled={disabled}>
           {icon && (
             <Box
               position="absolute"
@@ -61,6 +106,25 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           )}
           <ChakraNativeSelect.Field
             ref={ref}
+            name={name}
+            id={id}
+            multiple={multiple}
+            value={value}
+            defaultValue={defaultValue}
+            onChange={
+              onChange
+                ? (e) => {
+                    if (multiple) {
+                      const selectedValues = Array.from(e.target.selectedOptions).map((opt) => opt.value);
+                      onChange(selectedValues);
+                    } else {
+                      onChange(e.target.value);
+                    }
+                  }
+                : undefined
+            }
+            onBlur={onBlur}
+            onFocus={onFocus}
             h={sz.h}
             pl={icon ? iconSpacingMap[size] : sz.px}
             pr="8"
