@@ -8,6 +8,15 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 
+- **`Footer` — WhatsApp support**: Added `whatsapp` to `SocialLink` supported types with corresponding MedixDeck brand icon.
+
+### Fixed
+
+- **`Calendar` / `DatePicker` / `DateRangePicker` — Form submission bug**: Fixed a critical issue where clicking calendar days or navigation arrows would instantly submit enclosing forms. Explicitly assigned `type="button"` to all internal Chakra UI interactive elements.
+- **`DatePicker` & `DateRangePicker` — Z-Index**: Increased popover `zIndex` to `"popover"` to ensure calendars aren't hidden behind Modals or sticky Navbars.
+- **`Toast` — Mobile layout overflow**: Fixed an issue where Toasts would horizontally stretch off-screen on mobile devices by adjusting `maxW` constraints and applying proper inset bounds.
+- **`Select` / `Toast` / `Wrap` (Storybook)**: Addressed legacy Chakra v2 property usage in internal Storybook definitions (e.g. replacing `spacing` with `gap` and removing unsupported helper props).
+
 - **`Select` — Multiple selection support** (`multiple` prop)
   - Added support for `multiple={true}` to the `Select` component.
   - The `value`, `defaultValue`, and `onChange` types now accept and return `string | string[]` seamlessly matching Chakra UI v3 NativeSelect behavior.

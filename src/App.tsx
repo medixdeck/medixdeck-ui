@@ -166,6 +166,9 @@ export default function App() {
   const [pinValue, setPinValue] = React.useState("");
   const [phoneValue, setPhoneValue] = React.useState("");
   const [appointmentDate, setAppointmentDate] = React.useState("");
+  const [appointmentDateTime, setAppointmentDateTime] = React.useState("");
+  const [leaveStart, setLeaveStart] = React.useState("");
+  const [leaveEnd, setLeaveEnd] = React.useState("");
   const [calendarDate, setCalendarDate] = React.useState<Date | undefined>(new Date());
 
   const patientRows = [
@@ -969,12 +972,18 @@ export default function App() {
               />
               <DatePicker
                 label="Appointment Date & Time"
+                value={appointmentDateTime}
+                onChange={setAppointmentDateTime}
                 includeTime
                 helperText="Select date and time for your appointment"
               />
 
               <DateRangePicker
                 label="Leave/Absence Period"
+                startValue={leaveStart}
+                onStartChange={setLeaveStart}
+                endValue={leaveEnd}
+                onEndChange={setLeaveEnd}
                 startPlaceholder="Start Date"
                 endPlaceholder="End Date"
                 helperText="Select the start and end dates"

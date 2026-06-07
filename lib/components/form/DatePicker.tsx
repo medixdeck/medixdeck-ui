@@ -209,7 +209,7 @@ export function DatePicker({
           position="absolute" 
           top="calc(100% + 8px)" 
           left="0" 
-          zIndex="10" 
+          zIndex="popover" 
           boxShadow="lg" 
           borderRadius="card"
           border="1px solid"

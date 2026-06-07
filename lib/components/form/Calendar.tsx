@@ -189,6 +189,8 @@ export function Calendar({
         
         <Box 
           as="button" 
+          // @ts-expect-error type is valid when as="button"
+          type="button"
           onClick={handleToday}
           px="3" 
           py="1" 
@@ -233,6 +235,8 @@ function MonthNavButton({
   return (
     <Box
       as="button"
+      // @ts-expect-error type is valid when as="button"
+      type="button"
       aria-label={direction === "prev" ? "Go to previous month" : "Go to next month"}
       aria-disabled={!enabled}
       onClick={enabled ? onClick : undefined}
@@ -268,6 +272,8 @@ function DayCell({
     <Flex justify="center" align="center" h="10">
       <Box
         as="button"
+        // @ts-expect-error type is valid when as="button"
+        type="button"
         display="flex"
         alignItems="center"
         justifyContent="center"
