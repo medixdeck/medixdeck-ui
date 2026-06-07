@@ -1,5 +1,5 @@
-import { Box, Text, type BoxProps } from "@chakra-ui/react";
-import { Button } from "../primitive/Button";
+import { Box, Text, type BoxProps } from '@chakra-ui/react';
+import { Button } from '../primitive/Button';
 
 declare const process: any;
 
@@ -37,10 +37,10 @@ export interface ServerErrorPageProps extends BoxProps {
  * ```
  */
 export function ServerErrorPage({
-  title = "Something went wrong",
-  description = "An unexpected error occurred on our end. Please try again later.",
+  title = 'Something went wrong',
+  description = 'An unexpected error occurred on our end. Please try again later.',
   errorMessage,
-  actionLabel = "Try again",
+  actionLabel = 'Try again',
   onAction,
   secondaryLabel,
   onSecondaryAction,
@@ -63,14 +63,23 @@ export function ServerErrorPage({
         h="20"
         borderRadius="full"
         bg="red.50"
-        _dark={{ bg: "rgba(220, 38, 38, 0.1)" }}
+        _dark={{ bg: 'rgba(220, 38, 38, 0.1)' }}
         display="flex"
         alignItems="center"
         justifyContent="center"
         color="red.500"
         mb="6"
       >
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <circle cx="12" cy="12" r="10" />
           <line x1="12" y1="8" x2="12" y2="12" />
           <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -92,12 +101,12 @@ export function ServerErrorPage({
         color="text.muted"
         fontFamily="var(--font-body)"
         maxW="400px"
-        mb={errorMessage ? "4" : "8"}
+        mb={errorMessage ? '4' : '8'}
       >
         {description}
       </Text>
 
-      {errorMessage && process.env.NODE_ENV === "development" && (
+      {errorMessage && process.env.NODE_ENV === 'development' && (
         <Box
           bg="bg.surface"
           border="1px solid"

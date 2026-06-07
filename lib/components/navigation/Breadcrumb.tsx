@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
 
 export interface BreadcrumbItem {
   label: string;
@@ -20,7 +20,7 @@ const defaultSeparator = (
 
 const defaultRenderLink = (item: BreadcrumbItem, children: React.ReactNode) =>
   item.href ? (
-    <a href={item.href} style={{ textDecoration: "none" }}>
+    <a href={item.href} style={{ textDecoration: 'none' }}>
       {children}
     </a>
   ) : (
@@ -69,16 +69,16 @@ export function Breadcrumb({
                 lineHeight="1.2"
                 fontSize="sm"
                 fontFamily="var(--font-body)"
-                fontWeight={isLast ? "medium" : "normal"}
-                color={isLast ? "text.heading" : "text.muted"}
-                _hover={!isLast ? { color: "blue.500" } : undefined}
-                cursor={!isLast && item.href ? "pointer" : "default"}
+                fontWeight={isLast ? 'medium' : 'normal'}
+                color={isLast ? 'text.heading' : 'text.muted'}
+                _hover={!isLast ? { color: 'blue.500' } : undefined}
+                cursor={!isLast && item.href ? 'pointer' : 'default'}
                 transition="color 0.15s"
                 wordBreak="break-word"
-                whiteSpace={!isLast ? "nowrap" : "normal"}
+                whiteSpace={!isLast ? 'nowrap' : 'normal'}
               >
                 {item.label}
-              </Box>
+              </Box>,
             )}
             {!isLast && (
               <Box color="text.muted" display="flex" alignItems="center" flexShrink={0} mt="0.5">

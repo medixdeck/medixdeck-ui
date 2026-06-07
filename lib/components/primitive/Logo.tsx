@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useThemeMode } from "../../hooks/useThemeMode";
+import React from 'react';
+import { useThemeMode } from '../../hooks/useThemeMode';
 
-export type LogoVariant = "blue" | "purple" | "black" | "white";
-export type LogoType = "full" | "icon";
+export type LogoVariant = 'blue' | 'purple' | 'black' | 'white';
+export type LogoType = 'full' | 'icon';
 
 export interface LogoProps {
   /**
@@ -35,10 +35,10 @@ export interface LogoProps {
 
 // ─── Color maps ──────────────────────────────────────────────────────────────
 const MARK_COLOR: Record<LogoVariant, string> = {
-  blue: "#0685FF",
-  purple: "#7700CC",
-  black: "#111926",
-  white: "#FFFFFF",
+  blue: '#0685FF',
+  purple: '#7700CC',
+  black: '#111926',
+  white: '#FFFFFF',
 };
 
 /**
@@ -48,19 +48,18 @@ const MARK_COLOR: Record<LogoVariant, string> = {
  * `black` and `white` variants are explicit — always honour them.
  */
 const TEXT_COLOR_LIGHT: Record<LogoVariant, string> = {
-  blue: "#111926",
-  purple: "#111926",
-  black: "#111926",
-  white: "#FFFFFF",
+  blue: '#111926',
+  purple: '#111926',
+  black: '#111926',
+  white: '#FFFFFF',
 };
 
 const TEXT_COLOR_DARK: Record<LogoVariant, string> = {
-  blue: "#FFFFFF",   // white on dark bg
-  purple: "#FFFFFF",   // white on dark bg
-  black: "#111926",   // explicit black — unchanged
-  white: "#FFFFFF",   // explicit white — unchanged
+  blue: '#FFFFFF', // white on dark bg
+  purple: '#FFFFFF', // white on dark bg
+  black: '#111926', // explicit black — unchanged
+  white: '#FFFFFF', // explicit white — unchanged
 };
-
 
 // ─── Brand-mark SVG (icon only) ───────────────────────────────────────────────
 //
@@ -80,7 +79,7 @@ function MedixMark({ color, height }: { color: string; height: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
-      style={{ display: "block", flexShrink: 0 }}
+      style={{ display: 'block', flexShrink: 0 }}
     >
       {/*
         Path reproduced from logo-icon-purple.svg.
@@ -183,7 +182,7 @@ function MedixMark({ color, height }: { color: string; height: number }) {
 function MedixWordmark({ color, height }: { color: string; height: number }) {
   // Original dimensions from logo-text-blue.svg
   const origH = 32;
-  const origW = 163;    // full width of original SVG
+  const origW = 163; // full width of original SVG
   const textStartX = 44; // text glyphs start at x≈44 (icon occupies 0..32)
   const textW = origW - textStartX; // ≈119 px of text
 
@@ -198,7 +197,7 @@ function MedixWordmark({ color, height }: { color: string; height: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
-      style={{ display: "block", flexShrink: 0 }}
+      style={{ display: 'block', flexShrink: 0 }}
     >
       {/* Path data from logo-text-blue.svg — the "MedixDeck" glyph paths */}
       <path
@@ -286,8 +285,8 @@ function MedixWordmark({ color, height }: { color: string; height: number }) {
  * ```
  */
 export function Logo({
-  variant = "blue",
-  type = "full",
+  variant = 'blue',
+  type = 'full',
   height = 32,
   className,
   style,
@@ -296,7 +295,7 @@ export function Logo({
 
   // Safe fallback for SSR: always render light mode text first,
   // then update to dark after mounting if necessary.
-  const dark = mounted ? themeMode === "dark" : false;
+  const dark = mounted ? themeMode === 'dark' : false;
 
   const markColor = MARK_COLOR[variant];
   const textColor = dark ? TEXT_COLOR_DARK[variant] : TEXT_COLOR_LIGHT[variant];
@@ -304,8 +303,8 @@ export function Logo({
   const gap = Math.round(height * 0.3);
 
   const wrapperStyle: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
+    display: 'inline-flex',
+    alignItems: 'center',
     gap: `${gap}px`,
     lineHeight: 1,
     ...style,
@@ -320,9 +319,7 @@ export function Logo({
       suppressHydrationWarning
     >
       <MedixMark color={markColor} height={height} />
-      {type === "full" && (
-        <MedixWordmark color={textColor} height={height} />
-      )}
+      {type === 'full' && <MedixWordmark color={textColor} height={height} />}
     </span>
   );
 }

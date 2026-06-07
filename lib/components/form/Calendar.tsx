@@ -1,19 +1,29 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Box, Flex, Text, type BoxProps } from "@chakra-ui/react";
+import React, { useState, useEffect } from 'react';
+import { Box, Flex, Text, type BoxProps } from '@chakra-ui/react';
 
-export interface CalendarProps extends Omit<BoxProps, "onChange"> {
+export interface CalendarProps extends Omit<BoxProps, 'onChange'> {
   value?: Date | null;
   onChange?: (date: Date) => void;
   minDate?: Date;
   maxDate?: Date;
 }
 
-const WEEKDAYS = ["MON", "TUES", "WED", "THURS", "FRI", "SAT", "SUN"];
+const WEEKDAYS = ['MON', 'TUES', 'WED', 'THURS', 'FRI', 'SAT', 'SUN'];
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 // Helper to get number of days in month
@@ -33,7 +43,9 @@ function shiftDay(dayIndex: number) {
 
 // Returns true if a date (in the current-month frame) is outside min/max bounds
 function isDateOutOfRange(
-  d: number, m: number, y: number,
+  d: number,
+  m: number,
+  y: number,
   minDate?: Date,
   maxDate?: Date,
 ): boolean {
@@ -51,30 +63,21 @@ function isDateOutOfRange(
 
 /**
  * MedixDeck Re-usable Calendar Component
- * 
+ *
  * @example
  * ```tsx
  * <Calendar value={date} onChange={setDate} />
  * ```
  */
-export function Calendar({
-  value,
-  onChange,
-  minDate,
-  maxDate,
-  ...props
-}: CalendarProps) {
-  const [currentMonth, setCurrentMonth] = useState(() => value ? new Date(value) : new Date());
+export function Calendar({ value, onChange, minDate, maxDate, ...props }: CalendarProps) {
+  const [currentMonth, setCurrentMonth] = useState(() => (value ? new Date(value) : new Date()));
 
   // Sync displayed month whenever the controlled value moves to a different month
   useEffect(() => {
     if (value) {
       setCurrentMonth((prev) => {
         const next = new Date(value);
-        if (
-          prev.getFullYear() === next.getFullYear() &&
-          prev.getMonth() === next.getMonth()
-        ) {
+        if (prev.getFullYear() === next.getFullYear() && prev.getMonth() === next.getMonth()) {
           return prev; // already showing the right month — no re-render
         }
         return next;
@@ -86,11 +89,13 @@ export function Calendar({
   const month = currentMonth.getMonth();
 
   // Constrain month navigation to minDate/maxDate bounds
-  const canGoPrev = !minDate ||
+  const canGoPrev =
+    !minDate ||
     year > minDate.getFullYear() ||
     (year === minDate.getFullYear() && month > minDate.getMonth());
 
-  const canGoNext = !maxDate ||
+  const canGoNext =
+    !maxDate ||
     year < maxDate.getFullYear() ||
     (year === maxDate.getFullYear() && month < maxDate.getMonth());
 
@@ -106,7 +111,10 @@ export function Calendar({
     const today = new Date();
     setCurrentMonth(today);
     // Only fire onChange if today is within the allowed range
-    if (onChange && !isDateOutOfRange(today.getDate(), today.getMonth(), today.getFullYear(), minDate, maxDate)) {
+    if (
+      onChange &&
+      !isDateOutOfRange(today.getDate(), today.getMonth(), today.getFullYear(), minDate, maxDate)
+    ) {
       onChange(today);
     }
   };
@@ -126,19 +134,13 @@ export function Calendar({
 
   const renderCells = () => {
     const cells = [];
-    
+
     // Previous month cells
     for (let i = 0; i < firstDay; i++) {
       const dayNum = prevMonthDays - firstDay + i + 1;
-      cells.push(
-        <DayCell
-          key={`prev-${i}`}
-          day={dayNum}
-          isMuted
-        />
-      );
+      cells.push(<DayCell key={`prev-${i}`} day={dayNum} isMuted />);
     }
-    
+
     // Current month cells
     for (let i = 1; i <= daysInMonth; i++) {
       const outOfRange = isDateOutOfRange(i, month, year, minDate, maxDate);
@@ -149,19 +151,13 @@ export function Calendar({
           isActive={isSelected(i, month, year)}
           isDisabled={outOfRange}
           onClick={outOfRange ? undefined : () => onChange?.(new Date(year, month, i))}
-        />
+        />,
       );
     }
-    
+
     // Next month cells
     for (let i = 1; i <= daysInNextMonth; i++) {
-      cells.push(
-        <DayCell
-          key={`next-${i}`}
-          day={i}
-          isMuted
-        />
-      );
+      cells.push(<DayCell key={`next-${i}`} day={i} isMuted />);
     }
 
     return cells;
@@ -186,21 +182,21 @@ export function Calendar({
           </Text>
           <MonthNavButton enabled={canGoNext} onClick={handleNextMonth} direction="next" />
         </Flex>
-        
-        <Box 
-          as="button" 
+
+        <Box
+          as="button"
           // @ts-expect-error type is valid when as="button"
           type="button"
           onClick={handleToday}
-          px="3" 
-          py="1" 
-          fontSize="sm" 
-          fontWeight="medium" 
-          borderRadius="md" 
-          border="1px solid" 
-          borderColor="border" 
+          px="3"
+          py="1"
+          fontSize="sm"
+          fontWeight="medium"
+          borderRadius="md"
+          border="1px solid"
+          borderColor="border"
           color="text.heading"
-          _hover={{ bg: "bg.subtle" }}
+          _hover={{ bg: 'bg.subtle' }}
         >
           Today
         </Box>
@@ -209,7 +205,14 @@ export function Calendar({
       {/* Weekdays */}
       <Flex mb="3">
         {WEEKDAYS.map((day) => (
-          <Box key={day} flex="1" textAlign="center" fontSize="xs" fontWeight="medium" color="text.muted">
+          <Box
+            key={day}
+            flex="1"
+            textAlign="center"
+            fontSize="xs"
+            fontWeight="medium"
+            color="text.muted"
+          >
             {day}
           </Box>
         ))}
@@ -230,25 +233,32 @@ function MonthNavButton({
 }: {
   enabled: boolean;
   onClick: () => void;
-  direction: "prev" | "next";
+  direction: 'prev' | 'next';
 }) {
   return (
     <Box
       as="button"
       // @ts-expect-error type is valid when as="button"
       type="button"
-      aria-label={direction === "prev" ? "Go to previous month" : "Go to next month"}
+      aria-label={direction === 'prev' ? 'Go to previous month' : 'Go to next month'}
       aria-disabled={!enabled}
       onClick={enabled ? onClick : undefined}
-      cursor={enabled ? "pointer" : "not-allowed"}
-      color={enabled ? "text.heading" : "text.muted"}
+      cursor={enabled ? 'pointer' : 'not-allowed'}
+      color={enabled ? 'text.heading' : 'text.muted'}
       opacity={enabled ? 1 : 0.4}
-      _hover={enabled ? { color: "blue.500" } : undefined}
+      _hover={enabled ? { color: 'blue.500' } : undefined}
     >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        {direction === "prev"
-          ? <path d="M15 18l-6-6 6-6"/>
-          : <path d="M9 18l6-6-6-6"/>}
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {direction === 'prev' ? <path d="M15 18l-6-6 6-6" /> : <path d="M9 18l6-6-6-6" />}
       </svg>
     </Box>
   );
@@ -286,11 +296,13 @@ function DayCell({
         // Native disabled prevents focus and click activation for both muted
         // (overflow) and out-of-range days, improving screen reader behavior.
         {...({ disabled: isMuted || isDisabled } as Record<string, unknown>)}
-        cursor={isMuted ? "default" : isDisabled ? "not-allowed" : "pointer"}
+        cursor={isMuted ? 'default' : isDisabled ? 'not-allowed' : 'pointer'}
         opacity={isDisabled ? 0.35 : 1}
-        bg={isActive ? "blue.500" : "transparent"}
-        color={isActive ? "white" : (isMuted || isDisabled) ? "text.muted" : "text.heading"}
-        _hover={!isMuted && !isDisabled && !isActive ? { bg: "bg.subtle", color: "blue.500" } : undefined}
+        bg={isActive ? 'blue.500' : 'transparent'}
+        color={isActive ? 'white' : isMuted || isDisabled ? 'text.muted' : 'text.heading'}
+        _hover={
+          !isMuted && !isDisabled && !isActive ? { bg: 'bg.subtle', color: 'blue.500' } : undefined
+        }
         transition="all 0.2s"
       >
         {day}

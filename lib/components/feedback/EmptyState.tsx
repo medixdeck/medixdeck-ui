@@ -1,6 +1,6 @@
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
-import { Button } from "../primitive/Button";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
+import { Button } from '../primitive/Button';
 
 export interface EmptyStateProps extends BoxProps {
   /** Illustration or icon */

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import React from 'react';
+import { Box, Text } from '@chakra-ui/react';
 
 // ─── Brand palette ────────────────────────────────────────────────────────────
 const COLORS = {
-  blue: { solid: "#0685FF", ring: "rgba(6,133,255,0.30)", track: "#0685FF" },
-  purple: { solid: "#7700CC", ring: "rgba(119,0,204,0.25)", track: "#7700CC" },
-  green: { solid: "#1B7A38", ring: "rgba(27,122,56,0.25)", track: "#1B7A38" },
+  blue: { solid: '#0685FF', ring: 'rgba(6,133,255,0.30)', track: '#0685FF' },
+  purple: { solid: '#7700CC', ring: 'rgba(119,0,204,0.25)', track: '#7700CC' },
+  green: { solid: '#1B7A38', ring: 'rgba(27,122,56,0.25)', track: '#1B7A38' },
 } as const;
 
 type ColorScheme = keyof typeof COLORS;
@@ -23,7 +23,7 @@ const TRACK_SIZE = {
 export interface SwitchProps {
   /** Brand color for the on state */
   colorScheme?: ColorScheme;
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
   /** Controlled checked value */
   checked?: boolean;
   /** Default state for uncontrolled usage */
@@ -50,8 +50,8 @@ export interface SwitchProps {
 export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
   (
     {
-      colorScheme = "blue",
-      size = "md",
+      colorScheme = 'blue',
+      size = 'md',
       checked,
       defaultChecked = false,
       onChange,
@@ -61,7 +61,7 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       name,
       id,
     },
-    ref
+    ref,
   ) => {
     const c = COLORS[colorScheme];
     const sz = TRACK_SIZE[size];
@@ -80,32 +80,30 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
 
     // ── Track styles ──────────────────────────────────────────────────────────
     const trackStyle: React.CSSProperties = {
-      position: "relative",
-      display: "inline-flex",
-      alignItems: "center",
+      position: 'relative',
+      display: 'inline-flex',
+      alignItems: 'center',
       width: sz.width,
       height: sz.height,
       borderRadius: sz.height,
-      background: isOn ? c.track : "var(--medix-form-border, #CBD5E1)",
-      transition: "background 0.2s ease, box-shadow 0.2s ease",
-      boxShadow: focused ? `0 0 0 3px ${c.ring}` : "none",
-      cursor: disabled ? "not-allowed" : "pointer",
+      background: isOn ? c.track : 'var(--medix-form-border, #CBD5E1)',
+      transition: 'background 0.2s ease, box-shadow 0.2s ease',
+      boxShadow: focused ? `0 0 0 3px ${c.ring}` : 'none',
+      cursor: disabled ? 'not-allowed' : 'pointer',
       flexShrink: 0,
     };
 
     // ── Thumb styles ──────────────────────────────────────────────────────────
     const thumbStyle: React.CSSProperties = {
-      position: "absolute",
+      position: 'absolute',
       width: sz.thumbSize,
       height: sz.thumbSize,
-      borderRadius: "50%",
-      background: "#fff",
-      boxShadow: "0 1px 4px rgba(0,0,0,0.22)",
+      borderRadius: '50%',
+      background: '#fff',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.22)',
       top: sz.thumbOffset,
-      left: isOn
-        ? sz.width - sz.thumbSize - sz.thumbOffset
-        : sz.thumbOffset,
-      transition: "left 0.18s ease",
+      left: isOn ? sz.width - sz.thumbSize - sz.thumbOffset : sz.thumbOffset,
+      transition: 'left 0.18s ease',
     };
 
     return (
@@ -113,7 +111,7 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         {/* Accessible label wrapping hidden input + visual track */}
         <label
           htmlFor={internalId}
-          style={{ display: "inline-flex", cursor: disabled ? "not-allowed" : "pointer" }}
+          style={{ display: 'inline-flex', cursor: disabled ? 'not-allowed' : 'pointer' }}
         >
           {/* Hidden native checkbox — drives all a11y & form behaviour */}
           <input
@@ -128,13 +126,13 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             style={{
-              position: "absolute",
+              position: 'absolute',
               width: 1,
               height: 1,
               opacity: 0,
               margin: 0,
               padding: 0,
-              pointerEvents: "none",
+              pointerEvents: 'none',
             }}
           />
           {/* Visual track + thumb */}
@@ -149,14 +147,14 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
               <label
                 htmlFor={internalId}
                 style={{
-                  display: "block",
-                  fontSize: "1rem",
+                  display: 'block',
+                  fontSize: '1rem',
                   fontWeight: 500,
-                  color: "inherit",
-                  fontFamily: "var(--font-body)",
-                  lineHeight: "1.4",
-                  cursor: disabled ? "not-allowed" : "pointer",
-                  userSelect: "none",
+                  color: 'inherit',
+                  fontFamily: 'var(--font-body)',
+                  lineHeight: '1.4',
+                  cursor: disabled ? 'not-allowed' : 'pointer',
+                  userSelect: 'none',
                 }}
               >
                 {label}
@@ -171,7 +169,7 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
         )}
       </Box>
     );
-  }
+  },
 );
 
-Switch.displayName = "MedixSwitch";
+Switch.displayName = 'MedixSwitch';

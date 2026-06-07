@@ -1,9 +1,9 @@
-import React from "react";
-import { Spinner as ChakraSpinner } from "@chakra-ui/react";
-import { Box, Text } from "@chakra-ui/react";
+import React from 'react';
+import { Spinner as ChakraSpinner } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 
 export interface SpinnerProps {
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   label?: string;
   color?: string;
   [key: string]: unknown;
@@ -19,7 +19,7 @@ export interface SpinnerProps {
  * <Spinner size="md" label="Loading..." />
  * ```
  */
-export function Spinner({ size = "md", label, color = "blue.500", ...props }: SpinnerProps) {
+export function Spinner({ size = 'md', label, color = 'blue.500', ...props }: SpinnerProps) {
   return (
     <Box display="inline-flex" flexDirection="column" alignItems="center" gap="2">
       <ChakraSpinner size={size} color={color} borderWidth="2px" {...props} />
@@ -46,7 +46,7 @@ export function FullPageSpinner({ label }: { label?: string }) {
       bg="bg"
       zIndex="overlay"
     >
-      <Spinner size="xl" label={label ?? "Loading…"} />
+      <Spinner size="xl" label={label ?? 'Loading…'} />
     </Box>
   );
 }

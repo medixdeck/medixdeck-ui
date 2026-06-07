@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   DrawerRoot,
   DrawerPositioner,
@@ -12,10 +12,10 @@ import {
   DrawerCloseTrigger,
   DrawerBackdrop,
   type DrawerRootProps,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-export type DrawerPlacement = "left" | "right" | "top" | "bottom";
-export type DrawerSize = "xs" | "sm" | "md" | "lg" | "xl" | "full";
+export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
+export type DrawerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
 export interface DrawerProps {
   isOpen: boolean;
@@ -28,8 +28,8 @@ export interface DrawerProps {
   children?: React.ReactNode;
 }
 
-type ChakraDrawerPlacement = DrawerRootProps["placement"];
-type ChakraDrawerSize = DrawerRootProps["size"];
+type ChakraDrawerPlacement = DrawerRootProps['placement'];
+type ChakraDrawerSize = DrawerRootProps['size'];
 
 /**
  * MedixDeck Drawer
@@ -47,8 +47,8 @@ export function Drawer({
   isOpen,
   onClose,
   title,
-  placement = "right",
-  size = "md",
+  placement = 'right',
+  size = 'md',
   closeOnOverlayClick = true,
   footer,
   children,
@@ -56,7 +56,9 @@ export function Drawer({
   return (
     <DrawerRoot
       open={isOpen}
-      onOpenChange={(details) => { if (!details.open) onClose(); }}
+      onOpenChange={(details) => {
+        if (!details.open) onClose();
+      }}
       placement={placement as ChakraDrawerPlacement}
       size={size as ChakraDrawerSize}
       closeOnInteractOutside={closeOnOverlayClick}
@@ -66,11 +68,7 @@ export function Drawer({
 
       {/* Positioner is required in Chakra v3 to portal the drawer into <body> */}
       <DrawerPositioner>
-        <DrawerContent
-          bg="bg"
-          borderColor="border"
-          boxShadow="2xl"
-        >
+        <DrawerContent bg="bg" borderColor="border" boxShadow="2xl">
           {title && (
             <DrawerHeader borderBottom="1px solid" borderColor="border" px="6" py="4">
               <DrawerTitle
@@ -92,7 +90,7 @@ export function Drawer({
                 justifyContent="center"
                 borderRadius="md"
                 color="text.muted"
-                _hover={{ bg: "bg.subtle", color: "text.heading" }}
+                _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
                 transition="all 0.15s"
               />
             </DrawerHeader>

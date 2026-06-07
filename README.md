@@ -17,13 +17,7 @@ npm install @medixdeck/ui @chakra-ui/react react react-dom
 ## Quick start
 
 ```tsx
-import {
-  Button,
-  Logo,
-  MedixProvider,
-  Navbar,
-  useThemeMode,
-} from "@medixdeck/ui";
+import { Button, Logo, MedixProvider, Navbar, useThemeMode } from '@medixdeck/ui';
 
 // Next.js App Router: mark this component "use client" when using hooks.
 function ThemeToggle() {
@@ -34,7 +28,7 @@ function ThemeToggle() {
 
   return (
     <Button variant="solid" colorScheme="blue" onClick={toggleThemeMode}>
-      Switch to {themeMode === "dark" ? "light" : "dark"} mode
+      Switch to {themeMode === 'dark' ? 'light' : 'dark'} mode
     </Button>
   );
 }
@@ -43,7 +37,7 @@ export function App() {
   return (
     <MedixProvider defaultColorMode="light">
       <Navbar
-        navItems={[{ label: "Docs", href: "#docs" }]}
+        navItems={[{ label: 'Docs', href: '#docs' }]}
         ctaLabel="Talk to a Doctor"
         ctaHref="/consult"
       />
@@ -56,17 +50,17 @@ export function App() {
 
 ## Public API index
 
-| Area | Exports |
-| --- | --- |
-| Provider + theme | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports |
-| Primitive | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo` |
-| Form | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload` |
-| Layout | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer` |
-| Navigation | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper` |
-| Feedback | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt` |
-| Data display | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable` |
-| Healthcare | `DoctorCard`, `VitalBadge`, `AppointmentCard` |
-| Chakra re-exports | `Box`, `Flex`, `Grid`, `Stack`, `Text`, `Heading`, `Link`, `Image`, `Icon`, `Center`, `Wrap`, `WrapItem`, others in `lib/index.ts` |
+| Area              | Exports                                                                                                                                                                                                                       |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Provider + theme  | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports                                                                                                                    |
+| Primitive         | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo`                                                                                                              |
+| Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`                  |
+| Layout            | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer`                                                                                    |
+| Navigation        | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper`                                                                                                                                                                       |
+| Feedback          | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt` |
+| Data display      | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable`                                                                                                                                                                       |
+| Healthcare        | `DoctorCard`, `VitalBadge`, `AppointmentCard`                                                                                                                                                                                 |
+| Chakra re-exports | `Box`, `Flex`, `Grid`, `Stack`, `Text`, `Heading`, `Link`, `Image`, `Icon`, `Center`, `Wrap`, `WrapItem`, others in `lib/index.ts`                                                                                            |
 
 ## Design-system rules
 
@@ -79,7 +73,7 @@ export function App() {
 ## Theme hooks
 
 ```tsx
-import { useIsDarkMode, useThemeMode } from "@medixdeck/ui";
+import { useIsDarkMode, useThemeMode } from '@medixdeck/ui';
 
 function ThemeStatus() {
   const { themeMode, themeSetting, setThemeMode, toggleThemeMode } = useThemeMode();
@@ -88,11 +82,11 @@ function ThemeStatus() {
   return (
     <>
       <p>Resolved mode: {themeMode}</p>
-      <p>Following: {themeSetting ?? "system"}</p>
+      <p>Following: {themeSetting ?? 'system'}</p>
       <p>Dark mode active: {String(isDarkMode)}</p>
-      <button onClick={() => setThemeMode("dark")}>Dark</button>
-      <button onClick={() => setThemeMode("light")}>Light</button>
-      <button onClick={() => setThemeMode("system")}>System</button>
+      <button onClick={() => setThemeMode('dark')}>Dark</button>
+      <button onClick={() => setThemeMode('light')}>Light</button>
+      <button onClick={() => setThemeMode('system')}>System</button>
       <button onClick={toggleThemeMode}>Toggle</button>
     </>
   );
@@ -142,32 +136,30 @@ function Page() {
 
 `useColorScheme(initialScheme?)` returns:
 
-| Field | Type | Description |
-| --- | --- | --- |
-| `colorScheme` | `"blue" \| "purple"` | Currently active scheme |
-| `setColorScheme` | `(scheme) => void` | Explicit setter |
-| `toggleColorScheme` | `() => void` | Flips blue ↔ purple |
-| `isBlue` | `boolean` | `true` when scheme is `"blue"` |
-| `isPurple` | `boolean` | `true` when scheme is `"purple"` |
+| Field               | Type                 | Description                      |
+| ------------------- | -------------------- | -------------------------------- |
+| `colorScheme`       | `"blue" \| "purple"` | Currently active scheme          |
+| `setColorScheme`    | `(scheme) => void`   | Explicit setter                  |
+| `toggleColorScheme` | `() => void`         | Flips blue ↔ purple              |
+| `isBlue`            | `boolean`            | `true` when scheme is `"blue"`   |
+| `isPurple`          | `boolean`            | `true` when scheme is `"purple"` |
 
 ## Feedback & Overlays
 
 ### Toast Notifications
 
-The MedixDeck UI includes a fully automated `Toast` system powered by Chakra UI v3's `createToaster` API, styled to match MedixDeck `Alert` components. 
+The MedixDeck UI includes a fully automated `Toast` system powered by Chakra UI v3's `createToaster` API, styled to match MedixDeck `Alert` components.
 
 To use it, render the `<Toaster />` at the root of your application, and then use the `toast` helper to trigger notifications from anywhere.
 
 ```tsx
-import { Toaster, toast } from "@medixdeck/ui";
+import { Toaster, toast } from '@medixdeck/ui';
 
 function App() {
   return (
     <>
       <Toaster />
-      <button onClick={() => toast.success("Changes saved successfully!")}>
-        Save
-      </button>
+      <button onClick={() => toast.success('Changes saved successfully!')}>Save</button>
     </>
   );
 }
@@ -180,34 +172,34 @@ The `toast` utility exposes `success`, `error`, `info`, and `warning` shorthand 
 `NotFoundPage` and `ServerErrorPage` render beautifully styled full-screen error states. In the development environment (`process.env.NODE_ENV === "development"`), passing an `errorMessage` will render a technical code block. In production, this block is safely hidden to prevent data leakage.
 
 ```tsx
-<ServerErrorPage 
-  errorMessage="TypeError: Cannot read properties of undefined (reading 'id')" 
-  onAction={() => reset()} 
+<ServerErrorPage
+  errorMessage="TypeError: Cannot read properties of undefined (reading 'id')"
+  onAction={() => reset()}
 />
 ```
 
 ## Data Display & Form Enhancements
 
 ### Accordion with HTML/Markdown
+
 The `Accordion` supports passing rich text answers via the `answerType` prop. Use `"HTML"` (safely sanitized via `isomorphic-dompurify`) or `"MD"` (parsed via `react-markdown`).
 
 ```tsx
 <Accordion
   answerType="MD"
-  items={[
-    { id: "q1", question: "Markdown Support?", answer: "Yes, **boldly** so!" }
-  ]}
+  items={[{ id: 'q1', question: 'Markdown Support?', answer: 'Yes, **boldly** so!' }]}
 />
 ```
 
 ### Multiple Select
+
 The `Select` component supports native multiple selection, returning arrays on change.
 
 ```tsx
-<Select 
+<Select
   multiple
   placeholder="Select specialties..."
-  options={[{ value: "cardio", label: "Cardiology" }]}
+  options={[{ value: 'cardio', label: 'Cardiology' }]}
   onChange={(values) => console.log(values)} // values is string | string[]
 />
 ```
@@ -219,23 +211,23 @@ The full-screen authenticated application shell. Renders a fixed sidebar, sticky
 ### Basic usage
 
 ```tsx
-import { DashboardLayout } from "@medixdeck/ui";
+import { DashboardLayout } from '@medixdeck/ui';
 
 <DashboardLayout
   colorScheme="purple"
-  user={{ name: "Dr. Okedi Williams", email: "williams@medixdeck.com" }}
+  user={{ name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' }}
   navGroups={[
     {
       items: [
-        { label: "Home",     href: "/",         isActive: true },
-        { label: "Messages", href: "/messages", badge: 6 },
+        { label: 'Home', href: '/', isActive: true },
+        { label: 'Messages', href: '/messages', badge: 6 },
       ],
     },
     {
-      groupLabel: "Account",
+      groupLabel: 'Account',
       items: [
-        { label: "Profile",       href: "/profile" },
-        { label: "Notifications", href: "/notifications", hasDot: true },
+        { label: 'Profile', href: '/profile' },
+        { label: 'Notifications', href: '/notifications', hasDot: true },
       ],
     },
   ]}
@@ -243,7 +235,7 @@ import { DashboardLayout } from "@medixdeck/ui";
   renderLink={(item, children) => <Link href={item.href}>{children}</Link>}
 >
   {/* page content */}
-</DashboardLayout>
+</DashboardLayout>;
 ```
 
 ### Mobile bottom navigation (`mobileNavItems`)
@@ -251,28 +243,28 @@ import { DashboardLayout } from "@medixdeck/ui";
 A fixed bottom tab bar (mobile only, hidden on `md+`). Uses `react-icons/lu` or any icon component.
 
 ```tsx
-import { LuHouse, LuMessageCircle, LuUser } from "react-icons/lu";
+import { LuHouse, LuMessageCircle, LuUser } from 'react-icons/lu';
 
 <DashboardLayout
   mobileNavItems={[
-    { label: "Home",     href: "/",         icon: <LuHouse size={22} />,         isActive: true },
-    { label: "Messages", href: "/messages", icon: <LuMessageCircle size={22} />, badge: 6 },
-    { label: "Profile",  href: "/profile",  icon: <LuUser size={22} /> },
+    { label: 'Home', href: '/', icon: <LuHouse size={22} />, isActive: true },
+    { label: 'Messages', href: '/messages', icon: <LuMessageCircle size={22} />, badge: 6 },
+    { label: 'Profile', href: '/profile', icon: <LuUser size={22} /> },
   ]}
 >
   {/* ... */}
-</DashboardLayout>
+</DashboardLayout>;
 ```
 
 `DashboardMobileNavItem` props:
 
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `label` | `string` | ✓ | Text below the icon |
-| `href` | `string` | ✓ | Unique key + navigation target |
-| `icon` | `ReactNode` | ✓ | Icon (22 × 22 px recommended) |
-| `isActive` | `boolean` | — | Highlights the active tab |
-| `badge` | `number` | — | Count bubble on icon (capped at `99+`) |
+| Prop       | Type        | Required | Description                            |
+| ---------- | ----------- | -------- | -------------------------------------- |
+| `label`    | `string`    | ✓        | Text below the icon                    |
+| `href`     | `string`    | ✓        | Unique key + navigation target         |
+| `icon`     | `ReactNode` | ✓        | Icon (22 × 22 px recommended)          |
+| `isActive` | `boolean`   | —        | Highlights the active tab              |
+| `badge`    | `number`    | —        | Count bubble on icon (capped at `99+`) |
 
 ### Doctor score card (`scoreCard`)
 
@@ -281,12 +273,12 @@ Shown above the sidebar nav on **desktop only**. Only pass this prop for doctor-
 ```tsx
 <DashboardLayout
   scoreCard={{
-    name: "Dr. Okedi Williams",
-    role: "Cardiologist",
-    avatarSrc: "/dr-okedi.jpg",   // optional — initials fallback
-    tier: "gold",                  // "bronze" | "silver" | "gold" | "platinum" | "diamond"
+    name: 'Dr. Okedi Williams',
+    role: 'Cardiologist',
+    avatarSrc: '/dr-okedi.jpg', // optional — initials fallback
+    tier: 'gold', // "bronze" | "silver" | "gold" | "platinum" | "diamond"
     medixScore: 847,
-    link: "/doctor/profile",       // optional — makes the card clickable
+    link: '/doctor/profile', // optional — makes the card clickable
   }}
 >
   {/* ... */}
@@ -295,13 +287,13 @@ Shown above the sidebar nav on **desktop only**. Only pass this prop for doctor-
 
 Tier colours:
 
-| Tier | Label colour | Avatar ring |
-| --- | --- | --- |
-| `bronze` | `#92400E` | `#D97706` |
-| `silver` | `#475569` | `#94A3B8` |
-| `gold` | `#D97706` | `#F59E0B` |
-| `platinum` | `#0284C7` | `#38BDF8` |
-| `diamond` | `#7C3AED` | `#A78BFA` |
+| Tier       | Label colour | Avatar ring |
+| ---------- | ------------ | ----------- |
+| `bronze`   | `#92400E`    | `#D97706`   |
+| `silver`   | `#475569`    | `#94A3B8`   |
+| `gold`     | `#D97706`    | `#F59E0B`   |
+| `platinum` | `#0284C7`    | `#38BDF8`   |
+| `diamond`  | `#7C3AED`    | `#A78BFA`   |
 
 ### Greeting subtitle (`greetingSubtext`)
 
@@ -309,8 +301,11 @@ An optional second line below the greeting. The top bar expands from 64 px → 8
 
 ```tsx
 <DashboardLayout
-  greetingSubtext={`${new Date().toLocaleDateString("en-GB", {
-    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  greetingSubtext={`${new Date().toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   })} · 8 consultations scheduled today`}
 >
   {/* ... */}
@@ -319,56 +314,55 @@ An optional second line below the greeting. The top bar expands from 64 px → 8
 
 ### All `DashboardLayout` props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `user` | `DashboardUser` | — | Name, email, optional avatar |
-| `navGroups` | `DashboardNavGroup[]` | — | Sidebar navigation tree |
-| `colorScheme` | `"blue" \| "purple"` | `"blue"` | Brand accent colour |
-| `logo` | `ReactNode` | `<Logo />` | Override the sidebar logo |
-| `greeting` | `string` | auto | Override "Good morning / afternoon / evening" |
-| `greetingSubtext` | `string` | — | Subtitle line below the greeting |
-| `mobileNavItems` | `DashboardMobileNavItem[]` | — | Mobile bottom tab bar items |
-| `scoreCard` | `DashboardScoreCardData` | — | Doctor identity card (desktop only) |
-| `topBarSlot` | `ReactNode` | — | Slot right of greeting (search, bell, etc.) |
-| `dropdownItems` | `DashboardDropdownItem[]` | — | Extra user dropdown items |
-| `sidebarWidth` | `number` | `220` | Sidebar width in px |
-| `renderLink` | `(item, children) => ReactNode` | `<a>` | Router integration |
-| `onLogout` | `() => void` | — | Logout callback |
+| Prop              | Type                            | Default    | Description                                   |
+| ----------------- | ------------------------------- | ---------- | --------------------------------------------- |
+| `user`            | `DashboardUser`                 | —          | Name, email, optional avatar                  |
+| `navGroups`       | `DashboardNavGroup[]`           | —          | Sidebar navigation tree                       |
+| `colorScheme`     | `"blue" \| "purple"`            | `"blue"`   | Brand accent colour                           |
+| `logo`            | `ReactNode`                     | `<Logo />` | Override the sidebar logo                     |
+| `greeting`        | `string`                        | auto       | Override "Good morning / afternoon / evening" |
+| `greetingSubtext` | `string`                        | —          | Subtitle line below the greeting              |
+| `mobileNavItems`  | `DashboardMobileNavItem[]`      | —          | Mobile bottom tab bar items                   |
+| `scoreCard`       | `DashboardScoreCardData`        | —          | Doctor identity card (desktop only)           |
+| `topBarSlot`      | `ReactNode`                     | —          | Slot right of greeting (search, bell, etc.)   |
+| `dropdownItems`   | `DashboardDropdownItem[]`       | —          | Extra user dropdown items                     |
+| `sidebarWidth`    | `number`                        | `220`      | Sidebar width in px                           |
+| `renderLink`      | `(item, children) => ReactNode` | `<a>`      | Router integration                            |
+| `onLogout`        | `() => void`                    | —          | Logout callback                               |
 
 ## Footer
 
 The `Footer` component provides the core navigation layout for the bottom of pages. It features an optional compliance `certifications` row and a brandable `colorScheme`.
 
 ```tsx
-import { Footer } from "@medixdeck/ui";
+import { Footer } from '@medixdeck/ui';
 
 <Footer
   colorScheme="purple"
   certifications={[
-    { name: "NDPR Compliant", href: "https://nitda.gov.ng" },
-    { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
-    { name: "ISO 27001", href: "#" },
+    { name: 'NDPR Compliant', href: 'https://nitda.gov.ng' },
+    { name: 'MDCN Certified Platform', href: 'https://mdcn.gov.ng' },
+    { name: 'ISO 27001', href: '#' },
   ]}
-/>
+/>;
 ```
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `colorScheme` | `"blue" \| "purple"` | `"blue"` | Brand accent colour for links and social icons |
-| `certifications` | `FooterCertification[]` | — | Compliance badges displayed above the copyright |
-| `logo` | `ReactNode` | `<Logo />` | Override the default logo |
-| `description` | `string` | — | Short company bio |
-| `sections` | `FooterSection[]` | — | Link columns |
-| `socialLinks` | `SocialLink[]` | — | Social media URLs |
-| `newsletter` | `NewsletterProps` | — | Email subscription form config |
-| `bottomLinks` | `BottomLink[]` | — | Terms/Privacy links next to copyright |
-| `renderLink` | `(item, children) => ReactNode` | `<a>` | Router integration |
+| Prop             | Type                            | Default    | Description                                     |
+| ---------------- | ------------------------------- | ---------- | ----------------------------------------------- |
+| `colorScheme`    | `"blue" \| "purple"`            | `"blue"`   | Brand accent colour for links and social icons  |
+| `certifications` | `FooterCertification[]`         | —          | Compliance badges displayed above the copyright |
+| `logo`           | `ReactNode`                     | `<Logo />` | Override the default logo                       |
+| `description`    | `string`                        | —          | Short company bio                               |
+| `sections`       | `FooterSection[]`               | —          | Link columns                                    |
+| `socialLinks`    | `SocialLink[]`                  | —          | Social media URLs                               |
+| `newsletter`     | `NewsletterProps`               | —          | Email subscription form config                  |
+| `bottomLinks`    | `BottomLink[]`                  | —          | Terms/Privacy links next to copyright           |
+| `renderLink`     | `(item, children) => ReactNode` | `<a>`      | Router integration                              |
 
 ## Theme color reference
 
-
 ```tsx
-import { ThemeColorPalette } from "@medixdeck/ui";
+import { ThemeColorPalette } from '@medixdeck/ui';
 
 export function DesignTokensPage() {
   return <ThemeColorPalette mt="8" />;

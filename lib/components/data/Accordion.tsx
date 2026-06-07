@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Box, type BoxProps } from "@chakra-ui/react";
-import DOMPurify from "isomorphic-dompurify";
-import ReactMarkdown from "react-markdown";
+import React from 'react';
+import { Box, type BoxProps } from '@chakra-ui/react';
+import DOMPurify from 'isomorphic-dompurify';
+import ReactMarkdown from 'react-markdown';
 
 export interface AccordionItem {
   id: string;
@@ -13,9 +13,9 @@ export interface AccordionItem {
   answer: string | React.ReactNode;
 }
 
-export type AccordionColorScheme = "blue" | "purple";
+export type AccordionColorScheme = 'blue' | 'purple';
 
-export interface AccordionProps extends Omit<BoxProps, "onChange"> {
+export interface AccordionProps extends Omit<BoxProps, 'onChange'> {
   items: AccordionItem[];
   /** Allow multiple items open simultaneously */
   allowMultiple?: boolean;
@@ -29,7 +29,7 @@ export interface AccordionProps extends Omit<BoxProps, "onChange"> {
   /**
    * Format of the answer string content. Default is "HTML".
    */
-  answerType?: "HTML" | "MD";
+  answerType?: 'HTML' | 'MD';
 }
 
 /**
@@ -49,16 +49,16 @@ export interface AccordionProps extends Omit<BoxProps, "onChange"> {
  * ```
  */
 const SCHEME_COLORS: Record<AccordionColorScheme, { solid: string; ring: string }> = {
-  blue:   { solid: "#0685FF", ring: "#0685FF" },
-  purple: { solid: "#7700CC", ring: "#7700CC" },
+  blue: { solid: '#0685FF', ring: '#0685FF' },
+  purple: { solid: '#7700CC', ring: '#7700CC' },
 };
 
 export function Accordion({
   items,
   allowMultiple = false,
   defaultOpenIds = [],
-  colorScheme = "blue",
-  answerType = "HTML",
+  colorScheme = 'blue',
+  answerType = 'HTML',
   ...props
 }: AccordionProps) {
   const scheme = SCHEME_COLORS[colorScheme];
@@ -91,7 +91,7 @@ export function Accordion({
             borderRadius="card"
             overflow="hidden"
             transition="border-color 0.2s"
-            _hover={{ borderColor: isOpen ? scheme.ring : "border" }}
+            _hover={{ borderColor: isOpen ? scheme.ring : 'border' }}
           >
             {/* ── Trigger row ─────────────────────────────────────────────── */}
             <Box
@@ -134,21 +134,42 @@ export function Accordion({
                 transition="background 0.2s, border-color 0.2s, color 0.2s"
                 aria-hidden="true"
                 style={{
-                  border: isOpen ? "none" : "1.5px solid var(--medix-form-text)",
-                  background: isOpen ? scheme.solid : "transparent",
-                  color: isOpen ? "#ffffff" : "inherit",
+                  border: isOpen ? 'none' : '1.5px solid var(--medix-form-text)',
+                  background: isOpen ? scheme.solid : 'transparent',
+                  color: isOpen ? '#ffffff' : 'inherit',
                   flexShrink: 0,
                 }}
               >
                 {/* SVG icons for crisp +/− at all sizes */}
                 {isOpen ? (
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                    <rect x="3" y="8.25" width="12" height="1.5" rx="0.75" fill=" var(--medix-form-text)" />
+                    <rect
+                      x="3"
+                      y="8.25"
+                      width="12"
+                      height="1.5"
+                      rx="0.75"
+                      fill=" var(--medix-form-text)"
+                    />
                   </svg>
                 ) : (
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                    <rect x="3" y="8.25" width="12" height="1.5" rx="0.75" fill=" var(--medix-form-text)" />
-                    <rect x="8.25" y="3" width="1.5" height="12" rx="0.75" fill=" var(--medix-form-text)" />
+                    <rect
+                      x="3"
+                      y="8.25"
+                      width="12"
+                      height="1.5"
+                      rx="0.75"
+                      fill=" var(--medix-form-text)"
+                    />
+                    <rect
+                      x="8.25"
+                      y="3"
+                      width="1.5"
+                      height="12"
+                      rx="0.75"
+                      fill=" var(--medix-form-text)"
+                    />
                   </svg>
                 )}
               </Box>
@@ -157,7 +178,7 @@ export function Accordion({
             {/* ── Animated answer panel ────────────────────────────────────── */}
             <Box
               overflow="hidden"
-              maxH={isOpen ? "800px" : "0px"}
+              maxH={isOpen ? '800px' : '0px'}
               opacity={isOpen ? 1 : 0}
               transition="max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease"
             >
@@ -170,8 +191,8 @@ export function Accordion({
                 fontFamily="var(--font-body)"
                 lineHeight="loose"
               >
-                {typeof item.answer === "string" ? (
-                  answerType === "MD" ? (
+                {typeof item.answer === 'string' ? (
+                  answerType === 'MD' ? (
                     <ReactMarkdown>{item.answer}</ReactMarkdown>
                   ) : (
                     <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.answer) }} />

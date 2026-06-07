@@ -69,16 +69,16 @@ All notable changes to `@medixdeck/ui` are documented here.
   Added an optional `icon` prop to the `Select` component to render a left-aligned icon, automatically adjusting the select field's padding.
 
   ```tsx
-  import { LuWallet } from "react-icons/lu";
+  import { LuWallet } from 'react-icons/lu';
 
   <Select
     icon={<LuWallet size={16} />}
     placeholder="Any price"
     options={[
-      { value: "0-50", label: "$0 - $50" },
-      { value: "50-100", label: "$50 - $100" },
+      { value: '0-50', label: '$0 - $50' },
+      { value: '50-100', label: '$50 - $100' },
     ]}
-  />
+  />;
   ```
 
 - **`DashboardLayout` — Mobile bottom navigation bar** (`mobileNavItems` prop)
@@ -86,26 +86,26 @@ All notable changes to `@medixdeck/ui` are documented here.
   A fixed, glass-morphism bottom tab bar for mobile viewports (hidden on `md+`). Designed to match native-app UX.
 
   ```tsx
-  import { LuHouse, LuMessageCircle, LuUser } from "react-icons/lu";
+  import { LuHouse, LuMessageCircle, LuUser } from 'react-icons/lu';
 
   <DashboardLayout
     mobileNavItems={[
-      { label: "Home",     href: "/",         icon: <LuHouse size={22} />,         isActive: true },
-      { label: "Messages", href: "/messages", icon: <LuMessageCircle size={22} />, badge: 6 },
-      { label: "Profile",  href: "/profile",  icon: <LuUser size={22} /> },
+      { label: 'Home', href: '/', icon: <LuHouse size={22} />, isActive: true },
+      { label: 'Messages', href: '/messages', icon: <LuMessageCircle size={22} />, badge: 6 },
+      { label: 'Profile', href: '/profile', icon: <LuUser size={22} /> },
     ]}
   >
     {/* ... */}
-  </DashboardLayout>
+  </DashboardLayout>;
   ```
 
-  | `DashboardMobileNavItem` prop | Type | Description |
-  | --- | --- | --- |
-  | `label` | `string` | Text shown below the icon |
-  | `href` | `string` | Key + target URL (via `renderLink`) |
-  | `icon` | `ReactNode` | Icon element (22 × 22 recommended) |
-  | `isActive?` | `boolean` | Highlights the active tab with a pill indicator |
-  | `badge?` | `number` | Count bubble on the icon (capped at `99+`) |
+  | `DashboardMobileNavItem` prop | Type        | Description                                     |
+  | ----------------------------- | ----------- | ----------------------------------------------- |
+  | `label`                       | `string`    | Text shown below the icon                       |
+  | `href`                        | `string`    | Key + target URL (via `renderLink`)             |
+  | `icon`                        | `ReactNode` | Icon element (22 × 22 recommended)              |
+  | `isActive?`                   | `boolean`   | Highlights the active tab with a pill indicator |
+  | `badge?`                      | `number`    | Count bubble on the icon (capped at `99+`)      |
 
   Implementation highlights:
   - Entrance animation via CSS keyframe `slideUpNav` injected once into `document.head`
@@ -121,12 +121,12 @@ All notable changes to `@medixdeck/ui` are documented here.
   ```tsx
   <DashboardLayout
     scoreCard={{
-      name: "Dr. Okedi Williams",
-      role: "Cardiologist",
-      avatarSrc: "/dr-okedi.jpg",   // optional — falls back to initials
-      tier: "gold",                  // "bronze" | "silver" | "gold" | "platinum" | "diamond"
+      name: 'Dr. Okedi Williams',
+      role: 'Cardiologist',
+      avatarSrc: '/dr-okedi.jpg', // optional — falls back to initials
+      tier: 'gold', // "bronze" | "silver" | "gold" | "platinum" | "diamond"
       medixScore: 847,
-      link: "/doctor/profile",       // optional — makes the card clickable via renderLink
+      link: '/doctor/profile', // optional — makes the card clickable via renderLink
     }}
   >
     {/* ... */}
@@ -135,13 +135,13 @@ All notable changes to `@medixdeck/ui` are documented here.
 
   Tier colour system:
 
-  | Tier | Badge / label colour | Avatar ring |
-  | --- | --- | --- |
-  | `bronze` | `#92400E` | `#D97706` |
-  | `silver` | `#475569` | `#94A3B8` |
-  | `gold` | `#D97706` | `#F59E0B` |
-  | `platinum` | `#0284C7` | `#38BDF8` |
-  | `diamond` | `#7C3AED` | `#A78BFA` |
+  | Tier       | Badge / label colour | Avatar ring |
+  | ---------- | -------------------- | ----------- |
+  | `bronze`   | `#92400E`            | `#D97706`   |
+  | `silver`   | `#475569`            | `#94A3B8`   |
+  | `gold`     | `#D97706`            | `#F59E0B`   |
+  | `platinum` | `#0284C7`            | `#38BDF8`   |
+  | `diamond`  | `#7C3AED`            | `#A78BFA`   |
 
   New exported type: `DashboardScoreCardData`
 
@@ -151,8 +151,11 @@ All notable changes to `@medixdeck/ui` are documented here.
 
   ```tsx
   <DashboardLayout
-    greetingSubtext={`${new Date().toLocaleDateString("en-GB", {
-      weekday: "long", day: "numeric", month: "long", year: "numeric",
+    greetingSubtext={`${new Date().toLocaleDateString('en-GB', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
     })} · 8 consultations scheduled today`}
   >
     {/* ... */}
@@ -166,19 +169,19 @@ All notable changes to `@medixdeck/ui` are documented here.
   ```tsx
   <Footer
     certifications={[
-      { name: "NDPR Compliant", href: "https://nitda.gov.ng", imageSrc: "/ndpr.png" },
-      { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
-      { name: "ISO 27001", href: "#" },
+      { name: 'NDPR Compliant', href: 'https://nitda.gov.ng', imageSrc: '/ndpr.png' },
+      { name: 'MDCN Certified Platform', href: 'https://mdcn.gov.ng' },
+      { name: 'ISO 27001', href: '#' },
     ]}
   />
   ```
 
-  | `FooterCertification` prop | Type | Description |
-  | --- | --- | --- |
-  | `name` | `string` | Text displayed alongside the badge |
-  | `href?` | `string` | Optional URL for verification (wrapped in `renderLink`) |
-  | `isExternal?` | `boolean` | Opens link in a new tab (`true` by default) |
-  | `imageSrc?` | `string` | Image URL. Falls back to a generic shield icon if omitted. |
+  | `FooterCertification` prop | Type      | Description                                                |
+  | -------------------------- | --------- | ---------------------------------------------------------- |
+  | `name`                     | `string`  | Text displayed alongside the badge                         |
+  | `href?`                    | `string`  | Optional URL for verification (wrapped in `renderLink`)    |
+  | `isExternal?`              | `boolean` | Opens link in a new tab (`true` by default)                |
+  | `imageSrc?`                | `string`  | Image URL. Falls back to a generic shield icon if omitted. |
 
 - **`CookieConsentBanner` — GDPR / NDPR compliant banner**
 
@@ -190,7 +193,8 @@ All notable changes to `@medixdeck/ui` are documented here.
     acceptText="Accept All"
     declineText="Reject Non-Essential"
   >
-    We use cookies to securely manage your session, enhance your browsing experience, and analyze our platform's performance. By clicking "Accept All", you consent to our use of cookies.
+    We use cookies to securely manage your session, enhance your browsing experience, and analyze
+    our platform's performance. By clicking "Accept All", you consent to our use of cookies.
   </CookieConsentBanner>
   ```
 
@@ -211,18 +215,18 @@ All notable changes to `@medixdeck/ui` are documented here.
   />
   ```
 
-  | `PWAInstallPromptProps` | Type | Default | Description |
-  | --- | --- | --- | --- |
-  | `title` | `string` | `"Install this app"` | Banner heading |
-  | `description` | `string` | — | Body text (Android only) |
-  | `installLabel` | `string` | `"Install"` | Accept button text |
-  | `dismissLabel` | `string` | `"Not now"` | Dismiss button text |
-  | `cooldownDays` | `number` | `14` | Days to suppress after dismiss |
-  | `appName` | `string` | `"this app"` | Name used in iOS instructions |
-  | `icon` | `ReactNode` | — | Custom app icon element |
-  | `position` | `"top" \| "bottom"` | `"bottom"` | Screen position |
-  | `onInstall` | `() => void` | — | Fired on successful install |
-  | `onDismiss` | `() => void` | — | Fired on dismiss |
+  | `PWAInstallPromptProps` | Type                | Default              | Description                    |
+  | ----------------------- | ------------------- | -------------------- | ------------------------------ |
+  | `title`                 | `string`            | `"Install this app"` | Banner heading                 |
+  | `description`           | `string`            | —                    | Body text (Android only)       |
+  | `installLabel`          | `string`            | `"Install"`          | Accept button text             |
+  | `dismissLabel`          | `string`            | `"Not now"`          | Dismiss button text            |
+  | `cooldownDays`          | `number`            | `14`                 | Days to suppress after dismiss |
+  | `appName`               | `string`            | `"this app"`         | Name used in iOS instructions  |
+  | `icon`                  | `ReactNode`         | —                    | Custom app icon element        |
+  | `position`              | `"top" \| "bottom"` | `"bottom"`           | Screen position                |
+  | `onInstall`             | `() => void`        | —                    | Fired on successful install    |
+  | `onDismiss`             | `() => void`        | —                    | Fired on dismiss               |
 
 ### Changed
 
@@ -240,30 +244,30 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 - **`colorScheme` prop on themed components**: `Navbar`, `Footer`, `Accordion`, and `BlogCard` now all accept a `colorScheme?: "blue" | "purple"` prop (default `"blue"`). Passing `"purple"` switches every brand accent on that component — CTA buttons, active/hover link colours, toggle icon fills, category pills, date badge numbers, social icon backgrounds, and the newsletter button — to the MedixDeck secondary purple (#7700CC) without changing any other behaviour or layout.
 
-  | Component | Affected elements |
-  | --- | --- |
-  | `Navbar` | CTA buttons, hamburger/close icon fill, active & hover link colour, default `Logo` variant |
-  | `Footer` | Social icon backgrounds, newsletter submit button, input focus ring, nav link hover colour |
-  | `Accordion` | Open-state toggle icon fill, card border hover accent |
-  | `BlogCard` | Category pill background, date badge day-number colour |
+  | Component   | Affected elements                                                                          |
+  | ----------- | ------------------------------------------------------------------------------------------ |
+  | `Navbar`    | CTA buttons, hamburger/close icon fill, active & hover link colour, default `Logo` variant |
+  | `Footer`    | Social icon backgrounds, newsletter submit button, input focus ring, nav link hover colour |
+  | `Accordion` | Open-state toggle icon fill, card border hover accent                                      |
+  | `BlogCard`  | Category pill background, date badge day-number colour                                     |
 
 - **`useColorScheme` hook**: A new `lib/hooks/useColorScheme.ts` hook that manages the active brand colour scheme in React state and exposes helpers for updating it.
 
   ```tsx
-  import { useColorScheme } from "@medixdeck/ui";
+  import { useColorScheme } from '@medixdeck/ui';
 
   const { colorScheme, setColorScheme, toggleColorScheme, isBlue, isPurple } = useColorScheme();
   // or start purple:
-  const { colorScheme } = useColorScheme("purple");
+  const { colorScheme } = useColorScheme('purple');
   ```
 
-  | Return value | Type | Description |
-  | --- | --- | --- |
-  | `colorScheme` | `"blue" \| "purple"` | Currently active scheme |
-  | `setColorScheme` | `(scheme) => void` | Explicit setter |
-  | `toggleColorScheme` | `() => void` | Flips blue ↔ purple |
-  | `isBlue` | `boolean` | Convenience flag |
-  | `isPurple` | `boolean` | Convenience flag |
+  | Return value        | Type                 | Description             |
+  | ------------------- | -------------------- | ----------------------- |
+  | `colorScheme`       | `"blue" \| "purple"` | Currently active scheme |
+  | `setColorScheme`    | `(scheme) => void`   | Explicit setter         |
+  | `toggleColorScheme` | `() => void`         | Flips blue ↔ purple     |
+  | `isBlue`            | `boolean`            | Convenience flag        |
+  | `isPurple`          | `boolean`            | Convenience flag        |
 
 - **New type exports**: `ColorScheme`, `UseColorSchemeResult`, `NavbarColorScheme`, `FooterColorScheme`, `AccordionColorScheme`, `BlogCardColorScheme` — all exported from `lib/index.ts`.
 
@@ -378,16 +382,16 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 - **New props for fine-grained CTA control:**
 
-  | Prop | Description |
-  | --- | --- |
-  | `ctaHref` | URL for the primary label button (anchor navigation) |
-  | `onCtaClick` | Handler for the primary label button click |
-  | `ctaIconHref` | URL for the `↗` icon button; falls back to `ctaHref` |
-  | `onCtaIconClick` | Handler for the icon button; falls back to `onCtaClick` |
-  | `secondaryCtaLabel` | Text for a ghost button to the left of the primary CTA |
-  | `secondaryCtaHref` | URL for the secondary CTA |
-  | `onSecondaryCtaClick` | Handler for the secondary CTA |
-  | `ctaSlot` | ReactNode that fully replaces the default CTA area |
+  | Prop                  | Description                                             |
+  | --------------------- | ------------------------------------------------------- |
+  | `ctaHref`             | URL for the primary label button (anchor navigation)    |
+  | `onCtaClick`          | Handler for the primary label button click              |
+  | `ctaIconHref`         | URL for the `↗` icon button; falls back to `ctaHref`    |
+  | `onCtaIconClick`      | Handler for the icon button; falls back to `onCtaClick` |
+  | `secondaryCtaLabel`   | Text for a ghost button to the left of the primary CTA  |
+  | `secondaryCtaHref`    | URL for the secondary CTA                               |
+  | `onSecondaryCtaClick` | Handler for the secondary CTA                           |
+  | `ctaSlot`             | ReactNode that fully replaces the default CTA area      |
 
 - Default desktop CTA now renders **`[label button]` `[↗ icon button]`** side-by-side, matching the MedixDeck brand design
 - Mobile menu now shows the primary CTA as a full-width button (no icon button)

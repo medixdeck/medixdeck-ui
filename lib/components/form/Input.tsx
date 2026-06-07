@@ -1,9 +1,14 @@
-import React from "react";
-import { Input as ChakraInput, type InputProps as ChakraInputProps, Box, Text } from "@chakra-ui/react";
+import React from 'react';
+import {
+  Input as ChakraInput,
+  type InputProps as ChakraInputProps,
+  Box,
+  Text,
+} from '@chakra-ui/react';
 
-export interface InputProps extends Omit<ChakraInputProps, "size"> {
+export interface InputProps extends Omit<ChakraInputProps, 'size'> {
   /** Input size */
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
   /** Left icon or element */
   leftElement?: React.ReactNode;
   /** Right icon or element */
@@ -15,9 +20,9 @@ export interface InputProps extends Omit<ChakraInputProps, "size"> {
 }
 
 const sizeStyles = {
-  sm: { h: "8", px: "3", fontSize: "sm" },
-  md: { h: "10", px: "4", fontSize: "md" },
-  lg: { h: "12", px: "4", fontSize: "lg" },
+  sm: { h: '8', px: '3', fontSize: 'sm' },
+  md: { h: '10', px: '4', fontSize: 'md' },
+  lg: { h: '12', px: '4', fontSize: 'lg' },
 };
 
 /**
@@ -35,7 +40,7 @@ const sizeStyles = {
  * ```
  */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ size = "md", leftElement, rightElement, isInvalid, errorMessage, ...props }, ref) => {
+  ({ size = 'md', leftElement, rightElement, isInvalid, errorMessage, ...props }, ref) => {
     const hasLeft = Boolean(leftElement);
     const hasRight = Boolean(rightElement);
 
@@ -59,26 +64,26 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <ChakraInput
             ref={ref}
             {...sizeStyles[size]}
-            pl={hasLeft ? "10" : sizeStyles[size].px}
-            pr={hasRight ? "10" : sizeStyles[size].px}
+            pl={hasLeft ? '10' : sizeStyles[size].px}
+            pr={hasRight ? '10' : sizeStyles[size].px}
             bg="bg.surface"
             border="1px solid"
-            borderColor={isInvalid ? "red.500" : "border"}
+            borderColor={isInvalid ? 'red.500' : 'border'}
             borderRadius="md"
             color="text.heading"
             fontFamily="var(--font-body)"
-            _placeholder={{ color: "text.muted" }}
+            _placeholder={{ color: 'text.muted' }}
             _focus={{
-              borderColor: isInvalid ? "red.500" : "blue.500",
+              borderColor: isInvalid ? 'red.500' : 'blue.500',
               boxShadow: isInvalid
-                ? "0 0 0 3px rgba(220, 38, 38, 0.15)"
-                : "0 0 0 3px rgba(6, 133, 255, 0.15)",
-              outline: "none",
+                ? '0 0 0 3px rgba(220, 38, 38, 0.15)'
+                : '0 0 0 3px rgba(6, 133, 255, 0.15)',
+              outline: 'none',
             }}
             _dark={{
-              bg: "bg.surface",
-              borderColor: isInvalid ? "red.500" : "border",
-              color: "text.heading",
+              bg: 'bg.surface',
+              borderColor: isInvalid ? 'red.500' : 'border',
+              color: 'text.heading',
             }}
             {...props}
           />
@@ -104,27 +109,34 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
       </Box>
     );
-  }
+  },
 );
 
-Input.displayName = "MedixInput";
+Input.displayName = 'MedixInput';
 
 /**
  * SearchInput — Quick search variant with built-in search icon
  */
-export interface SearchInputProps extends Omit<InputProps, "leftElement"> {
+export interface SearchInputProps extends Omit<InputProps, 'leftElement'> {
   placeholder?: string;
 }
 
 export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ placeholder = "Search…", ...props }, ref) => {
+  ({ placeholder = 'Search…', ...props }, ref) => {
     return (
       <Input
         ref={ref}
         type="search"
         placeholder={placeholder}
         leftElement={
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.35-4.35" />
           </svg>
@@ -132,7 +144,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
-SearchInput.displayName = "MedixSearchInput";
+SearchInput.displayName = 'MedixSearchInput';

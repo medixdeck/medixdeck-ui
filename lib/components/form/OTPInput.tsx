@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import React from 'react';
+import { Box, Text } from '@chakra-ui/react';
 
 export interface OTPInputProps {
   /** Number of digits */
@@ -45,7 +45,7 @@ export interface OTPInputProps {
 export function OTPInput({
   length = 6,
   value,
-  defaultValue = "",
+  defaultValue = '',
   onChange,
   onComplete,
   isInvalid = false,
@@ -60,48 +60,48 @@ export function OTPInput({
   const isControlled = value !== undefined;
   const currentValue = isControlled ? value : internalValue;
 
-  const digits = currentValue.split("").slice(0, length);
+  const digits = currentValue.split('').slice(0, length);
   const inputRefs = React.useRef<Array<HTMLInputElement | null>>([]);
 
   // Idle border colour — uses CSS vars so it automatically flips in dark mode.
   // Error states use literal hex (same in both modes by design).
-  const idleBorder = isInvalid
-    ? "#DC2626"
-    : "var(--medix-form-border)";
-  const focusBorder = isInvalid ? "#DC2626" : "#0685FF";
+  const idleBorder = isInvalid ? '#DC2626' : 'var(--medix-form-border)';
+  const focusBorder = isInvalid ? '#DC2626' : '#0685FF';
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
-    if (e.key === "Backspace") {
+    if (e.key === 'Backspace') {
       e.preventDefault();
       const newDigits = [...digits];
       if (newDigits[idx]) {
-        newDigits[idx] = "";
-        const joined = newDigits.join("");
+        newDigits[idx] = '';
+        const joined = newDigits.join('');
         if (!isControlled) setInternalValue(joined);
         onChange?.(joined);
       } else if (idx > 0) {
         inputRefs.current[idx - 1]?.focus();
-        newDigits[idx - 1] = "";
-        const joined = newDigits.join("");
+        newDigits[idx - 1] = '';
+        const joined = newDigits.join('');
         if (!isControlled) setInternalValue(joined);
         onChange?.(joined);
       }
-    } else if (e.key === "ArrowLeft" && idx > 0) {
+    } else if (e.key === 'ArrowLeft' && idx > 0) {
       inputRefs.current[idx - 1]?.focus();
-    } else if (e.key === "ArrowRight" && idx < length - 1) {
+    } else if (e.key === 'ArrowRight' && idx < length - 1) {
       inputRefs.current[idx + 1]?.focus();
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
-    const raw = e.target.value.replace(/\D/g, "");
+    const raw = e.target.value.replace(/\D/g, '');
     if (!raw) return;
 
     if (raw.length > 1) {
-      const pasted = raw.split("").slice(0, length);
-      const newDigits = [...Array(length).fill("")];
-      pasted.forEach((d, i) => { newDigits[i] = d; });
-      const joined = newDigits.join("");
+      const pasted = raw.split('').slice(0, length);
+      const newDigits = [...Array(length).fill('')];
+      pasted.forEach((d, i) => {
+        newDigits[i] = d;
+      });
+      const joined = newDigits.join('');
       if (!isControlled) setInternalValue(joined);
       onChange?.(joined);
       const focusIdx = Math.min(pasted.length, length - 1);
@@ -111,19 +111,25 @@ export function OTPInput({
     }
 
     const newDigits = [...digits];
-    while (newDigits.length < length) newDigits.push("");
+    while (newDigits.length < length) newDigits.push('');
     newDigits[idx] = raw;
-    const joined = newDigits.join("");
+    const joined = newDigits.join('');
     if (!isControlled) setInternalValue(joined);
     onChange?.(joined);
     if (idx < length - 1) inputRefs.current[idx + 1]?.focus();
-    if (joined.replace(/\s/g, "").length === length) onComplete?.(joined);
+    if (joined.replace(/\s/g, '').length === length) onComplete?.(joined);
   };
 
   return (
     <Box w="fit-content">
       {label && (
-        <Text mb="2" fontSize="sm" fontWeight="medium" color="text.heading" fontFamily="var(--font-body)">
+        <Text
+          mb="2"
+          fontSize="sm"
+          fontWeight="medium"
+          color="text.heading"
+          fontFamily="var(--font-body)"
+        >
           {label}
         </Text>
       )}
@@ -132,36 +138,42 @@ export function OTPInput({
         {Array.from({ length }).map((_, idx) => (
           <input
             key={idx}
-            ref={(el) => { inputRefs.current[idx] = el; }}
-            type={mask ? "password" : "text"}
+            ref={(el) => {
+              inputRefs.current[idx] = el;
+            }}
+            type={mask ? 'password' : 'text'}
             inputMode="numeric"
             pattern="\d*"
             maxLength={1}
-            value={digits[idx] ?? ""}
+            value={digits[idx] ?? ''}
             onChange={(e) => handleChange(e, idx)}
             onKeyDown={(e) => handleKeyDown(e, idx)}
-            onFocus={(e) => { e.target.select(); setFocusedIdx(idx); }}
+            onFocus={(e) => {
+              e.target.select();
+              setFocusedIdx(idx);
+            }}
             onBlur={() => setFocusedIdx(null)}
             disabled={isDisabled}
             aria-label={`Digit ${idx + 1} of ${length}`}
             style={{
-              width: "48px",
-              height: "48px",
-              borderRadius: "10px",
+              width: '48px',
+              height: '48px',
+              borderRadius: '10px',
               border: `1.5px solid ${focusedIdx === idx ? focusBorder : idleBorder}`,
-              boxShadow: focusedIdx === idx
-                ? `0 0 0 3px ${isInvalid ? "rgba(220,38,38,0.15)" : "rgba(6,133,255,0.15)"}`
-                : "none",
+              boxShadow:
+                focusedIdx === idx
+                  ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
+                  : 'none',
               /* CSS vars flip automatically when .dark is on any ancestor */
-              background: "var(--medix-form-bg)",
-              color: "var(--medix-form-text)",
-              fontSize: "20px",
+              background: 'var(--medix-form-bg)',
+              color: 'var(--medix-form-text)',
+              fontSize: '20px',
               fontWeight: 600,
-              textAlign: "center",
-              fontFamily: "var(--font-body)",
-              outline: "none",
-              transition: "border-color 0.15s, box-shadow 0.15s",
-              cursor: isDisabled ? "not-allowed" : "text",
+              textAlign: 'center',
+              fontFamily: 'var(--font-body)',
+              outline: 'none',
+              transition: 'border-color 0.15s, box-shadow 0.15s',
+              cursor: isDisabled ? 'not-allowed' : 'text',
               opacity: isDisabled ? 0.5 : 1,
             }}
           />
@@ -169,7 +181,12 @@ export function OTPInput({
       </Box>
 
       {(helperText || errorMessage) && (
-        <Text mt="2" fontSize="xs" color={isInvalid ? "red.500" : "text.muted"} fontFamily="var(--font-body)">
+        <Text
+          mt="2"
+          fontSize="xs"
+          color={isInvalid ? 'red.500' : 'text.muted'}
+          fontFamily="var(--font-body)"
+        >
           {isInvalid ? errorMessage : helperText}
         </Text>
       )}

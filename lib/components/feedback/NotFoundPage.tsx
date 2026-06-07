@@ -1,6 +1,6 @@
-import React from "react";
-import { Box, Text, type BoxProps } from "@chakra-ui/react";
-import { Button } from "../primitive/Button";
+import React from 'react';
+import { Box, Text, type BoxProps } from '@chakra-ui/react';
+import { Button } from '../primitive/Button';
 
 declare const process: any;
 
@@ -39,10 +39,10 @@ export interface NotFoundPageProps extends BoxProps {
  * ```
  */
 export function NotFoundPage({
-  title = "Page Not Found",
+  title = 'Page Not Found',
   description = "The page you are looking for doesn't exist or has been moved.",
   errorMessage,
-  actionLabel = "Go back home",
+  actionLabel = 'Go back home',
   onAction,
   secondaryLabel,
   onSecondaryAction,
@@ -85,12 +85,12 @@ export function NotFoundPage({
         color="text.muted"
         fontFamily="var(--font-body)"
         maxW="400px"
-        mb={errorMessage ? "4" : "8"}
+        mb={errorMessage ? '4' : '8'}
       >
         {description}
       </Text>
-      
-      {errorMessage && process.env.NODE_ENV === "development" && (
+
+      {errorMessage && process.env.NODE_ENV === 'development' && (
         <Box
           bg="bg.surface"
           border="1px solid"

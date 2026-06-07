@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Footer } from "./Footer";
-import { Logo } from "../primitive/Logo";
+import type { Meta, StoryObj } from '@storybook/react';
+import { Footer } from './Footer';
+import { Logo } from '../primitive/Logo';
 
 const meta: Meta<typeof Footer> = {
-  title: "Layout/Footer",
+  title: 'Layout/Footer',
   component: Footer,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
@@ -21,9 +21,9 @@ export const CustomBrandAndNewsletter: Story = {
       logo={<Logo variant="blue" />}
       description="The ultimate digital health solution for modern clinics."
       newsletter={{
-        title: "Get Health Tips",
-        description: "Subscribe to our weekly newsletter for the latest updates.",
-        placeholder: "Enter your email address...",
+        title: 'Get Health Tips',
+        description: 'Subscribe to our weekly newsletter for the latest updates.',
+        placeholder: 'Enter your email address...',
         onSubmit: (email) => alert(`Subscribed with: ${email}`),
       }}
     />
@@ -42,9 +42,9 @@ export const NoNewsletter: Story = {
 export const WithCertifications: Story = {
   args: {
     certifications: [
-      { name: "NDPR Compliant", href: "https://nitda.gov.ng" },
-      { name: "ISO 27001", href: "#" },
-      { name: "MDCN Certified Platform", href: "https://mdcn.gov.ng" },
+      { name: 'NDPR Compliant', href: 'https://nitda.gov.ng' },
+      { name: 'ISO 27001', href: '#' },
+      { name: 'MDCN Certified Platform', href: 'https://mdcn.gov.ng' },
     ],
   },
   render: (args) => <Footer {...args} />,

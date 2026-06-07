@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
-import { Button, Wrap } from "@chakra-ui/react";
-import { Toaster, toast, dismissToast } from "./Toast";
+import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
+import { Button, Wrap } from '@chakra-ui/react';
+import { Toaster, toast, dismissToast } from './Toast';
 
 const meta: Meta<typeof Toaster> = {
-  title: "Components/Feedback/Toast",
+  title: 'Components/Feedback/Toast',
   component: Toaster,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 };
 
@@ -27,8 +27,8 @@ export const Basic: Story = {
         <Wrap gap="4">
           <Button
             onClick={() =>
-              toast.info("Update available", {
-                description: "A new software version is available.",
+              toast.info('Update available', {
+                description: 'A new software version is available.',
               })
             }
           >
@@ -38,8 +38,8 @@ export const Basic: Story = {
           <Button
             colorPalette="green"
             onClick={() =>
-              toast.success("Profile saved", {
-                description: "Your changes have been successfully saved.",
+              toast.success('Profile saved', {
+                description: 'Your changes have been successfully saved.',
               })
             }
           >
@@ -49,8 +49,8 @@ export const Basic: Story = {
           <Button
             colorPalette="orange"
             onClick={() =>
-              toast.warning("Low storage", {
-                description: "You are running out of storage space.",
+              toast.warning('Low storage', {
+                description: 'You are running out of storage space.',
               })
             }
           >
@@ -60,8 +60,8 @@ export const Basic: Story = {
           <Button
             colorPalette="red"
             onClick={() =>
-              toast.error("Action failed", {
-                description: "Could not connect to the server. Please try again.",
+              toast.error('Action failed', {
+                description: 'Could not connect to the server. Please try again.',
               })
             }
           >
@@ -87,10 +87,10 @@ export const ProgrammaticDismissal: Story = {
           <Button
             onClick={() => {
               const id = toast({
-                title: "Processing...",
-                description: "This toast will stay until you close it.",
+                title: 'Processing...',
+                description: 'This toast will stay until you close it.',
                 duration: Infinity,
-                type: "info",
+                type: 'info',
               });
               setToastId(id as unknown as string);
             }}

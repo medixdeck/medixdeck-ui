@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Card, CardHeader, CardBody, CardFooter } from "./Card";
-import { Button } from "../primitive/Button";
-import { Text } from "@chakra-ui/react";
+import type { Meta, StoryObj } from '@storybook/react';
+import { Card, CardHeader, CardBody, CardFooter } from './Card';
+import { Button } from '../primitive/Button';
+import { Text } from '@chakra-ui/react';
 
 const meta: Meta<typeof Card> = {
-  title: "Layout/Card",
+  title: 'Layout/Card',
   component: Card,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
@@ -22,7 +22,9 @@ export const Default: Story = {
         </Text>
       </CardBody>
       <CardFooter>
-        <Button variant="outline" size="sm">View Records</Button>
+        <Button variant="outline" size="sm">
+          View Records
+        </Button>
         <Button size="sm">Book Appointment</Button>
       </CardFooter>
     </Card>
