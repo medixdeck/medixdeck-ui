@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
-import { Modal } from "./Modal";
-import { Button } from "../primitive/Button";
+import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
+import { Modal } from './Modal';
+import { Button } from '../primitive/Button';
 
 const meta: Meta<typeof Modal> = {
-  title: "Feedback/Modal",
+  title: 'Feedback/Modal',
   component: Modal,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {
-    size: { control: "select", options: ["sm", "md", "lg", "xl", "full"] },
+    size: { control: 'select', options: ['sm', 'md', 'lg', 'xl', 'full'] },
   },
 };
 
@@ -29,12 +29,16 @@ export const Default: Story = {
           description="Fill in your details to schedule a consultation."
           footer={
             <>
-              <Button variant="outline" colorScheme="gray" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button colorScheme="blue" onClick={() => setOpen(false)}>Confirm Booking</Button>
+              <Button variant="outline" colorScheme="gray" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button colorScheme="blue" onClick={() => setOpen(false)}>
+                Confirm Booking
+              </Button>
             </>
           }
         >
-          <p style={{ fontFamily: "var(--font-body)", color: "var(--chakra-colors-text-body)" }}>
+          <p style={{ fontFamily: 'var(--font-body)', color: 'var(--chakra-colors-text-body)' }}>
             Modal body content goes here.
           </p>
         </Modal>

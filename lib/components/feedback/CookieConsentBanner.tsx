@@ -1,14 +1,17 @@
-"use client";
+'use client';
 
-import React from "react";
-import CookieConsent from "react-cookie-consent";
-import { Box, Text } from "@chakra-ui/react";
-import { Button } from "../primitive/Button";
-import { useIsDarkMode } from "../../hooks/useThemeMode";
+import React from 'react';
+import CookieConsent from 'react-cookie-consent';
+import { Box, Text } from '@chakra-ui/react';
+import { Button } from '../primitive/Button';
+import { useIsDarkMode } from '../../hooks/useThemeMode';
 
 export type CookieConsentComponentProps = React.ComponentProps<typeof CookieConsent>;
 
-export interface CookieConsentBannerProps extends Omit<CookieConsentComponentProps, "style" | "buttonStyle" | "declineButtonStyle" | "contentStyle"> {
+export interface CookieConsentBannerProps extends Omit<
+  CookieConsentComponentProps,
+  'style' | 'buttonStyle' | 'declineButtonStyle' | 'contentStyle'
+> {
   /** Optional custom title for the banner */
   title?: string;
   /** Custom text for accept button. Defaults to "Accept All" */
@@ -30,18 +33,18 @@ export interface CookieConsentBannerProps extends Omit<CookieConsentComponentPro
  * ```
  */
 export function CookieConsentBanner({
-  title = "We value your privacy",
-  acceptText = "Accept All",
-  declineText = "Reject Non-Essential",
+  title = 'We value your privacy',
+  acceptText = 'Accept All',
+  declineText = 'Reject Non-Essential',
   enableDeclineButton = true,
   children,
   ...props
 }: CookieConsentBannerProps) {
   const isDark = useIsDarkMode();
-  
-  const bgColor = isDark ? "#152035" : "#F6F6F6";
-  const textColor = isDark ? "#ABC0D6" : "#3D4F63";
-  const borderColor = isDark ? "#1E3050" : "#E4E8F0";
+
+  const bgColor = isDark ? '#152035' : '#F6F6F6';
+  const textColor = isDark ? '#ABC0D6' : '#3D4F63';
+  const borderColor = isDark ? '#1E3050' : '#E4E8F0';
 
   return (
     <>
@@ -112,7 +115,8 @@ export function CookieConsentBanner({
             </Text>
           )}
           <Text fontSize="sm" color="text.muted" lineHeight="1.5">
-            {children || "We use cookies to securely manage your session, enhance your browsing experience, and analyze our platform's performance. By clicking \"Accept All\", you consent to our use of cookies."}
+            {children ||
+              'We use cookies to securely manage your session, enhance your browsing experience, and analyze our platform\'s performance. By clicking "Accept All", you consent to our use of cookies.'}
           </Text>
         </Box>
       </CookieConsent>
@@ -120,4 +124,4 @@ export function CookieConsentBanner({
   );
 }
 
-CookieConsentBanner.displayName = "MedixCookieConsentBanner";
+CookieConsentBanner.displayName = 'MedixCookieConsentBanner';

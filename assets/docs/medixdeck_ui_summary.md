@@ -34,72 +34,72 @@ npm run build
 
 ### Primitive (7)
 
-| Component | Description |
-|---|---|
-| `Button` | solid/outline/ghost/link/secondary · xs–lg · 5 color schemes |
-| `IconButton` | Round or square icon-only buttons |
-| `Badge` | Status badges: success/warning/error/info/neutral |
-| `Avatar` / `AvatarGroup` | Profile images with initials fallback |
-| `Spinner` / `FullPageSpinner` | Loading indicators |
-| `Tag` | Closeable filter chips |
-| `Divider` | H/V separator with optional label |
+| Component                     | Description                                                  |
+| ----------------------------- | ------------------------------------------------------------ |
+| `Button`                      | solid/outline/ghost/link/secondary · xs–lg · 5 color schemes |
+| `IconButton`                  | Round or square icon-only buttons                            |
+| `Badge`                       | Status badges: success/warning/error/info/neutral            |
+| `Avatar` / `AvatarGroup`      | Profile images with initials fallback                        |
+| `Spinner` / `FullPageSpinner` | Loading indicators                                           |
+| `Tag`                         | Closeable filter chips                                       |
+| `Divider`                     | H/V separator with optional label                            |
 
 ### Form (6)
 
-| Component | Description |
-|---|---|
+| Component               | Description                                 |
+| ----------------------- | ------------------------------------------- |
 | `Input` / `SearchInput` | Text input with icon support and validation |
-| `Textarea` | Multi-line with character count |
-| `Select` | Native dropdown from options array |
-| `Checkbox` | With optional description |
-| `RadioGroup` | Options array with description support |
-| `Switch` | Toggle with label/description |
-| `FormControl` | Label + helper text + error wrapper |
+| `Textarea`              | Multi-line with character count             |
+| `Select`                | Native dropdown from options array          |
+| `Checkbox`              | With optional description                   |
+| `RadioGroup`            | Options array with description support      |
+| `Switch`                | Toggle with label/description               |
+| `FormControl`           | Label + helper text + error wrapper         |
 
 ### Layout (5)
 
-| Component | Description |
-|---|---|
-| `Card` / `CardHeader` / `CardBody` / `CardFooter` | Surface container |
-| `StatCard` | Metric with trend indicator (25K+, 98%) |
-| `Container` | Centered max-width wrapper |
-| `SectionHeader` | Eyebrow + title + description heading block |
+| Component                                         | Description                                 |
+| ------------------------------------------------- | ------------------------------------------- |
+| `Card` / `CardHeader` / `CardBody` / `CardFooter` | Surface container                           |
+| `StatCard`                                        | Metric with trend indicator (25K+, 98%)     |
+| `Container`                                       | Centered max-width wrapper                  |
+| `SectionHeader`                                   | Eyebrow + title + description heading block |
 
 ### Navigation (5)
 
-| Component | Description |
-|---|---|
-| `Navbar` | Responsive with hamburger, sticky/blur/transparent |
-| `Breadcrumb` | Page path with custom separator |
-| `Tabs` | Line and pill variants with badge count |
-| `Pagination` | Ellipsis logic, compact mobile mode |
-| `Stepper` | Multi-step flow in horizontal/vertical |
+| Component    | Description                                        |
+| ------------ | -------------------------------------------------- |
+| `Navbar`     | Responsive with hamburger, sticky/blur/transparent |
+| `Breadcrumb` | Page path with custom separator                    |
+| `Tabs`       | Line and pill variants with badge count            |
+| `Pagination` | Ellipsis logic, compact mobile mode                |
+| `Stepper`    | Multi-step flow in horizontal/vertical             |
 
 ### Feedback & Overlays (6)
 
-| Component | Description |
-|---|---|
-| `Alert` | subtle/solid/left-accent · info/success/warning/error |
-| `Skeleton` / `SkeletonText` / `SkeletonCard` | Shimmer loading placeholders |
-| `Progress` | Bar with indeterminate mode |
-| `Modal` | Dialog overlay with Chakra v3 API |
-| `Tooltip` | Hover labels |
-| `EmptyState` | Zero-data screens with CTA |
+| Component                                    | Description                                           |
+| -------------------------------------------- | ----------------------------------------------------- |
+| `Alert`                                      | subtle/solid/left-accent · info/success/warning/error |
+| `Skeleton` / `SkeletonText` / `SkeletonCard` | Shimmer loading placeholders                          |
+| `Progress`                                   | Bar with indeterminate mode                           |
+| `Modal`                                      | Dialog overlay with Chakra v3 API                     |
+| `Tooltip`                                    | Hover labels                                          |
+| `EmptyState`                                 | Zero-data screens with CTA                            |
 
 ### Data Display (3)
 
-| Component | Description |
-|---|---|
-| `Accordion` | FAQ with smooth animations, card variant |
-| `TestimonialCard` | Quote + author + star rating |
-| `BlogCard` | Article preview with category badge |
+| Component         | Description                              |
+| ----------------- | ---------------------------------------- |
+| `Accordion`       | FAQ with smooth animations, card variant |
+| `TestimonialCard` | Quote + author + star rating             |
+| `BlogCard`        | Article preview with category badge      |
 
 ### Healthcare-Specific (3)
 
-| Component | Description |
-|---|---|
-| `DoctorCard` | Profile with rating, fee, Book + View actions |
-| `VitalBadge` | Blood pressure, SpO₂, HR with status color |
+| Component         | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| `DoctorCard`      | Profile with rating, fee, Book + View actions  |
+| `VitalBadge`      | Blood pressure, SpO₂, HR with status color     |
 | `AppointmentCard` | Upcoming/Completed with Join/Reschedule/Cancel |
 
 ---
@@ -116,14 +116,10 @@ npm install @medixdeck/ui @chakra-ui/react
 
 ```tsx
 // app/layout.tsx (Next.js) or main.tsx (Vite)
-import { MedixProvider } from "@medixdeck/ui";
+import { MedixProvider } from '@medixdeck/ui';
 
 export default function RootLayout({ children }) {
-  return (
-    <MedixProvider defaultColorMode="light">
-      {children}
-    </MedixProvider>
-  );
+  return <MedixProvider defaultColorMode="light">{children}</MedixProvider>;
 }
 ```
 
@@ -154,7 +150,7 @@ import { Button, DoctorCard, Navbar } from "@medixdeck/ui";
 ```tsx
 <Navbar
   renderLink={(item, children) => (
-    <Link href={item.href}>{children}</Link>  // Next.js Link
+    <Link href={item.href}>{children}</Link> // Next.js Link
   )}
 />
 ```
@@ -164,10 +160,10 @@ import { Button, DoctorCard, Navbar } from "@medixdeck/ui";
 ## Theme Tokens (for consuming apps)
 
 ```tsx
-import { system } from "@medixdeck/ui";
+import { system } from '@medixdeck/ui';
 
 // Use with ChakraProvider directly if needed:
-<ChakraProvider value={system}>...</ChakraProvider>
+<ChakraProvider value={system}>...</ChakraProvider>;
 ```
 
 ### Key semantic tokens available in components

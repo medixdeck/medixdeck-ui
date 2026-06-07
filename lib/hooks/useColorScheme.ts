@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -9,7 +9,7 @@ import { useCallback, useState } from "react";
  * - `"blue"`   — Primary brand blue  (#0685FF)
  * - `"purple"` — Secondary brand purple (#7700CC)
  */
-export type ColorScheme = "blue" | "purple";
+export type ColorScheme = 'blue' | 'purple';
 
 export interface UseColorSchemeResult {
   /**
@@ -72,9 +72,7 @@ export interface UseColorSchemeResult {
  * );
  * ```
  */
-export function useColorScheme(
-  initialScheme: ColorScheme = "blue",
-): UseColorSchemeResult {
+export function useColorScheme(initialScheme: ColorScheme = 'blue'): UseColorSchemeResult {
   const [colorScheme, setColorSchemeState] = useState<ColorScheme>(initialScheme);
 
   const setColorScheme = useCallback((scheme: ColorScheme) => {
@@ -82,14 +80,14 @@ export function useColorScheme(
   }, []);
 
   const toggleColorScheme = useCallback(() => {
-    setColorSchemeState((prev) => (prev === "blue" ? "purple" : "blue"));
+    setColorSchemeState((prev) => (prev === 'blue' ? 'purple' : 'blue'));
   }, []);
 
   return {
     colorScheme,
     setColorScheme,
     toggleColorScheme,
-    isBlue: colorScheme === "blue",
-    isPurple: colorScheme === "purple",
+    isBlue: colorScheme === 'blue',
+    isPurple: colorScheme === 'purple',
   };
 }

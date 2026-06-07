@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { CookieConsentBanner } from "./CookieConsentBanner";
+import type { Meta, StoryObj } from '@storybook/react';
+import { CookieConsentBanner } from './CookieConsentBanner';
 
 const meta: Meta<typeof CookieConsentBanner> = {
-  title: "Feedback/CookieConsentBanner",
+  title: 'Feedback/CookieConsentBanner',
   component: CookieConsentBanner,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
         component:
-          "A customizable GDPR/NDPR compliant cookie consent banner powered by `react-cookie-consent` and styled with the MedixDeck design system.",
+          'A customizable GDPR/NDPR compliant cookie consent banner powered by `react-cookie-consent` and styled with the MedixDeck design system.',
       },
     },
   },
@@ -24,10 +24,10 @@ export const Default: Story = {
 
 export const CustomCopy: Story = {
   args: {
-    title: "Privacy & Cookies",
-    acceptText: "Accept",
-    declineText: "Decline",
-    children: "We use cookies to ensure you get the best experience on our website.",
+    title: 'Privacy & Cookies',
+    acceptText: 'Accept',
+    declineText: 'Decline',
+    children: 'We use cookies to ensure you get the best experience on our website.',
   },
 };
 

@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
-import { Pagination } from "./Pagination";
+import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
+import { Pagination } from './Pagination';
 
 const meta: Meta<typeof Pagination> = {
-  title: "Navigation/Pagination",
+  title: 'Navigation/Pagination',
   component: Pagination,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   argTypes: {},
 };
 

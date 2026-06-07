@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { ThemeColorPalette } from "./ThemeColorPalette";
+import type { Meta, StoryObj } from '@storybook/react';
+import { ThemeColorPalette } from './ThemeColorPalette';
 
 const meta: Meta<typeof ThemeColorPalette> = {
-  title: "Layout/ThemeColorPalette",
+  title: 'Layout/ThemeColorPalette',
   component: ThemeColorPalette,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
   args: {
     showSemanticTokens: true,
@@ -18,7 +18,7 @@ export default meta;
 type Story = StoryObj<typeof ThemeColorPalette>;
 
 export const Default: Story = {
-  render: (args) => <ThemeColorPalette maxW="7xl" mx="auto" p={{ base: "4", md: "8" }} {...args} />,
+  render: (args) => <ThemeColorPalette maxW="7xl" mx="auto" p={{ base: '4', md: '8' }} {...args} />,
 };
 
 export const SemanticOnly: Story = {
@@ -26,7 +26,7 @@ export const SemanticOnly: Story = {
     showSemanticTokens: true,
     showPrimitiveTokens: false,
   },
-  render: (args) => <ThemeColorPalette maxW="7xl" mx="auto" p={{ base: "4", md: "8" }} {...args} />,
+  render: (args) => <ThemeColorPalette maxW="7xl" mx="auto" p={{ base: '4', md: '8' }} {...args} />,
 };
 
 export const RawPalettesOnly: Story = {
@@ -34,5 +34,5 @@ export const RawPalettesOnly: Story = {
     showSemanticTokens: false,
     showPrimitiveTokens: true,
   },
-  render: (args) => <ThemeColorPalette maxW="7xl" mx="auto" p={{ base: "4", md: "8" }} {...args} />,
+  render: (args) => <ThemeColorPalette maxW="7xl" mx="auto" p={{ base: '4', md: '8' }} {...args} />,
 };

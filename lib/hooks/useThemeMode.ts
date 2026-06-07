@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
-import { useTheme } from "next-themes";
+import { useCallback, useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 
-export type ThemeMode = "light" | "dark";
-export type ThemeModeSetting = ThemeMode | "system";
+export type ThemeMode = 'light' | 'dark';
+export type ThemeModeSetting = ThemeMode | 'system';
 
 export interface UseThemeModeResult {
   /**
@@ -63,11 +63,9 @@ export function useThemeMode(): UseThemeModeResult {
     setMounted(true);
   }, []);
 
-  const themeMode: ThemeMode = resolvedTheme === "dark" ? "dark" : "light";
+  const themeMode: ThemeMode = resolvedTheme === 'dark' ? 'dark' : 'light';
   const themeSetting: ThemeModeSetting =
-    theme === "light" || theme === "dark" || theme === "system"
-      ? theme
-      : "system";
+    theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
 
   const setThemeMode = useCallback(
     (mode: ThemeModeSetting) => {
@@ -77,7 +75,7 @@ export function useThemeMode(): UseThemeModeResult {
   );
 
   const toggleThemeMode = useCallback(() => {
-    setTheme(themeMode === "dark" ? "light" : "dark");
+    setTheme(themeMode === 'dark' ? 'light' : 'dark');
   }, [setTheme, themeMode]);
 
   return {
@@ -99,5 +97,5 @@ export function useThemeMode(): UseThemeModeResult {
 export function useIsDarkMode(): boolean {
   const { mounted, themeMode } = useThemeMode();
 
-  return mounted && themeMode === "dark";
+  return mounted && themeMode === 'dark';
 }
