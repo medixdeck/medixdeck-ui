@@ -2,6 +2,8 @@
 
 import React from "react";
 import { Box, type BoxProps } from "@chakra-ui/react";
+import DOMPurify from "isomorphic-dompurify";
+import ReactMarkdown from "react-markdown";
 
 export interface AccordionItem {
   id: string;
@@ -24,6 +26,10 @@ export interface AccordionProps extends Omit<BoxProps, "onChange"> {
    * @default "blue"
    */
   colorScheme?: AccordionColorScheme;
+  /**
+   * Format of the answer string content. Default is "HTML".
+   */
+  answerType?: "HTML" | "MD";
 }
 
 /**
@@ -52,6 +58,7 @@ export function Accordion({
   allowMultiple = false,
   defaultOpenIds = [],
   colorScheme = "blue",
+  answerType = "HTML",
   ...props
 }: AccordionProps) {
   const scheme = SCHEME_COLORS[colorScheme];
@@ -163,7 +170,15 @@ export function Accordion({
                 fontFamily="var(--font-body)"
                 lineHeight="loose"
               >
-                {item.answer}
+                {typeof item.answer === "string" ? (
+                  answerType === "MD" ? (
+                    <ReactMarkdown>{item.answer}</ReactMarkdown>
+                  ) : (
+                    <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.answer) }} />
+                  )
+                ) : (
+                  item.answer
+                )}
               </Box>
             </Box>
           </Box>

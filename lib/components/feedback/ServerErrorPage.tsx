@@ -1,6 +1,8 @@
 import { Box, Text, type BoxProps } from "@chakra-ui/react";
 import { Button } from "../primitive/Button";
 
+declare const process: any;
+
 export interface ServerErrorPageProps extends BoxProps {
   /** Optional custom title. Defaults to "Something went wrong" */
   title?: string;
@@ -95,7 +97,7 @@ export function ServerErrorPage({
         {description}
       </Text>
 
-      {errorMessage && (
+      {errorMessage && process.env.NODE_ENV === "development" && (
         <Box
           bg="bg.surface"
           border="1px solid"
