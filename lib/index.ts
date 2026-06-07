@@ -175,8 +175,8 @@ export type { ServerErrorPageProps } from "./components/feedback/ServerErrorPage
 export { Drawer } from "./components/feedback/Drawer";
 export type { DrawerProps, DrawerPlacement, DrawerSize } from "./components/feedback/Drawer";
 
-export { Toaster, toast, dismissToast } from "./components/feedback/Notification";
-export type { ToastOptions, ToastType } from "./components/feedback/Notification";
+export { Toaster, toast, dismissToast } from "./components/feedback/Toast";
+export type { ToastOptions, ToastType } from "./components/feedback/Toast";
 
 export { CookieConsentBanner } from "./components/feedback/CookieConsentBanner";
 export type { CookieConsentBannerProps } from "./components/feedback/CookieConsentBanner";

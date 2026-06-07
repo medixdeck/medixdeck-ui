@@ -187,25 +187,31 @@ const SocialIcons = (iconColor: string) => ({
   ),
 });
 
-const defaultDescription = "Nigeria's premium digital sanctuary for specialist healthcare. Bridging the gap between expert care and patient convenience.";
+const defaultDescription = "Nigeria's leading digital platform for specialist healthcare. Bridging the gap between expert care and patient convenience.";
 
 const defaultSections: FooterSection[] = [
   {
     title: "COMPANY",
     links: [
-      { label: "Home", href: "/" },
       { label: "About", href: "/about" },
+      { label: "Team", href: "/team" },
+      { label: "Careers", href: "/careers" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "PRODUCT",
+    links: [
       { label: "For Doctors", href: "/doctors" },
       { label: "For Businesses", href: "/business" },
       { label: "For Patients", href: "/patients" },
+      { label: "Homecare", href: "/homecare" },
     ],
   },
   {
     title: "RESOURCES",
     links: [
       { label: "Blog", href: "/blog" },
-      { label: "Careers", href: "/careers" },
-      { label: "Contact", href: "/contact" },
     ],
   },
 ];
@@ -245,7 +251,7 @@ const defaultRenderLink = (link: { href: string; isExternal?: boolean }, childre
  * @example
  * ```tsx
  * <Footer
- *   description="Nigeria's premium digital sanctuary."
+ *   description="Nigeria's leading digital platform for specialist healthcare. Bridging the gap between expert care and patient convenience."
  *   socialLinks={[{ platform: 'twitter', href: '...' }]}
  * />
  * ```
@@ -296,7 +302,11 @@ export function Footer({
           {/* Brand Area */}
           <Box>
             <Box mb={4}>
-              {logo ?? <Logo variant={colorScheme === "blue" ? "blue" : "purple"} height={28} />}
+              <Link
+                href="/"
+              >
+                {logo ?? <Logo variant={colorScheme === "blue" ? "blue" : "purple"} height={28} />}
+              </Link>
             </Box>
             <Text
               fontSize="sm"

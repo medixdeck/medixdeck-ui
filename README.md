@@ -63,7 +63,7 @@ export function App() {
 | Form | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload` |
 | Layout | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer` |
 | Navigation | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper` |
-| Feedback | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt` |
+| Feedback | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt` |
 | Data display | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable` |
 | Healthcare | `DoctorCard`, `VitalBadge`, `AppointmentCard` |
 | Chakra re-exports | `Box`, `Flex`, `Grid`, `Stack`, `Text`, `Heading`, `Link`, `Image`, `Icon`, `Center`, `Wrap`, `WrapItem`, others in `lib/index.ts` |
@@ -149,6 +149,68 @@ function Page() {
 | `toggleColorScheme` | `() => void` | Flips blue ↔ purple |
 | `isBlue` | `boolean` | `true` when scheme is `"blue"` |
 | `isPurple` | `boolean` | `true` when scheme is `"purple"` |
+
+## Feedback & Overlays
+
+### Toast Notifications
+
+The MedixDeck UI includes a fully automated `Toast` system powered by Chakra UI v3's `createToaster` API, styled to match MedixDeck `Alert` components. 
+
+To use it, render the `<Toaster />` at the root of your application, and then use the `toast` helper to trigger notifications from anywhere.
+
+```tsx
+import { Toaster, toast } from "@medixdeck/ui";
+
+function App() {
+  return (
+    <>
+      <Toaster />
+      <button onClick={() => toast.success("Changes saved successfully!")}>
+        Save
+      </button>
+    </>
+  );
+}
+```
+
+The `toast` utility exposes `success`, `error`, `info`, and `warning` shorthand methods.
+
+### Error Pages (404 & 500)
+
+`NotFoundPage` and `ServerErrorPage` render beautifully styled full-screen error states. In the development environment (`process.env.NODE_ENV === "development"`), passing an `errorMessage` will render a technical code block. In production, this block is safely hidden to prevent data leakage.
+
+```tsx
+<ServerErrorPage 
+  errorMessage="TypeError: Cannot read properties of undefined (reading 'id')" 
+  onAction={() => reset()} 
+/>
+```
+
+## Data Display & Form Enhancements
+
+### Accordion with HTML/Markdown
+The `Accordion` supports passing rich text answers via the `answerType` prop. Use `"HTML"` (safely sanitized via `isomorphic-dompurify`) or `"MD"` (parsed via `react-markdown`).
+
+```tsx
+<Accordion
+  answerType="MD"
+  items={[
+    { id: "q1", question: "Markdown Support?", answer: "Yes, **boldly** so!" }
+  ]}
+/>
+```
+
+### Multiple Select
+The `Select` component supports native multiple selection, returning arrays on change.
+
+```tsx
+<Select 
+  multiple
+  placeholder="Select specialties..."
+  options={[{ value: "cardio", label: "Cardiology" }]}
+  onChange={(values) => console.log(values)} // values is string | string[]
+/>
+```
 
 ## DashboardLayout
 

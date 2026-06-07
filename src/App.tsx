@@ -54,7 +54,7 @@ import { Tooltip } from "../lib/components/feedback/Tooltip";
 import { EmptyState } from "../lib/components/feedback/EmptyState";
 import { NotFoundPage } from "../lib/components/feedback/NotFoundPage";
 import { ServerErrorPage } from "../lib/components/feedback/ServerErrorPage";
-import { Toaster, toast } from "../lib/components/feedback/Notification";
+import { Toaster, toast } from "../lib/components/feedback/Toast";
 import { CookieConsentBanner } from "../lib/components/feedback/CookieConsentBanner";
 import { PWAInstallPrompt } from "../lib/components/feedback/PWAInstallPrompt";
 
@@ -1277,7 +1277,7 @@ export default function App() {
             <Box w="100%" maxW="640px">
               <Accordion
                 items={[
-                  { id: "q1", question: "What is MedixDeck?", answer: "MedixDeck is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations." },
+                  { id: "q1", question: "What is MedixDeck?", answer: "<b>MedixDeck</b> is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations." },
                   { id: "q2", question: "Are the doctors on MedixDeck qualified?", answer: "Yes. Every doctor on MedixDeck is MDCN (Medical and Dental Council of Nigeria) verified before being listed on the platform." },
                   { id: "q3", question: "What do I need to get started?", answer: "Simply create an account, complete your health profile, and you can begin searching for doctors immediately — no waitlist." },
                   { id: "q4", question: "Is my medical data safe?", answer: "Absolutely. MedixDeck uses end-to-end encryption and complies with Nigerian data protection regulations (NDPR) to keep your health data private." },
@@ -1286,9 +1286,10 @@ export default function App() {
             </Box>
             <Box w="100%" maxW="640px">
               <Accordion
+                answerType="MD"
                 colorScheme="purple"
                 items={[
-                  { id: "q1", question: "What is MedixDeck?", answer: "MedixDeck is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations." },
+                  { id: "q1", question: "What is MedixDeck?", answer: "**MedixDeck** is a digital health platform that connects patients with licensed Nigerian doctors for video and in-person consultations." },
                   { id: "q2", question: "Are the doctors on MedixDeck qualified?", answer: "Yes. Every doctor on MedixDeck is MDCN (Medical and Dental Council of Nigeria) verified before being listed on the platform." },
                   { id: "q3", question: "What do I need to get started?", answer: "Simply create an account, complete your health profile, and you can begin searching for doctors immediately — no waitlist." },
                   { id: "q4", question: "Is my medical data safe?", answer: "Absolutely. MedixDeck uses end-to-end encryption and complies with Nigerian data protection regulations (NDPR) to keep your health data private." },

@@ -19,19 +19,19 @@ const specialtyOptions = [
 ];
 
 export const Default: Story = {
-  args: { placeholder: "Select a specialty", options: specialtyOptions, label: "Specialty" },
+  args: { placeholder: "Select a specialty", options: specialtyOptions },
 };
 
 export const WithHelperText: Story = {
-  args: { placeholder: "Select", options: specialtyOptions, label: "Specialty", helperText: "Choose your preferred medical specialty." },
+  args: { placeholder: "Select", options: specialtyOptions },
 };
 
 export const Invalid: Story = {
-  args: { placeholder: "Select", options: specialtyOptions, label: "Specialty", isInvalid: true, errorMessage: "Please select a specialty." },
+  args: { placeholder: "Select", options: specialtyOptions, isInvalid: true, errorMessage: "Please select a specialty." },
 };
 
 export const Disabled: Story = {
-  args: { placeholder: "Select", options: specialtyOptions, label: "Specialty", isDisabled: true },
+  args: { placeholder: "Select", options: specialtyOptions, disabled: true },
 };
 
 import { LuWallet } from "react-icons/lu";
@@ -45,5 +45,13 @@ export const WithIcon: Story = {
       { value: "100+", label: "$100+" },
     ],
     icon: <LuWallet size={16} /> 
+  },
+};
+
+export const MultipleSelection: Story = {
+  args: { 
+    placeholder: "Select multiple specialties", 
+    options: specialtyOptions, 
+    multiple: true,
   },
 };

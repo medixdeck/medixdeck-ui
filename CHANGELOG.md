@@ -4,6 +4,39 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ---
 
+## [0.1.17] — 2026-06-07
+
+### Added
+
+- **`Select` — Multiple selection support** (`multiple` prop)
+  - Added support for `multiple={true}` to the `Select` component.
+  - The `value`, `defaultValue`, and `onChange` types now accept and return `string | string[]` seamlessly matching Chakra UI v3 NativeSelect behavior.
+
+- **`Accordion` — Rich Text formatting** (`answerType` prop)
+  - Added the `answerType?: "HTML" | "MD"` prop to handle rich text strings.
+  - Uses `isomorphic-dompurify` for safely sanitizing HTML answers.
+  - Uses `react-markdown` for parsing MD answers.
+  - Retains direct React Node support.
+
+- **`Toast` — Auto-dismissing notifications**
+  - Replaced the custom framer-motion notification observer with a robust Chakra UI v3 `createToaster` implementation.
+  - Added `lib/components/feedback/Toast.tsx` built directly on `<ToastRoot asChild>` to fully inherit MedixDeck `Alert` visual styling (status colors, icons, layout).
+  - Maintained backwards-compatible exports (`toast()`, `toast.success()`, etc.) to prevent breaking changes for existing consumers.
+
+### Changed
+
+- **`Select` — Type safety and form properties**
+  - Explicity mapped `value`, `defaultValue`, `onChange`, `name`, `id`, `onBlur`, and `onFocus` straight to `<ChakraNativeSelect.Field>`.
+  - Shifted `disabled` to `<ChakraNativeSelect.Root>` conforming to Chakra UI v3 form API.
+  - Addressed TypeScript definition conflict allowing both fully controlled and uncontrolled usage paradigms.
+
+- **`NotFoundPage` & `ServerErrorPage` — Environment lockdown**
+  - Implemented `declare const process: any;` trick to allow Next.js/Vite build-time static replacement of `process.env.NODE_ENV` without causing TypeScript `Cannot find name 'process'` errors.
+  - The technical `errorMessage` block now only renders when `process.env.NODE_ENV === "development"`, keeping production UI clean.
+  - Added an optional `errorMessage` prop to `NotFoundPage` matching `ServerErrorPage`.
+
+---
+
 ## [0.1.16] — 2026-05-28
 
 ### Added
