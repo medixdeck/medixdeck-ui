@@ -217,7 +217,9 @@ export default function App() {
   const [page, setPage] = React.useState(3);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [drawerPlacement, setDrawerPlacement] = React.useState<'left' | 'right' | 'top' | 'bottom'>('right');
+  const [drawerPlacement, setDrawerPlacement] = React.useState<'left' | 'right' | 'top' | 'bottom'>(
+    'right',
+  );
   const [otpValue, setOtpValue] = React.useState('');
   const [pinValue, setPinValue] = React.useState('');
   const [phoneValue, setPhoneValue] = React.useState('');
@@ -228,7 +230,10 @@ export default function App() {
   const [calendarDate, setCalendarDate] = React.useState<Date | undefined>(new Date());
   const [tagsValue, setTagsValue] = React.useState<string[]>(['Penicillin', 'Dust Mites']);
   const [purpleTags, setPurpleTags] = React.useState<string[]>(['Cardiology', 'Pediatrics']);
-  const [multiSelectValue, setMultiSelectValue] = React.useState<string[]>(['cardiology', 'neurology']);
+  const [multiSelectValue, setMultiSelectValue] = React.useState<string[]>([
+    'cardiology',
+    'neurology',
+  ]);
 
   const patientRows = [
     {
@@ -1342,7 +1347,7 @@ export default function App() {
               <Tag colorScheme="purple" variant="solid">
                 Psychiatry
               </Tag>
-              <Tag colorScheme="green" onClose={() => { }}>
+              <Tag colorScheme="green" onClose={() => {}}>
                 Pediatrics ×
               </Tag>
               <Tag colorScheme="gray" variant="outline">
@@ -1506,7 +1511,11 @@ export default function App() {
           </Section>
 
           {/* ── Tags Input ── */}
-          <Section title="Tags Input" id="tagsinput" storybookPath="?path=/docs/form-tagsinput--docs">
+          <Section
+            title="Tags Input"
+            id="tagsinput"
+            storybookPath="?path=/docs/form-tagsinput--docs"
+          >
             <Box display="flex" flexDirection="column" gap="6" maxW="480px" w="100%">
               <TagsInput
                 label="Known Allergies (Blue Theme)"
@@ -1963,7 +1972,11 @@ export default function App() {
             </Box>
           </Section>
 
-          <Section title="Toast Notifications" id="toast" storybookPath="?path=/docs/feedback-toast--docs">
+          <Section
+            title="Toast Notifications"
+            id="toast"
+            storybookPath="?path=/docs/feedback-toast--docs"
+          >
             <Box display="flex" flexWrap="wrap" gap="3">
               <Button
                 variant="solid"
@@ -2069,16 +2082,40 @@ export default function App() {
               <Button variant="solid" onClick={() => setModalOpen(true)}>
                 Open Modal
               </Button>
-              <Button variant="outline" onClick={() => { setDrawerPlacement('right'); setDrawerOpen(true); }}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDrawerPlacement('right');
+                  setDrawerOpen(true);
+                }}
+              >
                 Open Right Drawer
               </Button>
-              <Button variant="outline" onClick={() => { setDrawerPlacement('left'); setDrawerOpen(true); }}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDrawerPlacement('left');
+                  setDrawerOpen(true);
+                }}
+              >
                 Open Left Drawer
               </Button>
-              <Button variant="outline" onClick={() => { setDrawerPlacement('top'); setDrawerOpen(true); }}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDrawerPlacement('top');
+                  setDrawerOpen(true);
+                }}
+              >
                 Open Top Drawer
               </Button>
-              <Button variant="outline" onClick={() => { setDrawerPlacement('bottom'); setDrawerOpen(true); }}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDrawerPlacement('bottom');
+                  setDrawerOpen(true);
+                }}
+              >
                 Open Bottom Drawer
               </Button>
             </Box>

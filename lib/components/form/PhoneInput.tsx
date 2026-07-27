@@ -526,7 +526,13 @@ export function PhoneInput({
                 boxShadow="none"
               >
                 {/* Search Bar */}
-                <Box p="2.5" color="text.heading" borderBottom="1px solid" borderColor="border" bg="bg.surface">
+                <Box
+                  p="2.5"
+                  color="text.heading"
+                  borderBottom="1px solid"
+                  borderColor="border"
+                  bg="bg.surface"
+                >
                   <Box color="text.heading" position="relative" display="flex" alignItems="center">
                     <svg
                       width="14"
@@ -535,7 +541,12 @@ export function PhoneInput({
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
-                      style={{ position: 'absolute', left: '10px', opacity: 0.5, pointerEvents: 'none' }}
+                      style={{
+                        position: 'absolute',
+                        left: '10px',
+                        opacity: 0.5,
+                        pointerEvents: 'none',
+                      }}
                     >
                       <circle cx="11" cy="11" r="8" />
                       <path d="m21 21-4.35-4.35" />

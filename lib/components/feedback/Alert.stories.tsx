@@ -64,4 +64,3 @@ export const LeftAccentVariant: Story = {
     description: 'Scheduled maintenance is planned for midnight.',
   },
 };
-

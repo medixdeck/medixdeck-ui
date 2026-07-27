@@ -69,11 +69,7 @@ export function OTPInput({
   // Idle border colour — uses CSS vars so it automatically flips in dark mode.
   // Error states use literal hex (same in both modes by design).
   const idleBorder = isInvalid ? '#DC2626' : 'var(--medix-form-border)';
-  const focusBorder = isInvalid
-    ? '#DC2626'
-    : colorScheme === 'purple'
-      ? '#7700CC'
-      : '#0685FF';
+  const focusBorder = isInvalid ? '#DC2626' : colorScheme === 'purple' ? '#7700CC' : '#0685FF';
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
     if (e.key === 'Backspace') {

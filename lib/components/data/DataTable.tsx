@@ -172,9 +172,17 @@ export function DataTable<T extends Record<string, unknown>>({
 
   const SortIcon = ({ colKey }: { colKey: string }) => {
     if (activeSortKey !== colKey) {
-      return <Text as="span" opacity={0.3} ml="1" fontSize="xs">↕</Text>;
+      return (
+        <Text as="span" opacity={0.3} ml="1" fontSize="xs">
+          ↕
+        </Text>
+      );
     }
-    return <Text as="span" ml="1" color="text.heading" fontSize="xs">{activeDirection === 'asc' ? '↑' : '↓'}</Text>;
+    return (
+      <Text as="span" ml="1" color="text.heading" fontSize="xs">
+        {activeDirection === 'asc' ? '↑' : '↓'}
+      </Text>
+    );
   };
 
   return (
@@ -234,7 +242,17 @@ export function DataTable<T extends Record<string, unknown>>({
                       : undefined
                   }
                 >
-                  <Flex as="span" align="center" justify={col.align === 'right' ? 'flex-end' : col.align === 'center' ? 'center' : 'flex-start'}>
+                  <Flex
+                    as="span"
+                    align="center"
+                    justify={
+                      col.align === 'right'
+                        ? 'flex-end'
+                        : col.align === 'center'
+                          ? 'center'
+                          : 'flex-start'
+                    }
+                  >
                     {col.label}
                     {(col.sortable || sortable) && <SortIcon colKey={col.key} />}
                   </Flex>

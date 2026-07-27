@@ -165,12 +165,7 @@ function SingleSelect({
               {selectedOption.label}
             </Text>
           ) : (
-            <Text
-              fontSize={sz.fontSize}
-              color="text.muted"
-              fontFamily="var(--font-body)"
-              truncate
-            >
+            <Text fontSize={sz.fontSize} color="text.muted" fontFamily="var(--font-body)" truncate>
               {placeholder}
             </Text>
           )}
@@ -187,7 +182,14 @@ function SingleSelect({
             transition: 'transform 0.15s ease',
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </Box>
@@ -221,7 +223,12 @@ function SingleSelect({
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
-                  style={{ position: 'absolute', left: '10px', opacity: 0.5, pointerEvents: 'none' }}
+                  style={{
+                    position: 'absolute',
+                    left: '10px',
+                    opacity: 0.5,
+                    pointerEvents: 'none',
+                  }}
                 >
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.35-4.35" />
@@ -528,7 +535,14 @@ function MultiSelect({
             transition: 'transform 0.15s ease',
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </Box>
@@ -562,7 +576,12 @@ function MultiSelect({
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
-                  style={{ position: 'absolute', left: '10px', opacity: 0.5, pointerEvents: 'none' }}
+                  style={{
+                    position: 'absolute',
+                    left: '10px',
+                    opacity: 0.5,
+                    pointerEvents: 'none',
+                  }}
                 >
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.35-4.35" />

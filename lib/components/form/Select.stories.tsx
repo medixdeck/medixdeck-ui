@@ -3,8 +3,6 @@ import { Select } from './Select';
 import React from 'react';
 import { LuWallet } from 'react-icons/lu';
 
-
-
 const meta: Meta<typeof Select> = {
   title: 'Form/Select',
   component: Select,
@@ -43,7 +41,6 @@ export const Disabled: Story = {
   args: { placeholder: 'Select', options: specialtyOptions, disabled: true },
 };
 
-
 export const WithIcon: Story = {
   args: {
     placeholder: 'Any price',
@@ -55,7 +52,6 @@ export const WithIcon: Story = {
     icon: <LuWallet size={16} />,
   },
 };
-
 
 export const MultipleSelection: Story = {
   render: (args) => {

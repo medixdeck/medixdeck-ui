@@ -118,12 +118,7 @@ export const WithoutTitle: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>Open Headless Drawer</Button>
-        <Drawer
-          {...args}
-          isOpen={open}
-          onClose={() => setOpen(false)}
-          placement="right"
-        >
+        <Drawer {...args} isOpen={open} onClose={() => setOpen(false)} placement="right">
           <p style={{ fontFamily: 'var(--font-body)', color: 'var(--chakra-colors-text-body)' }}>
             Drawer without explicit title (close trigger is still accessible at top-right).
           </p>
@@ -132,4 +127,3 @@ export const WithoutTitle: Story = {
     );
   },
 };
-

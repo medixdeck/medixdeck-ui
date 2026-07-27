@@ -20,14 +20,70 @@ export default meta;
 type Story = StoryObj<typeof DataTable>;
 
 const sampleData = [
-  { id: '1', name: 'Ngozi Adeyemi', age: 34, specialty: 'Cardiology', status: 'Confirmed', date: '2026-04-12' },
-  { id: '2', name: 'Emeka Nwosu', age: 45, specialty: 'Dermatology', status: 'Pending', date: '2026-04-14' },
-  { id: '3', name: 'Amina Yusuf', age: 29, specialty: 'Pediatrics', status: 'Completed', date: '2026-04-15' },
-  { id: '4', name: 'Tunde Bakare', age: 52, specialty: 'Neurology', status: 'Cancelled', date: '2026-04-18' },
-  { id: '5', name: 'Chioma Okafor', age: 38, specialty: 'General Medicine', status: 'Confirmed', date: '2026-04-20' },
-  { id: '6', name: 'Kelechi Iheanacho', age: 27, specialty: 'Orthopedics', status: 'Confirmed', date: '2026-04-22' },
-  { id: '7', name: 'Bisi Akande', age: 61, specialty: 'Ophthalmology', status: 'Pending', date: '2026-04-23' },
-  { id: '8', name: 'Fatima Bello', age: 31, specialty: 'Gynaecology', status: 'Completed', date: '2026-04-25' },
+  {
+    id: '1',
+    name: 'Ngozi Adeyemi',
+    age: 34,
+    specialty: 'Cardiology',
+    status: 'Confirmed',
+    date: '2026-04-12',
+  },
+  {
+    id: '2',
+    name: 'Emeka Nwosu',
+    age: 45,
+    specialty: 'Dermatology',
+    status: 'Pending',
+    date: '2026-04-14',
+  },
+  {
+    id: '3',
+    name: 'Amina Yusuf',
+    age: 29,
+    specialty: 'Pediatrics',
+    status: 'Completed',
+    date: '2026-04-15',
+  },
+  {
+    id: '4',
+    name: 'Tunde Bakare',
+    age: 52,
+    specialty: 'Neurology',
+    status: 'Cancelled',
+    date: '2026-04-18',
+  },
+  {
+    id: '5',
+    name: 'Chioma Okafor',
+    age: 38,
+    specialty: 'General Medicine',
+    status: 'Confirmed',
+    date: '2026-04-20',
+  },
+  {
+    id: '6',
+    name: 'Kelechi Iheanacho',
+    age: 27,
+    specialty: 'Orthopedics',
+    status: 'Confirmed',
+    date: '2026-04-22',
+  },
+  {
+    id: '7',
+    name: 'Bisi Akande',
+    age: 61,
+    specialty: 'Ophthalmology',
+    status: 'Pending',
+    date: '2026-04-23',
+  },
+  {
+    id: '8',
+    name: 'Fatima Bello',
+    age: 31,
+    specialty: 'Gynaecology',
+    status: 'Completed',
+    date: '2026-04-25',
+  },
 ];
 
 const sampleColumns = [
@@ -39,7 +95,14 @@ const sampleColumns = [
     label: 'Status',
     render: (val: unknown) => {
       const statusStr = String(val);
-      const variant = statusStr === 'Confirmed' ? 'success' : statusStr === 'Pending' ? 'warning' : statusStr === 'Completed' ? 'info' : 'error';
+      const variant =
+        statusStr === 'Confirmed'
+          ? 'success'
+          : statusStr === 'Pending'
+            ? 'warning'
+            : statusStr === 'Completed'
+              ? 'info'
+              : 'error';
       return <Badge variant={variant}>{statusStr}</Badge>;
     },
   },

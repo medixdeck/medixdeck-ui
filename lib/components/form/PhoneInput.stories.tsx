@@ -47,4 +47,3 @@ export const Invalid: Story = {
     errorMessage: 'Please enter a valid phone number.',
   },
 };
-

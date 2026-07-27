@@ -204,7 +204,6 @@ export function Logo({
   );
 }
 
-
 // ─── Color maps ──────────────────────────────────────────────────────────────
 const MARK_COLOR: Record<LogoVariant, string> = {
   blue: '#0685FF',

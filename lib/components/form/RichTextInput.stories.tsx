@@ -21,7 +21,9 @@ export const Default: Story = {
 
 export const WithDefaultContent: Story = {
   render: () => {
-    const [html, setHtml] = React.useState('<p>This is <strong>bold</strong> and <em>italic</em> text.</p>');
+    const [html, setHtml] = React.useState(
+      '<p>This is <strong>bold</strong> and <em>italic</em> text.</p>',
+    );
     return (
       <RichTextInput
         label="Medical Notes"

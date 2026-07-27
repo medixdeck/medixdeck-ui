@@ -46,9 +46,33 @@ export interface TagsInputProps {
 export type TagInputProps = TagsInputProps;
 
 const sizeStyles = {
-  sm: { minH: '34px', py: '1', px: '2.5', fontSize: '13px', tagPy: '1px', tagPx: '2', tagFontSize: '12px' },
-  md: { minH: '42px', py: '1.5', px: '3', fontSize: '14px', tagPy: '2px', tagPx: '2.5', tagFontSize: '12px' },
-  lg: { minH: '48px', py: '2', px: '4', fontSize: '15px', tagPy: '3px', tagPx: '3', tagFontSize: '13px' },
+  sm: {
+    minH: '34px',
+    py: '1',
+    px: '2.5',
+    fontSize: '13px',
+    tagPy: '1px',
+    tagPx: '2',
+    tagFontSize: '12px',
+  },
+  md: {
+    minH: '42px',
+    py: '1.5',
+    px: '3',
+    fontSize: '14px',
+    tagPy: '2px',
+    tagPx: '2.5',
+    tagFontSize: '12px',
+  },
+  lg: {
+    minH: '48px',
+    py: '2',
+    px: '4',
+    fontSize: '15px',
+    tagPy: '3px',
+    tagPx: '3',
+    tagFontSize: '13px',
+  },
 };
 
 const brandColors = {
@@ -224,7 +248,8 @@ export function TagsInput({
             _dark={{
               bg: colorScheme === 'purple' ? 'rgba(119, 0, 204, 0.2)' : 'rgba(6, 133, 255, 0.2)',
               color: colorScheme === 'purple' ? 'purple.300' : 'blue.300',
-              borderColor: colorScheme === 'purple' ? 'rgba(119, 0, 204, 0.4)' : 'rgba(6, 133, 255, 0.4)',
+              borderColor:
+                colorScheme === 'purple' ? 'rgba(119, 0, 204, 0.4)' : 'rgba(6, 133, 255, 0.4)',
             }}
           >
             <span>{tag}</span>
