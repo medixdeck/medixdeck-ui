@@ -59,6 +59,8 @@ export interface RichTextInputProps {
   colorScheme?: 'blue' | 'purple';
   /** Min height of the editor body */
   minHeight?: string;
+  /** Max height of the editor body — editor scrolls when content exceeds this */
+  maxHeight?: string;
   /** Maximum character count allowed */
   maxLength?: number;
   /** Show character counter in footer */
@@ -563,6 +565,7 @@ export function RichTextInput({
   disabled = false,
   colorScheme = 'blue',
   minHeight = '180px',
+  maxHeight = '400px',
   maxLength,
   showCharCount = false,
   toolbarOptions,
@@ -659,7 +662,7 @@ export function RichTextInput({
 
         <Box
           className="medix-rte-content"
-          style={{ minHeight }}
+          style={{ minHeight, maxHeight, overflowY: 'auto' }}
           _dark={{ color: 'var(--medix-form-text)' }}
         >
           <EditorContent editor={editor} />

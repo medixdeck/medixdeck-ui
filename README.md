@@ -11,7 +11,11 @@
 ## Install
 
 ```bash
+# Core UI library
 npm install @medixdeck/ui @chakra-ui/react react react-dom
+
+# Optional: If using RichTextInput (TipTap Rich Text Editor)
+npm install @tiptap/react @tiptap/pm @tiptap/starter-kit @tiptap/extension-link @tiptap/extension-underline @tiptap/extension-text-align @tiptap/extension-placeholder
 ```
 
 ## Quick start
@@ -54,7 +58,7 @@ export function App() {
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Provider + theme  | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports                                                                                                                    |
 | Primitive         | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo`                                                                                                              |
-| Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`, `TagsInput`, `TagInput`                  |
+| Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`, `TagsInput`, `TagInput`, `RichTextInput`, `RichTextEditor`                  |
 | Layout            | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer`                                                                                    |
 | Navigation        | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper`                                                                                                                                                                       |
 | Feedback          | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt` |
@@ -203,6 +207,34 @@ The `Select` component supports native multiple selection, returning arrays on c
   options={[{ value: 'cardio', label: 'Cardiology' }]}
   onChange={(values) => console.log(values)} // values is string | string[]
 />
+```
+
+### Rich Text Input (`RichTextInput` / `RichTextEditor`)
+
+A fully-featured rich text editor powered by TipTap (ProseMirror). Supports headings, formatting, lists, links, alignment, custom color schemes, character limit tracking, and height boundaries (`minHeight`, `maxHeight`).
+
+Requires optional peer dependencies (`@tiptap/*`).
+
+```tsx
+import { RichTextInput } from '@medixdeck/ui';
+
+function NotesForm() {
+  const [content, setContent] = React.useState('<p>Initial clinical note...</p>');
+
+  return (
+    <RichTextInput
+      label="Clinical Notes"
+      value={content}
+      onChange={setContent}
+      colorScheme="purple"
+      placeholder="Type clinical notes..."
+      minHeight="180px"
+      maxHeight="400px"
+      showCharCount
+      maxLength={1000}
+    />
+  );
+}
 ```
 
 ## DashboardLayout

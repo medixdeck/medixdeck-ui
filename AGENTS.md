@@ -43,7 +43,7 @@ lib/                     ← ALL library source code lives here
   components/
     provider/            ← MedixProvider (wraps ChakraProvider + next-themes)
     primitive/           ← Button, Badge, Avatar, Spinner, Tag, Divider, Logo
-    form/                ← Input, Select, Checkbox, OTPInput, PhoneInput, DatePicker, DateRangePicker, Combobox, FileUpload
+    form/                ← Input, Select, Checkbox, OTPInput, PhoneInput, DatePicker, DateRangePicker, Combobox, FileUpload, TagsInput, RichTextInput
     layout/              ← Card, StatCard, Container, SectionHeader
     navigation/          ← Navbar, Breadcrumb, Tabs, Pagination, Stepper
     feedback/            ← Alert, Skeleton, Progress, Modal, Drawer, Tooltip, EmptyState, Notification, CookieConsentBanner, PWAInstallPrompt
@@ -373,15 +373,29 @@ The dev preview (`src/App.tsx`) showcases every component. When you add a new co
 When helping a consuming project (e.g., the website or app) use this library:
 
 ```tsx
-// 1. Install (once the library is published)
+// 1. Install core library
 // npm install @medixdeck/ui framer-motion
+//
+// 1b. If using RichTextInput (TipTap Rich Text Editor), install TipTap peer dependencies:
+// npm install @tiptap/react @tiptap/pm @tiptap/starter-kit @tiptap/extension-link @tiptap/extension-underline @tiptap/extension-text-align @tiptap/extension-placeholder
 
 // 2. Wrap root with MedixProvider — it injects Satoshi + Inter fonts automatically.
 //    No font <link> tags needed in the host HTML.
 <MedixProvider defaultColorMode="light">{children}</MedixProvider>
 
 // 3. Import and use
-import { Button, Navbar, DoctorCard, Logo } from "@medixdeck/ui";
+import { Button, Navbar, DoctorCard, Logo, RichTextInput } from "@medixdeck/ui";
+
+// RichTextInput — rich text editor with min/max height & char count
+<RichTextInput
+  label="Clinical Notes"
+  placeholder="Type clinical notes..."
+  colorScheme="purple"
+  minHeight="180px"
+  maxHeight="400px"
+  showCharCount
+  maxLength={1000}
+/>
 
 // Logo — inline SVG, works without any image/asset setup
 <Logo />                              // full blue, 32px (default)

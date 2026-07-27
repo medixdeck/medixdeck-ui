@@ -2,6 +2,18 @@
 
 All notable changes to `@medixdeck/ui` are documented here.
 
+## [0.1.18] — 2026-07-27
+
+### Added
+
+- **`RichTextInput` / `RichTextEditor` — Rich Text Editor Component**:
+  - Added full-featured rich text input component powered by TipTap (ProseMirror engine).
+  - Features bold, italic, underline, strikethrough, headings (H1-H3), bullet & ordered lists, blockquote, link insertion/editing, text alignment, and clear formatting.
+  - Full `colorScheme="blue" | "purple"` focus ring and active toolbar styling.
+  - Supports `minHeight` (default `'180px'`) and `maxHeight` (default `'400px'` with auto vertical scrolling when content overflows).
+  - Supports character counter display (`showCharCount`) and character limits (`maxLength`).
+  - Added optional peer dependencies for consuming projects (`@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`, `@tiptap/extension-link`, `@tiptap/extension-underline`, `@tiptap/extension-text-align`, `@tiptap/extension-placeholder`).
+
 ---
 
 ## [0.1.17] — 2026-06-07
