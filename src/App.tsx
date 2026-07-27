@@ -1336,7 +1336,7 @@ export default function App() {
               <Tag colorScheme="purple" variant="solid">
                 Psychiatry
               </Tag>
-              <Tag colorScheme="green" onClose={() => {}}>
+              <Tag colorScheme="green" onClose={() => { }}>
                 Pediatrics ×
               </Tag>
               <Tag colorScheme="gray" variant="outline">
@@ -1783,33 +1783,145 @@ export default function App() {
               FEEDBACK
           ──────────────────────────────────────────────────── */}
           <Section title="Alerts" id="feedback" storybookPath="?path=/docs/feedback-alert--docs">
-            <Alert
-              status="success"
-              title="Appointment confirmed!"
-              description="Dr. Okonkwo will see you at 2:00 PM today."
-              closable
-              w="400px"
-            />
-            <Alert
-              status="warning"
-              title="Incomplete profile"
-              description="Please complete your medical history."
-              w="400px"
-            />
-            <Alert
-              status="error"
-              title="Payment failed"
-              description="Your card was declined. Please try another method."
-              closable
-              w="400px"
-            />
-            <Alert
-              status="info"
-              variant="left-accent"
-              title="New feature"
-              description="Video consultations are now available 24/7."
-              w="400px"
-            />
+            <Box w="100%" display="flex" flexDirection="column" gap="6">
+              {/* Subtle Variant (Default) */}
+              <Box>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                  mb="3"
+                >
+                  Subtle (Default)
+                </Text>
+                <Box display="flex" flexWrap="wrap" gap="4">
+                  <Alert
+                    variant="subtle"
+                    status="success"
+                    title="Appointment confirmed!"
+                    description="Dr. Okonkwo will see you at 2:00 PM today."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="subtle"
+                    status="warning"
+                    title="Incomplete profile"
+                    description="Please complete your medical history."
+                    w="400px"
+                  />
+                  <Alert
+                    variant="subtle"
+                    status="error"
+                    title="Payment failed"
+                    description="Your card was declined. Please try another method."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="subtle"
+                    status="info"
+                    title="New feature"
+                    description="Video consultations are now available 24/7."
+                    w="400px"
+                  />
+                </Box>
+              </Box>
+
+              {/* Solid Variant */}
+              <Box>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                  mb="3"
+                >
+                  Solid
+                </Text>
+                <Box display="flex" flexWrap="wrap" gap="4">
+                  <Alert
+                    variant="solid"
+                    status="success"
+                    title="Appointment confirmed!"
+                    description="Dr. Okonkwo will see you at 2:00 PM today."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="solid"
+                    status="warning"
+                    title="Incomplete profile"
+                    description="Please complete your medical history."
+                    w="400px"
+                  />
+                  <Alert
+                    variant="solid"
+                    status="error"
+                    title="Payment failed"
+                    description="Your card was declined. Please try another method."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="solid"
+                    status="info"
+                    title="New feature"
+                    description="Video consultations are now available 24/7."
+                    w="400px"
+                  />
+                </Box>
+              </Box>
+
+              {/* Left Accent Variant */}
+              <Box>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                  mb="3"
+                >
+                  Left Accent
+                </Text>
+                <Box display="flex" flexWrap="wrap" gap="4">
+                  <Alert
+                    variant="left-accent"
+                    status="success"
+                    title="Appointment confirmed!"
+                    description="Dr. Okonkwo will see you at 2:00 PM today."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="left-accent"
+                    status="warning"
+                    title="Incomplete profile"
+                    description="Please complete your medical history."
+                    w="400px"
+                  />
+                  <Alert
+                    variant="left-accent"
+                    status="error"
+                    title="Payment failed"
+                    description="Your card was declined. Please try another method."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="left-accent"
+                    status="info"
+                    title="New feature"
+                    description="Video consultations are now available 24/7."
+                    w="400px"
+                  />
+                </Box>
+              </Box>
+            </Box>
           </Section>
 
           <Section title="Tooltip" id="tooltip" storybookPath="?path=/docs/feedback-tooltip--docs">
