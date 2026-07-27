@@ -66,7 +66,7 @@ const GLOBAL_STYLES = `
     font-family: var(--font-body);
   }
 
-  /* ── Form-element color tokens (light mode defaults) ────────────────────── */
+  /* ── Form & Scrollbar color tokens (light mode defaults) ────────────────────── */
   :root {
     --medix-form-bg:          #F6F6F6;
     --medix-form-bg-subtle:   #F0F4F8;
@@ -74,16 +74,24 @@ const GLOBAL_STYLES = `
     --medix-form-text-muted:  #6B7280;
     --medix-form-border:      #E2E8F0;
     --medix-form-placeholder: #9CA3AF;
+
+    --medix-scrollbar-track:  #F1F5F9;
+    --medix-scrollbar-thumb:  #CBD5E1;
+    --medix-scrollbar-thumb-hover: #94A3B8;
   }
 
-  /* ── Dark mode overrides — activates whenever .dark is on any ancestor ──── */
-  .dark {
+  /* ── Dark mode overrides — activates whenever .dark or [data-theme="dark"] is present ──── */
+  .dark, [data-theme="dark"], html.dark, body.dark {
     --medix-form-bg:          #152035;
     --medix-form-bg-subtle:   #0F1C2E;
     --medix-form-text:        #F5F6F8;
     --medix-form-text-muted:  #94A3B8;
     --medix-form-border:      #1E3554;
     --medix-form-placeholder: #4A5568;
+
+    --medix-scrollbar-track:  #0A1220;
+    --medix-scrollbar-thumb:  #1E3554;
+    --medix-scrollbar-thumb-hover: #2E4B75;
   }
 
   /* Native browser controls follow dark/light color-scheme */
@@ -102,6 +110,67 @@ const GLOBAL_STYLES = `
     -webkit-box-shadow: 0 0 0 30px var(--medix-form-bg) inset !important;
     -webkit-text-fill-color: var(--medix-form-text) !important;
     caret-color: var(--medix-form-text) !important;
+  }
+
+  /* ── Smooth scrolling & text rendering optimization ─────────────────────── */
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Caret color ───────────────────────────────────────────────────────── */
+  input, textarea, [contenteditable="true"] {
+    caret-color: #0685FF;
+  }
+  .dark input, .dark textarea, .dark [contenteditable="true"] {
+    caret-color: #38BDF8;
+  }
+
+  /* ── Text Selection (MedixDeck brand blue highlight) ────────────────────── */
+  ::selection {
+    background-color: rgba(6, 133, 255, 0.22) !important;
+    color: #0F172A !important;
+  }
+  ::-moz-selection {
+    background-color: rgba(6, 133, 255, 0.22) !important;
+    color: #0F172A !important;
+  }
+  .dark ::selection, .dark::-selection, [data-theme="dark"] ::selection, [data-theme="dark"]::-selection, html.dark ::selection {
+    background-color: rgba(6, 133, 255, 0.38) !important;
+    color: #F8FAFC !important;
+  }
+  .dark ::-moz-selection, .dark::-moz-selection, [data-theme="dark"] ::-moz-selection, [data-theme="dark"]::-moz-selection, html.dark ::-moz-selection {
+    background-color: rgba(6, 133, 255, 0.38) !important;
+    color: #F8FAFC !important;
+  }
+
+  /* ── Custom Modern Scrollbars (Firefox & W3C Standard) ─────────────────── */
+  html, body, * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--medix-scrollbar-thumb) var(--medix-scrollbar-track);
+  }
+
+  /* ── Custom Modern Scrollbars (WebKit Chrome, Safari, Edge) ───────────── */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--medix-scrollbar-track) !important;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--medix-scrollbar-thumb) !important;
+    border-radius: 9999px;
+    border: 2px solid var(--medix-scrollbar-track) !important;
+    transition: background 0.2s ease;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--medix-scrollbar-thumb-hover) !important;
+  }
+  ::-webkit-scrollbar-corner {
+    background: var(--medix-scrollbar-track) !important;
   }
 
   /* ── Button loading spinner ──────────────────────────────────────────────── */
