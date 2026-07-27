@@ -227,6 +227,7 @@ export default function App() {
   const [calendarDate, setCalendarDate] = React.useState<Date | undefined>(new Date());
   const [tagsValue, setTagsValue] = React.useState<string[]>(['Penicillin', 'Dust Mites']);
   const [purpleTags, setPurpleTags] = React.useState<string[]>(['Cardiology', 'Pediatrics']);
+  const [multiSelectValue, setMultiSelectValue] = React.useState<string[]>(['cardiology', 'neurology']);
 
   const patientRows = [
     {
@@ -1401,6 +1402,21 @@ export default function App() {
                     { value: 'pediatrics', label: 'Pediatrics' },
                     { value: 'neurology', label: 'Neurology' },
                     { value: 'psychiatry', label: 'Psychiatry' },
+                  ]}
+                />
+              </FormControl>
+              <FormControl label="Multi-Select Specialties (Interactive Chips)">
+                <Select
+                  multiple
+                  placeholder="Select multiple specialties..."
+                  value={multiSelectValue}
+                  onChange={(val) => setMultiSelectValue(val as string[])}
+                  options={[
+                    { value: 'cardiology', label: 'Cardiology' },
+                    { value: 'pediatrics', label: 'Pediatrics' },
+                    { value: 'neurology', label: 'Neurology' },
+                    { value: 'psychiatry', label: 'Psychiatry' },
+                    { value: 'dermatology', label: 'Dermatology' },
                   ]}
                 />
               </FormControl>
