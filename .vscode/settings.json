@@ -4,6 +4,7 @@
     "COOLDOWN",
     "doctorcard",
     "Fontshare",
+    "homecare",
     "hoverable",
     "MDCN",
     "Medix",
@@ -18,5 +19,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "editor.rulers": [100]
+  "editor.rulers": [
+    100
+  ]
 }
