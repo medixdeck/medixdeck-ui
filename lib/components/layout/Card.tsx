@@ -31,14 +31,14 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         borderRadius="card"
         border="1px solid"
         borderColor="border"
-        boxShadow="card-light"
-        _dark={{ boxShadow: 'card-dark' }}
+        boxShadow="none"
+        _dark={{ boxShadow: 'none' }}
         overflow="hidden"
         transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
         {...(hoverable && {
           _hover: {
             transform: 'translateY(-2px)',
-            boxShadow: 'lg',
+            boxShadow: 'none',
             borderColor: 'blue.200',
           },
           cursor: 'pointer',

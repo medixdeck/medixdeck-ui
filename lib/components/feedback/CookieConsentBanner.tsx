@@ -59,7 +59,7 @@ export function CookieConsentBanner({
           flex-wrap: wrap !important;
           align-items: center !important;
           justify-content: space-between !important;
-          box-shadow: 0 -4px 20px rgba(0,0,0,0.05) !important;
+          box-shadow: none !important;
           font-family: var(--font-body) !important;
           z-index: 9999 !important;
           position: fixed !important;

@@ -42,7 +42,7 @@ export const shadowTokens = {
   md: { value: '0 4px 6px -1px rgba(0, 0, 0, 0.10), 0 2px 4px -2px rgba(0, 0, 0, 0.10)' },
   lg: { value: '0 10px 15px -3px rgba(0, 0, 0, 0.10), 0 4px 6px -4px rgba(0, 0, 0, 0.10)' },
   xl: { value: '0 20px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.10)' },
-  'card-dark': { value: '0 4px 24px 0 rgba(0, 0, 0, 0.40)' },
-  'card-light': { value: '0 2px 12px 0 rgba(17, 25, 38, 0.08)' },
+  'card-dark': { value: 'none' },
+  'card-light': { value: 'none' },
   none: { value: 'none' },
 } as const;

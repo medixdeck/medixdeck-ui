@@ -160,10 +160,7 @@ export function OTPInput({
               height: '48px',
               borderRadius: '10px',
               border: `1.5px solid ${focusedIdx === idx ? focusBorder : idleBorder}`,
-              boxShadow:
-                focusedIdx === idx
-                  ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
-                  : 'none',
+              boxShadow: 'none',
               /* CSS vars flip automatically when .dark is on any ancestor */
               background: 'var(--medix-form-bg)',
               color: 'var(--medix-form-text)',

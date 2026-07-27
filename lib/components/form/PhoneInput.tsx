@@ -373,9 +373,7 @@ export function PhoneInput({
       ? '#0685FF'
       : 'var(--medix-form-border)';
 
-  const boxShadow = isFocused
-    ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
-    : 'none';
+  const boxShadow = 'none';
 
   return (
     <Box w="100%">

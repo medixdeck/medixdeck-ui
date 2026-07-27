@@ -87,7 +87,7 @@ export function Modal({
           border="1px solid"
           borderColor="border"
           borderRadius="modal"
-          boxShadow="xl"
+          boxShadow="none"
         >
           {(title || description) && (
             <DialogHeader

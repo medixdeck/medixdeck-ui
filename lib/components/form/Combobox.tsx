@@ -81,9 +81,7 @@ export function Combobox({
 
   const activeBorderColor = isInvalid ? '#DC2626' : isOpen ? '#0685FF' : 'var(--medix-form-border)';
 
-  const boxShadow = isOpen
-    ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
-    : 'none';
+  const boxShadow = 'none';
 
   return (
     <Box w="100%" position="relative" ref={containerRef}>
@@ -153,7 +151,7 @@ export function Combobox({
           border="1px solid"
           borderColor="border"
           borderRadius="md"
-          boxShadow="sm"
+          boxShadow="none"
           maxH="200px"
           overflowY="auto"
           py="1"

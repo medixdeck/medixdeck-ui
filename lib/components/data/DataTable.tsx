@@ -132,8 +132,8 @@ export function DataTable<T extends Record<string, unknown>>({
       borderRadius="card"
       overflow="hidden"
       bg="bg.surface"
-      boxShadow="card-light"
-      _dark={{ boxShadow: 'card-dark' }}
+      boxShadow="none"
+      _dark={{ boxShadow: 'none' }}
       style={style}
       className={className}
     >

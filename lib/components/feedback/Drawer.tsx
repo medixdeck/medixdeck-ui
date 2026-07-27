@@ -68,7 +68,7 @@ export function Drawer({
 
       {/* Positioner is required in Chakra v3 to portal the drawer into <body> */}
       <DrawerPositioner>
-        <DrawerContent bg="bg" borderColor="border" boxShadow="2xl">
+        <DrawerContent bg="bg" border="1px solid" borderColor="border" boxShadow="none">
           {title && (
             <DrawerHeader borderBottom="1px solid" borderColor="border" px="6" py="4">
               <DrawerTitle

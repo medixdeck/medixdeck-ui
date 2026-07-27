@@ -56,9 +56,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           _placeholder={{ color: 'text.muted' }}
           _focus={{
             borderColor: isInvalid ? 'red.500' : 'blue.500',
-            boxShadow: isInvalid
-              ? '0 0 0 3px rgba(220, 38, 38, 0.15)'
-              : '0 0 0 3px rgba(6, 133, 255, 0.15)',
+            boxShadow: 'none',
             outline: 'none',
           }}
           _dark={{

@@ -88,7 +88,7 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       borderRadius: sz.height,
       background: isOn ? c.track : 'var(--medix-form-border, #CBD5E1)',
       transition: 'background 0.2s ease, box-shadow 0.2s ease',
-      boxShadow: focused ? `0 0 0 3px ${c.ring}` : 'none',
+      boxShadow: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
       flexShrink: 0,
     };
@@ -100,7 +100,7 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       height: sz.thumbSize,
       borderRadius: '50%',
       background: '#fff',
-      boxShadow: '0 1px 4px rgba(0,0,0,0.22)',
+      boxShadow: 'none',
       top: sz.thumbOffset,
       left: isOn ? sz.width - sz.thumbSize - sz.thumbOffset : sz.thumbOffset,
       transition: 'left 0.18s ease',
