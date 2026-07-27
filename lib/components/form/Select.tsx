@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  NativeSelect as ChakraNativeSelect,
-  type NativeSelectRootProps,
-  Box,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 
 export interface SelectOption {
   value: string;
@@ -12,19 +7,7 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-export interface SelectProps extends Omit<
-  NativeSelectRootProps,
-  | 'size'
-  | 'value'
-  | 'defaultValue'
-  | 'onChange'
-  | 'name'
-  | 'id'
-  | 'disabled'
-  | 'onBlur'
-  | 'onFocus'
-  | 'multiple'
-> {
+export interface SelectProps {
   options?: SelectOption[];
   placeholder?: string;
   isInvalid?: boolean;
@@ -36,16 +19,18 @@ export interface SelectProps extends Omit<
   /** Optional icon to render on the left side of the select field */
   icon?: React.ReactNode;
 
-  // Explicit form props to attach to the inner <select> element
+  // Form control props
   value?: string | string[];
   defaultValue?: string | string[];
-  onChange?: (value: string | string[]) => void;
+  onChange?: (value: any) => void;
   name?: string;
   id?: string;
   disabled?: boolean;
   multiple?: boolean;
-  onBlur?: React.FocusEventHandler<HTMLSelectElement>;
-  onFocus?: React.FocusEventHandler<HTMLSelectElement>;
+  onBlur?: React.FocusEventHandler<HTMLDivElement | HTMLInputElement>;
+  onFocus?: React.FocusEventHandler<HTMLDivElement | HTMLInputElement>;
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 const sizeStyles: Record<'sm' | 'md' | 'lg', { h: string; px: string; fontSize: string }> = {
@@ -55,9 +40,283 @@ const sizeStyles: Record<'sm' | 'md' | 'lg', { h: string; px: string; fontSize: 
 };
 
 /**
- * Interactive MultiSelect implementation when `multiple={true}`.
- * Renders selected options as tag pills directly in the input container
- * and provides a searchable dropdown popover.
+ * Custom SingleSelect component with MedixDeck popover dropdown options.
+ */
+function SingleSelect({
+  options = [],
+  placeholder = 'Select option...',
+  isInvalid = false,
+  errorMessage,
+  size = 'md',
+  colorScheme = 'blue',
+  icon,
+  value,
+  defaultValue,
+  onChange,
+  disabled = false,
+  name,
+  id,
+}: SelectProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [search, setSearch] = React.useState('');
+  const [internalValue, setInternalValue] = React.useState<string>(() => {
+    if (typeof defaultValue === 'string') return defaultValue;
+    if (Array.isArray(defaultValue) && defaultValue.length > 0) return defaultValue[0];
+    return '';
+  });
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  const isControlled = value !== undefined;
+  const selectedValue = isControlled
+    ? typeof value === 'string'
+      ? value
+      : Array.isArray(value) && value.length > 0
+        ? value[0]
+        : ''
+    : internalValue;
+
+  const selectedOption = options.find((opt) => opt.value === selectedValue);
+
+  React.useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => searchInputRef.current?.focus(), 50);
+      return () => clearTimeout(timer);
+    } else {
+      setSearch('');
+    }
+  }, [isOpen]);
+
+  const handleSelectOption = (optValue: string) => {
+    if (disabled) return;
+    if (!isControlled) {
+      setInternalValue(optValue);
+    }
+    onChange?.(optValue);
+    setIsOpen(false);
+  };
+
+  const filteredOptions = React.useMemo(() => {
+    if (!search.trim()) return options;
+    const q = search.toLowerCase().trim();
+    return options.filter((opt) => opt.label.toLowerCase().includes(q));
+  }, [options, search]);
+
+  const focusBorderColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
+  const activeBorderColor = isInvalid
+    ? '#DC2626'
+    : isOpen
+      ? focusBorderColor
+      : 'var(--medix-form-border)';
+
+  const sz = sizeStyles[size];
+
+  return (
+    <Box w="100%" position="relative" ref={containerRef}>
+      {name && <input type="hidden" name={name} id={id} value={selectedValue} />}
+
+      <Box
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        h={sz.h}
+        px={sz.px}
+        borderRadius="md"
+        bg="bg.surface"
+        cursor={disabled ? 'not-allowed' : 'pointer'}
+        opacity={disabled ? 0.55 : 1}
+        transition="border-color 0.15s ease"
+        style={{
+          border: `1.5px solid ${activeBorderColor}`,
+          boxShadow: 'none',
+          background: 'var(--medix-form-bg)',
+        }}
+      >
+        <Box display="flex" alignItems="center" gap="2.5" flex="1" minW="0">
+          {icon && (
+            <Box color="text.heading" display="flex" alignItems="center" flexShrink={0}>
+              {icon}
+            </Box>
+          )}
+
+          {selectedOption ? (
+            <Text
+              fontSize={sz.fontSize}
+              color="text.heading"
+              fontFamily="var(--font-body)"
+              truncate
+              fontWeight="500"
+            >
+              {selectedOption.label}
+            </Text>
+          ) : (
+            <Text
+              fontSize={sz.fontSize}
+              color="text.muted"
+              fontFamily="var(--font-body)"
+              truncate
+            >
+              {placeholder}
+            </Text>
+          )}
+        </Box>
+
+        <Box
+          display="flex"
+          alignItems="center"
+          color="text.muted"
+          ml="2"
+          flexShrink={0}
+          style={{
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.15s ease',
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </Box>
+      </Box>
+
+      {isOpen && (
+        <Box
+          position="absolute"
+          top="100%"
+          left="0"
+          right="0"
+          mt="1.5"
+          maxH="280px"
+          bg="bg.surface"
+          border="1px solid"
+          borderColor="border"
+          borderRadius="card"
+          zIndex="popover"
+          display="flex"
+          flexDirection="column"
+          overflow="hidden"
+          boxShadow="none"
+        >
+          {options.length > 5 && (
+            <Box p="2" borderBottom="1px solid" borderColor="border" bg="bg.surface">
+              <Box position="relative" display="flex" alignItems="center">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  style={{ position: 'absolute', left: '10px', opacity: 0.5, pointerEvents: 'none' }}
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                </svg>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '6px 10px 6px 30px',
+                    fontSize: '13px',
+                    fontFamily: 'var(--font-body)',
+                    borderRadius: '6px',
+                    border: '1px solid var(--medix-form-border)',
+                    background: 'var(--medix-form-bg)',
+                    color: 'var(--medix-form-text)',
+                    outline: 'none',
+                  }}
+                />
+              </Box>
+            </Box>
+          )}
+
+          <Box overflowY="auto" flex="1" py="1">
+            {filteredOptions.length === 0 ? (
+              <Box px="4" py="3" fontSize="xs" color="text.muted" textAlign="center">
+                No options found
+              </Box>
+            ) : (
+              filteredOptions.map((opt) => {
+                const isSelected = opt.value === selectedValue;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    disabled={opt.disabled}
+                    onClick={() => handleSelectOption(opt.value)}
+                    style={{
+                      display: 'flex',
+                      width: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '8px 14px',
+                      background: isSelected ? 'var(--medix-form-bg-subtle)' : 'transparent',
+                      border: 'none',
+                      cursor: opt.disabled ? 'not-allowed' : 'pointer',
+                      textAlign: 'left',
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '13px',
+                      color: 'var(--medix-form-text)',
+                      opacity: opt.disabled ? 0.5 : 1,
+                      transition: 'background 0.1s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!opt.disabled) {
+                        (e.currentTarget as HTMLButtonElement).style.background =
+                          'var(--medix-form-bg-subtle)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!opt.disabled) {
+                        (e.currentTarget as HTMLButtonElement).style.background = isSelected
+                          ? 'var(--medix-form-bg-subtle)'
+                          : 'transparent';
+                      }
+                    }}
+                  >
+                    <span style={{ fontWeight: isSelected ? 600 : 400 }}>{opt.label}</span>
+                    {isSelected && (
+                      <span style={{ color: focusBorderColor, fontWeight: 700, fontSize: '14px' }}>
+                        ✓
+                      </span>
+                    )}
+                  </button>
+                );
+              })
+            )}
+          </Box>
+        </Box>
+      )}
+
+      {isInvalid && errorMessage && (
+        <Text mt="1" fontSize="xs" color="red.500" fontFamily="var(--font-body)">
+          {errorMessage}
+        </Text>
+      )}
+    </Box>
+  );
+}
+
+/**
+ * Interactive MultiSelect component when `multiple={true}`.
  */
 function MultiSelect({
   options = [],
@@ -76,16 +335,22 @@ function MultiSelect({
 }: SelectProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const searchInputRef = React.useRef<HTMLInputElement>(null);
-
-  const selectedValues: string[] = React.useMemo(() => {
-    if (Array.isArray(value)) return value;
-    if (typeof value === 'string' && value) return [value];
+  const [internalValues, setInternalValues] = React.useState<string[]>(() => {
     if (Array.isArray(defaultValue)) return defaultValue;
     if (typeof defaultValue === 'string' && defaultValue) return [defaultValue];
     return [];
-  }, [value, defaultValue]);
+  });
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  const isControlled = value !== undefined;
+  const selectedValues: string[] = isControlled
+    ? Array.isArray(value)
+      ? value
+      : typeof value === 'string' && value
+        ? [value]
+        : []
+    : internalValues;
 
   React.useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -116,13 +381,20 @@ function MultiSelect({
     const nextValues = isSelected
       ? selectedValues.filter((v) => v !== optValue)
       : [...selectedValues, optValue];
+    if (!isControlled) {
+      setInternalValues(nextValues);
+    }
     onChange?.(nextValues);
   };
 
   const removeOption = (optValue: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (disabled) return;
-    onChange?.(selectedValues.filter((v) => v !== optValue));
+    const nextValues = selectedValues.filter((v) => v !== optValue);
+    if (!isControlled) {
+      setInternalValues(nextValues);
+    }
+    onChange?.(nextValues);
   };
 
   const filteredOptions = React.useMemo(() => {
@@ -387,130 +659,20 @@ function MultiSelect({
 /**
  * MedixDeck Select
  *
- * Supports both single selection (native select) and multi-selection (interactive chips).
+ * Supports both single selection and multi-selection with custom popover dropdown options.
  *
  * @example
  * ```tsx
  * // Single select
- * <Select options={[{ value: '1', label: 'Option 1' }]} />
+ * <Select options={[{ value: '1', label: 'Option 1' }]} value={val} onChange={setVal} />
  *
  * // Multi select with chips and search
  * <Select multiple value={selectedArray} onChange={setSelectedArray} options={options} />
  * ```
  */
-export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  (props, ref) => {
-    if (props.multiple) {
-      return <MultiSelect {...props} />;
-    }
-
-    const {
-      options = [],
-      placeholder,
-      isInvalid,
-      errorMessage,
-      size = 'md',
-      colorScheme = 'blue',
-      children,
-      icon,
-      value,
-      defaultValue,
-      onChange,
-      name,
-      id,
-      disabled,
-      onBlur,
-      onFocus,
-      ...rootProps
-    } = props;
-
-    const sz = sizeStyles[size];
-    const focusBorder = colorScheme === 'purple' ? 'purple.500' : 'blue.500';
-    const iconSpacingMap = {
-      sm: '8',
-      md: '10',
-      lg: '12',
-    };
-
-    const singleValue = Array.isArray(value) ? value[0] : value;
-    const singleDefaultValue = Array.isArray(defaultValue) ? defaultValue[0] : defaultValue;
-
-    return (
-      <Box w="100%">
-        <ChakraNativeSelect.Root {...rootProps} disabled={disabled}>
-          {icon && (
-            <Box
-              position="absolute"
-              left={sz.px}
-              top="0"
-              bottom="0"
-              display="flex"
-              alignItems="center"
-              pointerEvents="none"
-              color="text.heading"
-              zIndex={1}
-            >
-              {icon}
-            </Box>
-          )}
-          <ChakraNativeSelect.Field
-            ref={ref}
-            name={name}
-            id={id}
-            value={singleValue}
-            defaultValue={singleDefaultValue}
-            onChange={
-              onChange
-                ? (e) => {
-                    onChange(e.target.value);
-                  }
-                : undefined
-            }
-            onBlur={onBlur}
-            onFocus={onFocus}
-            h={sz.h}
-            pl={icon ? iconSpacingMap[size] : sz.px}
-            pr="8"
-            fontSize={sz.fontSize}
-            bg="bg.surface"
-            border="1px solid"
-            borderColor={isInvalid ? 'red.500' : 'border'}
-            borderRadius="md"
-            color="text.heading"
-            fontFamily="var(--font-body)"
-            _focus={{
-              borderColor: isInvalid ? 'red.500' : focusBorder,
-              boxShadow: 'none',
-              outline: 'none',
-            }}
-            _dark={{
-              bg: 'bg.surface',
-              borderColor: isInvalid ? 'red.500' : 'border',
-              color: 'text.heading',
-            }}
-          >
-            {placeholder && (
-              <option value="" disabled>
-                {placeholder}
-              </option>
-            )}
-            {options.map((opt) => (
-              <option key={opt.value} value={opt.value} disabled={opt.disabled}>
-                {opt.label}
-              </option>
-            ))}
-            {children}
-          </ChakraNativeSelect.Field>
-          <ChakraNativeSelect.Indicator />
-        </ChakraNativeSelect.Root>
-        {isInvalid && errorMessage && (
-          <Text mt="1" fontSize="xs" color="red.500" fontFamily="var(--font-body)">
-            {errorMessage}
-          </Text>
-        )}
-      </Box>
-    );
-  },
-);
-
-Select.displayName = 'MedixSelect';
+export function Select(props: SelectProps) {
+  if (props.multiple) {
+    return <MultiSelect {...props} />;
+  }
+  return <SingleSelect {...props} />;
+}
