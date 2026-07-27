@@ -64,6 +64,8 @@ import { DatePicker } from '../lib/components/form/DatePicker';
 import { DateRangePicker } from '../lib/components/form/DateRangePicker';
 import { Combobox } from '../lib/components/form/Combobox';
 import { FileUpload } from '../lib/components/form/FileUpload';
+import { TagsInput } from '../lib/components/form/TagsInput';
+import { RichTextInput } from '../lib/components/form/RichTextInput';
 
 // Layout
 import { Card, CardHeader, CardBody, CardFooter } from '../lib/components/layout/Card';
@@ -215,6 +217,9 @@ export default function App() {
   const [page, setPage] = React.useState(3);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerPlacement, setDrawerPlacement] = React.useState<'left' | 'right' | 'top' | 'bottom'>(
+    'right',
+  );
   const [otpValue, setOtpValue] = React.useState('');
   const [pinValue, setPinValue] = React.useState('');
   const [phoneValue, setPhoneValue] = React.useState('');
@@ -223,6 +228,12 @@ export default function App() {
   const [leaveStart, setLeaveStart] = React.useState('');
   const [leaveEnd, setLeaveEnd] = React.useState('');
   const [calendarDate, setCalendarDate] = React.useState<Date | undefined>(new Date());
+  const [tagsValue, setTagsValue] = React.useState<string[]>(['Penicillin', 'Dust Mites']);
+  const [purpleTags, setPurpleTags] = React.useState<string[]>(['Cardiology', 'Pediatrics']);
+  const [multiSelectValue, setMultiSelectValue] = React.useState<string[]>([
+    'cardiology',
+    'neurology',
+  ]);
 
   const patientRows = [
     {
@@ -566,7 +577,7 @@ export default function App() {
                   textTransform="uppercase"
                   letterSpacing="0.06em"
                 >
-                  Full logo — all color variants
+                  Full logo — click any variant to download high-res PNG
                 </Text>
                 <Box display="flex" flexWrap="wrap" gap="6" alignItems="center">
                   <Box
@@ -576,7 +587,7 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="blue" type="full" height={32} />
+                    <Logo variant="blue" type="full" height={32} downloadable />
                   </Box>
                   <Box
                     bg="bg.surface"
@@ -585,10 +596,10 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="purple" type="full" height={32} />
+                    <Logo variant="purple" type="full" height={32} downloadable />
                   </Box>
                   <Box bg="#111926" p="4" borderRadius="card">
-                    <Logo variant="white" type="full" height={32} />
+                    <Logo variant="white" type="full" height={32} downloadable />
                   </Box>
                   <Box
                     bg="bg.surface"
@@ -597,7 +608,7 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="black" type="full" height={32} />
+                    <Logo variant="black" type="full" height={32} downloadable />
                   </Box>
                 </Box>
               </Box>
@@ -612,7 +623,7 @@ export default function App() {
                   textTransform="uppercase"
                   letterSpacing="0.06em"
                 >
-                  Icon-only — all color variants
+                  Icon-only — click to download
                 </Text>
                 <Box display="flex" flexWrap="wrap" gap="4" alignItems="center">
                   <Box
@@ -622,7 +633,7 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="blue" type="icon" height={40} />
+                    <Logo variant="blue" type="icon" height={40} downloadable />
                   </Box>
                   <Box
                     bg="bg.surface"
@@ -631,10 +642,10 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="purple" type="icon" height={40} />
+                    <Logo variant="purple" type="icon" height={40} downloadable />
                   </Box>
                   <Box bg="#111926" p="4" borderRadius="card">
-                    <Logo variant="white" type="icon" height={40} />
+                    <Logo variant="white" type="icon" height={40} downloadable />
                   </Box>
                   <Box
                     bg="bg.surface"
@@ -643,7 +654,7 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="black" type="icon" height={40} />
+                    <Logo variant="black" type="icon" height={40} downloadable />
                   </Box>
                 </Box>
               </Box>
@@ -658,14 +669,14 @@ export default function App() {
                   textTransform="uppercase"
                   letterSpacing="0.06em"
                 >
-                  Sizes — full blue logo
+                  Sizes — full blue logo (downloadable)
                 </Text>
                 <Box display="flex" flexWrap="wrap" gap="6" alignItems="center">
-                  <Logo variant="blue" height={20} />
-                  <Logo variant="blue" height={28} />
-                  <Logo variant="blue" height={36} />
-                  <Logo variant="blue" height={48} />
-                  <Logo variant="blue" height={64} />
+                  <Logo variant="blue" height={20} downloadable />
+                  <Logo variant="blue" height={28} downloadable />
+                  <Logo variant="blue" height={36} downloadable />
+                  <Logo variant="blue" height={48} downloadable />
+                  <Logo variant="blue" height={64} downloadable />
                 </Box>
               </Box>
             </Box>
@@ -1383,8 +1394,11 @@ export default function App() {
               <FormControl label="Email Address" errorMessage="Please enter a valid email.">
                 <Input type="email" placeholder="you@example.com" isInvalid />
               </FormControl>
-              <FormControl label="Search Doctors">
-                <SearchInput placeholder="Search by name or specialty…" />
+              <FormControl label="Search Doctors (Blue Focus)">
+                <SearchInput colorScheme="blue" placeholder="Search by name or specialty…" />
+              </FormControl>
+              <FormControl label="Patient Email (Purple Focus)">
+                <Input colorScheme="purple" placeholder="doctor@medixdeck.com" type="email" />
               </FormControl>
               <FormControl label="Specialty" helperText="Select your preferred medical specialty">
                 <Select
@@ -1394,6 +1408,21 @@ export default function App() {
                     { value: 'pediatrics', label: 'Pediatrics' },
                     { value: 'neurology', label: 'Neurology' },
                     { value: 'psychiatry', label: 'Psychiatry' },
+                  ]}
+                />
+              </FormControl>
+              <FormControl label="Multi-Select Specialties (Interactive Chips)">
+                <Select
+                  multiple
+                  placeholder="Select multiple specialties..."
+                  value={multiSelectValue}
+                  onChange={(val) => setMultiSelectValue(val as string[])}
+                  options={[
+                    { value: 'cardiology', label: 'Cardiology' },
+                    { value: 'pediatrics', label: 'Pediatrics' },
+                    { value: 'neurology', label: 'Neurology' },
+                    { value: 'psychiatry', label: 'Psychiatry' },
+                    { value: 'dermatology', label: 'Dermatology' },
                   ]}
                 />
               </FormControl>
@@ -1481,6 +1510,31 @@ export default function App() {
             </Box>
           </Section>
 
+          {/* ── Tags Input ── */}
+          <Section
+            title="Tags Input"
+            id="tagsinput"
+            storybookPath="?path=/docs/form-tagsinput--docs"
+          >
+            <Box display="flex" flexDirection="column" gap="6" maxW="480px" w="100%">
+              <TagsInput
+                label="Known Allergies (Blue Theme)"
+                value={tagsValue}
+                onChange={setTagsValue}
+                placeholder="Type allergy and press Enter..."
+                colorScheme="blue"
+                helperText="Press Enter or comma to add a new tag."
+              />
+              <TagsInput
+                label="Medical Specialties (Purple Theme)"
+                value={purpleTags}
+                onChange={setPurpleTags}
+                placeholder="Add specialty..."
+                colorScheme="purple"
+              />
+            </Box>
+          </Section>
+
           {/* ── Calendar ── */}
           <Section title="Calendar" id="calendar" storybookPath="?path=/docs/form-calendar--docs">
             <Box display="flex" flexDirection="column" gap="4" maxW="380px" w="100%">
@@ -1541,6 +1595,54 @@ export default function App() {
             </Box>
           </Section>
 
+          {/* ── Rich Text Input ── */}
+          <Section
+            title="Rich Text Input"
+            id="richtextinput"
+            storybookPath="?path=/docs/form-richtextinput--docs"
+          >
+            <Box display="flex" flexDirection="column" gap="8" maxW="640px" w="100%">
+              <RichTextInput
+                label="Patient Bio (Blue)"
+                colorScheme="blue"
+                placeholder="Write the patient's medical bio..."
+                helperText="Supports bold, italic, headings, lists, links, and more."
+                showCharCount
+              />
+              <RichTextInput
+                label="Doctor Notes (Purple)"
+                colorScheme="purple"
+                placeholder="Enter clinical notes..."
+                showCharCount
+                maxLength={500}
+                toolbarOptions={{
+                  bold: true,
+                  italic: true,
+                  underline: true,
+                  strikethrough: false,
+                  headings: true,
+                  bulletList: true,
+                  orderedList: true,
+                  quote: true,
+                  link: true,
+                  textAlign: false,
+                  clearFormat: true,
+                }}
+              />
+              <RichTextInput
+                label="Appointment Notes (Invalid)"
+                isInvalid
+                errorMessage="This field is required."
+                placeholder="Enter notes..."
+              />
+              <RichTextInput
+                label="Read-only Notes (Disabled)"
+                disabled
+                defaultValue="<p>This editor is <strong>disabled</strong> — you cannot edit this content.</p>"
+              />
+            </Box>
+          </Section>
+
           {/* ────────────────────────────────────────────────────
               LAYOUT
           ──────────────────────────────────────────────────── */}
@@ -1589,60 +1691,6 @@ export default function App() {
                 description="Connect with MDCN-verified doctors in minutes. Get quality care from the comfort of your home."
                 align="left"
               />
-            </Box>
-          </Section>
-
-          {/* ── Notifications ── */}
-          <Section
-            title="Notifications & Toasts"
-            id="notifications"
-            storybookPath="?path=/docs/feedback-notification-toast--docs"
-          >
-            <Box display="flex" flexWrap="wrap" gap="4">
-              <Button
-                variant="solid"
-                colorScheme="blue"
-                onClick={() =>
-                  toast.success('Appointment Confirmed', {
-                    description: 'Your booking for April 24 has been successfully scheduled.',
-                  })
-                }
-              >
-                Success Toast
-              </Button>
-              <Button
-                variant="outline"
-                colorScheme="blue"
-                onClick={() =>
-                  toast.info('New Message', {
-                    description: 'You have a new message from Dr. Okonkwo.',
-                  })
-                }
-              >
-                Info Toast
-              </Button>
-              <Button
-                variant="solid"
-                colorScheme="black"
-                onClick={() =>
-                  toast.warning('Connection Unstable', {
-                    description: 'Please check your internet connection and try again.',
-                  })
-                }
-              >
-                Warning Toast
-              </Button>
-              <Button
-                variant="solid"
-                colorScheme="red"
-                onClick={() =>
-                  toast.error('Booking Failed', {
-                    description: 'The selected time slot is no longer available.',
-                  })
-                }
-              >
-                Error Toast
-              </Button>
             </Box>
           </Section>
 
@@ -1783,33 +1831,198 @@ export default function App() {
               FEEDBACK
           ──────────────────────────────────────────────────── */}
           <Section title="Alerts" id="feedback" storybookPath="?path=/docs/feedback-alert--docs">
-            <Alert
-              status="success"
-              title="Appointment confirmed!"
-              description="Dr. Okonkwo will see you at 2:00 PM today."
-              closable
-              w="400px"
-            />
-            <Alert
-              status="warning"
-              title="Incomplete profile"
-              description="Please complete your medical history."
-              w="400px"
-            />
-            <Alert
-              status="error"
-              title="Payment failed"
-              description="Your card was declined. Please try another method."
-              closable
-              w="400px"
-            />
-            <Alert
-              status="info"
-              variant="left-accent"
-              title="New feature"
-              description="Video consultations are now available 24/7."
-              w="400px"
-            />
+            <Box w="100%" display="flex" flexDirection="column" gap="6">
+              {/* Subtle Variant (Default) */}
+              <Box>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                  mb="3"
+                >
+                  Subtle (Default)
+                </Text>
+                <Box display="flex" flexWrap="wrap" gap="4">
+                  <Alert
+                    variant="subtle"
+                    status="success"
+                    title="Appointment confirmed!"
+                    description="Dr. Okonkwo will see you at 2:00 PM today."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="subtle"
+                    status="warning"
+                    title="Incomplete profile"
+                    description="Please complete your medical history."
+                    w="400px"
+                  />
+                  <Alert
+                    variant="subtle"
+                    status="error"
+                    title="Payment failed"
+                    description="Your card was declined. Please try another method."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="subtle"
+                    status="info"
+                    title="New feature"
+                    description="Video consultations are now available 24/7."
+                    w="400px"
+                  />
+                </Box>
+              </Box>
+
+              {/* Solid Variant */}
+              <Box>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                  mb="3"
+                >
+                  Solid
+                </Text>
+                <Box display="flex" flexWrap="wrap" gap="4">
+                  <Alert
+                    variant="solid"
+                    status="success"
+                    title="Appointment confirmed!"
+                    description="Dr. Okonkwo will see you at 2:00 PM today."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="solid"
+                    status="warning"
+                    title="Incomplete profile"
+                    description="Please complete your medical history."
+                    w="400px"
+                  />
+                  <Alert
+                    variant="solid"
+                    status="error"
+                    title="Payment failed"
+                    description="Your card was declined. Please try another method."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="solid"
+                    status="info"
+                    title="New feature"
+                    description="Video consultations are now available 24/7."
+                    w="400px"
+                  />
+                </Box>
+              </Box>
+
+              {/* Left Accent Variant */}
+              <Box>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                  mb="3"
+                >
+                  Left Accent
+                </Text>
+                <Box display="flex" flexWrap="wrap" gap="4">
+                  <Alert
+                    variant="left-accent"
+                    status="success"
+                    title="Appointment confirmed!"
+                    description="Dr. Okonkwo will see you at 2:00 PM today."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="left-accent"
+                    status="warning"
+                    title="Incomplete profile"
+                    description="Please complete your medical history."
+                    w="400px"
+                  />
+                  <Alert
+                    variant="left-accent"
+                    status="error"
+                    title="Payment failed"
+                    description="Your card was declined. Please try another method."
+                    closable
+                    w="400px"
+                  />
+                  <Alert
+                    variant="left-accent"
+                    status="info"
+                    title="New feature"
+                    description="Video consultations are now available 24/7."
+                    w="400px"
+                  />
+                </Box>
+              </Box>
+            </Box>
+          </Section>
+
+          <Section
+            title="Toast Notifications"
+            id="toast"
+            storybookPath="?path=/docs/feedback-toast--docs"
+          >
+            <Box display="flex" flexWrap="wrap" gap="3">
+              <Button
+                variant="solid"
+                colorScheme="green"
+                onClick={() =>
+                  toast.success('Appointment Booked', {
+                    description: 'Dr. Okonkwo will see you at 2:00 PM today.',
+                  })
+                }
+              >
+                Trigger Success Toast
+              </Button>
+              <Button
+                variant="solid"
+                colorScheme="red"
+                onClick={() =>
+                  toast.error('Payment Failed', {
+                    description: 'Your card was declined. Please try another method.',
+                  })
+                }
+              >
+                Trigger Error Toast
+              </Button>
+              <Button
+                variant="solid"
+                colorScheme="blue"
+                onClick={() =>
+                  toast.info('New Feature Available', {
+                    description: 'Video consultations are now active 24/7.',
+                  })
+                }
+              >
+                Trigger Info Toast
+              </Button>
+              <Button
+                variant="solid"
+                colorScheme="purple"
+                onClick={() =>
+                  toast.warning('Incomplete Profile', {
+                    description: 'Please complete your medical history form.',
+                  })
+                }
+              >
+                Trigger Warning Toast
+              </Button>
+            </Box>
           </Section>
 
           <Section title="Tooltip" id="tooltip" storybookPath="?path=/docs/feedback-tooltip--docs">
@@ -1869,8 +2082,41 @@ export default function App() {
               <Button variant="solid" onClick={() => setModalOpen(true)}>
                 Open Modal
               </Button>
-              <Button variant="outline" onClick={() => setDrawerOpen(true)}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDrawerPlacement('right');
+                  setDrawerOpen(true);
+                }}
+              >
                 Open Right Drawer
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDrawerPlacement('left');
+                  setDrawerOpen(true);
+                }}
+              >
+                Open Left Drawer
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDrawerPlacement('top');
+                  setDrawerOpen(true);
+                }}
+              >
+                Open Top Drawer
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDrawerPlacement('bottom');
+                  setDrawerOpen(true);
+                }}
+              >
+                Open Bottom Drawer
               </Button>
             </Box>
           </Section>
@@ -1969,6 +2215,9 @@ export default function App() {
                 data={patientRows}
                 rowKey="id"
                 striped
+                enableSearch
+                enablePagination
+                pageSize={5}
                 onRowClick={(row) => alert(`Patient: ${row.name}`)}
               />
             </Box>
@@ -2303,7 +2552,7 @@ export default function App() {
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         title="Patient Details"
-        placement="right"
+        placement={drawerPlacement}
         size="md"
         footer={
           <>

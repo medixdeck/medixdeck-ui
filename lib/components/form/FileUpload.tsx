@@ -13,6 +13,8 @@ export interface FileUploadProps {
   label?: string;
   helperText?: string;
   errorMessage?: string;
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   isInvalid?: boolean;
   isDisabled?: boolean;
   /** Callback fired when files are selected or dropped */
@@ -61,6 +63,7 @@ export function FileUpload({
   label,
   helperText,
   errorMessage,
+  colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
   onChange,
@@ -76,6 +79,11 @@ export function FileUpload({
     if (!isDisabled) setIsDragging(true);
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!isDisabled) setIsDragging(true);
+  };
+
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
@@ -83,9 +91,9 @@ export function FileUpload({
 
   const processFiles = (files: FileList | null) => {
     if (!files || files.length === 0) return;
+    const fileArray = Array.from(files);
 
-    // Filter by max size if needed
-    const validFiles = Array.from(files).filter((file) => {
+    const validFiles = fileArray.filter((file) => {
       if (maxSize && file.size > maxSize) return false;
       return true;
     });
@@ -106,7 +114,8 @@ export function FileUpload({
     processFiles(e.target.files);
   };
 
-  const borderColor = isInvalid ? 'red.500' : isDragging ? 'blue.500' : 'border';
+  const focusBorder = colorScheme === 'purple' ? 'purple.500' : 'blue.500';
+  const borderColor = isInvalid ? 'red.500' : isDragging ? focusBorder : 'border';
 
   const bg = isDragging ? 'bg.subtle' : 'transparent';
 
@@ -136,9 +145,9 @@ export function FileUpload({
         transition="all 0.2s ease"
         opacity={isDisabled ? 0.5 : 1}
         cursor={isDisabled ? 'not-allowed' : 'pointer'}
-        _hover={!isDisabled ? { borderColor: 'blue.500', bg: 'bg.subtle' } : undefined}
+        _hover={!isDisabled ? { borderColor: focusBorder, bg: 'bg.subtle' } : undefined}
         onDragEnter={handleDragEnter}
-        onDragOver={handleDragEnter}
+        onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !isDisabled && inputRef.current?.click()}

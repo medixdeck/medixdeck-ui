@@ -9,6 +9,7 @@ Use this repository as a **publishable React UI library**, not an app.
 - Keep public API changes in sync across `lib\index.ts`, `README.md`, `src\App.tsx`, Storybook, and `CHANGELOG.md`.
 - Use **Chakra UI v3** patterns only.
 - Prefer semantic tokens for styling; use the repo's native-first pattern for brand-critical interactive states.
+- **No `boxShadow` or `shadow`**: Do NOT use `boxShadow`, `shadow`, `card-light`, or `card-dark` props. Rely on clean borders (`border="1px solid" borderColor="border"`) for layout separation.
 - Apply dark mode on `document.documentElement`.
 
 ## Release expectations

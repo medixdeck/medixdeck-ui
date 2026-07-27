@@ -18,6 +18,8 @@ export interface DateRangePickerProps {
   label?: string;
   helperText?: string;
   errorMessage?: string;
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   isInvalid?: boolean;
   isDisabled?: boolean;
   startPlaceholder?: string;
@@ -51,6 +53,7 @@ export function DateRangePicker({
   label,
   helperText,
   errorMessage,
+  colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
   startPlaceholder = 'Start date',
@@ -70,15 +73,14 @@ export function DateRangePicker({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const focusColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
   const activeBorderColor = isInvalid
     ? '#DC2626'
     : activeInput
-      ? '#0685FF'
+      ? focusColor
       : 'var(--medix-form-border)';
 
-  const boxShadow = activeInput
-    ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
-    : 'none';
+  const boxShadow = 'none';
 
   const inputStyle: React.CSSProperties = {
     flex: 1,
@@ -245,7 +247,7 @@ export function DateRangePicker({
           top="calc(100% + 8px)"
           left="0"
           zIndex="popover"
-          boxShadow="lg"
+          boxShadow="none"
           borderRadius="card"
           border="1px solid"
           borderColor="border"

@@ -15,6 +15,8 @@ export interface DatePickerProps {
   label?: string;
   helperText?: string;
   errorMessage?: string;
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   isInvalid?: boolean;
   isDisabled?: boolean;
   placeholder?: string;
@@ -46,6 +48,7 @@ export function DatePicker({
   label,
   helperText,
   errorMessage,
+  colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
   placeholder = 'Select date',
@@ -69,11 +72,14 @@ export function DatePicker({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const activeBorderColor = isInvalid ? '#DC2626' : isOpen ? '#0685FF' : 'var(--medix-form-border)';
+  const focusColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
+  const activeBorderColor = isInvalid
+    ? '#DC2626'
+    : isOpen
+      ? focusColor
+      : 'var(--medix-form-border)';
 
-  const boxShadow = isOpen
-    ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
-    : 'none';
+  const boxShadow = 'none';
 
   const handleDateSelect = (date: Date) => {
     const yyyy = date.getFullYear();
@@ -227,7 +233,7 @@ export function DatePicker({
           top="calc(100% + 8px)"
           left="0"
           zIndex="popover"
-          boxShadow="lg"
+          boxShadow="none"
           borderRadius="card"
           border="1px solid"
           borderColor="border"

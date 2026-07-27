@@ -60,7 +60,9 @@ export function Tooltip({ label, children, placement = 'top', ...props }: Toolti
           py="1.5"
           fontSize="xs"
           fontFamily="var(--font-body)"
-          boxShadow="lg"
+          border="1px solid"
+          borderColor="gray.700"
+          boxShadow="none"
         >
           {label}
         </ChakraTooltip.Content>
