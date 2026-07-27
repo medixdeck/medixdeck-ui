@@ -1592,60 +1592,6 @@ export default function App() {
             </Box>
           </Section>
 
-          {/* ── Notifications ── */}
-          <Section
-            title="Notifications & Toasts"
-            id="notifications"
-            storybookPath="?path=/docs/feedback-notification-toast--docs"
-          >
-            <Box display="flex" flexWrap="wrap" gap="4">
-              <Button
-                variant="solid"
-                colorScheme="blue"
-                onClick={() =>
-                  toast.success('Appointment Confirmed', {
-                    description: 'Your booking for April 24 has been successfully scheduled.',
-                  })
-                }
-              >
-                Success Toast
-              </Button>
-              <Button
-                variant="outline"
-                colorScheme="blue"
-                onClick={() =>
-                  toast.info('New Message', {
-                    description: 'You have a new message from Dr. Okonkwo.',
-                  })
-                }
-              >
-                Info Toast
-              </Button>
-              <Button
-                variant="solid"
-                colorScheme="black"
-                onClick={() =>
-                  toast.warning('Connection Unstable', {
-                    description: 'Please check your internet connection and try again.',
-                  })
-                }
-              >
-                Warning Toast
-              </Button>
-              <Button
-                variant="solid"
-                colorScheme="red"
-                onClick={() =>
-                  toast.error('Booking Failed', {
-                    description: 'The selected time slot is no longer available.',
-                  })
-                }
-              >
-                Error Toast
-              </Button>
-            </Box>
-          </Section>
-
           <Section title="Tabs" id="navigation" storybookPath="?path=/docs/navigation-tabs--docs">
             <Box w="100%">
               <Tabs
@@ -1921,6 +1867,55 @@ export default function App() {
                   />
                 </Box>
               </Box>
+            </Box>
+          </Section>
+
+          <Section title="Toast Notifications" id="toast" storybookPath="?path=/docs/feedback-toast--docs">
+            <Box display="flex" flexWrap="wrap" gap="3">
+              <Button
+                variant="solid"
+                colorScheme="green"
+                onClick={() =>
+                  toast.success('Appointment Booked', {
+                    description: 'Dr. Okonkwo will see you at 2:00 PM today.',
+                  })
+                }
+              >
+                Trigger Success Toast
+              </Button>
+              <Button
+                variant="solid"
+                colorScheme="red"
+                onClick={() =>
+                  toast.error('Payment Failed', {
+                    description: 'Your card was declined. Please try another method.',
+                  })
+                }
+              >
+                Trigger Error Toast
+              </Button>
+              <Button
+                variant="solid"
+                colorScheme="blue"
+                onClick={() =>
+                  toast.info('New Feature Available', {
+                    description: 'Video consultations are now active 24/7.',
+                  })
+                }
+              >
+                Trigger Info Toast
+              </Button>
+              <Button
+                variant="solid"
+                colorScheme="purple"
+                onClick={() =>
+                  toast.warning('Incomplete Profile', {
+                    description: 'Please complete your medical history form.',
+                  })
+                }
+              >
+                Trigger Warning Toast
+              </Button>
             </Box>
           </Section>
 

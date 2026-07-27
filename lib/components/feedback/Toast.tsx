@@ -9,6 +9,8 @@ export const toaster = createToaster({
   pauseOnPageIdle: true,
   overlap: true,
   gap: 16,
+  duration: 4000,
+  removeDelay: 200,
 });
 
 export type ToastType = AlertStatus;
@@ -26,7 +28,7 @@ export const toast = Object.assign(
       title: options.title as any,
       description: options.description as any,
       type: options.type || 'info',
-      duration: options.duration,
+      duration: options.duration ?? 4000,
     });
   },
   {
@@ -63,6 +65,7 @@ export const Toaster = () => {
       toaster={toaster}
       insetInline={{ base: '4', md: '4' }}
       insetBlock={{ base: '4', md: '4' }}
+      pointerEvents="none"
     >
       {(toast) => {
         // Read custom variant from toast.meta if provided, else default to subtle
@@ -78,7 +81,8 @@ export const Toaster = () => {
             w={{ base: 'full', sm: 'fit-content' }}
             minW={{ sm: '350px' }}
             maxW={{ base: 'full', sm: '400px' }}
-            boxShadow="0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)"
+            boxShadow="none"
+            pointerEvents="auto"
           >
             <Alert
               status={(toast.type as AlertStatus) || 'info'}

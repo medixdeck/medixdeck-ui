@@ -4,6 +4,7 @@ import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { system } from '../../theme';
+import { Toaster } from '../feedback/Toast';
 
 export interface MedixProviderProps {
   children: React.ReactNode;
@@ -205,7 +206,10 @@ export function MedixProvider({
       forcedTheme={forcedColorMode}
       disableTransitionOnChange
     >
-      <ChakraProvider value={system}>{children}</ChakraProvider>
+      <ChakraProvider value={system}>
+        {children}
+        <Toaster />
+      </ChakraProvider>
     </NextThemesProvider>
   );
 }
