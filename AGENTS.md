@@ -290,6 +290,7 @@ fontFamily = 'var(--font-heading)'; // headings, card titles, nav items
 
 ## 8. Styling Rules
 
+- **No `boxShadow` / `shadow`** — Do NOT use `boxShadow`, `shadow`, `card-light`, or `card-dark` when creating, generating, or modifying components. Rely on clean borders (`border="1px solid" borderColor="border"`) for visual boundaries.
 - **No inline hardcoded colors** — use semantic tokens
 - **No Tailwind** — this project uses Chakra's style props exclusively
 - **No `className` for layout** — use Chakra `Box` props
@@ -363,6 +364,7 @@ The dev preview (`src/App.tsx`) showcases every component. When you add a new co
 | Add font `<link>` tags in consuming project's `<head>`                          | `MedixProvider` injects them automatically — nothing needed in host HTML                                            |
 | Use Chakra `colorPalette` for interactive components (Button, Checkbox, Switch) | Build as native HTML with explicit brand hex values — Chakra recipe engine leaks default blue in hover/focus states |
 | Use string easing in Framer Motion v12 (`ease: "easeOut"`)                      | Use bezier tuples: `[0.0, 0.0, 0.2, 1.0] as [number,number,number,number]`                                          |
+| Use `boxShadow`, `shadow`, `card-light`, or `card-dark`                         | Omit shadows completely; use `boxShadow="none"` and clean borders (`border="1px solid" borderColor="border"`)        |
 
 ---
 

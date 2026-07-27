@@ -2076,6 +2076,9 @@ export default function App() {
                 data={patientRows}
                 rowKey="id"
                 striped
+                enableSearch
+                enablePagination
+                pageSize={5}
                 onRowClick={(row) => alert(`Patient: ${row.name}`)}
               />
             </Box>

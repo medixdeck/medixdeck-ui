@@ -67,6 +67,7 @@ export function App() {
 - Use Chakra UI **v3** APIs only.
 - All library source lives in `lib\`; `src\` is dev-preview only.
 - Use semantic tokens such as `bg.surface`, `text.heading`, and `border` instead of raw hex for normal component styling.
+- **No `boxShadow` / `shadow`**: Do NOT use `boxShadow`, `shadow`, `card-light`, or `card-dark` props. Rely on clean borders (`border="1px solid" borderColor="border"`) for visual separation.
 - For color-critical interactive controls, prefer the repo's native-first pattern instead of Chakra recipes.
 - Apply dark mode on `document.documentElement`, not an inner container.
 
