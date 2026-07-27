@@ -30,6 +30,8 @@ export interface SelectProps extends Omit<
   isInvalid?: boolean;
   errorMessage?: string;
   size?: 'sm' | 'md' | 'lg';
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   children?: React.ReactNode;
   /** Optional icon to render on the left side of the select field */
   icon?: React.ReactNode;
@@ -63,6 +65,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       isInvalid,
       errorMessage,
       size = 'md',
+      colorScheme = 'blue',
       children,
       icon,
       value,
@@ -79,6 +82,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     ref,
   ) => {
     const sz = sizeStyles[size];
+    const focusBorder = colorScheme === 'purple' ? 'purple.500' : 'blue.500';
     const iconSpacingMap = {
       sm: '8',
       md: '10',
@@ -137,7 +141,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             color="text.heading"
             fontFamily="var(--font-body)"
             _focus={{
-              borderColor: isInvalid ? 'red.500' : 'blue.500',
+              borderColor: isInvalid ? 'red.500' : focusBorder,
               boxShadow: 'none',
               outline: 'none',
             }}

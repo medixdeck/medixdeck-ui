@@ -16,6 +16,8 @@ export interface ComboboxProps {
   label?: string;
   helperText?: string;
   errorMessage?: string;
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   isInvalid?: boolean;
   isDisabled?: boolean;
 }
@@ -43,6 +45,7 @@ export function Combobox({
   label,
   helperText,
   errorMessage,
+  colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
 }: ComboboxProps) {
@@ -79,7 +82,12 @@ export function Combobox({
     opt.label.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const activeBorderColor = isInvalid ? '#DC2626' : isOpen ? '#0685FF' : 'var(--medix-form-border)';
+  const focusColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
+  const activeBorderColor = isInvalid
+    ? '#DC2626'
+    : isOpen
+      ? focusColor
+      : 'var(--medix-form-border)';
 
   const boxShadow = 'none';
 

@@ -18,6 +18,8 @@ export interface DateRangePickerProps {
   label?: string;
   helperText?: string;
   errorMessage?: string;
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   isInvalid?: boolean;
   isDisabled?: boolean;
   startPlaceholder?: string;
@@ -51,6 +53,7 @@ export function DateRangePicker({
   label,
   helperText,
   errorMessage,
+  colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
   startPlaceholder = 'Start date',
@@ -70,10 +73,11 @@ export function DateRangePicker({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const focusColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
   const activeBorderColor = isInvalid
     ? '#DC2626'
     : activeInput
-      ? '#0685FF'
+      ? focusColor
       : 'var(--medix-form-border)';
 
   const boxShadow = 'none';

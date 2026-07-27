@@ -14,6 +14,22 @@ export const Default: Story = {
   args: { label: 'Phone Number', placeholder: '80 000 0000', defaultCountryCode: '+234' },
 };
 
+export const UnitedStates: Story = {
+  args: {
+    label: 'US Phone Number',
+    placeholder: '202 555 0123',
+    defaultCountry: 'US',
+  },
+};
+
+export const Ghana: Story = {
+  args: {
+    label: 'Ghana Phone Number',
+    placeholder: '24 000 0000',
+    defaultCountryCode: '+233',
+  },
+};
+
 export const WithHelperText: Story = {
   args: {
     label: 'Contact Number',
@@ -31,3 +47,4 @@ export const Invalid: Story = {
     errorMessage: 'Please enter a valid phone number.',
   },
 };
+

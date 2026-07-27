@@ -98,6 +98,9 @@ export type { ComboboxProps, ComboboxOption } from './components/form/Combobox';
 export { FileUpload } from './components/form/FileUpload';
 export type { FileUploadProps } from './components/form/FileUpload';
 
+export { TagsInput, TagInput } from './components/form/TagsInput';
+export type { TagsInputProps, TagInputProps } from './components/form/TagsInput';
+
 // ─── Layout Components ─────────────────────────────────────────────────────────
 export { Card, CardHeader, CardBody, CardFooter } from './components/layout/Card';
 export type { CardProps, CardHeaderProps } from './components/layout/Card';

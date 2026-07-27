@@ -64,6 +64,7 @@ import { DatePicker } from '../lib/components/form/DatePicker';
 import { DateRangePicker } from '../lib/components/form/DateRangePicker';
 import { Combobox } from '../lib/components/form/Combobox';
 import { FileUpload } from '../lib/components/form/FileUpload';
+import { TagsInput } from '../lib/components/form/TagsInput';
 
 // Layout
 import { Card, CardHeader, CardBody, CardFooter } from '../lib/components/layout/Card';
@@ -224,6 +225,8 @@ export default function App() {
   const [leaveStart, setLeaveStart] = React.useState('');
   const [leaveEnd, setLeaveEnd] = React.useState('');
   const [calendarDate, setCalendarDate] = React.useState<Date | undefined>(new Date());
+  const [tagsValue, setTagsValue] = React.useState<string[]>(['Penicillin', 'Dust Mites']);
+  const [purpleTags, setPurpleTags] = React.useState<string[]>(['Cardiology', 'Pediatrics']);
 
   const patientRows = [
     {
@@ -1384,8 +1387,11 @@ export default function App() {
               <FormControl label="Email Address" errorMessage="Please enter a valid email.">
                 <Input type="email" placeholder="you@example.com" isInvalid />
               </FormControl>
-              <FormControl label="Search Doctors">
-                <SearchInput placeholder="Search by name or specialty…" />
+              <FormControl label="Search Doctors (Blue Focus)">
+                <SearchInput colorScheme="blue" placeholder="Search by name or specialty…" />
+              </FormControl>
+              <FormControl label="Patient Email (Purple Focus)">
+                <Input colorScheme="purple" placeholder="doctor@medixdeck.com" type="email" />
               </FormControl>
               <FormControl label="Specialty" helperText="Select your preferred medical specialty">
                 <Select
@@ -1478,6 +1484,27 @@ export default function App() {
                 value={phoneValue}
                 onChange={setPhoneValue}
                 helperText="We'll send your appointment confirmation here"
+              />
+            </Box>
+          </Section>
+
+          {/* ── Tags Input ── */}
+          <Section title="Tags Input" id="tagsinput" storybookPath="?path=/docs/form-tagsinput--docs">
+            <Box display="flex" flexDirection="column" gap="6" maxW="480px" w="100%">
+              <TagsInput
+                label="Known Allergies (Blue Theme)"
+                value={tagsValue}
+                onChange={setTagsValue}
+                placeholder="Type allergy and press Enter..."
+                colorScheme="blue"
+                helperText="Press Enter or comma to add a new tag."
+              />
+              <TagsInput
+                label="Medical Specialties (Purple Theme)"
+                value={purpleTags}
+                onChange={setPurpleTags}
+                placeholder="Add specialty..."
+                colorScheme="purple"
               />
             </Box>
           </Section>
