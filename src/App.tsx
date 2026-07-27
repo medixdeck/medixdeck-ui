@@ -215,6 +215,7 @@ export default function App() {
   const [page, setPage] = React.useState(3);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerPlacement, setDrawerPlacement] = React.useState<'left' | 'right' | 'top' | 'bottom'>('right');
   const [otpValue, setOtpValue] = React.useState('');
   const [pinValue, setPinValue] = React.useState('');
   const [phoneValue, setPhoneValue] = React.useState('');
@@ -1976,8 +1977,17 @@ export default function App() {
               <Button variant="solid" onClick={() => setModalOpen(true)}>
                 Open Modal
               </Button>
-              <Button variant="outline" onClick={() => setDrawerOpen(true)}>
+              <Button variant="outline" onClick={() => { setDrawerPlacement('right'); setDrawerOpen(true); }}>
                 Open Right Drawer
+              </Button>
+              <Button variant="outline" onClick={() => { setDrawerPlacement('left'); setDrawerOpen(true); }}>
+                Open Left Drawer
+              </Button>
+              <Button variant="outline" onClick={() => { setDrawerPlacement('top'); setDrawerOpen(true); }}>
+                Open Top Drawer
+              </Button>
+              <Button variant="outline" onClick={() => { setDrawerPlacement('bottom'); setDrawerOpen(true); }}>
+                Open Bottom Drawer
               </Button>
             </Box>
           </Section>
@@ -2413,7 +2423,7 @@ export default function App() {
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         title="Patient Details"
-        placement="right"
+        placement={drawerPlacement}
         size="md"
         footer={
           <>

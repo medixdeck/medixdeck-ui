@@ -24,6 +24,8 @@ export interface ModalProps {
   size?: ModalSize;
   /** Prevent closing on backdrop click */
   closeOnOverlayClick?: boolean;
+  /** Prevent closing on Escape key press */
+  closeOnEscape?: boolean;
   /** Footer action buttons */
   footer?: React.ReactNode;
   children?: React.ReactNode;
@@ -65,9 +67,12 @@ export function Modal({
   description,
   size = 'md',
   closeOnOverlayClick = true,
+  closeOnEscape = true,
   footer,
   children,
 }: ModalProps) {
+  const hasHeader = Boolean(title || description);
+
   return (
     <DialogRoot
       open={isOpen}
@@ -75,6 +80,7 @@ export function Modal({
         if (!details.open) onClose();
       }}
       closeOnInteractOutside={closeOnOverlayClick}
+      closeOnEscape={closeOnEscape}
       size={sizeMap[size]}
     >
       {/* Backdrop renders behind the dialog */}
@@ -83,25 +89,25 @@ export function Modal({
       {/* Positioner is required in Chakra v3 to portal the dialog into <body> */}
       <DialogPositioner display="flex" alignItems="center" justifyContent="center">
         <DialogContent
-          bg="bg"
+          bg="bg.surface"
           border="1px solid"
           borderColor="border"
           borderRadius="modal"
           boxShadow="none"
         >
-          {(title || description) && (
-            <DialogHeader
-              borderBottom="1px solid"
-              borderColor="border"
-              px="6"
-              py="4"
-              display="flex"
-              flexDirection="row"
-              alignItems="flex-start"
-              justifyContent="space-between"
-              position="relative"
-            >
-              {/* Title + description stacked vertically */}
+          <DialogHeader
+            borderBottom={hasHeader ? '1px solid' : 'none'}
+            borderColor="border"
+            px="6"
+            py="4"
+            display="flex"
+            flexDirection="row"
+            alignItems="flex-start"
+            justifyContent="space-between"
+            position="relative"
+            minH={hasHeader ? undefined : '12'}
+          >
+            {hasHeader && (
               <div
                 style={{ display: 'flex', flexDirection: 'column', flex: 1, paddingRight: '2rem' }}
               >
@@ -126,42 +132,42 @@ export function Modal({
                   </DialogDescription>
                 )}
               </div>
+            )}
 
-              {/* Close button with visible ✕ icon */}
-              <DialogCloseTrigger
-                position="absolute"
-                top="4"
-                right="4"
-                w="8"
-                h="8"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                borderRadius="md"
-                color="text.muted"
-                _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
-                transition="all 0.15s"
-                aria-label="Close modal"
-                type="button"
-                cursor="pointer"
+            {/* Close button with visible ✕ icon */}
+            <DialogCloseTrigger
+              position="absolute"
+              top="4"
+              right="4"
+              w="8"
+              h="8"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              borderRadius="md"
+              color="text.muted"
+              _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
+              transition="all 0.15s"
+              aria-label="Close modal"
+              type="button"
+              cursor="pointer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </DialogCloseTrigger>
-            </DialogHeader>
-          )}
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </DialogCloseTrigger>
+          </DialogHeader>
 
           <DialogBody px="6" py="5">
             {children}
@@ -185,3 +191,4 @@ export function Modal({
     </DialogRoot>
   );
 }
+
