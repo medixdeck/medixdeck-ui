@@ -36,7 +36,24 @@ export default defineConfig({
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime', '@chakra-ui/react'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        '@chakra-ui/react',
+        // TipTap — must be installed by consuming app
+        '@tiptap/react',
+        '@tiptap/pm',
+        '@tiptap/core',
+        '@tiptap/starter-kit',
+        '@tiptap/extension-link',
+        '@tiptap/extension-underline',
+        '@tiptap/extension-text-align',
+        '@tiptap/extension-placeholder',
+        // ProseMirror internals (re-exported by @tiptap/pm)
+        /^@tiptap\//,
+        /^prosemirror-/,
+      ],
       output: {
         globals: {
           react: 'React',

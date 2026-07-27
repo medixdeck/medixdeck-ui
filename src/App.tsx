@@ -65,6 +65,7 @@ import { DateRangePicker } from '../lib/components/form/DateRangePicker';
 import { Combobox } from '../lib/components/form/Combobox';
 import { FileUpload } from '../lib/components/form/FileUpload';
 import { TagsInput } from '../lib/components/form/TagsInput';
+import { RichTextInput } from '../lib/components/form/RichTextInput';
 
 // Layout
 import { Card, CardHeader, CardBody, CardFooter } from '../lib/components/layout/Card';
@@ -1581,6 +1582,54 @@ export default function App() {
                 maxSize={5 * 1024 * 1024} // 5MB
                 helperText="Upload any necessary documents (Max 5MB each)"
                 onChange={(files) => console.log('Files uploaded:', files)}
+              />
+            </Box>
+          </Section>
+
+          {/* ── Rich Text Input ── */}
+          <Section
+            title="Rich Text Input"
+            id="richtextinput"
+            storybookPath="?path=/docs/form-richtextinput--docs"
+          >
+            <Box display="flex" flexDirection="column" gap="8" maxW="640px" w="100%">
+              <RichTextInput
+                label="Patient Bio (Blue)"
+                colorScheme="blue"
+                placeholder="Write the patient's medical bio..."
+                helperText="Supports bold, italic, headings, lists, links, and more."
+                showCharCount
+              />
+              <RichTextInput
+                label="Doctor Notes (Purple)"
+                colorScheme="purple"
+                placeholder="Enter clinical notes..."
+                showCharCount
+                maxLength={500}
+                toolbarOptions={{
+                  bold: true,
+                  italic: true,
+                  underline: true,
+                  strikethrough: false,
+                  headings: true,
+                  bulletList: true,
+                  orderedList: true,
+                  quote: true,
+                  link: true,
+                  textAlign: false,
+                  clearFormat: true,
+                }}
+              />
+              <RichTextInput
+                label="Appointment Notes (Invalid)"
+                isInvalid
+                errorMessage="This field is required."
+                placeholder="Enter notes..."
+              />
+              <RichTextInput
+                label="Read-only Notes (Disabled)"
+                disabled
+                defaultValue="<p>This editor is <strong>disabled</strong> — you cannot edit this content.</p>"
               />
             </Box>
           </Section>

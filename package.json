@@ -52,10 +52,38 @@
     "@chakra-ui/react": ">=3.0.0",
     "framer-motion": ">=11.0.0",
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0"
+    "react-dom": ">=18.0.0",
+    "@tiptap/react": ">=3.0.0",
+    "@tiptap/pm": ">=3.0.0",
+    "@tiptap/starter-kit": ">=3.0.0",
+    "@tiptap/extension-link": ">=3.0.0",
+    "@tiptap/extension-underline": ">=3.0.0",
+    "@tiptap/extension-text-align": ">=3.0.0",
+    "@tiptap/extension-placeholder": ">=3.0.0"
   },
   "peerDependenciesMeta": {
     "framer-motion": {
+      "optional": true
+    },
+    "@tiptap/react": {
+      "optional": true
+    },
+    "@tiptap/pm": {
+      "optional": true
+    },
+    "@tiptap/starter-kit": {
+      "optional": true
+    },
+    "@tiptap/extension-link": {
+      "optional": true
+    },
+    "@tiptap/extension-underline": {
+      "optional": true
+    },
+    "@tiptap/extension-text-align": {
+      "optional": true
+    },
+    "@tiptap/extension-placeholder": {
       "optional": true
     }
   },
@@ -87,7 +115,14 @@
     "typescript-eslint": "^8.60.1",
     "vite": "^6.0.0",
     "vite-plugin-dts": "^4.3.0",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.4",
+    "@tiptap/extension-link": "^3.29.1",
+    "@tiptap/extension-placeholder": "^3.29.1",
+    "@tiptap/extension-text-align": "^3.29.1",
+    "@tiptap/extension-underline": "^3.29.1",
+    "@tiptap/pm": "^3.29.1",
+    "@tiptap/react": "^3.29.1",
+    "@tiptap/starter-kit": "^3.29.1"
   },
   "dependencies": {
     "framer-motion": ">=11.0.0",
