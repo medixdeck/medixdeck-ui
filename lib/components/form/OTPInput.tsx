@@ -12,6 +12,8 @@ export interface OTPInputProps {
   value?: string;
   onChange?: (value: string) => void;
   onComplete?: (value: string) => void;
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   /** Whether in error state */
   isInvalid?: boolean;
   /** Whether disabled */
@@ -48,6 +50,7 @@ export function OTPInput({
   defaultValue = '',
   onChange,
   onComplete,
+  colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
   mask = false,
@@ -66,7 +69,7 @@ export function OTPInput({
   // Idle border colour — uses CSS vars so it automatically flips in dark mode.
   // Error states use literal hex (same in both modes by design).
   const idleBorder = isInvalid ? '#DC2626' : 'var(--medix-form-border)';
-  const focusBorder = isInvalid ? '#DC2626' : '#0685FF';
+  const focusBorder = isInvalid ? '#DC2626' : colorScheme === 'purple' ? '#7700CC' : '#0685FF';
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
     if (e.key === 'Backspace') {
@@ -160,10 +163,7 @@ export function OTPInput({
               height: '48px',
               borderRadius: '10px',
               border: `1.5px solid ${focusedIdx === idx ? focusBorder : idleBorder}`,
-              boxShadow:
-                focusedIdx === idx
-                  ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
-                  : 'none',
+              boxShadow: 'none',
               /* CSS vars flip automatically when .dark is on any ancestor */
               background: 'var(--medix-form-bg)',
               color: 'var(--medix-form-text)',

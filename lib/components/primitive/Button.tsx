@@ -240,7 +240,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
         case 'solid':
           stateOverride = {
             background: pressed ? c.solidActive : c.solidHover,
-            boxShadow: pressed ? 'none' : '0 4px 14px rgba(0,0,0,0.18)',
+            boxShadow: 'none',
           };
           break;
         case 'outline':
@@ -291,11 +291,10 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
         onMouseDown={() => setPressed(true)}
         onMouseUp={() => setPressed(false)}
         onFocus={(e: React.FocusEvent<HTMLElement>) => {
-          e.currentTarget.style.boxShadow = `0 0 0 2px #FFFFFF, 0 0 0 4px ${c.solid}`;
+          e.currentTarget.style.boxShadow = 'none';
         }}
         onBlur={(e: React.FocusEvent<HTMLElement>) => {
-          e.currentTarget.style.boxShadow =
-            stateOverride.boxShadow ?? variantStyles.boxShadow ?? 'none';
+          e.currentTarget.style.boxShadow = 'none';
         }}
         {...props}
         aria-disabled={

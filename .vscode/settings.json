@@ -4,6 +4,7 @@
     "COOLDOWN",
     "doctorcard",
     "Fontshare",
+    "homecare",
     "hoverable",
     "MDCN",
     "Medix",
@@ -11,6 +12,7 @@
     "navbars",
     "okedi",
     "Okedi",
+    "otpinput",
     "Wordmark"
   ],
   "editor.formatOnSave": true,

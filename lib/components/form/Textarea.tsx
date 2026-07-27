@@ -7,6 +7,8 @@ import {
 } from '@chakra-ui/react';
 
 export interface TextareaProps extends ChakraTextareaProps {
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   /** Error state */
   isInvalid?: boolean;
   /** Error message */
@@ -28,8 +30,21 @@ export interface TextareaProps extends ChakraTextareaProps {
  * ```
  */
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ isInvalid, errorMessage, maxLength, showCount = false, onChange, value, ...props }, ref) => {
+  (
+    {
+      colorScheme = 'blue',
+      isInvalid,
+      errorMessage,
+      maxLength,
+      showCount = false,
+      onChange,
+      value,
+      ...props
+    },
+    ref,
+  ) => {
     const [charCount, setCharCount] = React.useState(typeof value === 'string' ? value.length : 0);
+    const focusBorder = colorScheme === 'purple' ? 'purple.500' : 'blue.500';
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setCharCount(e.target.value.length);
@@ -55,10 +70,8 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           onChange={handleChange}
           _placeholder={{ color: 'text.muted' }}
           _focus={{
-            borderColor: isInvalid ? 'red.500' : 'blue.500',
-            boxShadow: isInvalid
-              ? '0 0 0 3px rgba(220, 38, 38, 0.15)'
-              : '0 0 0 3px rgba(6, 133, 255, 0.15)',
+            borderColor: isInvalid ? 'red.500' : focusBorder,
+            boxShadow: 'none',
             outline: 'none',
           }}
           _dark={{

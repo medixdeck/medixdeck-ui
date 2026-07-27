@@ -29,7 +29,15 @@ export interface FooterSection {
 }
 
 export interface SocialLink {
-  platform: 'facebook' | 'instagram' | 'linkedin' | 'twitter' | 'youtube' | 'threads' | 'whatsapp';
+  platform:
+    | 'facebook'
+    | 'instagram'
+    | 'linkedin'
+    | 'twitter'
+    | 'youtube'
+    | 'threads'
+    | 'whatsapp'
+    | 'tiktok';
   href: string;
 }
 
@@ -230,6 +238,17 @@ const SocialIcons = (iconColor: string) => ({
       </g>
     </svg>
   ),
+  tiktok: (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="26" height="26" rx="5" fill={iconColor} />
+      <g transform="translate(5.5, 5.5) scale(0.625)">
+        <path
+          d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-2.891 2.89 2.895 2.895 0 0 1-2.892-2.89 2.895 2.895 0 0 1 2.892-2.89 2.87 2.87 0 0 1 1.002.18V9.45a6.335 6.335 0 0 0-1.002-.08 6.336 6.336 0 0 0-6.336 6.336 6.336 6.336 0 0 0 6.336 6.336 6.336 6.336 0 0 0 6.336-6.336V8.514a8.216 8.216 0 0 0 4.768 1.512V6.581a4.819 4.819 0 0 1-.998.105z"
+          fill="white"
+        />
+      </g>
+    </svg>
+  ),
 });
 
 const defaultDescription =
@@ -263,10 +282,16 @@ const defaultSections: FooterSection[] = [
 const defaultSocialLinks: SocialLink[] = [
   { platform: 'instagram', href: 'https://instagram.com/medixdeck' },
   { platform: 'twitter', href: 'https://twitter.com/medixdeck' },
-  { platform: 'whatsapp', href: 'https://chat.whatsapp.com/GZGcTWtpVHHKUIKzJz3owC' },
+  {
+    platform: 'whatsapp',
+    href:
+      (import.meta as unknown as { env?: Record<string, string> }).env
+        ?.VITE_WHATSAPP_COMMUNITY_LINK ?? 'https://medixdeck.com/whatsapp',
+  },
   { platform: 'threads', href: 'https://threads.net/@medixdeck' },
   { platform: 'facebook', href: 'https://facebook.com/medixdeck' },
-  { platform: 'youtube', href: 'https://youtube.com/medixdeck' },
+  { platform: 'youtube', href: 'https://youtube.com/@medixdeck' },
+  { platform: 'tiktok', href: 'https://tiktok.com/@medixdeck' },
   { platform: 'linkedin', href: 'https://linkedin.com/company/medixdeck' },
 ];
 
