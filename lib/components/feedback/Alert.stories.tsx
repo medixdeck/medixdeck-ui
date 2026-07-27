@@ -7,7 +7,7 @@ const meta: Meta<typeof Alert> = {
   tags: ['autodocs'],
   argTypes: {
     status: { control: 'select', options: ['info', 'success', 'warning', 'error'] },
-    variant: { control: 'select', options: ['subtle', 'solid', 'outline'] },
+    variant: { control: 'select', options: ['subtle', 'solid', 'left-accent'] },
   },
 };
 
@@ -55,3 +55,13 @@ export const SolidVariant: Story = {
     description: 'Your appointment was successfully scheduled.',
   },
 };
+
+export const LeftAccentVariant: Story = {
+  args: {
+    status: 'info',
+    variant: 'left-accent',
+    title: 'System Notice',
+    description: 'Scheduled maintenance is planned for midnight.',
+  },
+};
+
