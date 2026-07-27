@@ -274,7 +274,7 @@ const defaultSections: FooterSection[] = [
 const defaultSocialLinks: SocialLink[] = [
   { platform: 'instagram', href: 'https://instagram.com/medixdeck' },
   { platform: 'twitter', href: 'https://twitter.com/medixdeck' },
-  { platform: 'whatsapp', href: (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_WHATSAPP_COMMUNITY_LINK ?? 'https://chat.whatsapp.com/GZGcTWtpVHHKUIKzJz3owC' },
+  { platform: 'whatsapp', href: (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_WHATSAPP_COMMUNITY_LINK ?? 'https://medixdeck.com/whatsapp' },
   { platform: 'threads', href: 'https://threads.net/@medixdeck' },
   { platform: 'facebook', href: 'https://facebook.com/medixdeck' },
   { platform: 'youtube', href: 'https://youtube.com/@medixdeck' },

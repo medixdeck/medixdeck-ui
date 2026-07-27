@@ -571,7 +571,7 @@ export default function App() {
                   textTransform="uppercase"
                   letterSpacing="0.06em"
                 >
-                  Full logo — all color variants
+                  Full logo — click any variant to download high-res PNG
                 </Text>
                 <Box display="flex" flexWrap="wrap" gap="6" alignItems="center">
                   <Box
@@ -581,7 +581,7 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="blue" type="full" height={32} />
+                    <Logo variant="blue" type="full" height={32} downloadable />
                   </Box>
                   <Box
                     bg="bg.surface"
@@ -590,10 +590,10 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="purple" type="full" height={32} />
+                    <Logo variant="purple" type="full" height={32} downloadable />
                   </Box>
                   <Box bg="#111926" p="4" borderRadius="card">
-                    <Logo variant="white" type="full" height={32} />
+                    <Logo variant="white" type="full" height={32} downloadable />
                   </Box>
                   <Box
                     bg="bg.surface"
@@ -602,7 +602,7 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="black" type="full" height={32} />
+                    <Logo variant="black" type="full" height={32} downloadable />
                   </Box>
                 </Box>
               </Box>
@@ -617,7 +617,7 @@ export default function App() {
                   textTransform="uppercase"
                   letterSpacing="0.06em"
                 >
-                  Icon-only — all color variants
+                  Icon-only — click to download
                 </Text>
                 <Box display="flex" flexWrap="wrap" gap="4" alignItems="center">
                   <Box
@@ -627,7 +627,7 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="blue" type="icon" height={40} />
+                    <Logo variant="blue" type="icon" height={40} downloadable />
                   </Box>
                   <Box
                     bg="bg.surface"
@@ -636,10 +636,10 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="purple" type="icon" height={40} />
+                    <Logo variant="purple" type="icon" height={40} downloadable />
                   </Box>
                   <Box bg="#111926" p="4" borderRadius="card">
-                    <Logo variant="white" type="icon" height={40} />
+                    <Logo variant="white" type="icon" height={40} downloadable />
                   </Box>
                   <Box
                     bg="bg.surface"
@@ -648,7 +648,7 @@ export default function App() {
                     border="1px solid"
                     borderColor="border"
                   >
-                    <Logo variant="black" type="icon" height={40} />
+                    <Logo variant="black" type="icon" height={40} downloadable />
                   </Box>
                 </Box>
               </Box>
@@ -663,14 +663,14 @@ export default function App() {
                   textTransform="uppercase"
                   letterSpacing="0.06em"
                 >
-                  Sizes — full blue logo
+                  Sizes — full blue logo (downloadable)
                 </Text>
                 <Box display="flex" flexWrap="wrap" gap="6" alignItems="center">
-                  <Logo variant="blue" height={20} />
-                  <Logo variant="blue" height={28} />
-                  <Logo variant="blue" height={36} />
-                  <Logo variant="blue" height={48} />
-                  <Logo variant="blue" height={64} />
+                  <Logo variant="blue" height={20} downloadable />
+                  <Logo variant="blue" height={28} downloadable />
+                  <Logo variant="blue" height={36} downloadable />
+                  <Logo variant="blue" height={48} downloadable />
+                  <Logo variant="blue" height={64} downloadable />
                 </Box>
               </Box>
             </Box>
