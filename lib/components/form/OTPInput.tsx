@@ -68,7 +68,9 @@ export function OTPInput({
 
   // Idle border colour — uses CSS vars so it automatically flips in dark mode.
   // Error states use literal hex (same in both modes by design).
-  const idleBorder = isInvalid ? '#DC2626' : 'var(--medix-form-border)';
+  const idleBorder = isInvalid
+    ? '#DC2626'
+    : 'var(--medix-form-border, var(--chakra-colors-border, #E2E8F0))';
   const focusBorder = isInvalid ? '#DC2626' : colorScheme === 'purple' ? '#7700CC' : '#0685FF';
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
@@ -96,11 +98,19 @@ export function OTPInput({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
     const raw = e.target.value.replace(/\D/g, '');
-    if (!raw) return;
+    const newDigits = [...digits];
+    while (newDigits.length < length) newDigits.push('');
+
+    if (!raw) {
+      newDigits[idx] = '';
+      const joined = newDigits.join('');
+      if (!isControlled) setInternalValue(joined);
+      onChange?.(joined);
+      return;
+    }
 
     if (raw.length > 1) {
       const pasted = raw.split('').slice(0, length);
-      const newDigits = [...Array(length).fill('')];
       pasted.forEach((d, i) => {
         newDigits[i] = d;
       });
@@ -109,12 +119,10 @@ export function OTPInput({
       onChange?.(joined);
       const focusIdx = Math.min(pasted.length, length - 1);
       inputRefs.current[focusIdx]?.focus();
-      if (joined.length === length) onComplete?.(joined);
+      if (joined.replace(/\s/g, '').length === length) onComplete?.(joined);
       return;
     }
 
-    const newDigits = [...digits];
-    while (newDigits.length < length) newDigits.push('');
     newDigits[idx] = raw;
     const joined = newDigits.join('');
     if (!isControlled) setInternalValue(joined);
@@ -165,8 +173,8 @@ export function OTPInput({
               border: `1.5px solid ${focusedIdx === idx ? focusBorder : idleBorder}`,
               boxShadow: 'none',
               /* CSS vars flip automatically when .dark is on any ancestor */
-              background: 'var(--medix-form-bg)',
-              color: 'var(--medix-form-text)',
+              background: 'var(--medix-form-bg, var(--chakra-colors-bg-surface, #FFFFFF))',
+              color: 'var(--medix-form-text, var(--chakra-colors-text-heading, #0F172A))',
               fontSize: '20px',
               fontWeight: 600,
               textAlign: 'center',
