@@ -263,6 +263,7 @@ export function DateRangePicker({
               activeInput === 'end' ? (startDate ?? parseLocalDate(min)) : parseLocalDate(min)
             }
             maxDate={parseLocalDate(max)}
+            colorScheme={colorScheme}
           />
         </Box>
       )}

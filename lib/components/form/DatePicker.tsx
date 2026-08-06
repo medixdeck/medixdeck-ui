@@ -245,6 +245,7 @@ export function DatePicker({
             onChange={handleDateSelect}
             minDate={parseLocalDate(min)}
             maxDate={parseLocalDate(max)}
+            colorScheme={colorScheme}
           />
           {includeTime && (
             <Box px="5" pb="4" borderTop="1px solid" borderColor="border">
