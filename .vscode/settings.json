@@ -13,7 +13,12 @@
     "okedi",
     "Okedi",
     "otpinput",
+    "phoneinput",
     "registrator",
+    "richtextinput",
+    "sectionheader",
+    "statcard",
+    "tagsinput",
     "Wordmark"
   ],
   "editor.formatOnSave": true,
