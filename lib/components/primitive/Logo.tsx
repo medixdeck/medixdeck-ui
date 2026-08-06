@@ -148,7 +148,7 @@ export function Logo({
 
   const dark = mounted ? themeMode === 'dark' : false;
 
-  const markColor = MARK_COLOR[variant];
+  const markColor = dark ? MARK_COLOR_DARK[variant] : MARK_COLOR_LIGHT[variant];
   const textColor = dark ? TEXT_COLOR_DARK[variant] : TEXT_COLOR_LIGHT[variant];
 
   const gap = Math.round(height * 0.3);
@@ -205,18 +205,24 @@ export function Logo({
 }
 
 // ─── Color maps ──────────────────────────────────────────────────────────────
-const MARK_COLOR: Record<LogoVariant, string> = {
+const MARK_COLOR_LIGHT: Record<LogoVariant, string> = {
   blue: '#0685FF',
   purple: '#7700CC',
   black: '#111926',
   white: '#FFFFFF',
 };
 
+const MARK_COLOR_DARK: Record<LogoVariant, string> = {
+  blue: '#0685FF',
+  purple: '#7700CC',
+  black: '#FFFFFF', // In dark mode, black variant becomes white
+  white: '#111926', // In dark mode, white variant becomes black
+};
+
 /**
  * Text (wordmark) color.
- * For `blue` and `purple` variants the mark is already coloured, so the
- * wordmark should match the surface text: dark on light bg, white on dark bg.
- * `black` and `white` variants are explicit — always honour them.
+ * In light mode: black for blue, purple, black; white for white.
+ * In dark mode: white for blue, purple, black; black for white.
  */
 const TEXT_COLOR_LIGHT: Record<LogoVariant, string> = {
   blue: '#111926',
@@ -226,10 +232,10 @@ const TEXT_COLOR_LIGHT: Record<LogoVariant, string> = {
 };
 
 const TEXT_COLOR_DARK: Record<LogoVariant, string> = {
-  blue: '#FFFFFF', // white on dark bg
-  purple: '#FFFFFF', // white on dark bg
-  black: '#111926', // explicit black — unchanged
-  white: '#FFFFFF', // explicit white — unchanged
+  blue: '#FFFFFF',
+  purple: '#FFFFFF',
+  black: '#FFFFFF', // In dark mode, black variant text becomes white
+  white: '#111926', // In dark mode, white variant text becomes black
 };
 
 // ─── Brand-mark SVG (icon only) ───────────────────────────────────────────────
