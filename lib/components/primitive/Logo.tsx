@@ -144,9 +144,9 @@ export function Logo({
   className,
   style,
 }: LogoProps) {
-  const { mounted, themeMode } = useThemeMode();
+  const { themeMode } = useThemeMode();
 
-  const dark = mounted ? themeMode === 'dark' : false;
+  const dark = themeMode === 'dark';
 
   const markColor = dark ? MARK_COLOR_DARK[variant] : MARK_COLOR_LIGHT[variant];
   const textColor = dark ? TEXT_COLOR_DARK[variant] : TEXT_COLOR_LIGHT[variant];
