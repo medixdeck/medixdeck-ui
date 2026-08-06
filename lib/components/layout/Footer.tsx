@@ -30,14 +30,14 @@ export interface FooterSection {
 
 export interface SocialLink {
   platform:
-    | 'facebook'
-    | 'instagram'
-    | 'linkedin'
-    | 'twitter'
-    | 'youtube'
-    | 'threads'
-    | 'whatsapp'
-    | 'tiktok';
+  | 'facebook'
+  | 'instagram'
+  | 'linkedin'
+  | 'twitter'
+  | 'youtube'
+  | 'threads'
+  | 'whatsapp'
+  | 'tiktok';
   href: string;
 }
 
@@ -96,7 +96,7 @@ export interface FooterProps extends Omit<BoxProps, 'children'> {
   sections?: FooterSection[];
   /** Social media links */
   socialLinks?: SocialLink[];
-  /** Copyright text. Defaults to "© {year} MedixDeck Health Solution Ltd. All Rights Reserved." */
+  /** Copyright text. Defaults to "© {year} MedixDeck Health Solutions Ltd. All Rights Reserved." */
   copyright?: string;
   /** Links at the bottom right corner */
   bottomLinks?: BottomLink[];
@@ -344,7 +344,7 @@ export function Footer({
 }: FooterProps) {
   const currentYear = new Date().getFullYear();
   const resolvedCopyright =
-    copyright ?? `© ${currentYear} MedixDeck Health Solution Ltd. All Rights Reserved.`;
+    copyright ?? `© ${currentYear} MedixDeck Health Solutions Ltd. All Rights Reserved.`;
   const [email, setEmail] = useState('');
   const [newsletterButtonHovered, setNewsletterButtonHovered] = useState(false);
   const [newsletterButtonFocused, setNewsletterButtonFocused] = useState(false);
