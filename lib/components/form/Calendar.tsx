@@ -117,7 +117,7 @@ export function Calendar({
   ...props
 }: CalendarProps) {
   const accentColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
-  const accentLight = colorScheme === 'purple' ? 'rgba(119,0,204,0.08)' : 'rgba(6,133,255,0.08)';
+  const accentLight = colorScheme === 'purple' ? 'rgba(119,0,204,0.14)' : 'rgba(6,133,255,0.14)';
 
   const [currentMonth, setCurrentMonth] = useState(() => (value ? new Date(value) : new Date()));
   const [viewMode, setViewMode] = useState<'day' | 'month' | 'year'>('day');
@@ -431,36 +431,27 @@ function NavChevronButton({
   ariaLabel?: string;
 }) {
   return (
-    <button
+    <Box
+      as="button"
+      // @ts-expect-error type is valid when as="button"
       type="button"
       aria-label={ariaLabel ?? (direction === 'prev' ? 'Go to previous month' : 'Go to next month')}
       aria-disabled={!enabled}
       disabled={!enabled}
       onClick={enabled ? onClick : undefined}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '28px',
-        height: '28px',
-        borderRadius: '6px',
-        border: 'none',
-        background: 'transparent',
-        cursor: enabled ? 'pointer' : 'not-allowed',
-        color: 'inherit',
-        opacity: enabled ? 1 : 0.35,
-        padding: 0,
-        flexShrink: 0,
-        transition: 'background 0.15s, color 0.15s',
-      }}
-      onMouseEnter={(e) => {
-        if (enabled) {
-          (e.currentTarget as HTMLButtonElement).style.color = accentColor;
-        }
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.color = 'inherit';
-      }}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      w="7"
+      h="7"
+      borderRadius="md"
+      cursor={enabled ? 'pointer' : 'not-allowed'}
+      color={enabled ? 'text.heading' : 'text.muted'}
+      opacity={enabled ? 1 : 0.35}
+      p="0"
+      flexShrink={0}
+      _hover={enabled ? { color: accentColor, bg: 'bg.subtle' } : undefined}
+      transition="all 0.15s"
     >
       <svg
         width="16"
@@ -474,7 +465,7 @@ function NavChevronButton({
       >
         {direction === 'prev' ? <path d="M15 18l-6-6 6-6" /> : <path d="M9 18l6-6-6-6" />}
       </svg>
-    </button>
+    </Box>
   );
 }
 
@@ -493,38 +484,27 @@ function HeaderPillButton({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Box
+      as="button"
+      // @ts-expect-error type is valid when as="button"
       type="button"
       onClick={onClick}
       title={isActive ? 'Click to collapse' : 'Click to browse'}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '2px',
-        padding: '3px 8px',
-        borderRadius: '6px',
-        border: 'none',
-        background: isActive ? accentLight : 'transparent',
-        color: isActive ? accentColor : 'inherit',
-        fontWeight: 600,
-        fontSize: '15px',
-        fontFamily: 'var(--font-body)',
-        cursor: 'pointer',
-        transition: 'background 0.15s, color 0.15s',
-        lineHeight: 1.4,
-      }}
-      onMouseEnter={(e) => {
-        if (!isActive) {
-          (e.currentTarget as HTMLButtonElement).style.background = accentLight;
-          (e.currentTarget as HTMLButtonElement).style.color = accentColor;
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isActive) {
-          (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-          (e.currentTarget as HTMLButtonElement).style.color = 'inherit';
-        }
-      }}
+      display="inline-flex"
+      alignItems="center"
+      gap="0.5"
+      px="2"
+      py="0.5"
+      borderRadius="md"
+      bg={isActive ? accentLight : 'transparent'}
+      color={isActive ? accentColor : 'text.heading'}
+      fontWeight="semibold"
+      fontSize="15px"
+      fontFamily="var(--font-body)"
+      cursor="pointer"
+      lineHeight="1.4"
+      _hover={!isActive ? { bg: accentLight, color: accentColor } : undefined}
+      transition="all 0.15s"
     >
       {label}
       {/* Small caret indicator */}
@@ -546,7 +526,7 @@ function HeaderPillButton({
       >
         <path d="M6 9l6 6 6-6" />
       </svg>
-    </button>
+    </Box>
   );
 }
 
@@ -567,43 +547,39 @@ function MonthYearCell({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Box
+      as="button"
+      // @ts-expect-error type is valid when as="button"
       type="button"
       onClick={isDisabled ? undefined : onClick}
-      disabled={isDisabled}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '40px',
-        borderRadius: '8px',
-        border: isActive ? `1.5px solid ${accentColor}` : '1.5px solid transparent',
-        background: isActive ? accentColor : 'transparent',
-        color: isActive ? '#ffffff' : 'inherit',
-        fontSize: '13px',
-        fontWeight: isActive ? 600 : 500,
-        fontFamily: 'var(--font-body)',
-        cursor: isDisabled ? 'not-allowed' : 'pointer',
-        opacity: isDisabled ? 0.35 : 1,
-        transition: 'background 0.15s, color 0.15s, border-color 0.15s',
-      }}
-      onMouseEnter={(e) => {
-        if (!isDisabled && !isActive) {
-          (e.currentTarget as HTMLButtonElement).style.background = accentLight;
-          (e.currentTarget as HTMLButtonElement).style.color = accentColor;
-          (e.currentTarget as HTMLButtonElement).style.borderColor = accentColor;
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isDisabled && !isActive) {
-          (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-          (e.currentTarget as HTMLButtonElement).style.color = 'inherit';
-          (e.currentTarget as HTMLButtonElement).style.borderColor = 'transparent';
-        }
-      }}
+      {...({ disabled: isDisabled } as Record<string, unknown>)}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      h="10"
+      borderRadius="md"
+      border="1.5px solid"
+      borderColor={isActive ? accentColor : 'transparent'}
+      bg={isActive ? accentColor : 'transparent'}
+      color={isActive ? 'white' : isDisabled ? 'text.muted' : 'text.heading'}
+      fontSize="13px"
+      fontWeight={isActive ? 'semibold' : 'medium'}
+      fontFamily="var(--font-body)"
+      cursor={isDisabled ? 'not-allowed' : 'pointer'}
+      opacity={isDisabled ? 0.35 : 1}
+      _hover={
+        !isDisabled && !isActive
+          ? {
+              bg: accentLight,
+              color: accentColor,
+              borderColor: accentColor,
+            }
+          : undefined
+      }
+      transition="all 0.15s"
     >
       {label}
-    </button>
+    </Box>
   );
 }
 
