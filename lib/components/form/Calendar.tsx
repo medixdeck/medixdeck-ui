@@ -28,7 +28,20 @@ const MONTHS = [
   'December',
 ];
 
-const MONTH_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTH_ABBR = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 /** Number of years shown per page in the year-picker view */
 const YEARS_PER_PAGE = 12;
@@ -268,7 +281,12 @@ export function Calendar({
             onClick={() => setYearPageOffset((p) => p - 1)}
             ariaLabel="Previous years"
           />
-          <Text fontSize="sm" fontWeight="semibold" color="text.heading" fontFamily="var(--font-body)">
+          <Text
+            fontSize="sm"
+            fontWeight="semibold"
+            color="text.heading"
+            fontFamily="var(--font-body)"
+          >
             {yearPageStart} – {yearPageEnd}
           </Text>
           <NavChevronButton

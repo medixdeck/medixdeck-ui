@@ -57,9 +57,13 @@ export function htmlToMarkdown(html: string): string {
       case 'blockquote':
         return `> ${childrenText.trim()}\n\n`;
       case 'ul':
-        return `${Array.from(el.children).map((li) => `- ${parseNode(li).trim()}`).join('\n')}\n\n`;
+        return `${Array.from(el.children)
+          .map((li) => `- ${parseNode(li).trim()}`)
+          .join('\n')}\n\n`;
       case 'ol':
-        return `${Array.from(el.children).map((li, idx) => `${idx + 1}. ${parseNode(li).trim()}`).join('\n')}\n\n`;
+        return `${Array.from(el.children)
+          .map((li, idx) => `${idx + 1}. ${parseNode(li).trim()}`)
+          .join('\n')}\n\n`;
       case 'li':
         return childrenText;
       case 'a': {
@@ -94,7 +98,10 @@ export function markdownToHtml(markdown: string): string {
 
   const processInline = (str: string): string => {
     return str
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
+      )
       .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
       .replace(/__([^_]+)__/g, '<strong>$1</strong>')
       .replace(/\*([^*]+)\*/g, '<em>$1</em>')
@@ -119,32 +126,74 @@ export function markdownToHtml(markdown: string): string {
     }
 
     if (line.startsWith('# ')) {
-      if (inUl) { result.push('</ul>'); inUl = false; }
-      if (inOl) { result.push('</ol>'); inOl = false; }
+      if (inUl) {
+        result.push('</ul>');
+        inUl = false;
+      }
+      if (inOl) {
+        result.push('</ol>');
+        inOl = false;
+      }
       result.push(`<h1>${processInline(line.slice(2))}</h1>`);
     } else if (line.startsWith('## ')) {
-      if (inUl) { result.push('</ul>'); inUl = false; }
-      if (inOl) { result.push('</ol>'); inOl = false; }
+      if (inUl) {
+        result.push('</ul>');
+        inUl = false;
+      }
+      if (inOl) {
+        result.push('</ol>');
+        inOl = false;
+      }
       result.push(`<h2>${processInline(line.slice(3))}</h2>`);
     } else if (line.startsWith('### ')) {
-      if (inUl) { result.push('</ul>'); inUl = false; }
-      if (inOl) { result.push('</ol>'); inOl = false; }
+      if (inUl) {
+        result.push('</ul>');
+        inUl = false;
+      }
+      if (inOl) {
+        result.push('</ol>');
+        inOl = false;
+      }
       result.push(`<h3>${processInline(line.slice(4))}</h3>`);
     } else if (line.startsWith('> ')) {
-      if (inUl) { result.push('</ul>'); inUl = false; }
-      if (inOl) { result.push('</ol>'); inOl = false; }
+      if (inUl) {
+        result.push('</ul>');
+        inUl = false;
+      }
+      if (inOl) {
+        result.push('</ol>');
+        inOl = false;
+      }
       result.push(`<blockquote>${processInline(line.slice(2))}</blockquote>`);
     } else if (line.startsWith('- ') || line.startsWith('* ')) {
-      if (inOl) { result.push('</ol>'); inOl = false; }
-      if (!inUl) { result.push('<ul>'); inUl = true; }
+      if (inOl) {
+        result.push('</ol>');
+        inOl = false;
+      }
+      if (!inUl) {
+        result.push('<ul>');
+        inUl = true;
+      }
       result.push(`<li>${processInline(line.slice(2))}</li>`);
     } else if (/^\d+\.\s/.test(line)) {
-      if (inUl) { result.push('</ul>'); inUl = false; }
-      if (!inOl) { result.push('<ol>'); inOl = true; }
+      if (inUl) {
+        result.push('</ul>');
+        inUl = false;
+      }
+      if (!inOl) {
+        result.push('<ol>');
+        inOl = true;
+      }
       result.push(`<li>${processInline(line.replace(/^\d+\.\s/, ''))}</li>`);
     } else {
-      if (inUl) { result.push('</ul>'); inUl = false; }
-      if (inOl) { result.push('</ol>'); inOl = false; }
+      if (inUl) {
+        result.push('</ul>');
+        inUl = false;
+      }
+      if (inOl) {
+        result.push('</ol>');
+        inOl = false;
+      }
       result.push(`<p>${processInline(line)}</p>`);
     }
   }
@@ -530,7 +579,10 @@ function ModeSwitcher({
       p="0.5"
       borderRadius="md"
       bg="bg.subtle"
-      style={{ background: 'var(--medix-form-bg-subtle, #F0F4F8)', border: '1px solid var(--medix-form-border)' }}
+      style={{
+        background: 'var(--medix-form-bg-subtle, #F0F4F8)',
+        border: '1px solid var(--medix-form-border)',
+      }}
       ml="auto"
       flexShrink={0}
     >
@@ -1071,7 +1123,8 @@ export function RichTextInput({
     }
   }, [editor, isControlled, value, outputFormat]);
 
-  const charCount = activeMode === 'markdown' ? markdownContent.length : (editor?.getText().length ?? 0);
+  const charCount =
+    activeMode === 'markdown' ? markdownContent.length : (editor?.getText().length ?? 0);
 
   const borderColor = isInvalid ? '#DC2626' : isFocused ? accent.base : 'var(--medix-form-border)';
 

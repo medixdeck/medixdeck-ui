@@ -15,7 +15,8 @@ export const Default: Story = {
   args: {
     placeholder: 'Start typing...',
     label: 'Patient Bio',
-    helperText: 'Describe your medical history. Use top-right toggle to switch between Rich Text and Markdown.',
+    helperText:
+      'Describe your medical history. Use top-right toggle to switch between Rich Text and Markdown.',
   },
 };
 
@@ -68,7 +69,17 @@ export const MarkdownOutputForBackend: Story = {
           colorScheme="purple"
           showCharCount
         />
-        <div style={{ marginTop: '16px', padding: '12px', background: '#0F1C2E', color: '#CBD5E1', borderRadius: '8px', fontFamily: 'monospace', fontSize: '12px' }}>
+        <div
+          style={{
+            marginTop: '16px',
+            padding: '12px',
+            background: '#0F1C2E',
+            color: '#CBD5E1',
+            borderRadius: '8px',
+            fontFamily: 'monospace',
+            fontSize: '12px',
+          }}
+        >
           <strong>Emitted Markdown (sent to backend API):</strong>
           <pre style={{ margin: '8px 0 0', whiteSpace: 'pre-wrap' }}>{markdownText}</pre>
         </div>
@@ -79,7 +90,9 @@ export const MarkdownOutputForBackend: Story = {
 
 export const DualOutputPreview: Story = {
   render: () => {
-    const [content, setContent] = React.useState('<p>Doctor notes with <strong>bold</strong> points.</p>');
+    const [content, setContent] = React.useState(
+      '<p>Doctor notes with <strong>bold</strong> points.</p>',
+    );
     const [htmlOutput, setHtmlOutput] = React.useState('');
     const [mdOutput, setMdOutput] = React.useState('');
 
@@ -94,12 +107,37 @@ export const DualOutputPreview: Story = {
           showCharCount
           maxLength={500}
         />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '16px' }}>
-          <div style={{ padding: '12px', background: '#0F1C2E', color: '#93C5FD', borderRadius: '8px', fontFamily: 'monospace', fontSize: '11px' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '12px',
+            marginTop: '16px',
+          }}
+        >
+          <div
+            style={{
+              padding: '12px',
+              background: '#0F1C2E',
+              color: '#93C5FD',
+              borderRadius: '8px',
+              fontFamily: 'monospace',
+              fontSize: '11px',
+            }}
+          >
             <strong>HTML Output Stream (onHtmlChange):</strong>
             <pre style={{ margin: '8px 0 0', whiteSpace: 'pre-wrap' }}>{htmlOutput}</pre>
           </div>
-          <div style={{ padding: '12px', background: '#0F1C2E', color: '#A7F3D0', borderRadius: '8px', fontFamily: 'monospace', fontSize: '11px' }}>
+          <div
+            style={{
+              padding: '12px',
+              background: '#0F1C2E',
+              color: '#A7F3D0',
+              borderRadius: '8px',
+              fontFamily: 'monospace',
+              fontSize: '11px',
+            }}
+          >
             <strong>Markdown Output Stream (onMarkdownChange):</strong>
             <pre style={{ margin: '8px 0 0', whiteSpace: 'pre-wrap' }}>{mdOutput}</pre>
           </div>
