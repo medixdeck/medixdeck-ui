@@ -146,7 +146,7 @@ export function DatePicker({
       : '';
 
   return (
-    <Box w="100%" position="relative" ref={containerRef}>
+    <Box w="100%" position="relative" zIndex={isOpen ? 1000 : undefined} ref={containerRef}>
       {label && (
         <Text
           mb="1.5"
@@ -232,7 +232,7 @@ export function DatePicker({
           position="absolute"
           top="calc(100% + 8px)"
           left="0"
-          zIndex="popover"
+          zIndex={1000}
           boxShadow="none"
           borderRadius="card"
           border="1px solid"
