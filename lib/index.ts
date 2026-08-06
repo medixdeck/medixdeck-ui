@@ -101,8 +101,13 @@ export type { FileUploadProps } from './components/form/FileUpload';
 export { TagsInput, TagInput } from './components/form/TagsInput';
 export type { TagsInputProps, TagInputProps } from './components/form/TagsInput';
 
-export { RichTextInput, RichTextEditor } from './components/form/RichTextInput';
-export type { RichTextInputProps, ToolbarOptions } from './components/form/RichTextInput';
+export { RichTextInput, RichTextEditor, htmlToMarkdown, markdownToHtml } from './components/form/RichTextInput';
+export type {
+  RichTextInputProps,
+  ToolbarOptions,
+  RichTextInputMode,
+  RichTextInputFormat,
+} from './components/form/RichTextInput';
 
 // ─── Layout Components ─────────────────────────────────────────────────────────
 export { Card, CardHeader, CardBody, CardFooter } from './components/layout/Card';

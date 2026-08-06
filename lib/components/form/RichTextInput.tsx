@@ -9,6 +9,152 @@ import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import Placeholder from '@tiptap/extension-placeholder';
 
+// ─── Markdown Utilities ───────────────────────────────────────────────────────
+
+/**
+ * Converts HTML content to clean, standard Markdown text.
+ */
+export function htmlToMarkdown(html: string): string {
+  if (!html || typeof document === 'undefined') return html || '';
+
+  // If input doesn't contain HTML tags, return as-is
+  if (!/<[a-z][\s\S]*>/i.test(html)) return html;
+
+  const div = document.createElement('div');
+  div.innerHTML = html;
+
+  function parseNode(node: Node): string {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.textContent || '';
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+    const el = node as HTMLElement;
+    const tag = el.tagName.toLowerCase();
+    const childrenText = Array.from(el.childNodes).map(parseNode).join('');
+
+    switch (tag) {
+      case 'h1':
+        return `# ${childrenText.trim()}\n\n`;
+      case 'h2':
+        return `## ${childrenText.trim()}\n\n`;
+      case 'h3':
+        return `### ${childrenText.trim()}\n\n`;
+      case 'p':
+        return childrenText.trim() ? `${childrenText.trim()}\n\n` : '';
+      case 'strong':
+      case 'b':
+        return childrenText.trim() ? `**${childrenText}**` : '';
+      case 'em':
+      case 'i':
+        return childrenText.trim() ? `*${childrenText}*` : '';
+      case 'u':
+        return childrenText.trim() ? `<u>${childrenText}</u>` : '';
+      case 's':
+      case 'del':
+      case 'strike':
+        return childrenText.trim() ? `~~${childrenText}~~` : '';
+      case 'blockquote':
+        return `> ${childrenText.trim()}\n\n`;
+      case 'ul':
+        return `${Array.from(el.children).map((li) => `- ${parseNode(li).trim()}`).join('\n')}\n\n`;
+      case 'ol':
+        return `${Array.from(el.children).map((li, idx) => `${idx + 1}. ${parseNode(li).trim()}`).join('\n')}\n\n`;
+      case 'li':
+        return childrenText;
+      case 'a': {
+        const href = el.getAttribute('href') || '';
+        return `[${childrenText}](${href})`;
+      }
+      case 'br':
+        return '\n';
+      default:
+        return childrenText;
+    }
+  }
+
+  return parseNode(div).trim();
+}
+
+/**
+ * Converts standard Markdown text to HTML.
+ */
+export function markdownToHtml(markdown: string): string {
+  if (!markdown) return '<p></p>';
+
+  // If input already looks like HTML, return as-is
+  if (/<[a-z][\s\S]*>/i.test(markdown.trim())) {
+    return markdown;
+  }
+
+  const lines = markdown.split('\n');
+  const result: string[] = [];
+  let inUl = false;
+  let inOl = false;
+
+  const processInline = (str: string): string => {
+    return str
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/__([^_]+)__/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/_([^_]+)_/g, '<em>$1</em>')
+      .replace(/~~([^~]+)~~/g, '<s>$1</s>')
+      .replace(/<u>([^<]+)<\/u>/g, '<u>$1</u>');
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    if (!line) {
+      if (inUl) {
+        result.push('</ul>');
+        inUl = false;
+      }
+      if (inOl) {
+        result.push('</ol>');
+        inOl = false;
+      }
+      continue;
+    }
+
+    if (line.startsWith('# ')) {
+      if (inUl) { result.push('</ul>'); inUl = false; }
+      if (inOl) { result.push('</ol>'); inOl = false; }
+      result.push(`<h1>${processInline(line.slice(2))}</h1>`);
+    } else if (line.startsWith('## ')) {
+      if (inUl) { result.push('</ul>'); inUl = false; }
+      if (inOl) { result.push('</ol>'); inOl = false; }
+      result.push(`<h2>${processInline(line.slice(3))}</h2>`);
+    } else if (line.startsWith('### ')) {
+      if (inUl) { result.push('</ul>'); inUl = false; }
+      if (inOl) { result.push('</ol>'); inOl = false; }
+      result.push(`<h3>${processInline(line.slice(4))}</h3>`);
+    } else if (line.startsWith('> ')) {
+      if (inUl) { result.push('</ul>'); inUl = false; }
+      if (inOl) { result.push('</ol>'); inOl = false; }
+      result.push(`<blockquote>${processInline(line.slice(2))}</blockquote>`);
+    } else if (line.startsWith('- ') || line.startsWith('* ')) {
+      if (inOl) { result.push('</ol>'); inOl = false; }
+      if (!inUl) { result.push('<ul>'); inUl = true; }
+      result.push(`<li>${processInline(line.slice(2))}</li>`);
+    } else if (/^\d+\.\s/.test(line)) {
+      if (inUl) { result.push('</ul>'); inUl = false; }
+      if (!inOl) { result.push('<ol>'); inOl = true; }
+      result.push(`<li>${processInline(line.replace(/^\d+\.\s/, ''))}</li>`);
+    } else {
+      if (inUl) { result.push('</ul>'); inUl = false; }
+      if (inOl) { result.push('</ol>'); inOl = false; }
+      result.push(`<p>${processInline(line)}</p>`);
+    }
+  }
+
+  if (inUl) result.push('</ul>');
+  if (inOl) result.push('</ol>');
+
+  return result.join('');
+}
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 export interface ToolbarOptions {
@@ -36,13 +182,30 @@ export interface ToolbarOptions {
   clearFormat?: boolean;
 }
 
+export type RichTextInputMode = 'wysiwyg' | 'markdown';
+export type RichTextInputFormat = 'html' | 'markdown';
+
 export interface RichTextInputProps {
-  /** HTML content string (controlled) */
+  /** Content string (HTML or Markdown depending on outputFormat) */
   value?: string;
-  /** Default HTML content string (uncontrolled) */
+  /** Default content string (uncontrolled) */
   defaultValue?: string;
-  /** Callback on every content change — receives HTML string */
-  onChange?: (html: string) => void;
+  /** Callback on content change — receives formatted string according to outputFormat */
+  onChange?: (value: string) => void;
+  /** Explicit callback receiving Markdown formatted string */
+  onMarkdownChange?: (markdown: string) => void;
+  /** Explicit callback receiving HTML formatted string */
+  onHtmlChange?: (html: string) => void;
+  /** Output format passed to onChange ('html' | 'markdown', default: 'html') */
+  outputFormat?: RichTextInputFormat;
+  /** Initial editor composition mode ('wysiwyg' | 'markdown', default: 'wysiwyg') */
+  defaultMode?: RichTextInputMode;
+  /** Controlled editor mode ('wysiwyg' | 'markdown') */
+  mode?: RichTextInputMode;
+  /** Callback when editor mode toggles */
+  onModeChange?: (mode: RichTextInputMode) => void;
+  /** Show the mode toggle switch in the toolbar (default: true) */
+  showModeToggle?: boolean;
   /** Placeholder text when editor is empty */
   placeholder?: string;
   /** Label above the editor */
@@ -78,7 +241,7 @@ const COLORS = {
   purple: { base: '#7700CC', ring: 'rgba(119, 0, 204, 0.18)', hover: '#6600B3' },
 } as const;
 
-// ─── CSS injected globally once ───────────────────────────────────────────────
+// ─── CSS Injected Globally Once ───────────────────────────────────────────────
 
 let rteCssInjected = false;
 function injectRteCss() {
@@ -173,10 +336,13 @@ function ToolbarBtn({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '30px',
         height: '28px',
+        padding: '0 8px',
         borderRadius: '6px',
         border: 'none',
+        fontSize: '12px',
+        fontWeight: 600,
+        fontFamily: 'var(--font-body)',
         cursor: disabled ? 'not-allowed' : 'pointer',
         background: isActive
           ? accentColor
@@ -344,6 +510,72 @@ function HeadingSelect({ editor, accentColor, disabled }: HeadingSelectProps) {
   );
 }
 
+// ─── Mode Switcher Pill Control ───────────────────────────────────────────────
+
+function ModeSwitcher({
+  currentMode,
+  onSelectMode,
+  accentColor,
+  disabled,
+}: {
+  currentMode: RichTextInputMode;
+  onSelectMode: (mode: RichTextInputMode) => void;
+  accentColor: string;
+  disabled?: boolean;
+}) {
+  return (
+    <Box
+      display="inline-flex"
+      alignItems="center"
+      p="0.5"
+      borderRadius="md"
+      bg="bg.subtle"
+      style={{ background: 'var(--medix-form-bg-subtle, #F0F4F8)', border: '1px solid var(--medix-form-border)' }}
+      ml="auto"
+      flexShrink={0}
+    >
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => onSelectMode('wysiwyg')}
+        style={{
+          padding: '2px 10px',
+          fontSize: '11px',
+          fontWeight: 600,
+          fontFamily: 'var(--font-body)',
+          borderRadius: '4px',
+          border: 'none',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          background: currentMode === 'wysiwyg' ? accentColor : 'transparent',
+          color: currentMode === 'wysiwyg' ? '#ffffff' : 'var(--medix-form-text)',
+          transition: 'all 0.15s ease',
+        }}
+      >
+        Rich Text
+      </button>
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => onSelectMode('markdown')}
+        style={{
+          padding: '2px 10px',
+          fontSize: '11px',
+          fontWeight: 600,
+          fontFamily: 'var(--font-body)',
+          borderRadius: '4px',
+          border: 'none',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          background: currentMode === 'markdown' ? accentColor : 'transparent',
+          color: currentMode === 'markdown' ? '#ffffff' : 'var(--medix-form-text)',
+          transition: 'all 0.15s ease',
+        }}
+      >
+        Markdown
+      </button>
+    </Box>
+  );
+}
+
 // ─── Toolbar ─────────────────────────────────────────────────────────────────
 
 interface ToolbarProps {
@@ -351,12 +583,24 @@ interface ToolbarProps {
   accentColor: string;
   disabled?: boolean;
   opts: Required<ToolbarOptions>;
+  mode: RichTextInputMode;
+  showModeToggle: boolean;
+  onModeChange: (mode: RichTextInputMode) => void;
+  onInsertMarkdown?: (snippet: string) => void;
 }
 
-function Toolbar({ editor, accentColor, disabled, opts }: ToolbarProps) {
-  if (!editor) return null;
-
+function Toolbar({
+  editor,
+  accentColor,
+  disabled,
+  opts,
+  mode,
+  showModeToggle,
+  onModeChange,
+  onInsertMarkdown,
+}: ToolbarProps) {
   const handleLink = () => {
+    if (!editor) return;
     const prev = editor.getAttributes('link').href as string | undefined;
     const url = window.prompt('Enter URL', prev ?? 'https://');
     if (url === null) return;
@@ -371,8 +615,9 @@ function Toolbar({ editor, accentColor, disabled, opts }: ToolbarProps) {
     <Box
       display="flex"
       alignItems="center"
+      justifyContent="space-between"
       flexWrap="wrap"
-      gap="0.5"
+      gap="1"
       px="2"
       py="1.5"
       borderBottom="1px solid"
@@ -380,149 +625,224 @@ function Toolbar({ editor, accentColor, disabled, opts }: ToolbarProps) {
       bg="bg.surface"
       style={{ background: 'var(--medix-form-bg)', borderBottomColor: 'var(--medix-form-border)' }}
     >
-      {opts.headings && (
-        <>
-          <HeadingSelect editor={editor} accentColor={accentColor} disabled={disabled} />
-          <ToolbarSep />
-        </>
-      )}
+      <Box display="flex" alignItems="center" flexWrap="wrap" gap="0.5">
+        {mode === 'wysiwyg' && editor ? (
+          <>
+            {opts.headings && (
+              <>
+                <HeadingSelect editor={editor} accentColor={accentColor} disabled={disabled} />
+                <ToolbarSep />
+              </>
+            )}
 
-      {opts.bold && (
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          isActive={editor.isActive('bold')}
-          disabled={disabled}
-          title="Bold (Ctrl+B)"
-          accentColor={accentColor}
-        >
-          <IconBold />
-        </ToolbarBtn>
-      )}
-      {opts.italic && (
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          isActive={editor.isActive('italic')}
-          disabled={disabled}
-          title="Italic (Ctrl+I)"
-          accentColor={accentColor}
-        >
-          <IconItalic />
-        </ToolbarBtn>
-      )}
-      {opts.underline && (
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          isActive={editor.isActive('underline')}
-          disabled={disabled}
-          title="Underline (Ctrl+U)"
-          accentColor={accentColor}
-        >
-          <IconUnderline />
-        </ToolbarBtn>
-      )}
-      {opts.strikethrough && (
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          isActive={editor.isActive('strike')}
-          disabled={disabled}
-          title="Strikethrough"
-          accentColor={accentColor}
-        >
-          <IconStrike />
-        </ToolbarBtn>
-      )}
+            {opts.bold && (
+              <ToolbarBtn
+                onClick={() => editor.chain().focus().toggleBold().run()}
+                isActive={editor.isActive('bold')}
+                disabled={disabled}
+                title="Bold (Ctrl+B)"
+                accentColor={accentColor}
+              >
+                <IconBold />
+              </ToolbarBtn>
+            )}
+            {opts.italic && (
+              <ToolbarBtn
+                onClick={() => editor.chain().focus().toggleItalic().run()}
+                isActive={editor.isActive('italic')}
+                disabled={disabled}
+                title="Italic (Ctrl+I)"
+                accentColor={accentColor}
+              >
+                <IconItalic />
+              </ToolbarBtn>
+            )}
+            {opts.underline && (
+              <ToolbarBtn
+                onClick={() => editor.chain().focus().toggleUnderline().run()}
+                isActive={editor.isActive('underline')}
+                disabled={disabled}
+                title="Underline (Ctrl+U)"
+                accentColor={accentColor}
+              >
+                <IconUnderline />
+              </ToolbarBtn>
+            )}
+            {opts.strikethrough && (
+              <ToolbarBtn
+                onClick={() => editor.chain().focus().toggleStrike().run()}
+                isActive={editor.isActive('strike')}
+                disabled={disabled}
+                title="Strikethrough"
+                accentColor={accentColor}
+              >
+                <IconStrike />
+              </ToolbarBtn>
+            )}
 
-      {(opts.bulletList || opts.orderedList || opts.quote) && <ToolbarSep />}
+            {(opts.bulletList || opts.orderedList || opts.quote) && <ToolbarSep />}
 
-      {opts.bulletList && (
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          isActive={editor.isActive('bulletList')}
-          disabled={disabled}
-          title="Bullet List"
-          accentColor={accentColor}
-        >
-          <IconBulletList />
-        </ToolbarBtn>
-      )}
-      {opts.orderedList && (
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          isActive={editor.isActive('orderedList')}
-          disabled={disabled}
-          title="Ordered List"
-          accentColor={accentColor}
-        >
-          <IconOrderedList />
-        </ToolbarBtn>
-      )}
-      {opts.quote && (
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          isActive={editor.isActive('blockquote')}
-          disabled={disabled}
-          title="Blockquote"
-          accentColor={accentColor}
-        >
-          <IconQuote />
-        </ToolbarBtn>
-      )}
+            {opts.bulletList && (
+              <ToolbarBtn
+                onClick={() => editor.chain().focus().toggleBulletList().run()}
+                isActive={editor.isActive('bulletList')}
+                disabled={disabled}
+                title="Bullet List"
+                accentColor={accentColor}
+              >
+                <IconBulletList />
+              </ToolbarBtn>
+            )}
+            {opts.orderedList && (
+              <ToolbarBtn
+                onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                isActive={editor.isActive('orderedList')}
+                disabled={disabled}
+                title="Ordered List"
+                accentColor={accentColor}
+              >
+                <IconOrderedList />
+              </ToolbarBtn>
+            )}
+            {opts.quote && (
+              <ToolbarBtn
+                onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                isActive={editor.isActive('blockquote')}
+                disabled={disabled}
+                title="Blockquote"
+                accentColor={accentColor}
+              >
+                <IconQuote />
+              </ToolbarBtn>
+            )}
 
-      {opts.textAlign && (
-        <>
-          <ToolbarSep />
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            isActive={editor.isActive({ textAlign: 'left' })}
-            disabled={disabled}
-            title="Align Left"
-            accentColor={accentColor}
-          >
-            <IconAlignLeft />
-          </ToolbarBtn>
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            isActive={editor.isActive({ textAlign: 'center' })}
-            disabled={disabled}
-            title="Align Center"
-            accentColor={accentColor}
-          >
-            <IconAlignCenter />
-          </ToolbarBtn>
-          <ToolbarBtn
-            onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            isActive={editor.isActive({ textAlign: 'right' })}
-            disabled={disabled}
-            title="Align Right"
-            accentColor={accentColor}
-          >
-            <IconAlignRight />
-          </ToolbarBtn>
-        </>
-      )}
+            {opts.textAlign && (
+              <>
+                <ToolbarSep />
+                <ToolbarBtn
+                  onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                  isActive={editor.isActive({ textAlign: 'left' })}
+                  disabled={disabled}
+                  title="Align Left"
+                  accentColor={accentColor}
+                >
+                  <IconAlignLeft />
+                </ToolbarBtn>
+                <ToolbarBtn
+                  onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                  isActive={editor.isActive({ textAlign: 'center' })}
+                  disabled={disabled}
+                  title="Align Center"
+                  accentColor={accentColor}
+                >
+                  <IconAlignCenter />
+                </ToolbarBtn>
+                <ToolbarBtn
+                  onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                  isActive={editor.isActive({ textAlign: 'right' })}
+                  disabled={disabled}
+                  title="Align Right"
+                  accentColor={accentColor}
+                >
+                  <IconAlignRight />
+                </ToolbarBtn>
+              </>
+            )}
 
-      {(opts.link || opts.clearFormat) && <ToolbarSep />}
+            {(opts.link || opts.clearFormat) && <ToolbarSep />}
 
-      {opts.link && (
-        <ToolbarBtn
-          onClick={handleLink}
-          isActive={editor.isActive('link')}
-          disabled={disabled}
-          title="Insert / Edit Link"
+            {opts.link && (
+              <ToolbarBtn
+                onClick={handleLink}
+                isActive={editor.isActive('link')}
+                disabled={disabled}
+                title="Insert / Edit Link"
+                accentColor={accentColor}
+              >
+                <IconLink />
+              </ToolbarBtn>
+            )}
+            {opts.clearFormat && (
+              <ToolbarBtn
+                onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}
+                disabled={disabled}
+                title="Clear Formatting"
+                accentColor={accentColor}
+              >
+                <IconClearFormat />
+              </ToolbarBtn>
+            )}
+          </>
+        ) : (
+          /* Markdown mode toolbar helpers */
+          <Box display="flex" alignItems="center" gap="1">
+            <ToolbarBtn
+              onClick={() => onInsertMarkdown?.('**bold text**')}
+              disabled={disabled}
+              title="Markdown Bold"
+              accentColor={accentColor}
+            >
+              **B**
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => onInsertMarkdown?.('*italic text*')}
+              disabled={disabled}
+              title="Markdown Italic"
+              accentColor={accentColor}
+            >
+              *I*
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => onInsertMarkdown?.('\n# Heading 1\n')}
+              disabled={disabled}
+              title="Markdown H1"
+              accentColor={accentColor}
+            >
+              # H1
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => onInsertMarkdown?.('\n## Heading 2\n')}
+              disabled={disabled}
+              title="Markdown H2"
+              accentColor={accentColor}
+            >
+              ## H2
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => onInsertMarkdown?.('\n- List item\n')}
+              disabled={disabled}
+              title="Markdown Bullet List"
+              accentColor={accentColor}
+            >
+              - List
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => onInsertMarkdown?.('[link text](https://example.com)')}
+              disabled={disabled}
+              title="Markdown Link"
+              accentColor={accentColor}
+            >
+              [Link]
+            </ToolbarBtn>
+            <ToolbarBtn
+              onClick={() => onInsertMarkdown?.('\n> Blockquote\n')}
+              disabled={disabled}
+              title="Markdown Blockquote"
+              accentColor={accentColor}
+            >
+              &gt; Quote
+            </ToolbarBtn>
+          </Box>
+        )}
+      </Box>
+
+      {showModeToggle && (
+        <ModeSwitcher
+          currentMode={mode}
+          onSelectMode={onModeChange}
           accentColor={accentColor}
-        >
-          <IconLink />
-        </ToolbarBtn>
-      )}
-      {opts.clearFormat && (
-        <ToolbarBtn
-          onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}
           disabled={disabled}
-          title="Clear Formatting"
-          accentColor={accentColor}
-        >
-          <IconClearFormat />
-        </ToolbarBtn>
+        />
       )}
     </Box>
   );
@@ -547,23 +867,28 @@ const DEFAULT_TOOLBAR: Required<ToolbarOptions> = {
 /**
  * MedixDeck RichTextInput
  *
- * A fully-featured rich text editor powered by TipTap (ProseMirror).
- * Supports Bold, Italic, Underline, Headings, Lists, Blockquotes, Links,
- * Text Alignment, and more.
+ * A versatile editor supporting both Visual Rich Text (TipTap) and Standard Markdown modes.
  *
  * @example
  * ```tsx
- * // Controlled
- * <RichTextInput value={html} onChange={setHtml} placeholder="Write a bio..." />
+ * // Default Rich Text mode with Mode Toggle
+ * <RichTextInput value={content} onChange={setContent} />
  *
- * // With character count
- * <RichTextInput showCharCount maxLength={500} colorScheme="purple" />
+ * // Direct Markdown output mode for backend integration
+ * <RichTextInput outputFormat="markdown" onChange={setMarkdown} />
  * ```
  */
 export function RichTextInput({
   value,
   defaultValue,
   onChange,
+  onMarkdownChange,
+  onHtmlChange,
+  outputFormat = 'html',
+  defaultMode = 'wysiwyg',
+  mode: controlledMode,
+  onModeChange,
+  showModeToggle = true,
   placeholder = 'Start typing...',
   label,
   helperText,
@@ -579,14 +904,26 @@ export function RichTextInput({
   className,
 }: RichTextInputProps) {
   const [isFocused, setIsFocused] = React.useState(false);
+  const [internalMode, setInternalMode] = React.useState<RichTextInputMode>(defaultMode);
+  const activeMode = controlledMode !== undefined ? controlledMode : internalMode;
+
   const isControlled = value !== undefined;
   const accent = COLORS[colorScheme];
   const opts = { ...DEFAULT_TOOLBAR, ...toolbarOptions };
+
+  // Raw Markdown text state when in Markdown mode
+  const [markdownContent, setMarkdownContent] = React.useState<string>(() => {
+    const initial = isControlled ? value : (defaultValue ?? '');
+    return outputFormat === 'markdown' ? initial : htmlToMarkdown(initial);
+  });
+
+  const markdownTextareaRef = React.useRef<HTMLTextAreaElement>(null);
 
   React.useEffect(() => {
     injectRteCss();
   }, []);
 
+  // TipTap editor instance
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -600,7 +937,15 @@ export function RichTextInput({
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Placeholder.configure({ placeholder }),
     ],
-    content: isControlled ? value : (defaultValue ?? ''),
+    content: isControlled
+      ? outputFormat === 'markdown'
+        ? markdownToHtml(value ?? '')
+        : (value ?? '')
+      : defaultValue
+        ? outputFormat === 'markdown'
+          ? markdownToHtml(defaultValue)
+          : defaultValue
+        : '',
     editable: !disabled,
     editorProps: {
       attributes: {
@@ -609,8 +954,15 @@ export function RichTextInput({
     },
     onUpdate({ editor: e }) {
       const html = e.getHTML();
+      const cleanHtml = html === '<p></p>' ? '' : html;
+      const md = htmlToMarkdown(cleanHtml);
+
+      onHtmlChange?.(cleanHtml);
+      onMarkdownChange?.(md);
+
+      const emitVal = outputFormat === 'markdown' ? md : cleanHtml;
       if (maxLength !== undefined && e.getText().length > maxLength) return;
-      onChange?.(html === '<p></p>' ? '' : html);
+      onChange?.(emitVal);
     },
     onFocus() {
       setIsFocused(true);
@@ -620,17 +972,106 @@ export function RichTextInput({
     },
   });
 
-  // Sync controlled value into editor
-  React.useEffect(() => {
-    if (!editor || !isControlled) return;
-    const current = editor.getHTML();
-    const normalised = value === '' ? '<p></p>' : (value ?? '<p></p>');
-    if (current !== normalised) {
-      editor.commands.setContent(normalised, { emitUpdate: false });
-    }
-  }, [editor, isControlled, value]);
+  // Mode switching handler
+  const handleModeChange = (nextMode: RichTextInputMode) => {
+    if (nextMode === activeMode) return;
 
-  const charCount = editor?.getText().length ?? 0;
+    if (nextMode === 'markdown') {
+      // Switching from WYSIWYG -> Markdown
+      const currentHtml = editor ? editor.getHTML() : '';
+      const md = htmlToMarkdown(currentHtml === '<p></p>' ? '' : currentHtml);
+      setMarkdownContent(md);
+    } else {
+      // Switching from Markdown -> WYSIWYG
+      const html = markdownToHtml(markdownContent);
+      if (editor) {
+        editor.commands.setContent(html, { emitUpdate: false });
+      }
+    }
+
+    if (controlledMode === undefined) {
+      setInternalMode(nextMode);
+    }
+    onModeChange?.(nextMode);
+  };
+
+  // Markdown raw textarea change handler
+  const handleMarkdownTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const md = e.target.value;
+    setMarkdownContent(md);
+
+    const html = markdownToHtml(md);
+    onMarkdownChange?.(md);
+    onHtmlChange?.(html);
+
+    const emitVal = outputFormat === 'markdown' ? md : html;
+    if (maxLength !== undefined && md.length > maxLength) return;
+    onChange?.(emitVal);
+
+    // Sync HTML into tipTap editor seamlessly
+    if (editor) {
+      editor.commands.setContent(html, { emitUpdate: false });
+    }
+  };
+
+  // Insert markdown snippet helper button handler
+  const handleInsertMarkdownSnippet = (snippet: string) => {
+    const textarea = markdownTextareaRef.current;
+    if (!textarea) {
+      setMarkdownContent((prev) => prev + snippet);
+      return;
+    }
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const newText = text.substring(0, start) + snippet + text.substring(end);
+
+    setMarkdownContent(newText);
+    const html = markdownToHtml(newText);
+    onMarkdownChange?.(newText);
+    onHtmlChange?.(html);
+
+    const emitVal = outputFormat === 'markdown' ? newText : html;
+    onChange?.(emitVal);
+
+    if (editor) {
+      editor.commands.setContent(html, { emitUpdate: false });
+    }
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + snippet.length, start + snippet.length);
+    }, 50);
+  };
+
+  // Sync controlled value prop into editor & markdown content
+  React.useEffect(() => {
+    if (!isControlled) return;
+
+    if (outputFormat === 'markdown') {
+      const md = value ?? '';
+      setMarkdownContent(md);
+      if (editor) {
+        const html = markdownToHtml(md);
+        const currentHtml = editor.getHTML();
+        if (currentHtml !== html) {
+          editor.commands.setContent(html, { emitUpdate: false });
+        }
+      }
+    } else {
+      const htmlVal = value === '' ? '<p></p>' : (value ?? '<p></p>');
+      if (editor) {
+        const currentHtml = editor.getHTML();
+        if (currentHtml !== htmlVal) {
+          editor.commands.setContent(htmlVal, { emitUpdate: false });
+        }
+      }
+      setMarkdownContent(htmlToMarkdown(value ?? ''));
+    }
+  }, [editor, isControlled, value, outputFormat]);
+
+  const charCount = activeMode === 'markdown' ? markdownContent.length : (editor?.getText().length ?? 0);
 
   const borderColor = isInvalid ? '#DC2626' : isFocused ? accent.base : 'var(--medix-form-border)';
 
@@ -660,15 +1101,50 @@ export function RichTextInput({
           background: 'var(--medix-form-bg)',
         }}
       >
-        <Toolbar editor={editor} accentColor={accent.base} disabled={disabled} opts={opts} />
+        <Toolbar
+          editor={editor}
+          accentColor={accent.base}
+          disabled={disabled}
+          opts={opts}
+          mode={activeMode}
+          showModeToggle={showModeToggle}
+          onModeChange={handleModeChange}
+          onInsertMarkdown={handleInsertMarkdownSnippet}
+        />
 
-        <Box
-          className="medix-rte-content"
-          style={{ minHeight, maxHeight, overflowY: 'auto' }}
-          _dark={{ color: 'var(--medix-form-text)' }}
-        >
-          <EditorContent editor={editor} />
-        </Box>
+        {activeMode === 'wysiwyg' ? (
+          <Box
+            className="medix-rte-content"
+            style={{ minHeight, maxHeight, overflowY: 'auto' }}
+            _dark={{ color: 'var(--medix-form-text)' }}
+          >
+            <EditorContent editor={editor} />
+          </Box>
+        ) : (
+          <textarea
+            ref={markdownTextareaRef}
+            value={markdownContent}
+            onChange={handleMarkdownTextareaChange}
+            placeholder={placeholder}
+            disabled={disabled}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            style={{
+              width: '100%',
+              minHeight,
+              maxHeight,
+              padding: '12px 16px',
+              fontFamily: 'var(--font-mono, monospace)',
+              fontSize: '13px',
+              lineHeight: '1.6',
+              background: 'var(--medix-form-bg)',
+              color: 'var(--medix-form-text)',
+              border: 'none',
+              outline: 'none',
+              resize: 'vertical',
+            }}
+          />
+        )}
 
         {(showCharCount || maxLength) && (
           <Box

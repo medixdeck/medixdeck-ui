@@ -1630,6 +1630,14 @@ export default function App() {
                 }}
               />
               <RichTextInput
+                label="Markdown Output Mode (Backend Integration)"
+                outputFormat="markdown"
+                colorScheme="blue"
+                placeholder="Compose notes in Rich Text or Markdown mode..."
+                helperText="Use the top-right toggle pill [Rich Text | Markdown] to switch modes. Output is emitted as Markdown."
+                showCharCount
+              />
+              <RichTextInput
                 label="Appointment Notes (Invalid)"
                 isInvalid
                 errorMessage="This field is required."
