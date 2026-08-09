@@ -31,7 +31,7 @@ export interface UseThemeModeResult {
 }
 
 function subscribeDomTheme(callback: () => void) {
-  if (typeof document === 'undefined') return () => { };
+  if (typeof document === 'undefined') return () => {};
   const observer = new MutationObserver(callback);
   observer.observe(document.documentElement, {
     attributes: true,
@@ -49,8 +49,7 @@ function subscribeDomTheme(callback: () => void) {
 function getDomIsDark(): boolean {
   if (typeof document === 'undefined') return false;
   return (
-    document.documentElement.classList.contains('dark') ||
-    document.body.classList.contains('dark')
+    document.documentElement.classList.contains('dark') || document.body.classList.contains('dark')
   );
 }
 
@@ -61,11 +60,7 @@ export function useThemeMode(): UseThemeModeResult {
   const { resolvedTheme, setTheme, theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  const isDomDark = useSyncExternalStore(
-    subscribeDomTheme,
-    getDomIsDark,
-    () => false,
-  );
+  const isDomDark = useSyncExternalStore(subscribeDomTheme, getDomIsDark, () => false);
 
   useEffect(() => {
     setMounted(true);

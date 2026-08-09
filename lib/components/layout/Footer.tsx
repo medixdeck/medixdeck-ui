@@ -30,14 +30,14 @@ export interface FooterSection {
 
 export interface SocialLink {
   platform:
-  | 'facebook'
-  | 'instagram'
-  | 'linkedin'
-  | 'twitter'
-  | 'youtube'
-  | 'threads'
-  | 'whatsapp'
-  | 'tiktok';
+    | 'facebook'
+    | 'instagram'
+    | 'linkedin'
+    | 'twitter'
+    | 'youtube'
+    | 'threads'
+    | 'whatsapp'
+    | 'tiktok';
   href: string;
 }
 
