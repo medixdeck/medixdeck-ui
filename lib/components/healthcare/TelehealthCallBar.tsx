@@ -2,6 +2,14 @@
 
 import React from 'react';
 import { Box, type BoxProps } from '@chakra-ui/react';
+import {
+  LuMic,
+  LuMicOff,
+  LuVideo,
+  LuVideoOff,
+  LuScreenShare,
+  LuPhoneOff,
+} from 'react-icons/lu';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -30,56 +38,32 @@ export interface TelehealthCallBarProps extends Omit<BoxProps, 'onChange'> {
   isSharingScreen?: boolean;
   /** Position of the bar */
   position?: 'bottom' | 'top';
+  /**
+   * Color scheme variant:
+   * - `'adaptive'` (default): Seamlessly adapts to MedixDeck light and dark mode tokens.
+   * - `'dark'`: Enforces classic dark glassmorphic styling for floating call overlays over video feeds.
+   * @default "adaptive"
+   */
+  variant?: 'adaptive' | 'dark';
 }
 
-// ─── SVG Icons ────────────────────────────────────────────────────────────────
+// ─── Icons ────────────────────────────────────────────────────────────────────
 
 const MicIcon = ({ muted }: { muted: boolean }) =>
-  muted ? (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <line x1="1" y1="1" x2="23" y2="23" />
-      <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
-      <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23" />
-      <line x1="12" y1="19" x2="12" y2="23" />
-      <line x1="8" y1="23" x2="16" y2="23" />
-    </svg>
-  ) : (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-      <line x1="12" y1="19" x2="12" y2="23" />
-      <line x1="8" y1="23" x2="16" y2="23" />
-    </svg>
-  );
+  muted ? <LuMicOff size={18} aria-hidden="true" /> : <LuMic size={18} aria-hidden="true" />;
 
 const VideoIcon = ({ off }: { off: boolean }) =>
-  off ? (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10" />
-      <line x1="1" y1="1" x2="23" y2="23" />
-    </svg>
-  ) : (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <polygon points="23 7 16 12 23 17 23 7" />
-      <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-    </svg>
-  );
+  off ? <LuVideoOff size={18} aria-hidden="true" /> : <LuVideo size={18} aria-hidden="true" />;
 
 const ScreenShareIcon = ({ active }: { active: boolean }) => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? '#10B981' : 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M13 3H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-3" />
-    <polyline points="8 21 12 17 16 21" />
-    <line x1="12" y1="17" x2="12" y2="12" />
-    <polyline points="9 10 12 7 15 10" />
-  </svg>
+  <LuScreenShare
+    size={18}
+    color={active ? 'var(--chakra-colors-status-success, #16A34A)' : 'currentColor'}
+    aria-hidden="true"
+  />
 );
 
-const PhoneOffIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07C9.44 17.25 8.76 16.57 8.1 15.9M1 1l22 22" />
-    <path d="M16.49 16.49A16.42 16.42 0 0 1 3.5 7.51M3.5 7.51A12.84 12.84 0 0 1 2 4.69 2 2 0 0 1 3.72 2.72 12.84 12.84 0 0 1 6.53 3.43a2 2 0 0 1 .45 2.11L5.71 6.81" />
-  </svg>
-);
+const PhoneOffIcon = () => <LuPhoneOff size={18} aria-hidden="true" />;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -88,10 +72,12 @@ const PhoneOffIcon = () => (
  *
  * Floating control bar for active telehealth video consultations.
  * Displays participant info, call duration, and media control actions.
+ * Integrates MedixDeck semantic tokens for seamless light and dark mode support.
  *
  * @example
  * ```tsx
  * <TelehealthCallBar
+ *   variant="adaptive"
  *   participantName="Dr. Amaka Okonkwo"
  *   participantRole="General Practitioner"
  *   duration="04:32"
@@ -116,10 +102,13 @@ export function TelehealthCallBar({
   onEndCall,
   onShareScreen,
   position = 'bottom',
+  variant = 'adaptive',
   ...props
 }: TelehealthCallBarProps) {
   const [localMuted, setLocalMuted] = React.useState(isMuted);
   const [localCameraOff, setLocalCameraOff] = React.useState(isCameraOff);
+
+  const isDarkVariant = variant === 'dark';
 
   const handleToggleMute = () => {
     setLocalMuted((prev) => !prev);
@@ -143,47 +132,56 @@ export function TelehealthCallBar({
     active?: boolean;
     isEndCall?: boolean;
     children: React.ReactNode;
-  }) => (
-    <button
-      onClick={onClick}
-      aria-label={ariaLabel}
-      aria-pressed={active}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 44,
-        height: 44,
-        borderRadius: '50%',
-        border: 'none',
-        cursor: 'pointer',
-        transition: 'background 0.15s, transform 0.1s',
-        background: isEndCall
-          ? '#EF4444'
-          : active
-            ? 'rgba(255,255,255,0.15)'
-            : 'rgba(255,255,255,0.1)',
-        color: isEndCall ? 'white' : active ? 'rgba(255,255,255,0.5)' : 'white',
-        WebkitTapHighlightColor: 'transparent',
-      }}
-      onMouseEnter={(e) => {
-        const el = e.currentTarget as HTMLButtonElement;
-        el.style.background = isEndCall ? '#DC2626' : 'rgba(255,255,255,0.2)';
-        el.style.transform = 'scale(1.08)';
-      }}
-      onMouseLeave={(e) => {
-        const el = e.currentTarget as HTMLButtonElement;
-        el.style.background = isEndCall
-          ? '#EF4444'
-          : active
-            ? 'rgba(255,255,255,0.15)'
-            : 'rgba(255,255,255,0.1)';
-        el.style.transform = 'scale(1)';
-      }}
-    >
-      {children}
-    </button>
-  );
+  }) => {
+    // Dynamic background and text based on variant and active/end call states
+    let normalBg = isDarkVariant ? 'rgba(255,255,255,0.1)' : 'var(--chakra-colors-bg-subtle, #F0F4F8)';
+    let normalColor = isDarkVariant ? 'white' : 'var(--chakra-colors-text-heading, #111926)';
+    let hoverBg = isDarkVariant ? 'rgba(255,255,255,0.2)' : 'var(--chakra-colors-border, #E2E8F0)';
+
+    if (isEndCall) {
+      normalBg = 'var(--chakra-colors-status-error, #DC2626)';
+      normalColor = 'white';
+      hoverBg = 'color-mix(in srgb, var(--chakra-colors-status-error, #DC2626) 85%, black)';
+    } else if (active) {
+      normalBg = 'var(--chakra-colors-status-error-tint, rgba(220,38,38,0.15))';
+      normalColor = 'var(--chakra-colors-status-error, #DC2626)';
+      hoverBg = 'var(--chakra-colors-status-error-tint, rgba(220,38,38,0.25))';
+    }
+
+    return (
+      <button
+        onClick={onClick}
+        aria-label={ariaLabel}
+        aria-pressed={active}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 44,
+          height: 44,
+          borderRadius: '50%',
+          border: active ? '1px solid var(--chakra-colors-status-error)' : '1px solid transparent',
+          cursor: 'pointer',
+          transition: 'all 0.15s ease',
+          background: normalBg,
+          color: normalColor,
+          WebkitTapHighlightColor: 'transparent',
+        }}
+        onMouseEnter={(e) => {
+          const el = e.currentTarget as HTMLButtonElement;
+          el.style.background = hoverBg;
+          el.style.transform = 'scale(1.06)';
+        }}
+        onMouseLeave={(e) => {
+          const el = e.currentTarget as HTMLButtonElement;
+          el.style.background = normalBg;
+          el.style.transform = 'scale(1)';
+        }}
+      >
+        {children}
+      </button>
+    );
+  };
 
   return (
     <Box
@@ -198,16 +196,19 @@ export function TelehealthCallBar({
       px={{ base: '4', md: '8' }}
       flexWrap="wrap"
       gap="4"
+      bg={isDarkVariant ? undefined : 'bg.surface'}
+      borderColor="border"
       style={{
         minHeight: 72,
         paddingTop: 12,
         paddingBottom:
           position === 'bottom' ? 'calc(12px + env(safe-area-inset-bottom, 0px))' : 12,
-        background: 'linear-gradient(135deg, #0A1220 0%, #0F1C2E 100%)',
-        borderTop: position === 'bottom' ? '1px solid rgba(255,255,255,0.08)' : 'none',
-        borderBottom: position === 'top' ? '1px solid rgba(255,255,255,0.08)' : 'none',
+        background: isDarkVariant ? 'linear-gradient(135deg, #0A1220 0%, #0F1C2E 100%)' : undefined,
+        borderTop: position === 'bottom' ? '1px solid var(--chakra-colors-border)' : 'none',
+        borderBottom: position === 'top' ? '1px solid var(--chakra-colors-border)' : 'none',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
+        transition: 'background 0.2s ease, border-color 0.2s ease',
       }}
       {...props}
     >
@@ -222,7 +223,7 @@ export function TelehealthCallBar({
               height: 40,
               borderRadius: '50%',
               objectFit: 'cover',
-              border: '2px solid rgba(255,255,255,0.2)',
+              border: `2px solid ${isDarkVariant ? 'rgba(255,255,255,0.2)' : 'var(--chakra-colors-border)'}`,
             }}
           />
         ) : (
@@ -232,7 +233,7 @@ export function TelehealthCallBar({
               width: 40,
               height: 40,
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #0685FF, #7700CC)',
+              background: 'linear-gradient(135deg, var(--chakra-colors-blue-500, #0685FF), var(--chakra-colors-purple-500, #7700CC))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -240,7 +241,7 @@ export function TelehealthCallBar({
               fontWeight: 700,
               color: 'white',
               fontFamily: 'var(--font-heading)',
-              border: '2px solid rgba(255,255,255,0.2)',
+              border: `2px solid ${isDarkVariant ? 'rgba(255,255,255,0.2)' : 'var(--chakra-colors-border)'}`,
             }}
           >
             {participantName.charAt(0)}
@@ -251,7 +252,7 @@ export function TelehealthCallBar({
             fontSize="sm"
             fontWeight="semibold"
             fontFamily="var(--font-heading)"
-            style={{ color: 'white' }}
+            color={isDarkVariant ? 'white' : 'text.heading'}
           >
             {participantName}
           </Box>
@@ -259,7 +260,7 @@ export function TelehealthCallBar({
             <Box
               fontSize="xs"
               fontFamily="var(--font-body)"
-              style={{ color: 'rgba(255,255,255,0.6)' }}
+              color={isDarkVariant ? 'rgba(255,255,255,0.6)' : 'text.muted'}
             >
               {participantRole}
             </Box>
@@ -278,8 +279,8 @@ export function TelehealthCallBar({
               borderRadius: 4,
               fontSize: 10,
               fontWeight: 700,
-              background: 'rgba(239,68,68,0.2)',
-              color: '#F87171',
+              background: 'var(--chakra-colors-status-error-tint, rgba(220,38,38,0.15))',
+              color: 'var(--chakra-colors-status-error, #DC2626)',
               fontFamily: 'var(--font-body)',
               letterSpacing: '0.05em',
             }}
@@ -290,7 +291,7 @@ export function TelehealthCallBar({
                 width: 6,
                 height: 6,
                 borderRadius: '50%',
-                background: '#EF4444',
+                background: 'var(--chakra-colors-status-error, #DC2626)',
                 display: 'inline-block',
                 animation: 'medixPulse 1.5s ease-in-out infinite',
               }}
@@ -302,7 +303,8 @@ export function TelehealthCallBar({
               fontSize="sm"
               fontFamily="var(--font-mono, monospace)"
               fontWeight="600"
-              style={{ color: 'rgba(255,255,255,0.8)', letterSpacing: '0.05em' }}
+              color={isDarkVariant ? 'rgba(255,255,255,0.8)' : 'text.heading'}
+              style={{ letterSpacing: '0.05em' }}
             >
               {duration}
             </Box>

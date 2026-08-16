@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Box, Link, Text } from '@chakra-ui/react';
+import { Box, Flex, Link, Text } from '@chakra-ui/react';
 import { useThemeMode } from '../lib';
 import {
   LuHouse,
@@ -2709,14 +2709,14 @@ export default function App() {
         title="Book an Appointment"
         description="Fill in your details to schedule a consultation with a licensed doctor."
         footer={
-          <>
+          <Flex gap={"12px"} marginY="1rem">
             <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancel
             </Button>
             <Button variant="solid" colorScheme="blue" onClick={() => setModalOpen(false)}>
               Confirm Booking
             </Button>
-          </>
+          </Flex>
         }
       >
         <Box display="flex" flexDirection="column" gap="4">

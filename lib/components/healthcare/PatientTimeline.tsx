@@ -2,6 +2,16 @@
 
 import React from 'react';
 import { Box, type BoxProps } from '@chakra-ui/react';
+import {
+  LuPhoneCall,
+  LuFlaskConical,
+  LuPill,
+  LuActivity,
+  LuFileText,
+  LuHospital,
+  LuLogOut,
+  LuCircle,
+} from 'react-icons/lu';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -60,80 +70,42 @@ const eventConfig: Record<
   consultation: {
     bg: 'color-mix(in srgb, #0685FF 12%, transparent)',
     color: '#0685FF',
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07C9.44 17.25 8.76 16.57 8.1 15.9a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 6.91 5h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L11.09 12.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 25 19.92z" />
-      </svg>
-    ),
+    icon: <LuPhoneCall size={14} aria-hidden="true" />,
   },
   lab: {
     bg: 'color-mix(in srgb, #7700CC 12%, transparent)',
     color: '#7700CC',
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11l-4 4m4-4h10m-10 0 4 4m6-4-4 4" />
-      </svg>
-    ),
+    icon: <LuFlaskConical size={14} aria-hidden="true" />,
   },
   prescription: {
     bg: 'color-mix(in srgb, #10B981 12%, transparent)',
     color: '#10B981',
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
-        <path d="m8.5 8.5 7 7" />
-      </svg>
-    ),
+    icon: <LuPill size={14} aria-hidden="true" />,
   },
   vitals: {
     bg: 'color-mix(in srgb, #F59E0B 12%, transparent)',
     color: '#D97706',
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-      </svg>
-    ),
+    icon: <LuActivity size={14} aria-hidden="true" />,
   },
   note: {
     bg: 'color-mix(in srgb, #64748B 12%, transparent)',
     color: '#64748B',
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-        <polyline points="10 9 9 9 8 9" />
-      </svg>
-    ),
+    icon: <LuFileText size={14} aria-hidden="true" />,
   },
   admission: {
     bg: 'color-mix(in srgb, #EF4444 12%, transparent)',
     color: '#EF4444',
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </svg>
-    ),
+    icon: <LuHospital size={14} aria-hidden="true" />,
   },
   discharge: {
     bg: 'color-mix(in srgb, #10B981 12%, transparent)',
     color: '#10B981',
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <polyline points="9 18 15 12 9 6" />
-      </svg>
-    ),
+    icon: <LuLogOut size={14} aria-hidden="true" />,
   },
   custom: {
     bg: 'color-mix(in srgb, #0685FF 10%, transparent)',
     color: '#0685FF',
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="10" />
-      </svg>
-    ),
+    icon: <LuCircle size={14} aria-hidden="true" />,
   },
 };
 
