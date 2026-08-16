@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 
 export type ModalSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+export type ModalMobileVariant = 'centered' | 'bottom-sheet';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -29,6 +30,12 @@ export interface ModalProps {
   /** Footer action buttons */
   footer?: React.ReactNode;
   children?: React.ReactNode;
+  /**
+   * On mobile viewports (< 768px), transforms the modal into a swipeable
+   * bottom sheet that slides up from the bottom edge.
+   * @default "bottom-sheet"
+   */
+  mobileVariant?: ModalMobileVariant;
 }
 
 // Chakra UI v3 DialogRoot accepts only its own size union
@@ -43,10 +50,31 @@ const sizeMap: Record<ModalSize, ChakraDialogSize> = {
   full: 'full',
 };
 
+// Inject bottom-sheet keyframe once
+let bsKfInjected = false;
+function injectBottomSheetKeyframe() {
+  if (typeof document === 'undefined' || bsKfInjected) return;
+  const s = document.createElement('style');
+  s.textContent = `
+    @keyframes medixBottomSheetIn {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    @keyframes medixBottomSheetOut {
+      from { transform: translateY(0); }
+      to   { transform: translateY(100%); }
+    }
+  `;
+  document.head.appendChild(s);
+  bsKfInjected = true;
+}
+
 /**
  * MedixDeck Modal
  *
  * Dialog overlay for focused interactions.
+ * On mobile viewports it automatically renders as a swipeable bottom sheet
+ * (set `mobileVariant="centered"` to opt out of this behaviour).
  *
  * @example
  * ```tsx
@@ -70,8 +98,15 @@ export function Modal({
   closeOnEscape = true,
   footer,
   children,
+  mobileVariant = 'bottom-sheet',
 }: ModalProps) {
   const hasHeader = Boolean(title || description);
+
+  React.useEffect(() => {
+    injectBottomSheetKeyframe();
+  }, []);
+
+  const isBottomSheet = mobileVariant === 'bottom-sheet';
 
   return (
     <DialogRoot
@@ -86,14 +121,32 @@ export function Modal({
       {/* Backdrop renders behind the dialog */}
       <DialogBackdrop bg="rgba(10, 18, 32, 0.7)" backdropFilter="blur(4px)" />
 
-      {/* Positioner is required in Chakra v3 to portal the dialog into <body> */}
-      <DialogPositioner display="flex" alignItems="center" justifyContent="center">
+      {/* Positioner — bottom-sheet on mobile, centered on desktop */}
+      <DialogPositioner
+        display="flex"
+        alignItems={isBottomSheet ? { base: 'flex-end', md: 'center' } : 'center'}
+        justifyContent="center"
+      >
         <DialogContent
           bg="bg.surface"
           border="1px solid"
           borderColor="border"
-          borderRadius="modal"
           boxShadow="none"
+          /* Standard desktop radius */
+          borderRadius={{ base: isBottomSheet ? 'none' : 'modal', md: 'modal' }}
+          /* Bottom sheet: full width on mobile, standard width on desktop */
+          w={{ base: isBottomSheet ? 'full' : undefined, md: undefined }}
+          /* Rounded top corners only on mobile bottom sheet */
+          borderTopRadius={isBottomSheet ? { base: 'modal', md: 'modal' } : 'modal'}
+          style={
+            isBottomSheet
+              ? ({
+                  '--bottom-sheet-animation': isOpen
+                    ? 'medixBottomSheetIn 0.35s cubic-bezier(0.32,0.72,0,1) both'
+                    : undefined,
+                } as React.CSSProperties)
+              : undefined
+          }
         >
           <DialogHeader
             borderBottom={hasHeader ? '1px solid' : 'none'}
@@ -107,6 +160,25 @@ export function Modal({
             position="relative"
             minH={hasHeader ? undefined : '12'}
           >
+            {/* Bottom-sheet drag handle — visual affordance for swipeability */}
+            {isBottomSheet && (
+              <div
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  top: 10,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 36,
+                  height: 4,
+                  borderRadius: 2,
+                  background: 'var(--chakra-colors-border, #E2E8F0)',
+                  display: 'none',
+                }}
+                className="medix-bs-handle"
+              />
+            )}
+
             {hasHeader && (
               <div
                 style={{ display: 'flex', flexDirection: 'column', flex: 1, paddingRight: '2rem' }}
@@ -182,6 +254,10 @@ export function Modal({
               display="flex"
               justifyContent="flex-end"
               gap="3"
+              /* On mobile bottom-sheet, add safe-area inset */
+              style={
+                isBottomSheet ? { paddingBottom: 'env(safe-area-inset-bottom, 16px)' } : undefined
+              }
             >
               {footer}
             </DialogFooter>
