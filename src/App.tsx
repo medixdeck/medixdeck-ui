@@ -288,11 +288,6 @@ export default function App() {
   if (showDashboard) {
     return (
       <DashboardLayout
-        logo={
-          <Link className="cursor">
-            <Logo variant={'purple'} />
-          </Link>
-        }
         colorScheme="purple"
         user={{ name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' }}
         greetingSubtext={`${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · 8 consultations scheduled today`}
