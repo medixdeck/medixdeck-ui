@@ -288,6 +288,11 @@ export default function App() {
   if (showDashboard) {
     return (
       <DashboardLayout
+        logo={
+          <Link className="cursor">
+            <Logo variant={'purple'} />
+          </Link>
+        }
         colorScheme="purple"
         user={{ name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' }}
         greetingSubtext={`${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · 8 consultations scheduled today`}
@@ -1347,7 +1352,7 @@ export default function App() {
               <Tag colorScheme="purple" variant="solid">
                 Psychiatry
               </Tag>
-              <Tag colorScheme="green" onClose={() => {}}>
+              <Tag colorScheme="green" onClose={() => { }}>
                 Pediatrics ×
               </Tag>
               <Tag colorScheme="gray" variant="outline">
