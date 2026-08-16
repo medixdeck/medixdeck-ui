@@ -110,7 +110,7 @@ export function DoctorCard({
               </Box>
               {isVerified && (
                 <Tooltip
-                  label="This practitioner has been verified by MedixDeck"
+                  label="This practitioner's identity has been verified by MedixDeck"
                   placement="top"
                 >
                   <svg
@@ -456,7 +456,7 @@ export function DoctorCard({
               </Box>
               {isVerified && (
                 <Tooltip
-                  label="This practitioner has been verified by MedixDeck"
+                  label="This practitioner's identity has been verified by MedixDeck"
                   placement="top"
                 >
                   <svg
