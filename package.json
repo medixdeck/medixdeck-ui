@@ -41,7 +41,7 @@
     "format:check": "prettier --check .",
     "pack:check": "npm pack --dry-run",
     "prepare": "husky",
-    "release": "npm version patch && npm publish",
+    "release": "npm version patch && npm publish --public",
     "prepublishOnly": "npm run build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
