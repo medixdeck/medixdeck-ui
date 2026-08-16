@@ -109,25 +109,43 @@ export function OTPInput({
       return;
     }
 
-    if (raw.length > 1) {
-      const pasted = raw.split('').slice(0, length);
-      pasted.forEach((d, i) => {
-        newDigits[i] = d;
-      });
-      const joined = newDigits.join('');
-      if (!isControlled) setInternalValue(joined);
-      onChange?.(joined);
-      const focusIdx = Math.min(pasted.length, length - 1);
-      inputRefs.current[focusIdx]?.focus();
-      if (joined.replace(/\s/g, '').length === length) onComplete?.(joined);
-      return;
-    }
-
-    newDigits[idx] = raw;
+    // Single character typed — place it and advance focus
+    newDigits[idx] = raw[0];
     const joined = newDigits.join('');
     if (!isControlled) setInternalValue(joined);
     onChange?.(joined);
     if (idx < length - 1) inputRefs.current[idx + 1]?.focus();
+    if (joined.replace(/\s/g, '').length === length) onComplete?.(joined);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, idx: number) => {
+    // Prevent the browser from inserting the text (which would be truncated
+    // to 1 char by maxLength before onChange ever fires).
+    e.preventDefault();
+
+    const raw = e.clipboardData.getData('text').replace(/\D/g, '');
+    if (!raw) return;
+
+    const newDigits = [...digits];
+    while (newDigits.length < length) newDigits.push('');
+
+    // Fill digits starting from the box that received the paste
+    const chars = raw.split('').slice(0, length - idx);
+    chars.forEach((d, i) => {
+      newDigits[idx + i] = d;
+    });
+
+    const joined = newDigits.join('');
+    if (!isControlled) setInternalValue(joined);
+    onChange?.(joined);
+
+    // Move focus to the last box if complete, otherwise the next empty slot
+    const nextFocusIdx =
+      joined.replace(/\s/g, '').length === length
+        ? length - 1
+        : Math.min(idx + chars.length, length - 1);
+    inputRefs.current[nextFocusIdx]?.focus();
+
     if (joined.replace(/\s/g, '').length === length) onComplete?.(joined);
   };
 
@@ -159,6 +177,7 @@ export function OTPInput({
             value={digits[idx] ?? ''}
             onChange={(e) => handleChange(e, idx)}
             onKeyDown={(e) => handleKeyDown(e, idx)}
+            onPaste={(e) => handlePaste(e, idx)}
             onFocus={(e) => {
               e.target.select();
               setFocusedIdx(idx);
