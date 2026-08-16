@@ -1356,7 +1356,7 @@ export default function App() {
               <Tag colorScheme="purple" variant="solid">
                 Psychiatry
               </Tag>
-              <Tag colorScheme="green" onClose={() => { }}>
+              <Tag colorScheme="green" onClose={() => {}}>
                 Pediatrics ×
               </Tag>
               <Tag colorScheme="gray" variant="outline">
@@ -2511,7 +2511,8 @@ export default function App() {
                     id: '1',
                     type: 'consultation',
                     title: 'Video Consultation',
-                    description: 'Follow-up consultation for blood pressure management and prescription renewal.',
+                    description:
+                      'Follow-up consultation for blood pressure management and prescription renewal.',
                     date: 'Today · 10:30 AM',
                     provider: 'Dr. Amaka Okonkwo',
                     badgeLabel: 'Completed',
@@ -2558,7 +2559,8 @@ export default function App() {
           >
             <Box maxW="640px" w="100%" display="flex" flexDirection="column" gap="4">
               <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
-                Floating overlay control bar for active video consultation calls. Includes live status, mute, camera toggle, screen sharing, and end call triggers.
+                Floating overlay control bar for active video consultation calls. Includes live
+                status, mute, camera toggle, screen sharing, and end call triggers.
               </Text>
               <Box
                 borderRadius="card"
@@ -2709,7 +2711,7 @@ export default function App() {
         title="Book an Appointment"
         description="Fill in your details to schedule a consultation with a licensed doctor."
         footer={
-          <Flex gap={"12px"} marginY="1rem">
+          <Flex gap={'12px'} marginY="1rem">
             <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancel
             </Button>

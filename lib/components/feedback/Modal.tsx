@@ -255,7 +255,9 @@ export function Modal({
               justifyContent="flex-end"
               gap="3"
               /* On mobile bottom-sheet, add safe-area inset */
-              style={isBottomSheet ? { paddingBottom: 'env(safe-area-inset-bottom, 16px)' } : undefined}
+              style={
+                isBottomSheet ? { paddingBottom: 'env(safe-area-inset-bottom, 16px)' } : undefined
+              }
             >
               {footer}
             </DialogFooter>

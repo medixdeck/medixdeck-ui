@@ -63,53 +63,54 @@ export interface PatientTimelineProps extends Omit<BoxProps, 'onChange'> {
 
 // ─── Event type config ────────────────────────────────────────────────────────
 
-const eventConfig: Record<
-  TimelineEventType,
-  { bg: string; color: string; icon: React.ReactNode }
-> = {
-  consultation: {
-    bg: 'color-mix(in srgb, #0685FF 12%, transparent)',
-    color: '#0685FF',
-    icon: <LuPhoneCall size={14} aria-hidden="true" />,
-  },
-  lab: {
-    bg: 'color-mix(in srgb, #7700CC 12%, transparent)',
-    color: '#7700CC',
-    icon: <LuFlaskConical size={14} aria-hidden="true" />,
-  },
-  prescription: {
-    bg: 'color-mix(in srgb, #10B981 12%, transparent)',
-    color: '#10B981',
-    icon: <LuPill size={14} aria-hidden="true" />,
-  },
-  vitals: {
-    bg: 'color-mix(in srgb, #F59E0B 12%, transparent)',
-    color: '#D97706',
-    icon: <LuActivity size={14} aria-hidden="true" />,
-  },
-  note: {
-    bg: 'color-mix(in srgb, #64748B 12%, transparent)',
-    color: '#64748B',
-    icon: <LuFileText size={14} aria-hidden="true" />,
-  },
-  admission: {
-    bg: 'color-mix(in srgb, #EF4444 12%, transparent)',
-    color: '#EF4444',
-    icon: <LuHospital size={14} aria-hidden="true" />,
-  },
-  discharge: {
-    bg: 'color-mix(in srgb, #10B981 12%, transparent)',
-    color: '#10B981',
-    icon: <LuLogOut size={14} aria-hidden="true" />,
-  },
-  custom: {
-    bg: 'color-mix(in srgb, #0685FF 10%, transparent)',
-    color: '#0685FF',
-    icon: <LuCircle size={14} aria-hidden="true" />,
-  },
-};
+const eventConfig: Record<TimelineEventType, { bg: string; color: string; icon: React.ReactNode }> =
+  {
+    consultation: {
+      bg: 'color-mix(in srgb, #0685FF 12%, transparent)',
+      color: '#0685FF',
+      icon: <LuPhoneCall size={14} aria-hidden="true" />,
+    },
+    lab: {
+      bg: 'color-mix(in srgb, #7700CC 12%, transparent)',
+      color: '#7700CC',
+      icon: <LuFlaskConical size={14} aria-hidden="true" />,
+    },
+    prescription: {
+      bg: 'color-mix(in srgb, #10B981 12%, transparent)',
+      color: '#10B981',
+      icon: <LuPill size={14} aria-hidden="true" />,
+    },
+    vitals: {
+      bg: 'color-mix(in srgb, #F59E0B 12%, transparent)',
+      color: '#D97706',
+      icon: <LuActivity size={14} aria-hidden="true" />,
+    },
+    note: {
+      bg: 'color-mix(in srgb, #64748B 12%, transparent)',
+      color: '#64748B',
+      icon: <LuFileText size={14} aria-hidden="true" />,
+    },
+    admission: {
+      bg: 'color-mix(in srgb, #EF4444 12%, transparent)',
+      color: '#EF4444',
+      icon: <LuHospital size={14} aria-hidden="true" />,
+    },
+    discharge: {
+      bg: 'color-mix(in srgb, #10B981 12%, transparent)',
+      color: '#10B981',
+      icon: <LuLogOut size={14} aria-hidden="true" />,
+    },
+    custom: {
+      bg: 'color-mix(in srgb, #0685FF 10%, transparent)',
+      color: '#0685FF',
+      icon: <LuCircle size={14} aria-hidden="true" />,
+    },
+  };
 
-const badgeStatusColors: Record<NonNullable<TimelineEvent['badgeStatus']>, { bg: string; color: string }> = {
+const badgeStatusColors: Record<
+  NonNullable<TimelineEvent['badgeStatus']>,
+  { bg: string; color: string }
+> = {
   success: { bg: 'color-mix(in srgb, #10B981 12%, transparent)', color: '#10B981' },
   warning: { bg: 'color-mix(in srgb, #F59E0B 12%, transparent)', color: '#D97706' },
   error: { bg: 'color-mix(in srgb, #EF4444 12%, transparent)', color: '#EF4444' },
@@ -124,13 +125,32 @@ function SkeletonTimelineRow() {
     <Box display="flex" gap="4" alignItems="flex-start">
       {/* Icon circle skeleton */}
       <Box flexShrink={0} display="flex" flexDirection="column" alignItems="center">
-        <Box w="8" h="8" borderRadius="full" bg="bg.subtle" style={{ animation: 'medix-shimmer 1.5s infinite' }} />
+        <Box
+          w="8"
+          h="8"
+          borderRadius="full"
+          bg="bg.subtle"
+          style={{ animation: 'medix-shimmer 1.5s infinite' }}
+        />
         <Box w="px" flex="1" minH="8" bg="border" mt="2" />
       </Box>
       {/* Content skeleton */}
       <Box flex="1" pb="6">
-        <Box h="4" bg="bg.subtle" borderRadius="full" w="40%" mb="2" style={{ animation: 'medix-shimmer 1.5s infinite' }} />
-        <Box h="3" bg="bg.subtle" borderRadius="full" w="65%" style={{ animation: 'medix-shimmer 1.5s infinite' }} />
+        <Box
+          h="4"
+          bg="bg.subtle"
+          borderRadius="full"
+          w="40%"
+          mb="2"
+          style={{ animation: 'medix-shimmer 1.5s infinite' }}
+        />
+        <Box
+          h="3"
+          bg="bg.subtle"
+          borderRadius="full"
+          w="65%"
+          style={{ animation: 'medix-shimmer 1.5s infinite' }}
+        />
       </Box>
     </Box>
   );
@@ -179,9 +199,10 @@ export function PatientTimeline({
   colorScheme = 'blue',
   ...props
 }: PatientTimelineProps) {
-  const connectorColor = colorScheme === 'purple'
-    ? 'var(--chakra-colors-purple-200, rgba(119,0,204,0.2))'
-    : 'var(--chakra-colors-blue-200, rgba(6,133,255,0.2))';
+  const connectorColor =
+    colorScheme === 'purple'
+      ? 'var(--chakra-colors-purple-200, rgba(119,0,204,0.2))'
+      : 'var(--chakra-colors-blue-200, rgba(6,133,255,0.2))';
 
   if (isLoading) {
     return (
@@ -229,7 +250,13 @@ export function PatientTimeline({
                 onClick={event.onClick}
                 role={event.onClick ? 'button' : undefined}
                 tabIndex={event.onClick ? 0 : undefined}
-                onKeyDown={event.onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') event.onClick!(); } : undefined}
+                onKeyDown={
+                  event.onClick
+                    ? (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') event.onClick!();
+                      }
+                    : undefined
+                }
                 _hover={event.onClick ? { transform: 'scale(1.1)' } : undefined}
               >
                 {event.icon ?? cfg.icon}
@@ -237,13 +264,7 @@ export function PatientTimeline({
 
               {/* Vertical connector */}
               {!isLast && (
-                <Box
-                  w="1px"
-                  flex="1"
-                  minH="8"
-                  mt="1"
-                  style={{ background: connectorColor }}
-                />
+                <Box w="1px" flex="1" minH="8" mt="1" style={{ background: connectorColor }} />
               )}
             </Box>
 
@@ -287,12 +308,7 @@ export function PatientTimeline({
 
               {/* Description */}
               {!compact && event.description && (
-                <Box
-                  fontSize="sm"
-                  color="text.muted"
-                  fontFamily="var(--font-body)"
-                  mt="0.5"
-                >
+                <Box fontSize="sm" color="text.muted" fontFamily="var(--font-body)" mt="0.5">
                   {event.description}
                 </Box>
               )}
@@ -304,11 +320,7 @@ export function PatientTimeline({
                 </Box>
                 {event.provider && (
                   <>
-                    <Box
-                      w="1px"
-                      h="3"
-                      style={{ background: 'var(--chakra-colors-border)' }}
-                    />
+                    <Box w="1px" h="3" style={{ background: 'var(--chakra-colors-border)' }} />
                     <Box fontSize="xs" color="text.muted" fontFamily="var(--font-body)">
                       {event.provider}
                     </Box>

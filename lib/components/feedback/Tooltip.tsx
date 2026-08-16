@@ -93,11 +93,7 @@ export function Tooltip({ label, children, placement = 'top', ...props }: Toolti
     >
       <ChakraTooltip.Trigger asChild>
         {/* Tooltip.Trigger needs a single child element */}
-        <span
-          ref={triggerRef}
-          style={{ display: 'inline-flex' }}
-          onClick={handleTriggerClick}
-        >
+        <span ref={triggerRef} style={{ display: 'inline-flex' }} onClick={handleTriggerClick}>
           {children}
         </span>
       </ChakraTooltip.Trigger>

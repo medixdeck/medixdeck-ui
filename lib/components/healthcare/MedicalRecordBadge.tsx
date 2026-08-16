@@ -16,10 +16,30 @@ export interface ICD10BadgeProps extends Omit<BoxProps, 'onChange'> {
 }
 
 const icd10CategoryConfig = {
-  primary: { label: 'Primary', bg: 'color-mix(in srgb, #0685FF 10%, transparent)', color: '#0685FF', border: 'color-mix(in srgb, #0685FF 25%, transparent)' },
-  secondary: { label: 'Secondary', bg: 'color-mix(in srgb, #64748B 10%, transparent)', color: '#64748B', border: 'color-mix(in srgb, #64748B 25%, transparent)' },
-  chronic: { label: 'Chronic', bg: 'color-mix(in srgb, #F59E0B 10%, transparent)', color: '#B45309', border: 'color-mix(in srgb, #F59E0B 25%, transparent)' },
-  acute: { label: 'Acute', bg: 'color-mix(in srgb, #EF4444 10%, transparent)', color: '#DC2626', border: 'color-mix(in srgb, #EF4444 25%, transparent)' },
+  primary: {
+    label: 'Primary',
+    bg: 'color-mix(in srgb, #0685FF 10%, transparent)',
+    color: '#0685FF',
+    border: 'color-mix(in srgb, #0685FF 25%, transparent)',
+  },
+  secondary: {
+    label: 'Secondary',
+    bg: 'color-mix(in srgb, #64748B 10%, transparent)',
+    color: '#64748B',
+    border: 'color-mix(in srgb, #64748B 25%, transparent)',
+  },
+  chronic: {
+    label: 'Chronic',
+    bg: 'color-mix(in srgb, #F59E0B 10%, transparent)',
+    color: '#B45309',
+    border: 'color-mix(in srgb, #F59E0B 25%, transparent)',
+  },
+  acute: {
+    label: 'Acute',
+    bg: 'color-mix(in srgb, #EF4444 10%, transparent)',
+    color: '#DC2626',
+    border: 'color-mix(in srgb, #EF4444 25%, transparent)',
+  },
 };
 
 /**
@@ -35,12 +55,7 @@ const icd10CategoryConfig = {
 export function ICD10Badge({ code, description, category = 'primary', ...props }: ICD10BadgeProps) {
   const cfg = icd10CategoryConfig[category];
   return (
-    <Box
-      display="inline-flex"
-      alignItems="center"
-      gap="1.5"
-      {...props}
-    >
+    <Box display="inline-flex" alignItems="center" gap="1.5" {...props}>
       <span
         title={description}
         aria-label={`ICD-10 code ${code}${description ? `: ${description}` : ''}`}
@@ -78,8 +93,6 @@ export function ICD10Badge({ code, description, category = 'primary', ...props }
     </Box>
   );
 }
-
-
 
 // ─── Blood Type Badge ─────────────────────────────────────────────────────────
 
@@ -142,7 +155,10 @@ export interface AllergyBadgeProps extends Omit<BoxProps, 'onChange'> {
   severity?: AllergySeverity;
 }
 
-const allergyConfig: Record<AllergySeverity, { label: string; bg: string; color: string; border: string; icon: string }> = {
+const allergyConfig: Record<
+  AllergySeverity,
+  { label: string; bg: string; color: string; border: string; icon: string }
+> = {
   mild: {
     label: 'Mild',
     bg: 'color-mix(in srgb, #F59E0B 8%, transparent)',
@@ -275,20 +291,11 @@ export function MedicalRecordBadge({
       {bloodType && <BloodTypeBadge bloodType={bloodType} />}
 
       {diagnoses?.map((d, i) => (
-        <ICD10Badge
-          key={i}
-          code={d.code}
-          description={d.description}
-          category={d.category}
-        />
+        <ICD10Badge key={i} code={d.code} description={d.description} category={d.category} />
       ))}
 
       {allergies?.map((a, i) => (
-        <AllergyBadge
-          key={i}
-          allergen={a.allergen}
-          severity={a.severity}
-        />
+        <AllergyBadge key={i} allergen={a.allergen} severity={a.severity} />
       ))}
     </Box>
   );

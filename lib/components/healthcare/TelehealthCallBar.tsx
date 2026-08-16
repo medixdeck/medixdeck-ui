@@ -3,14 +3,7 @@
 import React from 'react';
 import { Box, type BoxProps } from '@chakra-ui/react';
 import { Avatar } from '../primitive/Avatar';
-import {
-  LuMic,
-  LuMicOff,
-  LuVideo,
-  LuVideoOff,
-  LuScreenShare,
-  LuPhoneOff,
-} from 'react-icons/lu';
+import { LuMic, LuMicOff, LuVideo, LuVideoOff, LuScreenShare, LuPhoneOff } from 'react-icons/lu';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -135,7 +128,9 @@ export function TelehealthCallBar({
     children: React.ReactNode;
   }) => {
     // Dynamic background and text based on variant and active/end call states
-    let normalBg = isDarkVariant ? 'rgba(255,255,255,0.1)' : 'var(--chakra-colors-bg-subtle, #F0F4F8)';
+    let normalBg = isDarkVariant
+      ? 'rgba(255,255,255,0.1)'
+      : 'var(--chakra-colors-bg-subtle, #F0F4F8)';
     let normalColor = isDarkVariant ? 'white' : 'var(--chakra-colors-text-heading, #111926)';
     let hoverBg = isDarkVariant ? 'rgba(255,255,255,0.2)' : 'var(--chakra-colors-border, #E2E8F0)';
 
@@ -202,8 +197,7 @@ export function TelehealthCallBar({
       style={{
         minHeight: 72,
         paddingTop: 12,
-        paddingBottom:
-          position === 'bottom' ? 'calc(12px + env(safe-area-inset-bottom, 0px))' : 12,
+        paddingBottom: position === 'bottom' ? 'calc(12px + env(safe-area-inset-bottom, 0px))' : 12,
         background: isDarkVariant ? 'linear-gradient(135deg, #0A1220 0%, #0F1C2E 100%)' : undefined,
         borderTop: position === 'bottom' ? '1px solid var(--chakra-colors-border)' : 'none',
         borderBottom: position === 'top' ? '1px solid var(--chakra-colors-border)' : 'none',
@@ -314,11 +308,7 @@ export function TelehealthCallBar({
         )}
 
         {onEndCall && (
-          <ControlButton
-            onClick={onEndCall}
-            ariaLabel="End call"
-            isEndCall
-          >
+          <ControlButton onClick={onEndCall} ariaLabel="End call" isEndCall>
             <PhoneOffIcon />
           </ControlButton>
         )}

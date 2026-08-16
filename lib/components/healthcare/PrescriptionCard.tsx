@@ -44,22 +44,54 @@ export interface PrescriptionCardProps extends Omit<BoxProps, 'onChange'> {
 }
 
 const statusConfig = {
-  active: { label: 'Active', bg: 'color-mix(in srgb, var(--chakra-colors-status-success) 12%, transparent)', color: 'var(--chakra-colors-status-success)' },
-  expired: { label: 'Expired', bg: 'color-mix(in srgb, var(--chakra-colors-status-error) 10%, transparent)', color: 'var(--chakra-colors-status-error)' },
-  dispensed: { label: 'Dispensed', bg: 'color-mix(in srgb, var(--chakra-colors-blue-500) 10%, transparent)', color: 'var(--chakra-colors-blue-500)' },
+  active: {
+    label: 'Active',
+    bg: 'color-mix(in srgb, var(--chakra-colors-status-success) 12%, transparent)',
+    color: 'var(--chakra-colors-status-success)',
+  },
+  expired: {
+    label: 'Expired',
+    bg: 'color-mix(in srgb, var(--chakra-colors-status-error) 10%, transparent)',
+    color: 'var(--chakra-colors-status-error)',
+  },
+  dispensed: {
+    label: 'Dispensed',
+    bg: 'color-mix(in srgb, var(--chakra-colors-blue-500) 10%, transparent)',
+    color: 'var(--chakra-colors-blue-500)',
+  },
 };
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
 const PillIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
     <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
     <path d="m8.5 8.5 7 7" />
   </svg>
 );
 
 const DownloadIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
     <polyline points="7 10 12 15 17 10" />
     <line x1="12" y1="15" x2="12" y2="3" />
@@ -67,7 +99,17 @@ const DownloadIcon = () => (
 );
 
 const CalendarIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
     <line x1="16" y1="2" x2="16" y2="6" />
     <line x1="8" y1="2" x2="8" y2="6" />
@@ -114,9 +156,10 @@ export function PrescriptionCard({
 }: PrescriptionCardProps) {
   const cfg = statusConfig[status];
   const accentColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
-  const accentBg = colorScheme === 'purple'
-    ? 'color-mix(in srgb, #7700CC 8%, transparent)'
-    : 'color-mix(in srgb, #0685FF 8%, transparent)';
+  const accentBg =
+    colorScheme === 'purple'
+      ? 'color-mix(in srgb, #7700CC 8%, transparent)'
+      : 'color-mix(in srgb, #0685FF 8%, transparent)';
 
   return (
     <Box
@@ -152,11 +195,7 @@ export function PrescriptionCard({
             Prescription
           </Box>
           {rxId && (
-            <Box
-              fontSize="xs"
-              color="text.muted"
-              fontFamily="var(--font-body)"
-            >
+            <Box fontSize="xs" color="text.muted" fontFamily="var(--font-body)">
               {rxId}
             </Box>
           )}
@@ -203,7 +242,12 @@ export function PrescriptionCard({
         gap="2"
       >
         <Box>
-          <Box fontSize="sm" fontWeight="semibold" color="text.heading" fontFamily="var(--font-heading)">
+          <Box
+            fontSize="sm"
+            fontWeight="semibold"
+            color="text.heading"
+            fontFamily="var(--font-heading)"
+          >
             {doctorName}
           </Box>
           {doctorSpecialty && (
@@ -216,17 +260,35 @@ export function PrescriptionCard({
           <Box>
             <Box display="flex" alignItems="center" gap="1" color="text.muted">
               <CalendarIcon />
-              <Box fontSize="xs" fontFamily="var(--font-body)">Issued</Box>
+              <Box fontSize="xs" fontFamily="var(--font-body)">
+                Issued
+              </Box>
             </Box>
-            <Box fontSize="xs" fontWeight="medium" color="text.heading" fontFamily="var(--font-body)">{issuedDate}</Box>
+            <Box
+              fontSize="xs"
+              fontWeight="medium"
+              color="text.heading"
+              fontFamily="var(--font-body)"
+            >
+              {issuedDate}
+            </Box>
           </Box>
           {expiryDate && (
             <Box>
               <Box display="flex" alignItems="center" gap="1" color="text.muted">
                 <CalendarIcon />
-                <Box fontSize="xs" fontFamily="var(--font-body)">Expires</Box>
+                <Box fontSize="xs" fontFamily="var(--font-body)">
+                  Expires
+                </Box>
               </Box>
-              <Box fontSize="xs" fontWeight="medium" color="text.heading" fontFamily="var(--font-body)">{expiryDate}</Box>
+              <Box
+                fontSize="xs"
+                fontWeight="medium"
+                color="text.heading"
+                fontFamily="var(--font-body)"
+              >
+                {expiryDate}
+              </Box>
             </Box>
           )}
         </Box>
@@ -269,7 +331,12 @@ export function PrescriptionCard({
 
             <Box flex="1" minW="0">
               <Box display="flex" alignItems="center" gap="2" flexWrap="wrap">
-                <Box fontSize="sm" fontWeight="semibold" color="text.heading" fontFamily="var(--font-heading)">
+                <Box
+                  fontSize="sm"
+                  fontWeight="semibold"
+                  color="text.heading"
+                  fontFamily="var(--font-heading)"
+                >
                   {drug.name}
                 </Box>
                 <span
@@ -296,7 +363,12 @@ export function PrescriptionCard({
                   </Box>
                 )}
                 {drug.instructions && (
-                  <Box fontSize="xs" color="text.body" fontFamily="var(--font-body)" fontStyle="italic">
+                  <Box
+                    fontSize="xs"
+                    color="text.body"
+                    fontFamily="var(--font-body)"
+                    fontStyle="italic"
+                  >
                     ℹ️ {drug.instructions}
                   </Box>
                 )}
@@ -318,10 +390,14 @@ export function PrescriptionCard({
       >
         {refillsRemaining !== undefined ? (
           <Box fontSize="xs" color="text.muted" fontFamily="var(--font-body)">
-            <Box as="span" fontWeight="semibold" color="text.heading">{refillsRemaining}</Box>
-            {' '}refill{refillsRemaining !== 1 ? 's' : ''} remaining
+            <Box as="span" fontWeight="semibold" color="text.heading">
+              {refillsRemaining}
+            </Box>{' '}
+            refill{refillsRemaining !== 1 ? 's' : ''} remaining
           </Box>
-        ) : <Box />}
+        ) : (
+          <Box />
+        )}
 
         {onDownload && (
           <button
@@ -342,8 +418,12 @@ export function PrescriptionCard({
               cursor: 'pointer',
               transition: 'opacity 0.15s',
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.8'; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.opacity = '0.8';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.opacity = '1';
+            }}
           >
             <DownloadIcon />
             Download
