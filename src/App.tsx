@@ -2635,7 +2635,7 @@ export default function App() {
               <BlogCard
                 colorScheme="purple"
                 key={i}
-                coverImage="https://healthcareoffers.in/wp-content/uploads/2025/09/Blog-Posting-on-Healthcare-1280x669.jpg"
+                coverImage="https://images.unsplash.com/photo-1498837167922-ddd27525d352"
                 title={item.title}
                 excerpt="Learn key signs and symptoms that warrant immediate medical attention, plus tips on navigating Nigeria's healthcare options effectively."
                 category="Medical Support"

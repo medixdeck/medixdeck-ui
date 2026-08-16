@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Box, type BoxProps } from '@chakra-ui/react';
+import { Avatar } from '../primitive/Avatar';
 import {
   LuMic,
   LuMicOff,
@@ -214,39 +215,7 @@ export function TelehealthCallBar({
     >
       {/* Participant info */}
       <Box display="flex" alignItems="center" gap="3">
-        {participantAvatar ? (
-          <img
-            src={participantAvatar}
-            alt={participantName}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: `2px solid ${isDarkVariant ? 'rgba(255,255,255,0.2)' : 'var(--chakra-colors-border)'}`,
-            }}
-          />
-        ) : (
-          <div
-            aria-hidden="true"
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--chakra-colors-blue-500, #0685FF), var(--chakra-colors-purple-500, #7700CC))',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 14,
-              fontWeight: 700,
-              color: 'white',
-              fontFamily: 'var(--font-heading)',
-              border: `2px solid ${isDarkVariant ? 'rgba(255,255,255,0.2)' : 'var(--chakra-colors-border)'}`,
-            }}
-          >
-            {participantName.charAt(0)}
-          </div>
-        )}
+        <Avatar src={participantAvatar} name={participantName} size="md" />
         <Box>
           <Box
             fontSize="sm"
