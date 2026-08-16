@@ -94,7 +94,7 @@ export function DataTable<T extends Record<string, unknown>>({
   sortKey,
   sortDirection = 'asc',
   onSort,
-  striped = false,
+  striped = true,
   onRowClick,
   caption,
   enablePagination = false,
@@ -222,60 +222,60 @@ export function DataTable<T extends Record<string, unknown>>({
           {caption && <caption style={{ display: 'none' }}>{caption}</caption>}
           <Box as="thead">
             <Box as="tr" bg="bg.subtle" borderBottom="1px solid" borderColor="border">
-              {columns.map((col, colIdx) => (
-                <Box
-                  as="th"
-                  key={col.key}
-                  py="3"
-                  px="4"
-                  textAlign={col.align ?? 'left'}
-                  minW={col.minWidth}
-                  fontSize="xs"
-                  fontWeight="600"
-                  letterSpacing="0.05em"
-                  textTransform="uppercase"
-                  color="text.muted"
-                  fontFamily="var(--font-body)"
-                  whiteSpace="nowrap"
-                  userSelect="none"
-                  cursor={col.sortable || sortable ? 'pointer' : 'default'}
-                  _hover={col.sortable || sortable ? { color: 'text.heading' } : undefined}
-                  onClick={() => (col.sortable || sortable ? handleSort(col.key) : undefined)}
-                  aria-sort={
-                    activeSortKey === col.key
-                      ? activeDirection === 'asc'
-                        ? 'ascending'
-                        : 'descending'
-                      : undefined
-                  }
-                  style={
-                    stickyFirstColumn && colIdx === 0
-                      ? {
-                          position: 'sticky',
-                          left: 0,
-                          zIndex: 2,
-                          background: 'var(--chakra-colors-bg-subtle)',
-                          borderRight: '1px solid var(--chakra-colors-border)',
-                        }
-                      : undefined
-                  }
-                >
-                  <Flex
-                    as="span"
-                    align="center"
-                    justify={
-                      col.align === 'right'
-                        ? 'flex-end'
-                        : col.align === 'center'
-                          ? 'center'
-                          : 'flex-start'
+              {columns.map((col, colIdx) => {
+                const isStickyCol = stickyFirstColumn && colIdx === 0;
+
+                return (
+                  <Box
+                    as="th"
+                    key={col.key}
+                    py="3"
+                    px="4"
+                    textAlign={col.align ?? 'left'}
+                    minW={col.minWidth}
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.05em"
+                    textTransform="uppercase"
+                    color="text.muted"
+                    fontFamily="var(--font-body)"
+                    whiteSpace="nowrap"
+                    userSelect="none"
+                    cursor={col.sortable || sortable ? 'pointer' : 'default'}
+                    _hover={col.sortable || sortable ? { color: 'text.heading' } : undefined}
+                    onClick={() => (col.sortable || sortable ? handleSort(col.key) : undefined)}
+                    aria-sort={
+                      activeSortKey === col.key
+                        ? activeDirection === 'asc'
+                          ? 'ascending'
+                          : 'descending'
+                        : undefined
                     }
+                    position={isStickyCol ? 'sticky' : undefined}
+                    left={isStickyCol ? 0 : undefined}
+                    zIndex={isStickyCol ? 3 : undefined}
+                    bg={isStickyCol ? 'bg.subtle' : undefined}
+                    borderRight={isStickyCol ? '1px solid' : undefined}
+                    borderColor={isStickyCol ? 'border' : undefined}
+                    boxShadow={isStickyCol ? '2px 0 4px rgba(0, 0, 0, 0.05)' : undefined}
                   >
-                    {col.label}
-                    {(col.sortable || sortable) && <SortIcon colKey={col.key} />}
-                  </Flex>
-                </Box>
-              ))}
+                    <Flex
+                      as="span"
+                      align="center"
+                      justify={
+                        col.align === 'right'
+                          ? 'flex-end'
+                          : col.align === 'center'
+                            ? 'center'
+                            : 'flex-start'
+                      }
+                    >
+                      {col.label}
+                      {(col.sortable || sortable) && <SortIcon colKey={col.key} />}
+                    </Flex>
+                  </Box>
+                );
+              })}
             </Box>
           </Box>
           <Box as="tbody">
@@ -324,37 +324,40 @@ export function DataTable<T extends Record<string, unknown>>({
                     transition="background 0.15s ease"
                     _hover={{ bg: 'bg.subtle' }}
                   >
-                    {columns.map((col, colIdx) => (
-                      <Box
-                        as="td"
-                        key={col.key}
-                        py="3.5"
-                        px="4"
-                        textAlign={col.align ?? 'left'}
-                        fontSize="sm"
-                        color="text.body"
-                        fontFamily="var(--font-body)"
-                        verticalAlign="middle"
-                        style={
-                          stickyFirstColumn && colIdx === 0
-                            ? {
-                                position: 'sticky',
-                                left: 0,
-                                zIndex: 1,
-                                background:
-                                  striped && rowIdx % 2 === 1
-                                    ? 'var(--chakra-colors-bg-subtle)'
-                                    : 'var(--chakra-colors-bg-surface)',
-                                borderRight: '1px solid var(--chakra-colors-border)',
-                              }
-                            : undefined
-                        }
-                      >
-                        {col.render
-                          ? col.render(row[col.key], row, rowIdx)
-                          : String(row[col.key] ?? '—')}
-                      </Box>
-                    ))}
+                    {columns.map((col, colIdx) => {
+                      const isStickyCol = stickyFirstColumn && colIdx === 0;
+
+                      return (
+                        <Box
+                          as="td"
+                          key={col.key}
+                          py="3.5"
+                          px="4"
+                          textAlign={col.align ?? 'left'}
+                          fontSize="sm"
+                          color="text.body"
+                          fontFamily="var(--font-body)"
+                          verticalAlign="middle"
+                          position={isStickyCol ? 'sticky' : undefined}
+                          left={isStickyCol ? 0 : undefined}
+                          zIndex={isStickyCol ? 2 : undefined}
+                          bg={
+                            isStickyCol
+                              ? striped && rowIdx % 2 === 1
+                                ? 'bg.subtle'
+                                : 'bg.surface'
+                              : undefined
+                          }
+                          borderRight={isStickyCol ? '1px solid' : undefined}
+                          borderColor={isStickyCol ? 'border' : undefined}
+                          boxShadow={isStickyCol ? '2px 0 4px rgba(0, 0, 0, 0.05)' : undefined}
+                        >
+                          {col.render
+                            ? col.render(row[col.key], row, rowIdx)
+                            : String(row[col.key] ?? '—')}
+                        </Box>
+                      );
+                    })}
                   </Box>
                 );
               })
