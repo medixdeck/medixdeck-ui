@@ -242,7 +242,7 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Changed
 
-- **`Footer`**: The default `copyright` text was updated to `"© {year} MedixDeck Health Solution Ltd. All Rights Reserved."`.
+- **`Footer`**: The default `copyright` text was updated to `"© {year} MedixDeck Health Solutions Ltd. All Rights Reserved."`.
 - **`DashboardLayout` stories**: Expanded with 8 new stories covering `WithMobileNav`, `WithDoctorScoreCard`, five tier-specific card variants, `WithGreetingSubtext`, and `FullDoctorDashboard`.
 - **`Footer` stories**: Added `WithCertifications` story.
 - **`CookieConsentBanner` and `PWAInstallPrompt` stories**: Added Storybook documentation for the new feedback components.

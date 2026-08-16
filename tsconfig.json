@@ -22,5 +22,6 @@
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src", "lib"],
+  "exclude": ["node_modules", "dist", "lib/**/*.stories.*", "src/**/*.stories.*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

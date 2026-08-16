@@ -444,6 +444,7 @@ export function PhoneInput({
         opacity={isDisabled ? 0.5 : 1}
         pointerEvents={isDisabled ? 'none' : undefined}
         position="relative"
+        zIndex={isPickerOpen ? 1000 : undefined}
         style={{
           border: `1.5px solid ${activeBorderColor}`,
           boxShadow,
@@ -519,7 +520,7 @@ export function PhoneInput({
                 border="1px solid"
                 borderColor="border"
                 borderRadius="card"
-                zIndex="popover"
+                zIndex={1000}
                 display="flex"
                 flexDirection="column"
                 overflow="hidden"

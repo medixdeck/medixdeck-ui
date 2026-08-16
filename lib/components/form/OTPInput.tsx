@@ -68,7 +68,9 @@ export function OTPInput({
 
   // Idle border colour — uses CSS vars so it automatically flips in dark mode.
   // Error states use literal hex (same in both modes by design).
-  const idleBorder = isInvalid ? '#DC2626' : 'var(--medix-form-border)';
+  const idleBorder = isInvalid
+    ? '#DC2626'
+    : 'var(--medix-form-border, var(--chakra-colors-border, #E2E8F0))';
   const focusBorder = isInvalid ? '#DC2626' : colorScheme === 'purple' ? '#7700CC' : '#0685FF';
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
@@ -96,30 +98,54 @@ export function OTPInput({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
     const raw = e.target.value.replace(/\D/g, '');
-    if (!raw) return;
+    const newDigits = [...digits];
+    while (newDigits.length < length) newDigits.push('');
 
-    if (raw.length > 1) {
-      const pasted = raw.split('').slice(0, length);
-      const newDigits = [...Array(length).fill('')];
-      pasted.forEach((d, i) => {
-        newDigits[i] = d;
-      });
+    if (!raw) {
+      newDigits[idx] = '';
       const joined = newDigits.join('');
       if (!isControlled) setInternalValue(joined);
       onChange?.(joined);
-      const focusIdx = Math.min(pasted.length, length - 1);
-      inputRefs.current[focusIdx]?.focus();
-      if (joined.length === length) onComplete?.(joined);
       return;
     }
 
-    const newDigits = [...digits];
-    while (newDigits.length < length) newDigits.push('');
-    newDigits[idx] = raw;
+    // Single character typed — place it and advance focus
+    newDigits[idx] = raw[0];
     const joined = newDigits.join('');
     if (!isControlled) setInternalValue(joined);
     onChange?.(joined);
     if (idx < length - 1) inputRefs.current[idx + 1]?.focus();
+    if (joined.replace(/\s/g, '').length === length) onComplete?.(joined);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, idx: number) => {
+    // Prevent the browser from inserting the text (which would be truncated
+    // to 1 char by maxLength before onChange ever fires).
+    e.preventDefault();
+
+    const raw = e.clipboardData.getData('text').replace(/\D/g, '');
+    if (!raw) return;
+
+    const newDigits = [...digits];
+    while (newDigits.length < length) newDigits.push('');
+
+    // Fill digits starting from the box that received the paste
+    const chars = raw.split('').slice(0, length - idx);
+    chars.forEach((d, i) => {
+      newDigits[idx + i] = d;
+    });
+
+    const joined = newDigits.join('');
+    if (!isControlled) setInternalValue(joined);
+    onChange?.(joined);
+
+    // Move focus to the last box if complete, otherwise the next empty slot
+    const nextFocusIdx =
+      joined.replace(/\s/g, '').length === length
+        ? length - 1
+        : Math.min(idx + chars.length, length - 1);
+    inputRefs.current[nextFocusIdx]?.focus();
+
     if (joined.replace(/\s/g, '').length === length) onComplete?.(joined);
   };
 
@@ -151,6 +177,7 @@ export function OTPInput({
             value={digits[idx] ?? ''}
             onChange={(e) => handleChange(e, idx)}
             onKeyDown={(e) => handleKeyDown(e, idx)}
+            onPaste={(e) => handlePaste(e, idx)}
             onFocus={(e) => {
               e.target.select();
               setFocusedIdx(idx);
@@ -165,8 +192,8 @@ export function OTPInput({
               border: `1.5px solid ${focusedIdx === idx ? focusBorder : idleBorder}`,
               boxShadow: 'none',
               /* CSS vars flip automatically when .dark is on any ancestor */
-              background: 'var(--medix-form-bg)',
-              color: 'var(--medix-form-text)',
+              background: 'var(--medix-form-bg, var(--chakra-colors-bg-surface, #FFFFFF))',
+              color: 'var(--medix-form-text, var(--chakra-colors-text-heading, #0F172A))',
               fontSize: '20px',
               fontWeight: 600,
               textAlign: 'center',

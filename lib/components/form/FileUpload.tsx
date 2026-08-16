@@ -89,17 +89,28 @@ export function FileUpload({
     setIsDragging(false);
   };
 
+  const [fileError, setFileError] = React.useState<string | null>(null);
+
   const processFiles = (files: FileList | null) => {
     if (!files || files.length === 0) return;
     const fileArray = Array.from(files);
+    setFileError(null);
+
+    const oversized = fileArray.find((f) => maxSize && f.size > maxSize);
+    if (oversized && maxSize) {
+      const maxMb = Math.round(maxSize / (1024 * 1024));
+      setFileError(`File "${oversized.name}" exceeds the maximum limit of ${maxMb}MB.`);
+    }
 
     const validFiles = fileArray.filter((file) => {
       if (maxSize && file.size > maxSize) return false;
       return true;
     });
 
-    setSelectedFileNames(validFiles.map((f) => f.name));
-    onChange?.(validFiles);
+    if (validFiles.length > 0) {
+      setSelectedFileNames(validFiles.map((f) => f.name));
+      onChange?.(validFiles);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -112,6 +123,7 @@ export function FileUpload({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     processFiles(e.target.files);
+    e.target.value = '';
   };
 
   const focusBorder = colorScheme === 'purple' ? 'purple.500' : 'blue.500';
@@ -201,14 +213,14 @@ export function FileUpload({
         )}
       </Box>
 
-      {(helperText || errorMessage) && (
+      {(helperText || errorMessage || fileError) && (
         <Text
           mt="1.5"
           fontSize="xs"
-          color={isInvalid ? 'red.500' : 'text.muted'}
+          color={isInvalid || fileError ? 'red.500' : 'text.muted'}
           fontFamily="var(--font-body)"
         >
-          {isInvalid ? errorMessage : helperText}
+          {fileError || (isInvalid ? errorMessage : helperText)}
         </Text>
       )}
     </Box>

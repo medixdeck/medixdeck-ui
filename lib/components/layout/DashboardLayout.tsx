@@ -878,7 +878,7 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
       borderColor="border"
       alignItems="center"
       style={{
-        height: 64,
+        minHeight: 64,
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         boxShadow: 'none',
         backdropFilter: 'blur(14px)',
@@ -1294,16 +1294,17 @@ function Sidebar({
         }}
         transition="transform 0.25s cubic-bezier(0.22,1,0.36,1)"
       >
-        {/* ── Logo ── */}
         <Box
+          h="16"
+          minH="16"
+          maxH="16"
           px="5"
-          pt="5"
-          pb="4"
           flexShrink={0}
           borderBottom="1px solid"
           borderColor="border"
           display="flex"
           alignItems="center"
+          overflow="hidden"
         >
           {logo}
         </Box>
@@ -1449,6 +1450,9 @@ function TopBar({
       borderBottom="1px solid"
       borderColor="border"
       h="16"
+      minH="16"
+      maxH="16"
+      flexShrink={0}
       display="flex"
       alignItems="center"
       px={{ base: '4', md: '6' }}

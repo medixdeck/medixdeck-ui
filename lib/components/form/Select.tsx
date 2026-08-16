@@ -126,7 +126,7 @@ function SingleSelect({
   const sz = sizeStyles[size];
 
   return (
-    <Box w="100%" position="relative" ref={containerRef}>
+    <Box w="100%" position="relative" zIndex={isOpen ? 1000 : undefined} ref={containerRef}>
       {name && <input type="hidden" name={name} id={id} value={selectedValue} />}
 
       <Box
@@ -149,7 +149,7 @@ function SingleSelect({
       >
         <Box display="flex" alignItems="center" gap="2.5" flex="1" minW="0">
           {icon && (
-            <Box color="text.heading" display="flex" alignItems="center" flexShrink={0}>
+            <Box color="text.muted" display="flex" alignItems="center" flexShrink={0}>
               {icon}
             </Box>
           )}
@@ -207,7 +207,7 @@ function SingleSelect({
           border="1px solid"
           borderColor="border"
           borderRadius="card"
-          zIndex="popover"
+          zIndex={1000}
           display="flex"
           flexDirection="column"
           overflow="hidden"
@@ -422,7 +422,7 @@ function MultiSelect({
   const tagBorder = colorScheme === 'purple' ? 'purple.200' : 'blue.200';
 
   return (
-    <Box w="100%" position="relative" ref={containerRef}>
+    <Box w="100%" position="relative" zIndex={isOpen ? 1000 : undefined} ref={containerRef}>
       {name && <input type="hidden" name={name} id={id} value={selectedValues.join(',')} />}
 
       <Box
@@ -446,7 +446,7 @@ function MultiSelect({
       >
         <Box display="flex" alignItems="center" flexWrap="wrap" gap="1.5" flex="1" minW="0">
           {icon && (
-            <Box color="text.heading" display="flex" alignItems="center" mr="1">
+            <Box color="text.muted" display="flex" alignItems="center" mr="1">
               {icon}
             </Box>
           )}
@@ -560,7 +560,7 @@ function MultiSelect({
           border="1px solid"
           borderColor="border"
           borderRadius="card"
-          zIndex="popover"
+          zIndex={1000}
           display="flex"
           flexDirection="column"
           overflow="hidden"

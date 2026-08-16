@@ -92,7 +92,7 @@ export function Combobox({
   const boxShadow = 'none';
 
   return (
-    <Box w="100%" position="relative" ref={containerRef}>
+    <Box w="100%" position="relative" zIndex={isOpen ? 1000 : undefined} ref={containerRef}>
       {label && (
         <Text
           mb="1.5"
@@ -150,7 +150,7 @@ export function Combobox({
       {isOpen && !isDisabled && (
         <Box
           position="absolute"
-          zIndex={10}
+          zIndex={1000}
           top="100%"
           left="0"
           right="0"
