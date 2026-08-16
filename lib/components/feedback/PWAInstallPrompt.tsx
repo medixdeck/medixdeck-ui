@@ -286,7 +286,7 @@ export function PWAInstallPrompt({
             style={{
               background: bgColor,
               border: `1px solid ${borderColor}`,
-              boxShadow: `0 8px 32px ${shadowColor}`,
+              boxShadow: 'none',
             }}
           >
             <Flex gap="4" align="flex-start">

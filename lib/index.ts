@@ -98,6 +98,22 @@ export type { ComboboxProps, ComboboxOption } from './components/form/Combobox';
 export { FileUpload } from './components/form/FileUpload';
 export type { FileUploadProps } from './components/form/FileUpload';
 
+export { TagsInput, TagInput } from './components/form/TagsInput';
+export type { TagsInputProps, TagInputProps } from './components/form/TagsInput';
+
+export {
+  RichTextInput,
+  RichTextEditor,
+  htmlToMarkdown,
+  markdownToHtml,
+} from './components/form/RichTextInput';
+export type {
+  RichTextInputProps,
+  ToolbarOptions,
+  RichTextInputMode,
+  RichTextInputFormat,
+} from './components/form/RichTextInput';
+
 // ─── Layout Components ─────────────────────────────────────────────────────────
 export { Card, CardHeader, CardBody, CardFooter } from './components/layout/Card';
 export type { CardProps, CardHeaderProps } from './components/layout/Card';
@@ -162,7 +178,7 @@ export { Progress } from './components/feedback/Progress';
 export type { ProgressProps } from './components/feedback/Progress';
 
 export { Modal } from './components/feedback/Modal';
-export type { ModalProps, ModalSize } from './components/feedback/Modal';
+export type { ModalProps, ModalSize, ModalMobileVariant } from './components/feedback/Modal';
 
 export { Tooltip } from './components/feedback/Tooltip';
 export type { TooltipProps } from './components/feedback/Tooltip';
@@ -216,6 +232,37 @@ export type {
   AppointmentType,
   AppointmentStatus,
 } from './components/healthcare/DoctorCard';
+
+export { PrescriptionCard } from './components/healthcare/PrescriptionCard';
+export type {
+  PrescriptionCardProps,
+  PrescriptionDrug,
+} from './components/healthcare/PrescriptionCard';
+
+export {
+  MedicalRecordBadge,
+  ICD10Badge,
+  BloodTypeBadge,
+  AllergyBadge,
+} from './components/healthcare/MedicalRecordBadge';
+export type {
+  MedicalRecordBadgeProps,
+  ICD10BadgeProps,
+  BloodTypeBadgeProps,
+  BloodType,
+  AllergyBadgeProps,
+  AllergySeverity,
+} from './components/healthcare/MedicalRecordBadge';
+
+export { TelehealthCallBar } from './components/healthcare/TelehealthCallBar';
+export type { TelehealthCallBarProps } from './components/healthcare/TelehealthCallBar';
+
+export { PatientTimeline } from './components/healthcare/PatientTimeline';
+export type {
+  PatientTimelineProps,
+  TimelineEvent,
+  TimelineEventType,
+} from './components/healthcare/PatientTimeline';
 
 // ─── Re-export useful Chakra UI primitives ─────────────────────────────────────
 export {

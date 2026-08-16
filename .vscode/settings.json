@@ -1,9 +1,11 @@
 {
   "cSpell.words": [
+    "Amaka",
     "beforeinstallprompt",
     "COOLDOWN",
     "doctorcard",
     "Fontshare",
+    "homecare",
     "hoverable",
     "MDCN",
     "Medix",
@@ -11,6 +13,16 @@
     "navbars",
     "okedi",
     "Okedi",
+    "Okonkwo",
+    "otpinput",
+    "phoneinput",
+    "registrator",
+    "richtextinput",
+    "sectionheader",
+    "statcard",
+    "swipeable",
+    "tagsinput",
+    "telehealthcallbar",
     "Wordmark"
   ],
   "editor.formatOnSave": true,

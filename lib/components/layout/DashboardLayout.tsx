@@ -572,7 +572,7 @@ function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[Dashboard
           border="1px solid"
           borderColor="border"
           borderRadius="xl"
-          boxShadow="0 8px 32px rgba(0,0,0,0.12)"
+          boxShadow="none"
           zIndex="popover"
           overflow="hidden"
           py="1"
@@ -878,9 +878,9 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
       borderColor="border"
       alignItems="center"
       style={{
-        height: 64,
+        minHeight: 64,
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-        boxShadow: '0 -8px 40px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.04)',
+        boxShadow: 'none',
         backdropFilter: 'blur(14px)',
         WebkitBackdropFilter: 'blur(14px)',
         animation: 'medixMobileNavIn 0.42s cubic-bezier(0.22,1,0.36,1) both',
@@ -1294,16 +1294,17 @@ function Sidebar({
         }}
         transition="transform 0.25s cubic-bezier(0.22,1,0.36,1)"
       >
-        {/* ── Logo ── */}
         <Box
+          h="16"
+          minH="16"
+          maxH="16"
           px="5"
-          pt="5"
-          pb="4"
           flexShrink={0}
           borderBottom="1px solid"
           borderColor="border"
           display="flex"
           alignItems="center"
+          overflow="hidden"
         >
           {logo}
         </Box>
@@ -1449,6 +1450,9 @@ function TopBar({
       borderBottom="1px solid"
       borderColor="border"
       h="16"
+      minH="16"
+      maxH="16"
+      flexShrink={0}
       display="flex"
       alignItems="center"
       px={{ base: '4', md: '6' }}
@@ -1550,7 +1554,7 @@ function TopBar({
             border="1px solid"
             borderColor="border"
             borderRadius="xl"
-            boxShadow="0 8px 32px rgba(0,0,0,0.12)"
+            boxShadow="none"
             zIndex="popover"
             overflow="hidden"
             py="1"

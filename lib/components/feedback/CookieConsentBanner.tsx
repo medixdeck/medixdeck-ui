@@ -59,7 +59,7 @@ export function CookieConsentBanner({
           flex-wrap: wrap !important;
           align-items: center !important;
           justify-content: space-between !important;
-          box-shadow: 0 -4px 20px rgba(0,0,0,0.05) !important;
+          box-shadow: none !important;
           font-family: var(--font-body) !important;
           z-index: 9999 !important;
           position: fixed !important;
@@ -110,11 +110,11 @@ export function CookieConsentBanner({
       >
         <Box>
           {title && (
-            <Text fontWeight="600" color="text.heading" mb={1} fontFamily="var(--font-heading)">
+            <Text fontWeight="700" color="text.heading" mb={1} fontFamily="var(--font-heading)">
               {title}
             </Text>
           )}
-          <Text fontSize="sm" color="text.muted" lineHeight="1.5">
+          <Text fontSize="sm" color="text.heading" lineHeight="1.5">
             {children ||
               'We use cookies to securely manage your session, enhance your browsing experience, and analyze our platform\'s performance. By clicking "Accept All", you consent to our use of cookies.'}
           </Text>
