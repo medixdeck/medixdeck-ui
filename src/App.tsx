@@ -102,6 +102,15 @@ import { DataTable } from '../lib/components/data/DataTable';
 
 // Healthcare
 import { DoctorCard, VitalBadge, AppointmentCard } from '../lib/components/healthcare/DoctorCard';
+import { PrescriptionCard } from '../lib/components/healthcare/PrescriptionCard';
+import {
+  MedicalRecordBadge,
+  ICD10Badge,
+  BloodTypeBadge,
+  AllergyBadge,
+} from '../lib/components/healthcare/MedicalRecordBadge';
+import { TelehealthCallBar } from '../lib/components/healthcare/TelehealthCallBar';
+import { PatientTimeline } from '../lib/components/healthcare/PatientTimeline';
 
 // ─── Storybook base URL (from .env) ─────────────────────────────────────────
 // @ts-expect-error unknown import error
@@ -2397,6 +2406,183 @@ export default function App() {
             <VitalBadge label="SpO₂" value="98%" unit="" status="normal" />
             <VitalBadge label="Heart Rate" value="105" unit="bpm" status="critical" />
             <VitalBadge label="Temperature" value="36.6" unit="°C" status="normal" />
+          </Section>
+
+          <Section
+            title="Prescription Card"
+            id="prescription"
+            storybookPath="?path=/docs/healthcare-prescriptioncard--docs"
+          >
+            <Box maxW="520px" w="100%">
+              <PrescriptionCard
+                rxId="RX-20260816-0042"
+                doctorName="Dr. Amaka Okonkwo"
+                doctorSpecialty="General Practitioner"
+                issuedDate="Aug 16, 2026"
+                expiryDate="Sep 16, 2026"
+                status="active"
+                refillsRemaining={2}
+                drugs={[
+                  {
+                    name: 'Amoxicillin',
+                    dosage: '500mg',
+                    frequency: '3x daily',
+                    duration: '7 days',
+                    instructions: 'Take with food after meals',
+                  },
+                  {
+                    name: 'Ibuprofen',
+                    dosage: '400mg',
+                    frequency: 'As needed',
+                    duration: '5 days',
+                    instructions: 'For pain relief',
+                  },
+                ]}
+                onDownload={() => alert('Downloading prescription PDF...')}
+              />
+            </Box>
+          </Section>
+
+          <Section
+            title="Medical Record Badges"
+            id="medical-badges"
+            storybookPath="?path=/docs/healthcare-medicalrecordbadge--docs"
+          >
+            <Box display="flex" flexDirection="column" gap="4" w="100%">
+              <Box display="flex" gap="3" flexWrap="wrap" alignItems="center">
+                <Text fontSize="xs" fontWeight="bold" color="text.muted" w="100px">
+                  ICD-10 Codes:
+                </Text>
+                <ICD10Badge code="J45.9" description="Unspecified asthma" category="chronic" />
+                <ICD10Badge code="I10" description="Essential hypertension" category="chronic" />
+                <ICD10Badge code="E11.9" description="Type 2 diabetes" category="primary" />
+                <ICD10Badge code="R50.9" description="Fever, unspecified" category="acute" />
+              </Box>
+
+              <Box display="flex" gap="3" flexWrap="wrap" alignItems="center">
+                <Text fontSize="xs" fontWeight="bold" color="text.muted" w="100px">
+                  Blood Types:
+                </Text>
+                <BloodTypeBadge bloodType="O+" />
+                <BloodTypeBadge bloodType="A-" />
+                <BloodTypeBadge bloodType="B+" />
+                <BloodTypeBadge bloodType="AB-" />
+              </Box>
+
+              <Box display="flex" gap="3" flexWrap="wrap" alignItems="center">
+                <Text fontSize="xs" fontWeight="bold" color="text.muted" w="100px">
+                  Allergies:
+                </Text>
+                <AllergyBadge allergen="Penicillin" severity="life-threatening" />
+                <AllergyBadge allergen="Sulfa drugs" severity="severe" />
+                <AllergyBadge allergen="Latex" severity="moderate" />
+                <AllergyBadge allergen="Peanuts" severity="mild" />
+              </Box>
+
+              <Box mt="2">
+                <Text fontSize="xs" fontWeight="bold" color="text.muted" mb="2">
+                  Composite Record Strip:
+                </Text>
+                <MedicalRecordBadge
+                  bloodType="O+"
+                  diagnoses={[
+                    { code: 'E11.9', description: 'Type 2 Diabetes', category: 'chronic' },
+                    { code: 'I10', description: 'Hypertension', category: 'chronic' },
+                  ]}
+                  allergies={[
+                    { allergen: 'Penicillin', severity: 'life-threatening' },
+                    { allergen: 'Codeine', severity: 'moderate' },
+                  ]}
+                />
+              </Box>
+            </Box>
+          </Section>
+
+          <Section
+            title="Patient History Timeline"
+            id="patient-timeline"
+            storybookPath="?path=/docs/healthcare-patienttimeline--docs"
+          >
+            <Box maxW="560px" w="100%">
+              <PatientTimeline
+                colorScheme="blue"
+                events={[
+                  {
+                    id: '1',
+                    type: 'consultation',
+                    title: 'Video Consultation',
+                    description: 'Follow-up consultation for blood pressure management and prescription renewal.',
+                    date: 'Today · 10:30 AM',
+                    provider: 'Dr. Amaka Okonkwo',
+                    badgeLabel: 'Completed',
+                    badgeStatus: 'success',
+                  },
+                  {
+                    id: '2',
+                    type: 'prescription',
+                    title: 'Prescription Issued',
+                    description: 'Amoxicillin 500mg (3x daily) and Ibuprofen 400mg issued.',
+                    date: 'Today · 10:45 AM',
+                    provider: 'Dr. Amaka Okonkwo',
+                    badgeLabel: 'Active',
+                    badgeStatus: 'info',
+                  },
+                  {
+                    id: '3',
+                    type: 'lab',
+                    title: 'Complete Blood Count (CBC)',
+                    description: 'Lab test results uploaded by Synlab Diagnostics.',
+                    date: 'Yesterday · 4:15 PM',
+                    provider: 'Synlab Nigeria',
+                    badgeLabel: 'Normal',
+                    badgeStatus: 'neutral',
+                  },
+                  {
+                    id: '4',
+                    type: 'vitals',
+                    title: 'Vitals Recorded',
+                    description: 'BP: 138/89 mmHg · HR: 72 bpm · Temp: 36.6°C',
+                    date: '12 Aug 2026',
+                    badgeLabel: 'Warning',
+                    badgeStatus: 'warning',
+                  },
+                ]}
+              />
+            </Box>
+          </Section>
+
+          <Section
+            title="Telehealth Call Bar"
+            id="telehealth-call-bar"
+            storybookPath="?path=/docs/healthcare-telehealthcallbar--docs"
+          >
+            <Box maxW="640px" w="100%" display="flex" flexDirection="column" gap="4">
+              <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
+                Floating overlay control bar for active video consultation calls. Includes live status, mute, camera toggle, screen sharing, and end call triggers.
+              </Text>
+              <Box
+                borderRadius="card"
+                overflow="hidden"
+                border="1px solid"
+                borderColor="border"
+                bg="bg.surface"
+                p="4"
+              >
+                <TelehealthCallBar
+                  participantName="Dr. Amaka Okonkwo"
+                  participantRole="General Practitioner"
+                  duration="08:45"
+                  isMuted={false}
+                  isCameraOff={false}
+                  onToggleMute={() => alert('Mute toggled')}
+                  onToggleCamera={() => alert('Camera toggled')}
+                  onShareScreen={() => alert('Screen share toggled')}
+                  onEndCall={() => alert('Call ended')}
+                  position="bottom"
+                  style={{ position: 'relative', borderRadius: '12px' }}
+                />
+              </Box>
+            </Box>
           </Section>
 
           <Section title="Testimonial Cards" id="testimonials">

@@ -636,25 +636,51 @@ export interface VitalBadgeProps extends BoxProps {
 
 const vitalStatusConfig: Record<
   VitalStatus,
-  { bg: string; dot: string; border: string; text: string }
+  { bg: string; indicator: string; border: string; text: string; icon: React.ReactNode; ariaLabel: string }
 > = {
   normal: {
     bg: 'color-mix(in srgb, var(--chakra-colors-status-success) 8%, transparent)',
-    dot: 'status.success',
+    indicator: 'status.success',
     border: 'color-mix(in srgb, var(--chakra-colors-status-success) 20%, transparent)',
     text: 'status.success',
+    ariaLabel: 'Normal',
+    icon: (
+      // Checkmark circle — normal / healthy
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
+        <circle cx="12" cy="12" r="11" fill="var(--chakra-colors-status-success)" />
+        <path d="M7 12.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
   },
   warning: {
     bg: 'color-mix(in srgb, var(--chakra-colors-status-warning) 8%, transparent)',
-    dot: 'status.warning',
+    indicator: 'status.warning',
     border: 'color-mix(in srgb, var(--chakra-colors-status-warning) 20%, transparent)',
     text: 'status.warning',
+    ariaLabel: 'Warning',
+    icon: (
+      // Triangle exclamation — elevated / warning
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
+        <path d="M12 2L2 21h20L12 2z" fill="var(--chakra-colors-status-warning)" />
+        <path d="M12 9v5" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
+        <circle cx="12" cy="17" r="1" fill="white" />
+      </svg>
+    ),
   },
   critical: {
     bg: 'color-mix(in srgb, var(--chakra-colors-status-error) 8%, transparent)',
-    dot: 'status.error',
+    indicator: 'status.error',
     border: 'color-mix(in srgb, var(--chakra-colors-status-error) 20%, transparent)',
     text: 'status.error',
+    ariaLabel: 'Critical',
+    icon: (
+      // Octagon stop — critical
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
+        <path d="M8.5 2h7l6.5 6.5v7L15.5 22h-7L2 15.5v-7L8.5 2z" fill="var(--chakra-colors-status-error)" />
+        <path d="M12 7v6" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
+        <circle cx="12" cy="16.5" r="1" fill="white" />
+      </svg>
+    ),
   },
 };
 
@@ -684,7 +710,12 @@ export function VitalBadge({ label, value, unit, status = 'normal', ...props }: 
       borderColor={cfg.border}
       {...props}
     >
-      <Box w="2" h="2" borderRadius="full" bg={cfg.dot} flexShrink={0} />
+      <span
+        aria-label={cfg.ariaLabel}
+        style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
+      >
+        {cfg.icon}
+      </span>
       <Box>
         <Box
           fontSize="2xs"

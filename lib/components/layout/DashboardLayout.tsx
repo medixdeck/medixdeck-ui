@@ -878,7 +878,7 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
       borderColor="border"
       alignItems="center"
       style={{
-        height: 64,
+        minHeight: 64,
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         boxShadow: 'none',
         backdropFilter: 'blur(14px)',

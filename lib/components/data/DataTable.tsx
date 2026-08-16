@@ -55,6 +55,12 @@ export interface DataTableProps<T = Record<string, unknown>> {
   /** Extra styles for outer container */
   style?: React.CSSProperties;
   className?: string;
+  /**
+   * When true, the first column is pinned (sticky) to the left during
+   * horizontal scrolling so patient names / IDs stay visible.
+   * @default false
+   */
+  stickyFirstColumn?: boolean;
 }
 
 /**
@@ -101,6 +107,7 @@ export function DataTable<T extends Record<string, unknown>>({
   onSearchChange,
   style,
   className,
+  stickyFirstColumn = false,
 }: DataTableProps<T>) {
   // ─── Search State ──────────────────────────────────────────────────────────
   const [internalSearch, setInternalSearch] = useState('');
@@ -215,7 +222,7 @@ export function DataTable<T extends Record<string, unknown>>({
           {caption && <caption style={{ display: 'none' }}>{caption}</caption>}
           <Box as="thead">
             <Box as="tr" bg="bg.subtle" borderBottom="1px solid" borderColor="border">
-              {columns.map((col) => (
+              {columns.map((col, colIdx) => (
                 <Box
                   as="th"
                   key={col.key}
@@ -239,6 +246,17 @@ export function DataTable<T extends Record<string, unknown>>({
                       ? activeDirection === 'asc'
                         ? 'ascending'
                         : 'descending'
+                      : undefined
+                  }
+                  style={
+                    stickyFirstColumn && colIdx === 0
+                      ? {
+                          position: 'sticky',
+                          left: 0,
+                          zIndex: 2,
+                          background: 'var(--chakra-colors-bg-subtle)',
+                          borderRight: '1px solid var(--chakra-colors-border)',
+                        }
                       : undefined
                   }
                 >
@@ -306,7 +324,7 @@ export function DataTable<T extends Record<string, unknown>>({
                     transition="background 0.15s ease"
                     _hover={{ bg: 'bg.subtle' }}
                   >
-                    {columns.map((col) => (
+                    {columns.map((col, colIdx) => (
                       <Box
                         as="td"
                         key={col.key}
@@ -317,6 +335,20 @@ export function DataTable<T extends Record<string, unknown>>({
                         color="text.body"
                         fontFamily="var(--font-body)"
                         verticalAlign="middle"
+                        style={
+                          stickyFirstColumn && colIdx === 0
+                            ? {
+                                position: 'sticky',
+                                left: 0,
+                                zIndex: 1,
+                                background:
+                                  striped && rowIdx % 2 === 1
+                                    ? 'var(--chakra-colors-bg-subtle)'
+                                    : 'var(--chakra-colors-bg-surface)',
+                                borderRight: '1px solid var(--chakra-colors-border)',
+                              }
+                            : undefined
+                        }
                       >
                         {col.render
                           ? col.render(row[col.key], row, rowIdx)

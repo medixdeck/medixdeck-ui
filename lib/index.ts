@@ -178,7 +178,7 @@ export { Progress } from './components/feedback/Progress';
 export type { ProgressProps } from './components/feedback/Progress';
 
 export { Modal } from './components/feedback/Modal';
-export type { ModalProps, ModalSize } from './components/feedback/Modal';
+export type { ModalProps, ModalSize, ModalMobileVariant } from './components/feedback/Modal';
 
 export { Tooltip } from './components/feedback/Tooltip';
 export type { TooltipProps } from './components/feedback/Tooltip';
@@ -232,6 +232,37 @@ export type {
   AppointmentType,
   AppointmentStatus,
 } from './components/healthcare/DoctorCard';
+
+export { PrescriptionCard } from './components/healthcare/PrescriptionCard';
+export type {
+  PrescriptionCardProps,
+  PrescriptionDrug,
+} from './components/healthcare/PrescriptionCard';
+
+export {
+  MedicalRecordBadge,
+  ICD10Badge,
+  BloodTypeBadge,
+  AllergyBadge,
+} from './components/healthcare/MedicalRecordBadge';
+export type {
+  MedicalRecordBadgeProps,
+  ICD10BadgeProps,
+  BloodTypeBadgeProps,
+  BloodType,
+  AllergyBadgeProps,
+  AllergySeverity,
+} from './components/healthcare/MedicalRecordBadge';
+
+export { TelehealthCallBar } from './components/healthcare/TelehealthCallBar';
+export type { TelehealthCallBarProps } from './components/healthcare/TelehealthCallBar';
+
+export { PatientTimeline } from './components/healthcare/PatientTimeline';
+export type {
+  PatientTimelineProps,
+  TimelineEvent,
+  TimelineEventType,
+} from './components/healthcare/PatientTimeline';
 
 // ─── Re-export useful Chakra UI primitives ─────────────────────────────────────
 export {
