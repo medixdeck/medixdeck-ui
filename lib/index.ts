@@ -137,6 +137,9 @@ export type {
   DashboardUser,
   DashboardDropdownItem,
   DashboardColorScheme,
+  DashboardEnvironment,
+  DashboardEnvironmentBannerStatus,
+  DashboardEnvironmentBannerConfig,
 } from './components/layout/DashboardLayout';
 
 // ─── Navigation Components ─────────────────────────────────────────────────────

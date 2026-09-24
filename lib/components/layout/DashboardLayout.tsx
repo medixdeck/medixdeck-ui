@@ -7,6 +7,8 @@ import { useThemeMode, type ThemeModeSetting } from '../../hooks/useThemeMode';
 import { Logo } from '../primitive/Logo';
 import { Avatar } from '../primitive/Avatar';
 
+declare const process: any;
+
 // ─── Brand colours (native-first pattern per AGENTS.md §15) ──────────────────
 
 export type DashboardColorScheme = 'blue' | 'purple';
@@ -201,10 +203,129 @@ const SystemIcon = () => (
     <rect x="3" y="4" width="18" height="12" rx="2" />
     <line x1="8" y1="20" x2="16" y2="20" />
     <line x1="12" y1="16" x2="12" y2="20" />
+const FlaskIcon = () => (
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M10 2v7.31a2 2 0 0 1-.37 1.17L4.22 18A3 3 0 0 0 6.78 22h10.44a3 3 0 0 0 2.56-4l-5.41-7.52A2 2 0 0 1 14 9.31V2" />
+    <line x1="8.5" y1="2" x2="15.5" y2="2" />
+    <path d="M8.5 14h7" />
+  </svg>
+);
+
+const ShieldAlertIcon = () => (
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <line x1="12" y1="8" x2="12" y2="12" />
+    <line x1="12" y1="16" x2="12.01" y2="16" />
+  </svg>
+);
+
+const AlertTriangleIcon = () => (
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+    <line x1="12" y1="9" x2="12" y2="13" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+  </svg>
+);
+
+const CloseBannerIcon = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+
+export type DashboardEnvironment =
+  | 'auto'
+  | 'production'
+  | 'live'
+  | 'sandbox'
+  | 'test'
+  | 'development'
+  | 'staging'
+  | 'preview';
+
+export type DashboardEnvironmentBannerStatus = 'warning' | 'info' | 'error' | 'neutral';
+
+export interface DashboardEnvironmentBannerConfig {
+  /**
+   * Override environment classification for the banner.
+   * @default "auto"
+   */
+  environment?: DashboardEnvironment;
+
+  /**
+   * Title badge label (e.g. "SANDBOX MODE", "TEST ENVIRONMENT").
+   * Automatically inferred if omitted.
+   */
+  badgeLabel?: string;
+
+  /**
+   * Custom descriptive message.
+   * Defaults to a standard non-production notice.
+   */
+  message?: string;
+
+  /**
+   * Visual status theme variant.
+   * @default "warning"
+   */
+  status?: DashboardEnvironmentBannerStatus;
+
+  /**
+   * Action link or button rendered on the right side of the banner.
+   * @example <a href="https://app.medixdeck.com">Switch to Live →</a>
+   */
+  action?: React.ReactNode;
+
+  /**
+   * Whether the banner includes a dismiss (✕) button.
+   * @default false
+   */
+  dismissible?: boolean;
+
+  /**
+   * Called when the dismiss button is clicked.
+   */
+  onDismiss?: () => void;
+}
 
 export interface DashboardNavItem {
   /** Display label for the nav item. */
@@ -408,6 +529,32 @@ export interface DashboardLayoutProps extends Omit<BoxProps, 'children'> {
    * ```
    */
   scoreCard?: DashboardScoreCardData;
+
+  /**
+   * Environment setting for automatic banner detection.
+   * When 'auto' (default), automatically detects local development, test, staging, and sandbox environments.
+   * Set to 'production' or 'live' to suppress the banner.
+   * @default "auto"
+   */
+  environment?: DashboardEnvironment;
+
+  /**
+   * Explicitly force or suppress the environment banner.
+   * - `false`: Always hide the banner.
+   * - `true`: Always show the banner.
+   * - `undefined`: Automatically determined by `environment`.
+   */
+  showEnvironmentBanner?: boolean;
+
+  /**
+   * Detailed configuration for the environment banner.
+   */
+  environmentBanner?: DashboardEnvironmentBannerConfig;
+
+  /**
+   * Custom slot to completely override the environment banner UI while preserving layout flow.
+   */
+  environmentBannerSlot?: React.ReactNode;
 }
 
 // ─── Helper: default link renderer ───────────────────────────────────────────
@@ -425,6 +572,358 @@ function autoGreeting(): string {
   if (h < 12) return 'Good morning';
   if (h < 17) return 'Good afternoon';
   return 'Good evening';
+}
+
+// ─── Environment Banner Theming & Detection ───────────────────────────────────
+
+const BANNER_STATUS_THEMES: Record<
+  DashboardEnvironmentBannerStatus,
+  {
+    bg: string;
+    border: string;
+    text: string;
+    darkBg: string;
+    darkBorder: string;
+    darkText: string;
+    badgeBg: string;
+    badgeColor: string;
+  }
+> = {
+  warning: {
+    bg: '#FFFBEB',
+    border: '#FDE68A',
+    text: '#92400E',
+    darkBg: 'rgba(245,158,11,0.12)',
+    darkBorder: 'rgba(245,158,11,0.25)',
+    darkText: '#FDE68A',
+    badgeBg: '#F59E0B',
+    badgeColor: '#FFFFFF',
+  },
+  info: {
+    bg: '#EFF6FF',
+    border: '#BFDBFE',
+    text: '#1E40AF',
+    darkBg: 'rgba(6,133,255,0.12)',
+    darkBorder: 'rgba(6,133,255,0.25)',
+    darkText: '#93C5FD',
+    badgeBg: '#0685FF',
+    badgeColor: '#FFFFFF',
+  },
+  error: {
+    bg: '#FEF2F2',
+    border: '#FECACA',
+    text: '#991B1B',
+    darkBg: 'rgba(239,68,68,0.12)',
+    darkBorder: 'rgba(239,68,68,0.25)',
+    darkText: '#FCA5A5',
+    badgeBg: '#EF4444',
+    badgeColor: '#FFFFFF',
+  },
+  neutral: {
+    bg: 'bg.surface',
+    border: 'var(--chakra-colors-border)',
+    text: 'text.body',
+    darkBg: 'bg.surface',
+    darkBorder: 'var(--chakra-colors-border)',
+    darkText: 'text.heading',
+    badgeBg: '#6B7280',
+    badgeColor: '#FFFFFF',
+  },
+};
+
+/**
+ * Safely inspects the execution environment across React meta-frameworks
+ * (Next.js, Vite, Remix, TanStack Start, Astro, SolidJS bridges) without throwing
+ * ReferenceErrors or causing SSR hydration mismatches.
+ */
+function detectDashboardEnvironment(
+  explicitEnv?: DashboardEnvironment
+): { isNonProduction: boolean; detectedEnv: DashboardEnvironment } {
+  if (explicitEnv && explicitEnv !== 'auto') {
+    const isNonProd = explicitEnv !== 'production' && explicitEnv !== 'live';
+    return { isNonProduction: isNonProd, detectedEnv: explicitEnv };
+  }
+
+  // 1. Check process.env (Node.js, Next.js, Remix, Webpack)
+  try {
+    if (typeof process !== 'undefined' && process && process.env) {
+      const nodeEnv = process.env.NODE_ENV;
+      const vercelEnv = process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV;
+      const medixEnv =
+        process.env.MEDIX_ENV ||
+        process.env.NEXT_PUBLIC_MEDIX_ENV ||
+        process.env.PUBLIC_MEDIX_ENV;
+      const netlifyContext = process.env.CONTEXT;
+
+      if (medixEnv) {
+        const lower = String(medixEnv).toLowerCase();
+        if (lower === 'sandbox') return { isNonProduction: true, detectedEnv: 'sandbox' };
+        if (lower === 'staging') return { isNonProduction: true, detectedEnv: 'staging' };
+        if (lower === 'test') return { isNonProduction: true, detectedEnv: 'test' };
+        if (lower === 'dev' || lower === 'development')
+          return { isNonProduction: true, detectedEnv: 'development' };
+        if (lower === 'production' || lower === 'live')
+          return { isNonProduction: false, detectedEnv: 'production' };
+      }
+
+      if (vercelEnv === 'preview') return { isNonProduction: true, detectedEnv: 'preview' };
+      if (vercelEnv === 'development') return { isNonProduction: true, detectedEnv: 'development' };
+      if (netlifyContext === 'deploy-preview' || netlifyContext === 'branch-deploy') {
+        return { isNonProduction: true, detectedEnv: 'preview' };
+      }
+      if (nodeEnv === 'development') return { isNonProduction: true, detectedEnv: 'development' };
+      if (nodeEnv === 'test') return { isNonProduction: true, detectedEnv: 'test' };
+    }
+  } catch {
+    // Ignore ReferenceError / SecurityError
+  }
+
+  // 2. Check import.meta.env (Vite, Astro, ES modules)
+  try {
+    // @ts-ignore
+    if (typeof import.meta !== 'undefined' && import.meta && import.meta.env) {
+      // @ts-ignore
+      const viteMode = import.meta.env.MODE;
+      // @ts-ignore
+      const viteMedixEnv = import.meta.env.VITE_MEDIX_ENV || import.meta.env.PUBLIC_MEDIX_ENV;
+
+      if (viteMedixEnv) {
+        const lower = String(viteMedixEnv).toLowerCase();
+        if (lower === 'sandbox') return { isNonProduction: true, detectedEnv: 'sandbox' };
+        if (lower === 'staging') return { isNonProduction: true, detectedEnv: 'staging' };
+        if (lower === 'test') return { isNonProduction: true, detectedEnv: 'test' };
+        if (lower === 'dev' || lower === 'development')
+          return { isNonProduction: true, detectedEnv: 'development' };
+        if (lower === 'production' || lower === 'live')
+          return { isNonProduction: false, detectedEnv: 'production' };
+      }
+
+      if (viteMode === 'development') return { isNonProduction: true, detectedEnv: 'development' };
+      if (viteMode === 'test') return { isNonProduction: true, detectedEnv: 'test' };
+      if (viteMode === 'staging') return { isNonProduction: true, detectedEnv: 'staging' };
+      if (viteMode === 'sandbox') return { isNonProduction: true, detectedEnv: 'sandbox' };
+    }
+  } catch {
+    // Ignore ReferenceError
+  }
+
+  // 3. Client-side browser hostname detection
+  if (typeof window !== 'undefined' && window.location && window.location.hostname) {
+    const host = window.location.hostname.toLowerCase();
+
+    // Localhost & local dev loopbacks
+    if (
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === '[::1]' ||
+      host === '0.0.0.0' ||
+      host.endsWith('.local') ||
+      host.endsWith('.test') ||
+      host.endsWith('.internal') ||
+      host.includes('.ngrok') ||
+      host.includes('.loca.lt')
+    ) {
+      return { isNonProduction: true, detectedEnv: 'development' };
+    }
+
+    // Cloud preview & staging domains
+    if (
+      host.endsWith('.vercel.app') ||
+      host.endsWith('.netlify.app') ||
+      host.endsWith('.pages.dev') ||
+      host.endsWith('.amplifyapp.com') ||
+      host.endsWith('.onrender.com') ||
+      host.endsWith('.fly.dev') ||
+      host.endsWith('.azurestaticapps.net')
+    ) {
+      return { isNonProduction: true, detectedEnv: 'preview' };
+    }
+
+    // Explicit subdomain or naming patterns
+    if (host.startsWith('sandbox.') || host.includes('-sandbox.')) {
+      return { isNonProduction: true, detectedEnv: 'sandbox' };
+    }
+    if (host.startsWith('staging.') || host.startsWith('stage.') || host.includes('-staging.')) {
+      return { isNonProduction: true, detectedEnv: 'staging' };
+    }
+    if (host.startsWith('test.') || host.startsWith('qa.') || host.includes('-test.')) {
+      return { isNonProduction: true, detectedEnv: 'test' };
+    }
+    if (host.startsWith('dev.') || host.includes('-dev.')) {
+      return { isNonProduction: true, detectedEnv: 'development' };
+    }
+  }
+
+  return { isNonProduction: false, detectedEnv: 'production' };
+}
+
+function getDefaultBadgeLabel(env: DashboardEnvironment): string {
+  switch (env) {
+    case 'sandbox':
+      return 'SANDBOX ENVIRONMENT';
+    case 'staging':
+      return 'STAGING ENVIRONMENT';
+    case 'test':
+      return 'TEST ENVIRONMENT';
+    case 'preview':
+      return 'PREVIEW DEPLOYMENT';
+    case 'development':
+      return 'DEVELOPMENT MODE';
+    default:
+      return 'NON-PRODUCTION ENVIRONMENT';
+  }
+}
+
+interface DashboardEnvironmentBannerProps {
+  detectedEnv: DashboardEnvironment;
+  config: DashboardEnvironmentBannerConfig;
+  onDismiss: () => void;
+}
+
+function DashboardEnvironmentBanner({
+  detectedEnv,
+  config,
+  onDismiss,
+}: DashboardEnvironmentBannerProps) {
+  const status: DashboardEnvironmentBannerStatus =
+    config.status ??
+    (detectedEnv === 'staging' || detectedEnv === 'preview'
+      ? 'info'
+      : detectedEnv === 'test'
+        ? 'error'
+        : 'warning');
+
+  const statusTheme = BANNER_STATUS_THEMES[status] ?? BANNER_STATUS_THEMES.warning;
+  const resolvedBadgeLabel = config.badgeLabel ?? getDefaultBadgeLabel(detectedEnv);
+  const resolvedMessage =
+    config.message ??
+    'You are in a non-production test/sandbox environment. Simulated patient records, transactions, and actions will not affect live data.';
+
+  const icon =
+    status === 'info' ? (
+      <ShieldAlertIcon />
+    ) : status === 'error' ? (
+      <AlertTriangleIcon />
+    ) : (
+      <FlaskIcon />
+    );
+
+  return (
+    <Box
+      as="aside"
+      role="status"
+      aria-live="polite"
+      aria-label={`${resolvedBadgeLabel}: ${resolvedMessage}`}
+      position="sticky"
+      top="0"
+      zIndex="banner"
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      flexWrap="wrap"
+      gap="3"
+      px={{ base: '3', md: '5' }}
+      py="2"
+      minH="36px"
+      borderBottom="1px solid"
+      borderColor={statusTheme.border}
+      bg={statusTheme.bg}
+      color={statusTheme.text}
+      _dark={{
+        bg: statusTheme.darkBg,
+        borderColor: statusTheme.darkBorder,
+        color: statusTheme.darkText,
+      }}
+      transition="background 0.2s ease, border-color 0.2s ease"
+    >
+      {/* Left side: Icon + Badge + Message */}
+      <Box display="flex" alignItems="center" gap="2.5" minW="0" flex="1">
+        <Box
+          display="inline-flex"
+          alignItems="center"
+          justifyContent="center"
+          flexShrink={0}
+          color={statusTheme.badgeBg}
+        >
+          {icon}
+        </Box>
+
+        <Box
+          as="span"
+          display="inline-flex"
+          alignItems="center"
+          px="2"
+          py="0.5"
+          borderRadius="full"
+          fontSize="10px"
+          fontWeight="700"
+          letterSpacing="0.06em"
+          textTransform="uppercase"
+          fontFamily="var(--font-body)"
+          lineHeight="1"
+          flexShrink={0}
+          style={{
+            background: statusTheme.badgeBg,
+            color: statusTheme.badgeColor,
+          }}
+        >
+          {resolvedBadgeLabel}
+        </Box>
+
+        <Box
+          as="span"
+          fontSize="xs"
+          fontWeight="500"
+          fontFamily="var(--font-body)"
+          lineHeight="1.4"
+          color="inherit"
+          style={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+          display={{ base: 'none', sm: 'inline-block' }}
+        >
+          {resolvedMessage}
+        </Box>
+      </Box>
+
+      {/* Right side: Action + Dismiss button */}
+      <Box display="flex" alignItems="center" gap="2.5" flexShrink={0}>
+        {config.action}
+
+        {config.dismissible && (
+          <Box
+            as="button"
+            type="button"
+            onClick={onDismiss}
+            aria-label="Dismiss environment banner"
+            display="inline-flex"
+            alignItems="center"
+            justifyContent="center"
+            w="6"
+            h="6"
+            borderRadius="md"
+            border="none"
+            bg="transparent"
+            color="inherit"
+            cursor="pointer"
+            opacity={0.8}
+            _hover={{ opacity: 1, bg: 'blackAlpha.100' }}
+            _dark={{ _hover: { bg: 'whiteAlpha.100' } }}
+            _focusVisible={{
+              outline: '2px solid',
+              outlineColor: statusTheme.badgeBg,
+              outlineOffset: '1px',
+            }}
+            transition="background 0.15s ease, opacity 0.15s ease"
+          >
+            <CloseBannerIcon />
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
 }
 
 const themeOptions: Array<{
@@ -1764,14 +2263,38 @@ export function DashboardLayout({
   colorScheme = 'blue',
   mobileNavItems,
   scoreCard,
+  environment = 'auto',
+  showEnvironmentBanner,
+  environmentBanner,
+  environmentBannerSlot,
   ...rest
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const scheme = SCHEME_COLORS[colorScheme];
   const hasMobileNav = !!(mobileNavItems && mobileNavItems.length > 0);
 
   const resolvedGreeting = greeting ?? autoGreeting();
   const resolvedLogo = logo ?? <Logo variant={colorScheme} height={26} />;
+
+  // ─── Environment Banner Detection ───
+  const envConfig = environmentBanner || {};
+  const activeEnv = envConfig.environment || environment;
+  const { isNonProduction, detectedEnv } = detectDashboardEnvironment(activeEnv);
+
+  const shouldShowBanner =
+    !bannerDismissed &&
+    (showEnvironmentBanner !== undefined
+      ? showEnvironmentBanner
+      : isMounted
+        ? isNonProduction
+        : activeEnv !== 'production' && activeEnv !== 'live');
 
   return (
     <Box display="flex" minH="100vh" bg="bg" {...rest}>
@@ -1797,6 +2320,19 @@ export function DashboardLayout({
         ml={{ base: '0', md: `${sidebarWidth}px` }}
         transition="margin-left 0.25s cubic-bezier(0.22,1,0.36,1)"
       >
+        {/* Environment Banner (test / sandbox / dev indicator) */}
+        {shouldShowBanner &&
+          (environmentBannerSlot ?? (
+            <DashboardEnvironmentBanner
+              detectedEnv={detectedEnv}
+              config={envConfig}
+              onDismiss={() => {
+                setBannerDismissed(true);
+                envConfig.onDismiss?.();
+              }}
+            />
+          ))}
+
         {/* Top bar */}
         <TopBar
           user={user}

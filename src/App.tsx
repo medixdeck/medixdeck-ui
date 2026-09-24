@@ -244,6 +244,12 @@ export default function App() {
     'neurology',
   ]);
 
+  const [dashboardEnv, setDashboardEnv] = React.useState<
+    'auto' | 'sandbox' | 'test' | 'staging' | 'production' | 'custom'
+  >('auto');
+  const [bannerDismissible, setBannerDismissible] = React.useState(true);
+  const [suppressBanner, setSuppressBanner] = React.useState<boolean | undefined>(undefined);
+
   const patientRows = [
     {
       id: '1',
@@ -307,6 +313,31 @@ export default function App() {
           medixScore: 847,
           link: '#doctor-profile',
         }}
+        environment={dashboardEnv === 'custom' ? 'auto' : dashboardEnv}
+        showEnvironmentBanner={suppressBanner}
+        environmentBanner={
+          dashboardEnv === 'custom'
+            ? {
+                environment: 'sandbox',
+                badgeLabel: 'SIMULATION TERMINAL',
+                message:
+                  'Interactive testing sandbox for clinicians & automated QA suites. Live data is protected.',
+                action: (
+                  <Button
+                    size="xs"
+                    variant="outline"
+                    colorScheme="amber"
+                    onClick={() => alert('Live app requested')}
+                  >
+                    Switch to Live →
+                  </Button>
+                ),
+                dismissible: bannerDismissible,
+              }
+            : {
+                dismissible: bannerDismissible,
+              }
+        }
         navGroups={[
           {
             items: [
@@ -355,25 +386,138 @@ export default function App() {
             gap="4"
           >
             <Box>
-              <Text color="text.heading" fontWeight="600" fontSize="lg">
-                Welcome to your dashboard
+              <Text color="text.heading" fontWeight="700" fontSize="xl" fontFamily="var(--font-heading)">
+                Interactive Dashboard Layout Shell
               </Text>
-              <Text mt="1" color="text.body" fontSize="sm">
-                This is the full-screen dashboard preview.
+              <Text mt="1" color="text.muted" fontSize="sm" fontFamily="var(--font-body)">
+                Test environment detection, auto-banners, dismissibility, and framework-safe modes live.
               </Text>
             </Box>
             <Button onClick={() => setShowDashboard(false)} variant="solid" colorScheme="blue">
-              Exit Dashboard
+              Exit Dashboard Preview
             </Button>
           </Box>
+
+          {/* Interactive Environment Banner Controls */}
           <Box
             mt="6"
-            h="800px"
+            p="5"
+            bg="bg"
+            borderRadius="card"
+            border="1px solid"
+            borderColor="border"
+            display="flex"
+            flexDirection="column"
+            gap="4"
+          >
+            <Text fontSize="sm" fontWeight="700" color="text.heading" fontFamily="var(--font-heading)">
+              Test Environment Banner Modes
+            </Text>
+            <Box display="flex" flexWrap="wrap" gap="2.5" alignItems="center">
+              <Button
+                size="xs"
+                variant={dashboardEnv === 'auto' ? 'solid' : 'outline'}
+                colorScheme="amber"
+                onClick={() => {
+                  setDashboardEnv('auto');
+                  setSuppressBanner(undefined);
+                }}
+              >
+                Auto (Detected Dev/Local)
+              </Button>
+              <Button
+                size="xs"
+                variant={dashboardEnv === 'sandbox' ? 'solid' : 'outline'}
+                colorScheme="amber"
+                onClick={() => {
+                  setDashboardEnv('sandbox');
+                  setSuppressBanner(undefined);
+                }}
+              >
+                Explicit Sandbox
+              </Button>
+              <Button
+                size="xs"
+                variant={dashboardEnv === 'test' ? 'solid' : 'outline'}
+                colorScheme="red"
+                onClick={() => {
+                  setDashboardEnv('test');
+                  setSuppressBanner(undefined);
+                }}
+              >
+                Test Environment
+              </Button>
+              <Button
+                size="xs"
+                variant={dashboardEnv === 'staging' ? 'solid' : 'outline'}
+                colorScheme="blue"
+                onClick={() => {
+                  setDashboardEnv('staging');
+                  setSuppressBanner(undefined);
+                }}
+              >
+                Staging Environment
+              </Button>
+              <Button
+                size="xs"
+                variant={dashboardEnv === 'custom' ? 'solid' : 'outline'}
+                colorScheme="purple"
+                onClick={() => {
+                  setDashboardEnv('custom');
+                  setSuppressBanner(undefined);
+                }}
+              >
+                Custom Banner & Action
+              </Button>
+              <Button
+                size="xs"
+                variant={dashboardEnv === 'production' ? 'solid' : 'outline'}
+                colorScheme="green"
+                onClick={() => {
+                  setDashboardEnv('production');
+                  setSuppressBanner(undefined);
+                }}
+              >
+                Production (Suppressed)
+              </Button>
+            </Box>
+
+            <Box display="flex" flexWrap="wrap" gap="3" alignItems="center" pt="2" borderTop="1px solid" borderColor="border">
+              <Button
+                size="xs"
+                variant={bannerDismissible ? 'solid' : 'outline'}
+                colorScheme="purple"
+                onClick={() => setBannerDismissible(!bannerDismissible)}
+              >
+                Dismissible (✕): {bannerDismissible ? 'ON' : 'OFF'}
+              </Button>
+              <Button
+                size="xs"
+                variant={suppressBanner === false ? 'solid' : 'outline'}
+                colorScheme="red"
+                onClick={() => setSuppressBanner(suppressBanner === false ? undefined : false)}
+              >
+                Force Suppress ({suppressBanner === false ? 'Active' : 'Off'})
+              </Button>
+            </Box>
+          </Box>
+
+          <Box
+            mt="6"
+            h="400px"
             bg="bg"
             borderRadius="card"
             border="1px dashed"
             borderColor="border"
-          />
+            p="6"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Text color="text.muted" fontSize="sm" fontFamily="var(--font-body)">
+              Dashboard content workspace (Scrollable area)
+            </Text>
+          </Box>
         </Box>
       </DashboardLayout>
     );
@@ -1014,27 +1158,38 @@ export default function App() {
                   textTransform="uppercase"
                   letterSpacing="0.06em"
                 >
-                  Dashboard Layout Shell
+                  Dashboard Layout & Test/Sandbox Environment Banner
                 </Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  A responsive dashboard shell with a fixed sidebar, top bar, and main content area.
+                  A full-featured responsive shell with automatic test/sandbox environment detection, dismissal controls, doctor score cards, and sticky navigation.
                 </Text>
                 <Box
                   border="1px solid"
                   borderColor="border"
                   borderRadius="card"
-                  overflow="hidden"
-                  p="10"
+                  bg="bg.surface"
+                  p="8"
                   display="flex"
+                  flexDirection="column"
                   alignItems="center"
                   justifyContent="center"
+                  gap="3"
+                  textAlign="center"
                 >
+                  <Text fontSize="sm" fontWeight="600" color="text.heading" fontFamily="var(--font-heading)">
+                    Full-Screen Dashboard with Test & Sandbox Banner
+                  </Text>
+                  <Text fontSize="xs" color="text.muted" maxW="480px" fontFamily="var(--font-body)">
+                    Click below to open the live interactive shell and test environment switching (Auto, Sandbox, Test, Staging, Production).
+                  </Text>
                   <Button
                     onClick={() => setShowDashboard(true)}
                     variant="solid"
                     colorScheme="purple"
+                    size="md"
+                    mt="1"
                   >
-                    Launch Full-Screen Dashboard Layout
+                    Launch Interactive Dashboard
                   </Button>
                 </Box>
               </Box>

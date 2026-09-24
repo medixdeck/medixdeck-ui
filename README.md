@@ -424,23 +424,83 @@ An optional second line below the greeting. The top bar expands from 64 px → 8
 </DashboardLayout>
 ```
 
+### Automatic Test & Sandbox Environment Banner
+
+`DashboardLayout` includes a built-in, cross-framework test & sandbox environment banner that displays **automatically by default** whenever the app runs in non-production environments (e.g. `localhost`, `*.vercel.app`, `*.netlify.app`, `*.pages.dev`, `*staging*`, `*sandbox*`, `*dev*`, `*test*`, or `NODE_ENV !== 'production'`).
+
+It is completely safe across SSR and CSR runtimes (Next.js App/Pages Router, Vite + React, Remix, Astro, TanStack Start, SolidJS bridges) with zero hydration mismatches.
+
+```tsx
+// 1. Automatic Default: Displays automatically in local / staging / sandbox / preview environments
+<DashboardLayout user={user} navGroups={navGroups}>
+  {children}
+</DashboardLayout>
+
+// 2. Explicit Sandbox / Test / Staging Mode
+<DashboardLayout environment="sandbox" user={user} navGroups={navGroups}>
+  {children}
+</DashboardLayout>
+
+// 3. Custom Banner Configuration (custom message, custom badge label, action button, dismissible)
+<DashboardLayout
+  environmentBanner={{
+    environment: 'sandbox',
+    badgeLabel: 'SIMULATION LAB',
+    message: 'Simulated clinical testing environment. Actions will not affect live patient records.',
+    action: <a href="https://app.medixdeck.com">Switch to Live →</a>,
+    dismissible: true,
+    onDismiss: () => console.log('Banner closed'),
+  }}
+  user={user}
+  navGroups={navGroups}
+>
+  {children}
+</DashboardLayout>
+
+// 4. Suppress banner completely in any environment
+<DashboardLayout showEnvironmentBanner={false} user={user} navGroups={navGroups}>
+  {children}
+</DashboardLayout>
+
+// 5. Or mark environment as production
+<DashboardLayout environment="production" user={user} navGroups={navGroups}>
+  {children}
+</DashboardLayout>
+```
+
+`DashboardEnvironmentBannerConfig` props:
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `environment` | `"auto" \| "production" \| "live" \| "sandbox" \| "test" \| "development" \| "staging" \| "preview"` | `"auto"` | Environment classification |
+| `badgeLabel` | `string` | auto | Uppercase badge label (e.g., `"SANDBOX ENVIRONMENT"`) |
+| `message` | `string` | auto | Descriptive warning / notice text |
+| `status` | `"warning" \| "info" \| "error" \| "neutral"` | auto | Visual color scheme (amber warning, blue info, red error) |
+| `action` | `ReactNode` | — | Action link or button on the right |
+| `dismissible` | `boolean` | `false` | Shows a close (✕) button |
+| `onDismiss` | `() => void` | — | Called when the close button is clicked |
+
 ### All `DashboardLayout` props
 
-| Prop              | Type                            | Default    | Description                                   |
-| ----------------- | ------------------------------- | ---------- | --------------------------------------------- |
-| `user`            | `DashboardUser`                 | —          | Name, email, optional avatar                  |
-| `navGroups`       | `DashboardNavGroup[]`           | —          | Sidebar navigation tree                       |
-| `colorScheme`     | `"blue" \| "purple"`            | `"blue"`   | Brand accent colour                           |
-| `logo`            | `ReactNode`                     | `<Logo />` | Override the sidebar logo                     |
-| `greeting`        | `string`                        | auto       | Override "Good morning / afternoon / evening" |
-| `greetingSubtext` | `string`                        | —          | Subtitle line below the greeting              |
-| `mobileNavItems`  | `DashboardMobileNavItem[]`      | —          | Mobile bottom tab bar items                   |
-| `scoreCard`       | `DashboardScoreCardData`        | —          | Doctor identity card (desktop only)           |
-| `topBarSlot`      | `ReactNode`                     | —          | Slot right of greeting (search, bell, etc.)   |
-| `dropdownItems`   | `DashboardDropdownItem[]`       | —          | Extra user dropdown items                     |
-| `sidebarWidth`    | `number`                        | `220`      | Sidebar width in px                           |
-| `renderLink`      | `(item, children) => ReactNode` | `<a>`      | Router integration                            |
-| `onLogout`        | `() => void`                    | —          | Logout callback                               |
+| Prop                     | Type                                | Default    | Description                                   |
+| ------------------------ | ----------------------------------- | ---------- | --------------------------------------------- |
+| `user`                   | `DashboardUser`                     | —          | Name, email, optional avatar                  |
+| `navGroups`              | `DashboardNavGroup[]`               | —          | Sidebar navigation tree                       |
+| `colorScheme`            | `"blue" \| "purple"`                | `"blue"`   | Brand accent colour                           |
+| `environment`            | `DashboardEnvironment`              | `"auto"`   | Auto-detects test/sandbox/staging environments |
+| `showEnvironmentBanner`   | `boolean`                           | auto       | Force show (`true`) or suppress (`false`) banner |
+| `environmentBanner`      | `DashboardEnvironmentBannerConfig`  | —          | Detailed banner message, action, & dismiss config |
+| `environmentBannerSlot`  | `ReactNode`                         | —          | Custom slot overriding the entire banner      |
+| `logo`                   | `ReactNode`                         | `<Logo />` | Override the sidebar logo                     |
+| `greeting`               | `string`                            | auto       | Override "Good morning / afternoon / evening" |
+| `greetingSubtext`        | `string`                            | —          | Subtitle line below the greeting              |
+| `mobileNavItems`         | `DashboardMobileNavItem[]`          | —          | Mobile bottom tab bar items                   |
+| `scoreCard`              | `DashboardScoreCardData`            | —          | Doctor identity card (desktop only)           |
+| `topBarSlot`             | `ReactNode`                         | —          | Slot right of greeting (search, bell, etc.)   |
+| `dropdownItems`          | `DashboardDropdownItem[]`           | —          | Extra user dropdown items                     |
+| `sidebarWidth`           | `number`                            | `220`      | Sidebar width in px                           |
+| `renderLink`             | `(item, children) => ReactNode`     | `<a>`      | Router integration                            |
+| `onLogout`               | `() => void`                        | —          | Logout callback                               |
 
 ## Footer
 

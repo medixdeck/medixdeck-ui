@@ -6,6 +6,17 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 
+- **`DashboardLayout` — Automatic Test & Sandbox Environment Banner**:
+  - Added built-in cross-framework test & sandbox environment banner that displays automatically in non-production environments (`localhost`, `*.vercel.app`, `*.netlify.app`, `*.pages.dev`, `*staging*`, `*sandbox*`, `*dev*`, `*test*`, or non-production `NODE_ENV` / `MODE` flags).
+  - Universal meta-framework compatibility: Safe across SSR and CSR runtimes (Next.js App & Pages Routers, Vite + React, Remix, Astro, TanStack Start, SolidJS bridges) with zero hydration mismatches.
+  - Added `environment` prop (`"auto" | "production" | "live" | "sandbox" | "test" | "development" | "staging" | "preview"`), `showEnvironmentBanner` (boolean override), `environmentBanner` configuration object (`badgeLabel`, `message`, `status`, `action`, `dismissible`, `onDismiss`), and `environmentBannerSlot` (custom slot replacement).
+  - Fully styled with MedixDeck design system rules: zero `boxShadow`, clean 1px solid borders, semantic tokens, dark mode compatibility, and inline SVGs.
+  - Exported `DashboardEnvironment`, `DashboardEnvironmentBannerStatus`, `DashboardEnvironmentBannerConfig` from `@medixdeck/ui`.
+
+---
+
+### Added
+
 - **`Navbar` — Multi-Level Animated Dropdown Menus & Rich Sub-items**:
   - Added support for desktop floating dropdown panels via nested `children?: NavItem[]`.
   - Added rich dropdown item metadata: `description` (subtitles), leading `icon` (SVGs/icons), status/tag `badge` (e.g. "Popular", "NDPR", "New"), and `isExternal` indicator.
