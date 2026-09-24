@@ -11,6 +11,7 @@ Use this repository as a **publishable React UI library**, not an app.
 - Prefer semantic tokens for styling; use the repo's native-first pattern for brand-critical interactive states.
 - **No `boxShadow` or `shadow`**: Do NOT use `boxShadow`, `shadow`, `card-light`, or `card-dark` props. Rely on clean borders (`border="1px solid" borderColor="border"`) for layout separation.
 - Apply dark mode on `document.documentElement`.
+- **Collapsible Rails & Flyouts**: Switch nav containers to `overflowY="visible"` when collapsed to prevent flyout clipping, and wrap `Tooltip` triggers in full-width flex centering containers (`display="flex" justifyContent="center" w="full"`).
 
 ## Release expectations
 
