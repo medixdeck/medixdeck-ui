@@ -2,7 +2,46 @@
 
 All notable changes to `@medixdeck/ui` are documented here.
 
-## [0.1.18] — 2026-07-27
+## [Unreleased]
+
+### Added
+
+- **`DashboardLayout` — Collapsible Sidebar (Compact Icon Rail & Flyouts)**:
+  - Added collapsible desktop sidebar supporting shrinking from full width (`sidebarWidth = 220px`) into a compact icon rail (`collapsedSidebarWidth = 68px`) and expanding back smoothly.
+  - Added toggle icon buttons (`PanelLeftCloseIcon` ◧ and `PanelLeftOpenIcon` ◨) placed in the sidebar header by default (next to logo when expanded, directly below the logo mark in collapsed rail mode) with `collapseTogglePlacement` (`"sidebar-header" | "topbar" | "both" | "none"`).
+  - Uncontrolled (`collapsible={true}`, `defaultCollapsed={false}`) and controlled (`isCollapsed`, `onCollapseChange`) state management.
+  - Collapsed rail mode component transformations:
+    - Logo transforms into the icon mark (`<Logo type="icon" />` or `collapsedLogo`) with the expand button directly below it.
+    - Navigation items become centered 40px icon pills with tooltips and pinned badges/dots.
+    - Nested sub-items open an anchored floating flyout popover menu on click.
+    - Doctor score card smoothly collapses into a centered circular clinician tier ring avatar with full tooltip metadata.
+    - Section group headings collapse into subtle dividers.
+  - Full backward compatibility, zero shadows (`boxShadow="none"`), 1px solid borders, and full dark mode styling.
+
+---
+
+### Added
+
+- **`DashboardLayout` — Automatic Test & Sandbox Environment Banner**:
+  - Added built-in cross-framework test & sandbox environment banner that displays automatically in non-production environments (`localhost`, `*.vercel.app`, `*.netlify.app`, `*.pages.dev`, `*staging*`, `*sandbox*`, `*dev*`, `*test*`, or non-production `NODE_ENV` / `MODE` flags).
+  - Universal meta-framework compatibility: Safe across SSR and CSR runtimes (Next.js App & Pages Routers, Vite + React, Remix, Astro, TanStack Start, SolidJS bridges) with zero hydration mismatches.
+  - Added `environment` prop (`"auto" | "production" | "live" | "sandbox" | "test" | "development" | "staging" | "preview"`), `showEnvironmentBanner` (boolean override), `environmentBanner` configuration object (`badgeLabel`, `message`, `status`, `action`, `dismissible`, `onDismiss`), and `environmentBannerSlot` (custom slot replacement).
+  - Fully styled with MedixDeck design system rules: zero `boxShadow`, clean 1px solid borders, semantic tokens, dark mode compatibility, and inline SVGs.
+  - Exported `DashboardEnvironment`, `DashboardEnvironmentBannerStatus`, `DashboardEnvironmentBannerConfig` from `@medixdeck/ui`.
+
+---
+
+### Added
+
+- **`Navbar` — Multi-Level Animated Dropdown Menus & Rich Sub-items**:
+  - Added support for desktop floating dropdown panels via nested `children?: NavItem[]`.
+  - Added rich dropdown item metadata: `description` (subtitles), leading `icon` (SVGs/icons), status/tag `badge` (e.g. "Popular", "NDPR", "New"), and `isExternal` indicator.
+  - Added mobile menu accordion navigation with collapsible sub-menus, smooth Framer Motion height animations, and 180° animated chevron toggles.
+  - Full backward compatibility with simple flat `navItems`.
+  - Strict zero-shadow design system compliance (`boxShadow="none"`, `border="1px solid" borderColor="border"`).
+  - Accessibility improvements: `aria-haspopup="menu"`, `aria-expanded`, keyboard navigation (`Escape`, `Enter`), and click-outside listeners.
+
+---
 
 ### Added
 
