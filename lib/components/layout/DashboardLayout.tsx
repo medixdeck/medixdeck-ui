@@ -1437,35 +1437,36 @@ function SidebarNavItem({
 
     // Leaf item in collapsed mode
     const railContent = (
-      <Tooltip label={item.label} placement="right">
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          w="10"
-          h="10"
-          mx="auto"
-          my="0.5"
-          borderRadius="lg"
-          position="relative"
-          aria-label={item.label}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          onClick={onClick}
-          style={{
-            background: isActive
-              ? scheme.activeBgLight
-              : hovered
-                ? scheme.hoverBgLight
-                : 'transparent',
-            outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
-            outlineOffset: focusVisible ? '2px' : undefined,
-            transition: 'background 0.15s ease',
-          }}
-          _dark={{
-            bg: isActive ? scheme.activeBgDark : hovered ? scheme.hoverBgDark : 'transparent',
-          }}
-        >
+      <Box display="flex" justifyContent="center" alignItems="center" w="full">
+        <Tooltip label={item.label} placement="right">
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="10"
+            h="10"
+            mx="auto"
+            my="0.5"
+            borderRadius="lg"
+            position="relative"
+            aria-label={item.label}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            onClick={onClick}
+            style={{
+              background: isActive
+                ? scheme.activeBgLight
+                : hovered
+                  ? scheme.hoverBgLight
+                  : 'transparent',
+              outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
+              outlineOffset: focusVisible ? '2px' : undefined,
+              transition: 'background 0.15s ease',
+            }}
+            _dark={{
+              bg: isActive ? scheme.activeBgDark : hovered ? scheme.hoverBgDark : 'transparent',
+            }}
+          >
           {item.icon && (
             <Box
               display="flex"
@@ -1523,10 +1524,11 @@ function SidebarNavItem({
           )}
         </Box>
       </Tooltip>
-    );
+    </Box>
+  );
 
-    return render(item, railContent);
-  }
+  return render(item, railContent);
+}
 
   // ─── Normal Expanded Mode Rendering ───
   const rowContent = (
@@ -1951,61 +1953,64 @@ function SidebarScoreCard({
 
   if (isCollapsed) {
     const compactInner = (
-      <Tooltip
-        label={`${data.role} — ${data.name} (${tier.label}, ${data.medixScore} pts)`}
-        placement="right"
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          my="3"
-          mx="auto"
-          aria-label={`${data.role} ${data.name}`}
-          cursor={data.link ? 'pointer' : 'default'}
+      <Box display="flex" justifyContent="center" alignItems="center" w="full" my="2">
+        <Tooltip
+          label={`${data.role} — ${data.name} (${tier.label}, ${data.medixScore} pts)`}
+          placement="right"
         >
-          <div
-            style={{
-              flexShrink: 0,
-              padding: 2,
-              borderRadius: '50%',
-              background: `linear-gradient(135deg, ${tier.ring}, ${tier.color})`,
-            }}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="36px"
+            h="36px"
+            mx="auto"
+            aria-label={`${data.role} ${data.name}`}
+            cursor={data.link ? 'pointer' : 'default'}
           >
-            {data.avatarSrc ? (
-              <img
-                src={data.avatarSrc}
-                alt={data.name}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  display: 'block',
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  background: tier.bg,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: tier.color,
-                  fontFamily: 'var(--font-heading)',
-                }}
-              >
-                {initials}
-              </div>
-            )}
-          </div>
-        </Box>
-      </Tooltip>
+            <div
+              style={{
+                flexShrink: 0,
+                padding: 2,
+                borderRadius: '50%',
+                background: `linear-gradient(135deg, ${tier.ring}, ${tier.color})`,
+              }}
+            >
+              {data.avatarSrc ? (
+                <img
+                  src={data.avatarSrc}
+                  alt={data.name}
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    display: 'block',
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: tier.bg,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: tier.color,
+                    fontFamily: 'var(--font-heading)',
+                  }}
+                >
+                  {initials}
+                </div>
+              )}
+            </div>
+          </Box>
+        </Tooltip>
+      </Box>
     );
 
     if (data.link) {
@@ -2338,7 +2343,14 @@ function Sidebar({
 
         {/* ── Doctor score card (desktop only, optional) ── */}
         {scoreCard && (
-          <Box display={{ base: 'none', md: 'block' }} flexShrink={0} pt={isCollapsed ? '1' : '3'}>
+          <Box
+            display={{ base: 'none', md: isCollapsed ? 'flex' : 'block' }}
+            justifyContent={isCollapsed ? 'center' : undefined}
+            alignItems={isCollapsed ? 'center' : undefined}
+            w="full"
+            flexShrink={0}
+            pt={isCollapsed ? '1' : '3'}
+          >
             <SidebarScoreCard data={scoreCard} renderLink={renderLink} isCollapsed={isCollapsed} />
           </Box>
         )}
@@ -2398,6 +2410,10 @@ function Sidebar({
           flexShrink={0}
           borderTop="1px solid"
           borderColor="border"
+          display={isCollapsed ? 'flex' : 'block'}
+          justifyContent={isCollapsed ? 'center' : undefined}
+          alignItems={isCollapsed ? 'center' : undefined}
+          w="full"
         >
           {isCollapsed ? (
             <Tooltip label="Log out" placement="right">
@@ -2406,8 +2422,9 @@ function Sidebar({
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                w="full"
+                w="10"
                 h="10"
+                mx="auto"
                 borderRadius="lg"
                 border="none"
                 bg="transparent"
