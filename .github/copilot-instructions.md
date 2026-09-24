@@ -7,4 +7,5 @@ Treat this repository as a publishable React component library.
 - Keep `README.md`, `src/App.tsx`, Storybook stories, and `CHANGELOG.md` aligned with the package API.
 - Use Chakra UI v3 APIs and semantic tokens.
 - Do NOT use `boxShadow`, `shadow`, `card-light`, or `card-dark` props. Rely on clean borders (`border="1px solid" borderColor="border"`) instead.
+- Ensure collapsible rail items wrapped in `Tooltip` use full-width flex centering, and collapsed nav containers use `overflowY="visible"` for flyout menus.
 - Run `npm run build`, `npm run test`, and `npm run pack:check` for changes that affect library code or package metadata.
