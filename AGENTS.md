@@ -365,6 +365,9 @@ The dev preview (`src/App.tsx`) showcases every component. When you add a new co
 | Use Chakra `colorPalette` for interactive components (Button, Checkbox, Switch) | Build as native HTML with explicit brand hex values — Chakra recipe engine leaks default blue in hover/focus states |
 | Use string easing in Framer Motion v12 (`ease: "easeOut"`)                      | Use bezier tuples: `[0.0, 0.0, 0.2, 1.0] as [number,number,number,number]`                                          |
 | Use `boxShadow`, `shadow`, `card-light`, or `card-dark`                         | Omit shadows completely; use `boxShadow="none"` and clean borders (`border="1px solid" borderColor="border"`)       |
+| Keep `overflowY="auto"` on collapsed sidebar rail nav containers               | Set `overflowY="visible"` when collapsed so horizontal flyout dropdown menus are not clipped                        |
+| Rely on default block/inline positioning when wrapping rail items in `Tooltip`  | Wrap with `<Box display="flex" justifyContent="center" alignItems="center" w="full">` to maintain horizontal center |
+| Forget to elevate stacking context on open rail flyout parent items             | Set `zIndex={flyoutOpen ? 100 : 1}` on parent item and `zIndex={1500}` on flyout menu                               |
 
 ---
 
@@ -521,3 +524,28 @@ The `Navbar` falls back to `<Logo height={28} />` when no `logo` prop is supplie
 <Navbar logo={<Logo variant="purple" height={28} />} navItems={[...]} />
 <Navbar logo={<img src="/my-logo.png" height={28} alt="Brand" />} navItems={[...]} />
 ```
+
+---
+
+## 17. Collapsible Rails & Flyout Menus
+
+When building or updating collapsible sidebars, rails, and popovers:
+
+1. **Header Toggle Placement**:
+   - In expanded state, collapse toggle resides in the sidebar header alongside brand mark and title.
+   - In collapsed state (e.g., 68px rail), position the expand toggle directly **below** the centered logo mark.
+2. **Overflow & Clipping**:
+   - When sidebar is expanded: `overflowY="auto"` (allows vertical scrolling for long menus).
+   - When sidebar is collapsed: `overflowY="visible"` and `overflowX="visible"` (prevents horizontal flyout menus from being clipped).
+3. **Tooltip Alignment in Narrow Rails**:
+   - Tooltips wrap triggers in `inline-flex` spans. To keep icons, scorecards, avatars, and action buttons centered in narrow rails:
+   ```tsx
+   <Box display="flex" justifyContent="center" alignItems="center" w="full">
+     <Tooltip content="Label" placement="right">
+       <IconButton aria-label="Label" ... />
+     </Tooltip>
+   </Box>
+   ```
+4. **Test Environment Font Injection**:
+   - `MedixProvider` injects external CDN font links. Always keep `globalThis.fetch` mocked in `lib/test/setup.ts` to prevent Happy-DOM network hangs during Vitest runs.
+
