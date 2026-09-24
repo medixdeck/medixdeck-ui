@@ -159,6 +159,7 @@ and an optional mobile bottom navigation bar for native-app-style UX on small sc
 ### Features
 - Responsive sidebar that slides in on mobile
 - Built-in light/dark/system theme toggle (top-right of top bar)
+- **Automatic Test / Sandbox Environment Banner**: automatically shown in non-production environments with custom badges, messages, actions, and dismiss triggers
 - \`colorScheme\` prop → brand blue or purple accent on all interactive elements
 - \`scoreCard\` prop → doctor identity card (avatar ring + MedixScore tier) shown above the sidebar nav on desktop
 - \`mobileNavItems\` prop → fixed bottom tab bar with icon + badge support (mobile only)
@@ -482,6 +483,456 @@ export const FullDoctorDashboard: Story = {
         <PageContent
           title="Full doctor dashboard"
           description="Doctor score card, mobile bottom nav, and greeting subtext all active simultaneously."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+// ─── Environment Banner Stories ───────────────────────────────────────────────
+
+/**
+ * Default auto-detection:
+ * In a development / localhost / Storybook environment, the banner is automatically
+ * displayed with a warning tone without needing any explicit props.
+ */
+export const SandboxAuto: Story = {
+  name: 'Environment / Auto Detection',
+  args: {
+    user: { name: 'Dr. Amaka Okonkwo', email: 'amaka@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'auto',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Automatic Environment Detection"
+          description="The banner is automatically rendered because this environment is detected as non-production (localhost/dev/preview)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Explicit Sandbox environment (`environment="sandbox"`).
+ */
+export const SandboxExplicit: Story = {
+  name: 'Environment / Explicit Sandbox',
+  args: {
+    user: { name: 'Tobi Daniels', email: 'tobi@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'sandbox',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Explicit Sandbox Environment"
+          description="Renders an amber banner with 'SANDBOX ENVIRONMENT' badge."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Explicit Test environment (`environment="test"`).
+ */
+export const TestEnvironment: Story = {
+  name: 'Environment / Test Mode',
+  args: {
+    user: { name: 'QA Engineer', email: 'qa@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'test',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Test Environment"
+          description="Renders a red/error-tinted alert banner for automated QA and testing environments."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Explicit Staging environment (`environment="staging"`).
+ */
+export const StagingEnvironment: Story = {
+  name: 'Environment / Staging Mode',
+  args: {
+    user: { name: 'Clinical Reviewer', email: 'reviewer@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'staging',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Staging Environment"
+          description="Renders an info-blue banner with 'STAGING ENVIRONMENT' badge."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Custom banner configuration with custom badge label, message, and action link.
+ */
+export const CustomBannerConfig: Story = {
+  name: 'Environment / Custom Message & Action',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    environmentBanner: {
+      environment: 'sandbox',
+      badgeLabel: 'SIMULATION LAB',
+      message:
+        'This clinical terminal is running in simulation mode for training and compliance review.',
+      action: (
+        <a
+          href="https://app.medixdeck.com"
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            fontSize: '11px',
+            fontWeight: 700,
+            textDecoration: 'none',
+            color: '#92400E',
+            background: 'rgba(245,158,11,0.15)',
+            border: '1px solid rgba(245,158,11,0.4)',
+            padding: '3px 9px',
+            borderRadius: '6px',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Go to Live App →
+        </a>
+      ),
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Custom Banner Message & Action"
+          description="Custom badge label ('SIMULATION LAB'), custom message, and an inline action link."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Dismissible banner (`dismissible: true`).
+ */
+export const DismissibleBanner: Story = {
+  name: 'Environment / Dismissible Banner',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    environmentBanner: {
+      environment: 'sandbox',
+      dismissible: true,
+      onDismiss: () => console.log('Environment banner dismissed'),
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Dismissible Banner"
+          description="Click the ✕ button in the top-right corner to dismiss the banner for the current session."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Custom banner slot (`environmentBannerSlot`).
+ */
+export const CustomBannerSlot: Story = {
+  name: 'Environment / Custom Banner Slot',
+  args: {
+    user: { name: 'Dr. Ada Okonkwo', email: 'ada@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environmentBannerSlot: (
+      <Box
+        bg="purple.500"
+        color="#FFFFFF"
+        px="4"
+        py="2"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        fontSize="xs"
+        fontWeight="600"
+      >
+        <Box display="flex" alignItems="center" gap="2">
+          <span style={{ fontSize: '14px' }}>⚡</span>
+          <span>SPECIAL CLINICAL TRIAL BUILD v2.4 (NON-PROD)</span>
+        </Box>
+        <span style={{ fontSize: '11px', opacity: 0.85 }}>Confidential Internal Preview</span>
+      </Box>
+    ),
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Custom Banner Slot"
+          description="Completely custom banner component passed via environmentBannerSlot."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Production environment (`environment="production"`) — the banner is suppressed.
+ */
+export const ProductionSuppressed: Story = {
+  name: 'Environment / Production (Hidden)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Production Environment"
+          description="The banner is automatically suppressed because environment is set to 'production'."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Explicitly suppressed banner (`showEnvironmentBanner={false}`).
+ */
+export const ExplicitlySuppressed: Story = {
+  name: 'Environment / Explicitly Suppressed (showEnvironmentBanner=false)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    showEnvironmentBanner: false,
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Banner Suppressed"
+          description="Passing showEnvironmentBanner={false} completely hides the banner in any environment."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+// ─── Collapsible Sidebar Stories ────────────────────────────────────────────
+
+/**
+ * Default collapsible sidebar (`collapsible={true}`, `defaultCollapsed={false}`).
+ * Toggle via the header icon button or the sticky topbar button.
+ */
+export const CollapsibleDefault: Story = {
+  name: 'Collapsible / Default (Expanded)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: true,
+    defaultCollapsed: false,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Collapsible Sidebar (Expanded)"
+          description="Click the panel collapse icon in the sidebar header or top bar to shrink the sidebar into a compact icon rail."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Starts in collapsed rail mode (`defaultCollapsed={true}`).
+ */
+export const DefaultCollapsed: Story = {
+  name: 'Collapsible / Default Collapsed (Rail)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: true,
+    defaultCollapsed: true,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Default Collapsed Sidebar"
+          description="The sidebar is initialized in collapsed icon rail mode (68px). Hover over icons to see titles or click the expand button in the top bar to expand."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Controlled collapsed state with external triggers.
+ */
+export const ControlledCollapse: Story = {
+  name: 'Collapsible / Controlled Collapse',
+  render: () => {
+    const [collapsed, setCollapsed] = React.useState(false);
+    return (
+      <Box h="100vh" w="100%">
+        <DashboardLayout
+          user={{ name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' }}
+          navGroups={BASE_NAV_GROUPS}
+          isCollapsed={collapsed}
+          onCollapseChange={setCollapsed}
+          collapsible={true}
+          environment="production"
+        >
+          <Box p="6" borderRadius="xl" bg="bg.surface" border="1px solid" borderColor="border">
+            <Text fontSize="lg" fontWeight="700" color="text.heading" mb="2">
+              Controlled Sidebar State: {collapsed ? 'Collapsed (Rail)' : 'Expanded (Full)'}
+            </Text>
+            <Text fontSize="sm" color="text.muted" mb="4">
+              You can control the sidebar programmatically using <code>isCollapsed</code> and{' '}
+              <code>onCollapseChange</code>.
+            </Text>
+            <Box
+              as="button"
+              px="4"
+              py="2"
+              borderRadius="md"
+              bg="blue.500"
+              color="#fff"
+              border="none"
+              fontWeight="600"
+              fontSize="sm"
+              cursor="pointer"
+              onClick={() => setCollapsed((c) => !c)}
+            >
+              {collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+            </Box>
+          </Box>
+        </DashboardLayout>
+      </Box>
+    );
+  },
+};
+
+/**
+ * Collapsible sidebar with Doctor Score Card.
+ * Demonstrates the score card transforming into a compact clinician ring avatar when collapsed.
+ */
+export const CollapsibleWithDoctorScoreCard: Story = {
+  name: 'Collapsible / With Doctor Score Card',
+  args: {
+    user: { name: 'Dr. Amina Bello', email: 'amina@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Amina Bello',
+      role: 'Chief of Cardiology',
+      tier: 'diamond',
+      medixScore: 985,
+    },
+    collapsible: true,
+    defaultCollapsed: false,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Collapsible with Doctor Score Card"
+          description="Notice how the doctor score card smoothly collapses into a sleek circular avatar with the diamond tier gradient ring."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Collapsible sidebar with nested sub-items (flyout popover when collapsed).
+ */
+export const CollapsibleWithSublinks: Story = {
+  name: 'Collapsible / With Sub-items & Flyout',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: NAV_GROUPS_WITH_SUBITEMS,
+    collapsible: true,
+    defaultCollapsed: true,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Collapsible with Sub-items"
+          description="In collapsed rail mode, clicking a navigation item with sub-links opens an anchored floating popover flyout menu."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Non-collapsible sidebar (`collapsible={false}`).
+ */
+export const NonCollapsible: Story = {
+  name: 'Collapsible / Disabled (Non-Collapsible)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: false,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Non-Collapsible Sidebar"
+          description="With collapsible={false}, the toggle buttons are hidden and the sidebar remains permanently expanded at full width."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * TopBar toggle placement option (`collapseTogglePlacement="both"`).
+ */
+export const TopBarTogglePlacement: Story = {
+  name: 'Collapsible / TopBar Toggle Placement (both)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: true,
+    defaultCollapsed: false,
+    collapseTogglePlacement: 'both',
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="TopBar Toggle Button Placement"
+          description="Setting collapseTogglePlacement='both' or 'topbar' renders the collapse/expand toggle button in the sticky topbar."
         />
       </DashboardLayout>
     </Box>

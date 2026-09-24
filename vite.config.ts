@@ -18,7 +18,7 @@ export default defineConfig({
     !isStorybook &&
       dts({
         include: ['lib'],
-        exclude: ['src', '**/*.stories.*', '**/*.test.*'],
+        exclude: ['src', '**/*.stories.*', '**/*.test.*', 'lib/test/**'],
         insertTypesEntry: true,
         rollupTypes: true,
       }),
