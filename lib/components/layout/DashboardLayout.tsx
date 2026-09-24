@@ -1437,92 +1437,94 @@ function SidebarNavItem({
 
     // Leaf item in collapsed mode
     const railContent = (
-      <Tooltip label={item.label} placement="right">
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          w="10"
-          h="10"
-          mx="auto"
-          my="0.5"
-          borderRadius="lg"
-          position="relative"
-          aria-label={item.label}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          onClick={onClick}
-          style={{
-            background: isActive
-              ? scheme.activeBgLight
-              : hovered
-                ? scheme.hoverBgLight
-                : 'transparent',
-            outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
-            outlineOffset: focusVisible ? '2px' : undefined,
-            transition: 'background 0.15s ease',
-          }}
-          _dark={{
-            bg: isActive ? scheme.activeBgDark : hovered ? scheme.hoverBgDark : 'transparent',
-          }}
-        >
-          {item.icon && (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              style={{
-                color: isColoured ? scheme.solid : undefined,
-                opacity: isColoured ? 1 : hovered ? 0.85 : 0.6,
-              }}
-              color={isColoured ? scheme.chakraToken : 'text.body'}
-            >
-              {item.icon}
-            </Box>
-          )}
+      <Box display="flex" justifyContent="center" alignItems="center" w="full">
+        <Tooltip label={item.label} placement="right">
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="10"
+            h="10"
+            mx="auto"
+            my="0.5"
+            borderRadius="lg"
+            position="relative"
+            aria-label={item.label}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            onClick={onClick}
+            style={{
+              background: isActive
+                ? scheme.activeBgLight
+                : hovered
+                  ? scheme.hoverBgLight
+                  : 'transparent',
+              outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
+              outlineOffset: focusVisible ? '2px' : undefined,
+              transition: 'background 0.15s ease',
+            }}
+            _dark={{
+              bg: isActive ? scheme.activeBgDark : hovered ? scheme.hoverBgDark : 'transparent',
+            }}
+          >
+            {item.icon && (
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                style={{
+                  color: isColoured ? scheme.solid : undefined,
+                  opacity: isColoured ? 1 : hovered ? 0.85 : 0.6,
+                }}
+                color={isColoured ? scheme.chakraToken : 'text.body'}
+              >
+                {item.icon}
+              </Box>
+            )}
 
-          {/* Numeric count badge bubble */}
-          {typeof item.badge === 'number' && (
-            <Box
-              as="span"
-              position="absolute"
-              top="-2px"
-              right="-2px"
-              minW="16px"
-              h="16px"
-              px="1"
-              borderRadius="full"
-              fontSize="9px"
-              fontWeight="700"
-              lineHeight="1"
-              display="inline-flex"
-              alignItems="center"
-              justifyContent="center"
-              style={{
-                background: scheme.solid,
-                color: '#fff',
-              }}
-            >
-              {item.badge > 99 ? '99+' : item.badge}
-            </Box>
-          )}
+            {/* Numeric count badge bubble */}
+            {typeof item.badge === 'number' && (
+              <Box
+                as="span"
+                position="absolute"
+                top="-2px"
+                right="-2px"
+                minW="16px"
+                h="16px"
+                px="1"
+                borderRadius="full"
+                fontSize="9px"
+                fontWeight="700"
+                lineHeight="1"
+                display="inline-flex"
+                alignItems="center"
+                justifyContent="center"
+                style={{
+                  background: scheme.solid,
+                  color: '#fff',
+                }}
+              >
+                {item.badge > 99 ? '99+' : item.badge}
+              </Box>
+            )}
 
-          {/* Red dot indicator */}
-          {item.hasDot && (
-            <Box
-              as="span"
-              position="absolute"
-              top="2px"
-              right="2px"
-              w="6px"
-              h="6px"
-              borderRadius="full"
-              style={{ background: RED }}
-              aria-label="New notification"
-            />
-          )}
-        </Box>
-      </Tooltip>
+            {/* Red dot indicator */}
+            {item.hasDot && (
+              <Box
+                as="span"
+                position="absolute"
+                top="2px"
+                right="2px"
+                w="6px"
+                h="6px"
+                borderRadius="full"
+                style={{ background: RED }}
+                aria-label="New notification"
+              />
+            )}
+          </Box>
+        </Tooltip>
+      </Box>
     );
 
     return render(item, railContent);
@@ -1951,61 +1953,64 @@ function SidebarScoreCard({
 
   if (isCollapsed) {
     const compactInner = (
-      <Tooltip
-        label={`${data.role} — ${data.name} (${tier.label}, ${data.medixScore} pts)`}
-        placement="right"
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          my="3"
-          mx="auto"
-          aria-label={`${data.role} ${data.name}`}
-          cursor={data.link ? 'pointer' : 'default'}
+      <Box display="flex" justifyContent="center" alignItems="center" w="full" my="2">
+        <Tooltip
+          label={`${data.role} — ${data.name} (${tier.label}, ${data.medixScore} pts)`}
+          placement="right"
         >
-          <div
-            style={{
-              flexShrink: 0,
-              padding: 2,
-              borderRadius: '50%',
-              background: `linear-gradient(135deg, ${tier.ring}, ${tier.color})`,
-            }}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            w="36px"
+            h="36px"
+            mx="auto"
+            aria-label={`${data.role} ${data.name}`}
+            cursor={data.link ? 'pointer' : 'default'}
           >
-            {data.avatarSrc ? (
-              <img
-                src={data.avatarSrc}
-                alt={data.name}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  display: 'block',
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  background: tier.bg,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: tier.color,
-                  fontFamily: 'var(--font-heading)',
-                }}
-              >
-                {initials}
-              </div>
-            )}
-          </div>
-        </Box>
-      </Tooltip>
+            <div
+              style={{
+                flexShrink: 0,
+                padding: 2,
+                borderRadius: '50%',
+                background: `linear-gradient(135deg, ${tier.ring}, ${tier.color})`,
+              }}
+            >
+              {data.avatarSrc ? (
+                <img
+                  src={data.avatarSrc}
+                  alt={data.name}
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    display: 'block',
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: tier.bg,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: tier.color,
+                    fontFamily: 'var(--font-heading)',
+                  }}
+                >
+                  {initials}
+                </div>
+              )}
+            </div>
+          </Box>
+        </Tooltip>
+      </Box>
     );
 
     if (data.link) {
@@ -2338,7 +2343,14 @@ function Sidebar({
 
         {/* ── Doctor score card (desktop only, optional) ── */}
         {scoreCard && (
-          <Box display={{ base: 'none', md: 'block' }} flexShrink={0} pt={isCollapsed ? '1' : '3'}>
+          <Box
+            display={{ base: 'none', md: isCollapsed ? 'flex' : 'block' }}
+            justifyContent={isCollapsed ? 'center' : undefined}
+            alignItems={isCollapsed ? 'center' : undefined}
+            w="full"
+            flexShrink={0}
+            pt={isCollapsed ? '1' : '3'}
+          >
             <SidebarScoreCard data={scoreCard} renderLink={renderLink} isCollapsed={isCollapsed} />
           </Box>
         )}
@@ -2398,6 +2410,10 @@ function Sidebar({
           flexShrink={0}
           borderTop="1px solid"
           borderColor="border"
+          display={isCollapsed ? 'flex' : 'block'}
+          justifyContent={isCollapsed ? 'center' : undefined}
+          alignItems={isCollapsed ? 'center' : undefined}
+          w="full"
         >
           {isCollapsed ? (
             <Tooltip label="Log out" placement="right">
@@ -2406,8 +2422,9 @@ function Sidebar({
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                w="full"
+                w="10"
                 h="10"
+                mx="auto"
                 borderRadius="lg"
                 border="none"
                 bg="transparent"
