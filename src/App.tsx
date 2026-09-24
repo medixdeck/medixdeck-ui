@@ -698,7 +698,7 @@ export default function App() {
           {/* ── Navbar variants ── */}
           <Section title="Navbar" id="navbar">
             <Box w="100%" display="flex" flexDirection="column" gap="8">
-              {/* 1 — href navigation */}
+              {/* 1 — Dropdowns with rich sub-items */}
               <Box>
                 <Text
                   fontSize="xs"
@@ -708,13 +708,110 @@ export default function App() {
                   textTransform="uppercase"
                   letterSpacing="0.06em"
                 >
-                  1 — href navigation
+                  1 — Dropdown Menus (Rich Sub-items with Icons, Badges & Descriptions)
+                </Text>
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
+                  Hover or click on "Services" and "Resources" to see floating desktop dropdown panels and mobile accordion sub-menus.
+                </Text>
+                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
+                  <Navbar
+                    colorScheme="blue"
+                    navItems={[
+                      { label: 'Home', href: '#' },
+                      {
+                        label: 'Services',
+                        children: [
+                          {
+                            label: 'Doctor Consultations',
+                            href: '#doctors',
+                            description: 'Connect with licensed Nigerian physicians & specialists 24/7.',
+                            badge: 'Popular',
+                            icon: (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3" />
+                                <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4" />
+                                <circle cx="20" cy="10" r="2" />
+                              </svg>
+                            ),
+                          },
+                          {
+                            label: 'Homecare Visits',
+                            href: '#homecare',
+                            description: 'Clinical nursing and post-op care delivered right to your home.',
+                            icon: (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                <path d="M12 11.5c-1-1.5-3-1.5-3 .5 0 2 3 4 3 4s3-2 3-4c0-2-2-2-3-.5z" />
+                              </svg>
+                            ),
+                          },
+                          {
+                            label: 'Medical Outreach',
+                            href: '#outreach',
+                            description: 'Corporate and community health screening programs.',
+                            icon: (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                              </svg>
+                            ),
+                          },
+                        ],
+                      },
+                      {
+                        label: 'Resources',
+                        children: [
+                          {
+                            label: 'Health Blog',
+                            href: '#blog',
+                            description: 'Verified clinical articles, patient guides, and wellness tips.',
+                          },
+                          {
+                            label: 'NDPR Compliance',
+                            href: '#compliance',
+                            description: 'Protected health information security and patient privacy.',
+                            badge: 'NDPR',
+                          },
+                          {
+                            label: 'Developer API',
+                            href: 'https://docs.medixdeck.com',
+                            description: 'REST API documentation for partners and integrations.',
+                            isExternal: true,
+                          },
+                        ],
+                      },
+                      { label: 'Pricing', href: '#pricing' },
+                      { label: 'About', href: '#about' },
+                    ]}
+                    ctaLabel="Talk to a Doctor"
+                    ctaHref="#"
+                    secondaryCtaLabel="Sign In"
+                    secondaryCtaHref="#"
+                    onSecondaryCtaClick={() => alert('Sign In clicked')}
+                    position="relative"
+                  />
+                </Box>
+              </Box>
+
+              {/* 2 — href navigation */}
+              <Box>
+                <Text
+                  fontSize="xs"
+                  color="text.muted"
+                  fontFamily="var(--font-body)"
+                  mb="1"
+                  textTransform="uppercase"
+                  letterSpacing="0.06em"
+                >
+                  2 — href navigation (Purple Theme)
                 </Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
                   ctaHref="/consult" — both buttons act as standard anchor links (no JS handler
                   needed). Also, `colorScheme="purple"`
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
                   <Navbar
                     colorScheme="purple"
                     navItems={[
@@ -746,7 +843,7 @@ export default function App() {
                   onCtaClick opens a modal. onCtaIconClick opens the external app (different
                   destination).
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
                   <Navbar
                     navItems={[
                       { label: 'Logo', href: '#logo' },
@@ -782,7 +879,7 @@ export default function App() {
                   secondaryCtaLabel + secondaryCtaHref + onSecondaryCtaClick — ghost "Sign In" to
                   the left.
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
                   <Navbar
                     navItems={[
                       { label: 'Logo', href: '#logo' },
@@ -814,7 +911,7 @@ export default function App() {
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
                   Pass any ReactNode — replaces the default CTA area entirely.
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" overflow="hidden">
+                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
                   <Navbar
                     navItems={[
                       { label: 'Logo', href: '#logo' },
