@@ -599,7 +599,7 @@ function DesktopNavItem({
             }}
           >
             <Box
-              bg="bg.surface"
+              bg="bg"
               border="1px solid"
               borderColor="border"
               borderRadius="card"
@@ -683,8 +683,8 @@ function DesktopNavItem({
                             as="span"
                             display="block"
                             fontSize="xs"
-                            color="text.muted"
-                            _dark={{ color: 'text.muted' }}
+                            color="text.body"
+                            _dark={{ color: 'text.body' }}
                             fontFamily="var(--font-body)"
                             mt="0.5"
                             lineHeight="1.4"
