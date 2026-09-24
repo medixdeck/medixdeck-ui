@@ -237,11 +237,90 @@ function NotesForm() {
 }
 ```
 
+## Navbar
+
+The `Navbar` component provides responsive brand navigation with animated desktop dropdown menus and mobile accordion sub-menus.
+
+### Basic & Dropdown Usage
+
+```tsx
+import { Navbar, type NavItem } from '@medixdeck/ui';
+
+const navItems: NavItem[] = [
+  { label: 'Home', href: '/' },
+  {
+    label: 'Services',
+    children: [
+      {
+        label: 'Doctor Consultations',
+        href: '/services/doctors',
+        description: 'Connect with certified Nigerian medical practitioners 24/7.',
+        badge: 'Popular',
+      },
+      {
+        label: 'Homecare Visits',
+        href: '/services/homecare',
+        description: 'Personalized nursing and clinical care at your residence.',
+      },
+      {
+        label: 'Medical Outreach',
+        href: '/services/outreach',
+        description: 'Community screening & corporate healthcare programs.',
+      },
+    ],
+  },
+  {
+    label: 'Resources',
+    children: [
+      {
+        label: 'Health Blog',
+        href: '/blog',
+        description: 'Wellness advice, clinical articles, and healthcare updates.',
+      },
+      {
+        label: 'Developer API',
+        href: 'https://docs.medixdeck.com',
+        description: 'Public health API integration guides.',
+        isExternal: true,
+      },
+    ],
+  },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'About Us', href: '/about' },
+];
+
+export function Header() {
+  return (
+    <Navbar
+      navItems={navItems}
+      ctaLabel="Talk to a Doctor"
+      ctaHref="/consult"
+      secondaryCtaLabel="Sign In"
+      secondaryCtaHref="/login"
+      isSticky
+      colorScheme="blue"
+    />
+  );
+}
+```
+
+### `NavItem` properties
+
+| Prop          | Type                            | Description                                                   |
+| ------------- | ------------------------------- | ------------------------------------------------------------- |
+| `label`       | `string`                        | Display text for the item                                     |
+| `href`        | `string`                        | Target URL (optional for dropdown triggers)                   |
+| `children`    | `NavItem[]`                     | Nested items for desktop floating menus and mobile accordions |
+| `description` | `string`                        | Subtitle text displayed below label in dropdown items         |
+| `icon`        | `ReactNode`                     | Leading icon element                                          |
+| `badge`       | `string \| number \| ReactNode` | Status tag or count (e.g. `"Popular"`, `"NDPR"`)              |
+| `isActive`    | `boolean`                       | Highlights active route item                                  |
+| `isExternal`  | `boolean`                       | Opens link in a new tab with an external arrow icon           |
+| `onClick`     | `() => void`                    | Optional click callback                                       |
+
+---
+
 ## DashboardLayout
-
-The full-screen authenticated application shell. Renders a fixed sidebar, sticky top bar, and an optional mobile bottom nav.
-
-### Basic usage
 
 ```tsx
 import { DashboardLayout } from '@medixdeck/ui';
@@ -345,23 +424,124 @@ An optional second line below the greeting. The top bar expands from 64 px → 8
 </DashboardLayout>
 ```
 
+### Automatic Test & Sandbox Environment Banner
+
+`DashboardLayout` includes a built-in, cross-framework test & sandbox environment banner that displays **automatically by default** whenever the app runs in non-production environments (e.g. `localhost`, `*.vercel.app`, `*.netlify.app`, `*.pages.dev`, `*staging*`, `*sandbox*`, `*dev*`, `*test*`, or `NODE_ENV !== 'production'`).
+
+It is completely safe across SSR and CSR runtimes (Next.js App/Pages Router, Vite + React, Remix, Astro, TanStack Start, SolidJS bridges) with zero hydration mismatches.
+
+```tsx
+// 1. Automatic Default: Displays automatically in local / staging / sandbox / preview environments
+<DashboardLayout user={user} navGroups={navGroups}>
+  {children}
+</DashboardLayout>
+
+// 2. Explicit Sandbox / Test / Staging Mode
+<DashboardLayout environment="sandbox" user={user} navGroups={navGroups}>
+  {children}
+</DashboardLayout>
+
+// 3. Custom Banner Configuration (custom message, custom badge label, action button, dismissible)
+<DashboardLayout
+  environmentBanner={{
+    environment: 'sandbox',
+    badgeLabel: 'SIMULATION LAB',
+    message: 'Simulated clinical testing environment. Actions will not affect live patient records.',
+    action: <a href="https://app.medixdeck.com">Switch to Live →</a>,
+    dismissible: true,
+    onDismiss: () => console.log('Banner closed'),
+  }}
+  user={user}
+  navGroups={navGroups}
+>
+  {children}
+</DashboardLayout>
+
+// 4. Suppress banner completely in any environment
+<DashboardLayout showEnvironmentBanner={false} user={user} navGroups={navGroups}>
+  {children}
+</DashboardLayout>
+
+// 5. Or mark environment as production
+<DashboardLayout environment="production" user={user} navGroups={navGroups}>
+  {children}
+</DashboardLayout>
+```
+
+`DashboardEnvironmentBannerConfig` props:
+
+| Prop          | Type                                                                                                 | Default  | Description                                               |
+| ------------- | ---------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------- |
+| `environment` | `"auto" \| "production" \| "live" \| "sandbox" \| "test" \| "development" \| "staging" \| "preview"` | `"auto"` | Environment classification                                |
+| `badgeLabel`  | `string`                                                                                             | auto     | Uppercase badge label (e.g., `"SANDBOX ENVIRONMENT"`)     |
+| `message`     | `string`                                                                                             | auto     | Descriptive warning / notice text                         |
+| `status`      | `"warning" \| "info" \| "error" \| "neutral"`                                                        | auto     | Visual color scheme (amber warning, blue info, red error) |
+| `action`      | `ReactNode`                                                                                          | —        | Action link or button on the right                        |
+| `dismissible` | `boolean`                                                                                            | `false`  | Shows a close (✕) button                                  |
+| `onDismiss`   | `() => void`                                                                                         | —        | Called when the close button is clicked                   |
+
+### Collapsible Sidebar (`collapsible`, `isCollapsed`, `onCollapseChange`)
+
+On desktop (`md+`), `DashboardLayout` supports shrinking the sidebar into a compact icon rail (68px) and expanding it back to full width (220px). Supports both uncontrolled (`defaultCollapsed`) and controlled (`isCollapsed`, `onCollapseChange`) operation:
+
+- **Toggle Buttons**: Built-in panel collapse icon buttons (◧ / ◨) placed in the sidebar header (next to logo when expanded, directly below the logo mark in collapsed rail mode; `collapseTogglePlacement="sidebar-header"` by default).
+- **Icon Rail Transformation**: Logo collapses into the icon mark, navigation items become centered 40px icon pills with tooltips, and badges/dots are pinned on top-right.
+- **Sub-Items Flyout**: Clicking a navigation item with sub-links in collapsed mode opens an anchored floating flyout popover menu.
+- **Doctor Score Card Transformation**: Collapses smoothly into a centered circular clinician tier ring avatar with full tooltip metadata.
+
+```tsx
+// 1. Uncontrolled with default expanded or collapsed
+<DashboardLayout collapsible={true} defaultCollapsed={false} user={user} navGroups={navGroups}>
+  {children}
+</DashboardLayout>;
+
+// 2. Controlled collapse state
+function App() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  return (
+    <DashboardLayout
+      collapsible={true}
+      isCollapsed={isCollapsed}
+      onCollapseChange={setIsCollapsed}
+      collapsedSidebarWidth={68}
+      user={user}
+      navGroups={navGroups}
+    >
+      {children}
+    </DashboardLayout>
+  );
+}
+```
+
 ### All `DashboardLayout` props
 
-| Prop              | Type                            | Default    | Description                                   |
-| ----------------- | ------------------------------- | ---------- | --------------------------------------------- |
-| `user`            | `DashboardUser`                 | —          | Name, email, optional avatar                  |
-| `navGroups`       | `DashboardNavGroup[]`           | —          | Sidebar navigation tree                       |
-| `colorScheme`     | `"blue" \| "purple"`            | `"blue"`   | Brand accent colour                           |
-| `logo`            | `ReactNode`                     | `<Logo />` | Override the sidebar logo                     |
-| `greeting`        | `string`                        | auto       | Override "Good morning / afternoon / evening" |
-| `greetingSubtext` | `string`                        | —          | Subtitle line below the greeting              |
-| `mobileNavItems`  | `DashboardMobileNavItem[]`      | —          | Mobile bottom tab bar items                   |
-| `scoreCard`       | `DashboardScoreCardData`        | —          | Doctor identity card (desktop only)           |
-| `topBarSlot`      | `ReactNode`                     | —          | Slot right of greeting (search, bell, etc.)   |
-| `dropdownItems`   | `DashboardDropdownItem[]`       | —          | Extra user dropdown items                     |
-| `sidebarWidth`    | `number`                        | `220`      | Sidebar width in px                           |
-| `renderLink`      | `(item, children) => ReactNode` | `<a>`      | Router integration                            |
-| `onLogout`        | `() => void`                    | —          | Logout callback                               |
+| Prop                      | Type                                               | Default                | Description                                       |
+| ------------------------- | -------------------------------------------------- | ---------------------- | ------------------------------------------------- |
+| `user`                    | `DashboardUser`                                    | —                      | Name, email, optional avatar                      |
+| `navGroups`               | `DashboardNavGroup[]`                              | —                      | Sidebar navigation tree                           |
+| `collapsible`             | `boolean`                                          | `true`                 | Enables collapsible sidebar icon rail             |
+| `defaultCollapsed`        | `boolean`                                          | `false`                | Initial collapsed state (uncontrolled)            |
+| `isCollapsed`             | `boolean`                                          | —                      | Controlled collapsed state                        |
+| `onCollapseChange`        | `(collapsed: boolean) => void`                     | —                      | Fired when sidebar collapse state toggles         |
+| `sidebarWidth`            | `number`                                           | `220`                  | Full sidebar width in px                          |
+| `collapsedSidebarWidth`   | `number`                                           | `68`                   | Compact icon rail width in px                     |
+| `collapseTogglePlacement` | `"sidebar-header" \| "topbar" \| "both" \| "none"` | `"sidebar-header"`     | Placement of collapse/expand toggle buttons       |
+| `collapsedLogo`           | `ReactNode`                                        | `<Logo type="icon" />` | Custom logo displayed in collapsed mode           |
+| `colorScheme`             | `"blue" \| "purple"`                               | `"blue"`               | Brand accent colour                               |
+| `environment`             | `DashboardEnvironment`                             | `"auto"`               | Auto-detects test/sandbox/staging environments    |
+| `showEnvironmentBanner`   | `boolean`                                          | auto                   | Force show (`true`) or suppress (`false`) banner  |
+| `environmentBanner`       | `DashboardEnvironmentBannerConfig`                 | —                      | Detailed banner message, action, & dismiss config |
+| `environmentBannerSlot`   | `ReactNode`                                        | —                      | Custom slot overriding the entire banner          |
+| `logo`                    | `ReactNode`                                        | `<Logo />`             | Override the sidebar logo                         |
+| `greeting`                | `string`                                           | auto                   | Override "Good morning / afternoon / evening"     |
+| `greetingSubtext`         | `string`                                           | —                      | Subtitle line below the greeting                  |
+| `mobileNavItems`          | `DashboardMobileNavItem[]`                         | —                      | Mobile bottom tab bar items                       |
+| `scoreCard`               | `DashboardScoreCardData`                           | —                      | Doctor identity card (desktop only)               |
+| `topBarSlot`              | `ReactNode`                                        | —                      | Slot right of greeting (search, bell, etc.)       |
+| `dropdownItems`           | `DashboardDropdownItem[]`                          | —                      | Extra user dropdown items                         |
+| `renderLink`              | `(item, children) => ReactNode`                    | `<a>`                  | Router integration                                |
+| `onLogout`                | `() => void`                                       | —                      | Logout callback                                   |
 
 ## Footer
 

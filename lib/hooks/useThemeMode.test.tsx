@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { MedixProvider } from '../components/provider/MedixProvider';
 import { useThemeMode, useIsDarkMode } from './useThemeMode';
 
@@ -9,6 +9,16 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 );
 
 describe('useThemeMode', () => {
+  beforeEach(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.className = '';
+      document.documentElement.removeAttribute('data-theme');
+      if (document.body) document.body.className = '';
+    }
+    if (typeof localStorage !== 'undefined') {
+      localStorage.clear();
+    }
+  });
   it('sets mounted=true after effects run', async () => {
     const { result } = renderHook(() => useThemeMode(), { wrapper });
     await act(async () => {});
