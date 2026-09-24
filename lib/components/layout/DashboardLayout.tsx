@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useThemeMode, type ThemeModeSetting } from '../../hooks/useThemeMode';
 import { Logo } from '../primitive/Logo';
 import { Avatar } from '../primitive/Avatar';
+import { Tooltip } from '../feedback/Tooltip';
 
 declare const process: any;
 
@@ -49,6 +50,40 @@ const RED = '#EF4444';
 const RED_HOVER_BG = 'rgba(239,68,68,0.08)';
 
 // ─── Inline SVG icons ─────────────────────────────────────────────────────────
+
+const PanelLeftCloseIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect width="18" height="18" x="3" y="3" rx="2" />
+    <path d="M9 3v18" />
+    <path d="m14 9-3 3 3 3" />
+  </svg>
+);
+
+const PanelLeftOpenIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect width="18" height="18" x="3" y="3" rx="2" />
+    <path d="M9 3v18" />
+    <path d="m12 15 3-3-3-3" />
+  </svg>
+);
 
 const MenuIcon = () => (
   <svg
@@ -483,10 +518,55 @@ export interface DashboardLayoutProps extends Omit<BoxProps, 'children'> {
   topBarSlot?: React.ReactNode;
 
   /**
-   * Width of the sidebar in pixels.
+   * Width of the sidebar in pixels when expanded on desktop.
    * @default 220
    */
   sidebarWidth?: number;
+
+  /**
+   * Width of the sidebar rail in pixels when collapsed on desktop.
+   * @default 68
+   */
+  collapsedSidebarWidth?: number;
+
+  /**
+   * Whether the desktop sidebar can be collapsed into a compact icon rail.
+   * Set to `false` to disable the collapsible behavior.
+   * @default true
+   */
+  collapsible?: boolean;
+
+  /**
+   * Initial collapsed state for uncontrolled usage.
+   * @default false
+   */
+  defaultCollapsed?: boolean;
+
+  /**
+   * Controlled collapsed state.
+   */
+  isCollapsed?: boolean;
+
+  /**
+   * Callback fired when the sidebar collapse state changes.
+   */
+  onCollapseChange?: (collapsed: boolean) => void;
+
+  /**
+   * Custom logo displayed in the sidebar header when collapsed.
+   * Defaults to `<Logo type="icon" variant={colorScheme} height={26} />`.
+   */
+  collapsedLogo?: React.ReactNode;
+
+  /**
+   * Placement of the sidebar collapse/expand toggle buttons.
+   * - `'sidebar-header'`: in the top header of the sidebar (next to logo when expanded, below logo when collapsed).
+   * - `'topbar'`: on the left of the sticky topbar.
+   * - `'both'`: visible in both sidebar header and topbar.
+   * - `'none'`: hides built-in toggle buttons (for external control).
+   * @default "sidebar-header"
+   */
+  collapseTogglePlacement?: 'sidebar-header' | 'topbar' | 'both' | 'none';
 
   /**
    * Brand accent applied to active nav items, logo, badge backgrounds, and the
@@ -898,6 +978,7 @@ function DashboardEnvironmentBanner({
         {config.dismissible && (
           <Box
             as="button"
+            // @ts-expect-error type button
             type="button"
             onClick={onDismiss}
             aria-label="Dismiss environment banner"
@@ -935,10 +1016,10 @@ const themeOptions: Array<{
   shortLabel: string;
   icon: React.ReactNode;
 }> = [
-  { value: 'light', label: 'Light mode', shortLabel: 'Light', icon: <SunIcon /> },
-  { value: 'dark', label: 'Dark mode', shortLabel: 'Dark', icon: <MoonIcon /> },
-  { value: 'system', label: 'System theme', shortLabel: 'System', icon: <SystemIcon /> },
-];
+    { value: 'light', label: 'Light mode', shortLabel: 'Light', icon: <SunIcon /> },
+    { value: 'dark', label: 'Dark mode', shortLabel: 'Dark', icon: <MoonIcon /> },
+    { value: 'system', label: 'System theme', shortLabel: 'System', icon: <SystemIcon /> },
+  ];
 
 function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[DashboardColorScheme] }) {
   const { mounted, themeMode, themeSetting, setThemeMode } = useThemeMode();
@@ -1139,14 +1220,19 @@ function SidebarNavItem({
   renderLink: render,
   onClick,
   scheme,
+  isCollapsed = false,
 }: {
   item: DashboardNavItem;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   onClick?: () => void;
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
+  isCollapsed?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
   const [focusVisible, setFocusVisible] = useState(false);
+  const [flyoutOpen, setFlyoutOpen] = useState(false);
+  const flyoutRef = useRef<HTMLDivElement>(null);
+
   const isActive = item.isActive ?? false;
   const hasActiveSubItem = item.subItems?.some((sub) => sub.isActive) ?? false;
   const [expanded, setExpanded] = useState(isActive || hasActiveSubItem);
@@ -1154,17 +1240,292 @@ function SidebarNavItem({
   const subMenuId = useId();
 
   // Sync expanded when active state changes from outside (e.g. route change).
-  // But do NOT keep expanded=true after navigating away — only expand when
-  // this item (or one of its children) is actually the active route.
   useEffect(() => {
     setExpanded(isActive || hasActiveSubItem);
   }, [isActive, hasActiveSubItem]);
 
-  // Use isActive for colour; use (isActive || expanded) only for the chevron
-  // direction so that manually-opened accordions don't inherit the brand colour.
+  // Handle outside click and Escape key for flyout menu in collapsed mode
+  useEffect(() => {
+    if (!flyoutOpen) return;
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (flyoutRef.current && !flyoutRef.current.contains(e.target as Node)) {
+        setFlyoutOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setFlyoutOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [flyoutOpen]);
+
   const isColoured = isActive;
 
-  // Visual row — pure styling, no interactive semantics
+  // ─── Collapsed Mode Rendering ───
+  if (isCollapsed) {
+    if (hasSubItems) {
+      const triggerBtn = (
+        <Box
+          as="button"
+          aria-label={item.label}
+          aria-haspopup="menu"
+          aria-expanded={flyoutOpen}
+          onClick={() => setFlyoutOpen((o) => !o)}
+          onFocus={(e) => setFocusVisible(e.currentTarget.matches(':focus-visible'))}
+          onBlur={() => setFocusVisible(false)}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          w="10"
+          h="10"
+          mx="auto"
+          borderRadius="lg"
+          border="none"
+          cursor="pointer"
+          position="relative"
+          style={{
+            background:
+              isActive || hasActiveSubItem
+                ? scheme.activeBgLight
+                : hovered || flyoutOpen
+                  ? scheme.hoverBgLight
+                  : 'transparent',
+            outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
+            outlineOffset: focusVisible ? '2px' : undefined,
+            transition: 'background 0.15s ease',
+          }}
+          _dark={{
+            bg:
+              isActive || hasActiveSubItem
+                ? scheme.activeBgDark
+                : hovered || flyoutOpen
+                  ? scheme.hoverBgDark
+                  : 'transparent',
+          }}
+        >
+          {item.icon && (
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              style={{
+                color: isActive || hasActiveSubItem ? scheme.solid : undefined,
+                opacity: isActive || hasActiveSubItem ? 1 : hovered || flyoutOpen ? 0.85 : 0.6,
+              }}
+              color={isActive || hasActiveSubItem ? scheme.chakraToken : 'text.body'}
+            >
+              {item.icon}
+            </Box>
+          )}
+
+          {/* Red dot or badge indicator on parent icon */}
+          {hasActiveSubItem && (
+            <Box
+              as="span"
+              position="absolute"
+              top="2px"
+              right="2px"
+              w="6px"
+              h="6px"
+              borderRadius="full"
+              style={{ background: scheme.solid }}
+              aria-hidden="true"
+            />
+          )}
+        </Box>
+      );
+
+      return (
+        <Box
+          position="relative"
+          ref={flyoutRef}
+          my="0.5"
+          display="flex"
+          justifyContent="center"
+          style={{ zIndex: flyoutOpen ? 100 : 1 }}
+        >
+          {flyoutOpen ? (
+            triggerBtn
+          ) : (
+            <Tooltip label={item.label} placement="right">
+              {triggerBtn}
+            </Tooltip>
+          )}
+
+          {/* Anchored Floating Popover / Flyout Menu */}
+          {flyoutOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: -6, scale: 0.98 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -4, scale: 0.98 }}
+              transition={{ duration: 0.16, ease: [0.0, 0.0, 0.2, 1.0] }}
+              style={{
+                position: 'absolute',
+                left: 'calc(100% + 8px)',
+                top: 0,
+                zIndex: 1500,
+              }}
+            >
+              <Box
+                role="menu"
+                aria-label={item.label}
+                bg="bg"
+                border="1px solid"
+                borderColor="border"
+                borderRadius="card"
+                boxShadow="none"
+                py="1.5"
+                minW="200px"
+                maxW="260px"
+              >
+                {/* Flyout section header */}
+                <Box
+                  px="3.5"
+                  py="1.5"
+                  fontSize="xs"
+                  fontWeight="700"
+                  color="text.muted"
+                  fontFamily="var(--font-heading)"
+                  borderBottom="1px solid"
+                  borderColor="border"
+                  mb="1"
+                  display="flex"
+                  alignItems="center"
+                  gap="2"
+                >
+                  {item.icon && (
+                    <Box
+                      display="inline-flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      color={scheme.chakraToken}
+                    >
+                      {item.icon}
+                    </Box>
+                  )}
+                  <Box as="span">{item.label}</Box>
+                </Box>
+
+                <Box display="flex" flexDirection="column" gap="0.5" px="1">
+                  {item.subItems!.map((subItem) => (
+                    <SidebarNavItem
+                      key={subItem.href}
+                      item={subItem}
+                      renderLink={render}
+                      onClick={() => {
+                        setFlyoutOpen(false);
+                        onClick?.();
+                      }}
+                      scheme={scheme}
+                      isCollapsed={false}
+                    />
+                  ))}
+                </Box>
+              </Box>
+            </motion.div>
+          )}
+        </Box>
+      );
+    }
+
+    // Leaf item in collapsed mode
+    const railContent = (
+      <Tooltip label={item.label} placement="right">
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          w="10"
+          h="10"
+          mx="auto"
+          my="0.5"
+          borderRadius="lg"
+          position="relative"
+          aria-label={item.label}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          onClick={onClick}
+          style={{
+            background: isActive ? scheme.activeBgLight : hovered ? scheme.hoverBgLight : 'transparent',
+            outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
+            outlineOffset: focusVisible ? '2px' : undefined,
+            transition: 'background 0.15s ease',
+          }}
+          _dark={{
+            bg: isActive ? scheme.activeBgDark : hovered ? scheme.hoverBgDark : 'transparent',
+          }}
+        >
+          {item.icon && (
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              style={{
+                color: isColoured ? scheme.solid : undefined,
+                opacity: isColoured ? 1 : hovered ? 0.85 : 0.6,
+              }}
+              color={isColoured ? scheme.chakraToken : 'text.body'}
+            >
+              {item.icon}
+            </Box>
+          )}
+
+          {/* Numeric count badge bubble */}
+          {typeof item.badge === 'number' && (
+            <Box
+              as="span"
+              position="absolute"
+              top="-2px"
+              right="-2px"
+              minW="16px"
+              h="16px"
+              px="1"
+              borderRadius="full"
+              fontSize="9px"
+              fontWeight="700"
+              lineHeight="1"
+              display="inline-flex"
+              alignItems="center"
+              justifyContent="center"
+              style={{
+                background: scheme.solid,
+                color: '#fff',
+              }}
+            >
+              {item.badge > 99 ? '99+' : item.badge}
+            </Box>
+          )}
+
+          {/* Red dot indicator */}
+          {item.hasDot && (
+            <Box
+              as="span"
+              position="absolute"
+              top="2px"
+              right="2px"
+              w="6px"
+              h="6px"
+              borderRadius="full"
+              style={{ background: RED }}
+              aria-label="New notification"
+            />
+          )}
+        </Box>
+      </Tooltip>
+    );
+
+    return render(item, railContent);
+  }
+
+  // ─── Normal Expanded Mode Rendering ───
   const rowContent = (
     <Box
       display="flex"
@@ -1179,8 +1540,6 @@ function SidebarNavItem({
       position="relative"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      // For leaf items, propagate the onClick (e.g. close mobile sidebar) via
-      // the wrapped link element produced by render().
       onClick={!hasSubItems ? onClick : undefined}
       style={{
         background: isActive ? scheme.activeBgLight : hovered ? scheme.hoverBgLight : 'transparent',
@@ -1273,8 +1632,6 @@ function SidebarNavItem({
   return (
     <>
       {hasSubItems ? (
-        // Render as a native <button> so keyboard users can toggle via Enter/Space
-        // and assistive tech can announce aria-expanded / aria-controls.
         <button
           type="button"
           aria-expanded={expanded}
@@ -1300,7 +1657,7 @@ function SidebarNavItem({
         render(item, rowContent)
       )}
 
-      {/* Sub-items dropdown list — always in DOM so aria-controls resolves */}
+      {/* Sub-items dropdown list */}
       {hasSubItems && (
         <motion.div
           id={subMenuId}
@@ -1314,7 +1671,7 @@ function SidebarNavItem({
             display="flex"
             flexDirection="column"
             gap="0.5"
-            pl="9" // Indent to align with text of parent item
+            pl="9"
             mt="0.5"
             mb="1"
           >
@@ -1325,6 +1682,7 @@ function SidebarNavItem({
                 renderLink={render}
                 onClick={onClick}
                 scheme={scheme}
+                isCollapsed={false}
               />
             ))}
           </Box>
@@ -1368,7 +1726,6 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
     <Box
       as="nav"
       aria-label="Mobile bottom navigation"
-      // Responsive: visible on mobile, hidden on md+
       display={{ base: 'flex', md: 'none' }}
       position="fixed"
       bottom="0"
@@ -1410,7 +1767,7 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
               WebkitTapHighlightColor: 'transparent',
             }}
           >
-            {/* Animated pill capsule — scales in behind the active icon */}
+            {/* Animated pill capsule */}
             <div
               aria-hidden="true"
               style={{
@@ -1428,7 +1785,7 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
               }}
             />
 
-            {/* Icon — relative wrapper so the badge bubble can be absolutely positioned */}
+            {/* Icon */}
             <Box
               display="flex"
               alignItems="center"
@@ -1582,9 +1939,11 @@ const ChevronRightIcon = () => (
 function SidebarScoreCard({
   data,
   renderLink,
+  isCollapsed = false,
 }: {
   data: DashboardScoreCardData;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
+  isCollapsed?: boolean;
 }) {
   const tier = TIER_CONFIG[data.tier];
   const initials = data.name
@@ -1593,6 +1952,71 @@ function SidebarScoreCard({
     .join('')
     .slice(0, 2)
     .toUpperCase();
+
+  if (isCollapsed) {
+    const compactInner = (
+      <Tooltip
+        label={`${data.role} — ${data.name} (${tier.label}, ${data.medixScore} pts)`}
+        placement="right"
+      >
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          my="3"
+          mx="auto"
+          aria-label={`${data.role} ${data.name}`}
+          cursor={data.link ? 'pointer' : 'default'}
+        >
+          <div
+            style={{
+              flexShrink: 0,
+              padding: 2,
+              borderRadius: '50%',
+              background: `linear-gradient(135deg, ${tier.ring}, ${tier.color})`,
+            }}
+          >
+            {data.avatarSrc ? (
+              <img
+                src={data.avatarSrc}
+                alt={data.name}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  display: 'block',
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  background: tier.bg,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: tier.color,
+                  fontFamily: 'var(--font-heading)',
+                }}
+              >
+                {initials}
+              </div>
+            )}
+          </div>
+        </Box>
+      </Tooltip>
+    );
+
+    if (data.link) {
+      return <>{renderLink({ label: data.role, href: data.link }, compactInner)}</>;
+    }
+    return <>{compactInner}</>;
+  }
 
   const cardInner = (
     <Box
@@ -1735,12 +2159,18 @@ function SidebarScoreCard({
 
 interface SidebarProps {
   logo: React.ReactNode;
+  collapsedLogo?: React.ReactNode;
   navGroups: DashboardNavGroup[];
   isOpen: boolean;
   onClose: () => void;
   onLogout?: () => void;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   sidebarWidth: number;
+  collapsedSidebarWidth: number;
+  isCollapsed: boolean;
+  collapsible: boolean;
+  onToggleCollapse?: () => void;
+  collapseTogglePlacement: 'sidebar-header' | 'topbar' | 'both' | 'none';
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
   /** Optional doctor score card rendered below the logo on desktop only. */
   scoreCard?: DashboardScoreCardData;
@@ -1748,12 +2178,18 @@ interface SidebarProps {
 
 function Sidebar({
   logo,
+  collapsedLogo,
   navGroups,
   isOpen,
   onClose,
   onLogout,
   renderLink,
   sidebarWidth,
+  collapsedSidebarWidth,
+  isCollapsed,
+  collapsible,
+  onToggleCollapse,
+  collapseTogglePlacement,
   scheme,
   scoreCard,
 }: SidebarProps) {
@@ -1782,8 +2218,11 @@ function Sidebar({
         top="0"
         left="0"
         bottom="0"
-        w={`${sidebarWidth}px`}
-        zIndex={{ base: 'modal', md: 'sticky' }}
+        w={{
+          base: `${sidebarWidth}px`,
+          md: `${isCollapsed ? collapsedSidebarWidth : sidebarWidth}px`,
+        }}
+        zIndex={{ base: 'modal', md: isCollapsed ? 1200 : 'sticky' }}
         bg="bg"
         borderRight="1px solid"
         borderColor="border"
@@ -1794,50 +2233,151 @@ function Sidebar({
           base: isOpen ? 'translateX(0)' : `translateX(-${sidebarWidth + 10}px)`,
           md: 'translateX(0)',
         }}
-        transition="transform 0.25s cubic-bezier(0.22,1,0.36,1)"
+        transition="transform 0.25s cubic-bezier(0.22,1,0.36,1), width 0.22s cubic-bezier(0.2,0,0,1)"
       >
+        {/* Sidebar Header */}
         <Box
-          h="16"
-          minH="16"
-          maxH="16"
-          px="5"
+          h={isCollapsed ? { base: '16', md: 'auto' } : '16'}
+          minH={isCollapsed ? { base: '16', md: '84px' } : '16'}
+          px={isCollapsed ? { base: '5', md: '2' } : '5'}
+          py={isCollapsed ? { base: '0', md: '3' } : '0'}
           flexShrink={0}
           borderBottom="1px solid"
           borderColor="border"
           display="flex"
           alignItems="center"
+          justifyContent="center"
           overflow="hidden"
         >
-          {logo}
+          {/* On desktop collapsed mode: show vertically stacked logo mark + expand button below */}
+          <Box
+            display={{ base: 'none', md: isCollapsed ? 'flex' : 'none' }}
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            gap="2"
+            w="full"
+          >
+            {/* Logo mark */}
+            <Box display="flex" alignItems="center" justifyContent="center">
+              {collapsedLogo ?? (
+                <Logo
+                  type="icon"
+                  variant={scheme.chakraToken === 'blue.500' ? 'blue' : 'purple'}
+                  height={26}
+                />
+              )}
+            </Box>
+
+            {/* Expand button below logo */}
+            {collapsible &&
+              (collapseTogglePlacement === 'sidebar-header' ||
+                collapseTogglePlacement === 'both') && (
+                <Tooltip label="Expand sidebar" placement="right">
+                  <Box
+                    as="button"
+                    display="inline-flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    w="8"
+                    h="8"
+                    p="0"
+                    borderRadius="md"
+                    border="none"
+                    bg="transparent"
+                    color="text.muted"
+                    cursor="pointer"
+                    _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
+                    onClick={onToggleCollapse}
+                    aria-label="Expand sidebar"
+                    transition="background 0.15s ease, color 0.15s ease"
+                  >
+                    <PanelLeftOpenIcon />
+                  </Box>
+                </Tooltip>
+              )}
+          </Box>
+
+          {/* On mobile OR desktop expanded mode: show full horizontal row */}
+          <Box
+            display={{ base: 'flex', md: isCollapsed ? 'none' : 'flex' }}
+            alignItems="center"
+            justifyContent="space-between"
+            w="full"
+            minW="0"
+          >
+            <Box flex="1" minW="0" overflow="hidden">
+              {logo}
+            </Box>
+
+            {/* Collapse button on desktop header */}
+            {collapsible &&
+              (collapseTogglePlacement === 'sidebar-header' ||
+                collapseTogglePlacement === 'both') && (
+                <Tooltip label="Collapse sidebar" placement="bottom">
+                  <Box
+                    as="button"
+                    display={{ base: 'none', md: 'inline-flex' }}
+                    alignItems="center"
+                    justifyContent="center"
+                    w="8"
+                    h="8"
+                    p="0"
+                    borderRadius="md"
+                    border="none"
+                    bg="transparent"
+                    color="text.muted"
+                    cursor="pointer"
+                    _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
+                    onClick={onToggleCollapse}
+                    aria-label="Collapse sidebar"
+                    transition="background 0.15s ease, color 0.15s ease"
+                  >
+                    <PanelLeftCloseIcon />
+                  </Box>
+                </Tooltip>
+              )}
+          </Box>
         </Box>
 
         {/* ── Doctor score card (desktop only, optional) ── */}
         {scoreCard && (
-          <Box display={{ base: 'none', md: 'block' }} flexShrink={0} pt="3">
-            <SidebarScoreCard data={scoreCard} renderLink={renderLink} />
+          <Box display={{ base: 'none', md: 'block' }} flexShrink={0} pt={isCollapsed ? '1' : '3'}>
+            <SidebarScoreCard data={scoreCard} renderLink={renderLink} isCollapsed={isCollapsed} />
           </Box>
         )}
 
         {/* ── Nav groups ── */}
-        <Box flex="1" overflowY="auto" py="3" px="3">
+        <Box
+          flex="1"
+          overflowY={isCollapsed ? 'visible' : 'auto'}
+          overflowX={isCollapsed ? 'visible' : 'hidden'}
+          position="relative"
+          py="3"
+          px={isCollapsed ? '2' : '3'}
+        >
           {navGroups.map((group, gi) => (
-            <Box key={gi} mb="4">
+            <Box key={gi} mb={isCollapsed ? '2' : '4'}>
               {group.groupLabel && (
-                <Box
-                  px="3"
-                  pb="2"
-                  pt={gi > 0 ? '2' : undefined}
-                  fontSize="10px"
-                  fontWeight="700"
-                  letterSpacing="widest"
-                  textTransform="uppercase"
-                  color="text.muted"
-                  fontFamily="var(--font-body)"
-                >
-                  {group.groupLabel}
-                </Box>
+                isCollapsed ? (
+                  gi > 0 ? <Box h="1px" bg="border" mx="2" my="2" /> : null
+                ) : (
+                  <Box
+                    px="3"
+                    pb="2"
+                    pt={gi > 0 ? '2' : undefined}
+                    fontSize="10px"
+                    fontWeight="700"
+                    letterSpacing="widest"
+                    textTransform="uppercase"
+                    color="text.muted"
+                    fontFamily="var(--font-body)"
+                  >
+                    {group.groupLabel}
+                  </Box>
+                )
               )}
-              <Box display="flex" flexDirection="column" gap="0.5">
+              <Box display="flex" flexDirection="column" gap={isCollapsed ? '1.5' : '0.5'}>
                 {group.items.map((item) => (
                   <SidebarNavItem
                     key={item.href}
@@ -1845,6 +2385,7 @@ function Sidebar({
                     renderLink={renderLink}
                     onClick={onClose}
                     scheme={scheme}
+                    isCollapsed={isCollapsed}
                   />
                 ))}
               </Box>
@@ -1853,44 +2394,79 @@ function Sidebar({
         </Box>
 
         {/* ── Logout ── */}
-        <Box px="3" pb="4" pt="2" flexShrink={0} borderTop="1px solid" borderColor="border">
-          <Box
-            as="button"
-            display="flex"
-            alignItems="center"
-            gap="3"
-            w="full"
-            px="3"
-            py="2.5"
-            borderRadius="lg"
-            border="none"
-            bg="transparent"
-            cursor="pointer"
-            onMouseEnter={() => setLogoutHovered(true)}
-            onMouseLeave={() => setLogoutHovered(false)}
-            onClick={() => {
-              onClose();
-              onLogout?.();
-            }}
-            style={{
-              background: logoutHovered ? RED_HOVER_BG : 'transparent',
-              color: RED,
-              transition: 'background 0.15s ease',
-            }}
-          >
-            <Box flexShrink={0} style={{ color: RED }}>
-              <LogoutIcon />
-            </Box>
+        <Box px={isCollapsed ? '2' : '3'} pb="4" pt="2" flexShrink={0} borderTop="1px solid" borderColor="border">
+          {isCollapsed ? (
+            <Tooltip label="Log out" placement="right">
+              <Box
+                as="button"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                w="full"
+                h="10"
+                borderRadius="lg"
+                border="none"
+                bg="transparent"
+                cursor="pointer"
+                aria-label="Log out"
+                onMouseEnter={() => setLogoutHovered(true)}
+                onMouseLeave={() => setLogoutHovered(false)}
+                onClick={() => {
+                  onClose();
+                  onLogout?.();
+                }}
+                style={{
+                  background: logoutHovered ? RED_HOVER_BG : 'transparent',
+                  color: RED,
+                  transition: 'background 0.15s ease',
+                }}
+              >
+                <Box flexShrink={0} style={{ color: RED }}>
+                  <LogoutIcon />
+                </Box>
+              </Box>
+            </Tooltip>
+          ) : (
             <Box
-              as="span"
-              fontSize="sm"
-              fontWeight="500"
-              fontFamily="var(--font-body)"
-              style={{ color: RED }}
+              as="button"
+              display="flex"
+              alignItems="center"
+              justifyContent="flex-start"
+              gap="3"
+              w="full"
+              px="3"
+              py="2.5"
+              borderRadius="lg"
+              border="none"
+              bg="transparent"
+              cursor="pointer"
+              aria-label="Log out"
+              onMouseEnter={() => setLogoutHovered(true)}
+              onMouseLeave={() => setLogoutHovered(false)}
+              onClick={() => {
+                onClose();
+                onLogout?.();
+              }}
+              style={{
+                background: logoutHovered ? RED_HOVER_BG : 'transparent',
+                color: RED,
+                transition: 'background 0.15s ease',
+              }}
             >
-              Log out
+              <Box flexShrink={0} style={{ color: RED }}>
+                <LogoutIcon />
+              </Box>
+              <Box
+                as="span"
+                fontSize="sm"
+                fontWeight="500"
+                fontFamily="var(--font-body)"
+                style={{ color: RED }}
+              >
+                Log out
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
       </Box>
     </>
@@ -1911,6 +2487,10 @@ interface TopBarProps {
   dropdownItems?: DashboardDropdownItem[];
   onLogout?: () => void;
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
+  collapsible?: boolean;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
+  collapseTogglePlacement?: 'sidebar-header' | 'topbar' | 'both' | 'none';
 }
 
 function TopBar({
@@ -1924,6 +2504,10 @@ function TopBar({
   dropdownItems,
   onLogout,
   scheme,
+  collapsible = true,
+  isCollapsed = false,
+  onToggleCollapse,
+  collapseTogglePlacement = 'sidebar-header',
 }: TopBarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -1979,6 +2563,32 @@ function TopBar({
       >
         {isSidebarOpen ? <CloseMenuIcon /> : <MenuIcon />}
       </Box>
+
+      {/* Desktop collapse / expand toggle */}
+      {collapsible && (collapseTogglePlacement === 'topbar' || collapseTogglePlacement === 'both') && (
+        <Tooltip label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} placement="bottom">
+          <Box
+            as="button"
+            display={{ base: 'none', md: 'inline-flex' }}
+            alignItems="center"
+            justifyContent="center"
+            w="8"
+            h="8"
+            p="0"
+            borderRadius="md"
+            border="none"
+            bg="transparent"
+            color="text.muted"
+            cursor="pointer"
+            _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
+            onClick={onToggleCollapse}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            transition="background 0.15s ease, color 0.15s ease"
+          >
+            {isCollapsed ? <PanelLeftOpenIcon /> : <PanelLeftCloseIcon />}
+          </Box>
+        </Tooltip>
+      )}
 
       {/* Greeting */}
       <Box flex="1" minW="0">
@@ -2198,6 +2808,11 @@ function DropdownItem({
  * scrollable main content area. Fully responsive — the sidebar is hidden on
  * mobile and revealed via a hamburger toggle.
  *
+ * ### Collapsible Sidebar
+ * On desktop (`md+`), the sidebar can be collapsed into a compact icon rail (68px)
+ * or expanded (220px). Supports both controlled (`isCollapsed`, `onCollapseChange`)
+ * and uncontrolled (`defaultCollapsed`, `collapsible`) operation.
+ *
  * ### Router integration
  * Pass `renderLink` to use your router's `<Link>` component without bringing
  * router dependencies into the library (mirrors the `Navbar` pattern).
@@ -2242,6 +2857,8 @@ function DropdownItem({
  *     <DashboardLayout
  *       navGroups={groups}
  *       user={{ name: "Daniel", email: "daniel@medixdeck.com" }}
+ *       collapsible={true}
+ *       defaultCollapsed={false}
  *       onLogout={() => auth.signOut()}
  *       renderLink={(item, children) => <Link to={item.href}>{children}</Link>}
  *     >
@@ -2263,6 +2880,13 @@ export function DashboardLayout({
   dropdownItems,
   topBarSlot,
   sidebarWidth = 220,
+  collapsedSidebarWidth = 68,
+  collapsible = true,
+  defaultCollapsed = false,
+  isCollapsed: controlledIsCollapsed,
+  onCollapseChange,
+  collapsedLogo,
+  collapseTogglePlacement = 'sidebar-header',
   colorScheme = 'blue',
   mobileNavItems,
   scoreCard,
@@ -2273,6 +2897,7 @@ export function DashboardLayout({
   ...rest
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [uncontrolledCollapsed, setUncontrolledCollapsed] = useState(defaultCollapsed);
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -2280,11 +2905,24 @@ export function DashboardLayout({
     setIsMounted(true);
   }, []);
 
+  const isCollapsed =
+    collapsible && (controlledIsCollapsed !== undefined ? controlledIsCollapsed : uncontrolledCollapsed);
+
+  const handleToggleCollapse = () => {
+    if (!collapsible) return;
+    const next = !isCollapsed;
+    if (controlledIsCollapsed === undefined) {
+      setUncontrolledCollapsed(next);
+    }
+    onCollapseChange?.(next);
+  };
+
   const scheme = SCHEME_COLORS[colorScheme];
   const hasMobileNav = !!(mobileNavItems && mobileNavItems.length > 0);
 
   const resolvedGreeting = greeting ?? autoGreeting();
   const resolvedLogo = logo ?? <Logo variant={colorScheme} height={26} />;
+  const resolvedCollapsedLogo = collapsedLogo ?? <Logo type="icon" variant={colorScheme} height={26} />;
 
   // ─── Environment Banner Detection ───
   const envConfig = environmentBanner || {};
@@ -2304,12 +2942,18 @@ export function DashboardLayout({
       {/* ── Sidebar ── */}
       <Sidebar
         logo={resolvedLogo}
+        collapsedLogo={resolvedCollapsedLogo}
         navGroups={navGroups}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         onLogout={onLogout}
         renderLink={renderLink}
         sidebarWidth={sidebarWidth}
+        collapsedSidebarWidth={collapsedSidebarWidth}
+        isCollapsed={isCollapsed}
+        collapsible={collapsible}
+        onToggleCollapse={handleToggleCollapse}
+        collapseTogglePlacement={collapseTogglePlacement}
         scheme={scheme}
         scoreCard={scoreCard}
       />
@@ -2320,8 +2964,11 @@ export function DashboardLayout({
         display="flex"
         flexDirection="column"
         minW="0"
-        ml={{ base: '0', md: `${sidebarWidth}px` }}
-        transition="margin-left 0.25s cubic-bezier(0.22,1,0.36,1)"
+        ml={{
+          base: '0',
+          md: `${isCollapsed ? collapsedSidebarWidth : sidebarWidth}px`,
+        }}
+        transition="margin-left 0.22s cubic-bezier(0.2,0,0,1)"
       >
         {/* Environment Banner (test / sandbox / dev indicator) */}
         {shouldShowBanner &&
@@ -2348,6 +2995,10 @@ export function DashboardLayout({
           dropdownItems={dropdownItems}
           onLogout={onLogout}
           scheme={scheme}
+          collapsible={collapsible}
+          isCollapsed={isCollapsed}
+          onToggleCollapse={handleToggleCollapse}
+          collapseTogglePlacement={collapseTogglePlacement}
         />
 
         {/* Page content */}

@@ -7,7 +7,7 @@ afterEach(() => {
   cleanup();
 });
 
-// Mock matchMedia since JSDOM does not implement it
+// Mock matchMedia since JSDOM / happy-dom does not implement it
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({
@@ -21,3 +21,11 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
+
+// Mock fetch to avoid real network calls to external CDNs (Fontshare, Google Fonts)
+if (typeof globalThis.fetch === 'function') {
+  vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+    Promise.resolve(new Response('', { status: 200, statusText: 'OK' })),
+  );
+}
+

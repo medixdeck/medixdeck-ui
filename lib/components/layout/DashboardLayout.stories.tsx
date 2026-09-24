@@ -737,3 +737,212 @@ export const ExplicitlySuppressed: Story = {
     </Box>
   ),
 };
+
+// ─── Collapsible Sidebar Stories ────────────────────────────────────────────
+
+/**
+ * Default collapsible sidebar (`collapsible={true}`, `defaultCollapsed={false}`).
+ * Toggle via the header icon button or the sticky topbar button.
+ */
+export const CollapsibleDefault: Story = {
+  name: 'Collapsible / Default (Expanded)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: true,
+    defaultCollapsed: false,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Collapsible Sidebar (Expanded)"
+          description="Click the panel collapse icon in the sidebar header or top bar to shrink the sidebar into a compact icon rail."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Starts in collapsed rail mode (`defaultCollapsed={true}`).
+ */
+export const DefaultCollapsed: Story = {
+  name: 'Collapsible / Default Collapsed (Rail)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: true,
+    defaultCollapsed: true,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Default Collapsed Sidebar"
+          description="The sidebar is initialized in collapsed icon rail mode (68px). Hover over icons to see titles or click the expand button in the top bar to expand."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Controlled collapsed state with external triggers.
+ */
+export const ControlledCollapse: Story = {
+  name: 'Collapsible / Controlled Collapse',
+  render: () => {
+    const [collapsed, setCollapsed] = React.useState(false);
+    return (
+      <Box h="100vh" w="100%">
+        <DashboardLayout
+          user={{ name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' }}
+          navGroups={BASE_NAV_GROUPS}
+          isCollapsed={collapsed}
+          onCollapseChange={setCollapsed}
+          collapsible={true}
+          environment="production"
+        >
+          <Box
+            p="6"
+            borderRadius="xl"
+            bg="bg.surface"
+            border="1px solid"
+            borderColor="border"
+          >
+            <Text fontSize="lg" fontWeight="700" color="text.heading" mb="2">
+              Controlled Sidebar State: {collapsed ? 'Collapsed (Rail)' : 'Expanded (Full)'}
+            </Text>
+            <Text fontSize="sm" color="text.muted" mb="4">
+              You can control the sidebar programmatically using <code>isCollapsed</code> and{' '}
+              <code>onCollapseChange</code>.
+            </Text>
+            <Box
+              as="button"
+              px="4"
+              py="2"
+              borderRadius="md"
+              bg="blue.500"
+              color="#fff"
+              border="none"
+              fontWeight="600"
+              fontSize="sm"
+              cursor="pointer"
+              onClick={() => setCollapsed((c) => !c)}
+            >
+              {collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+            </Box>
+          </Box>
+        </DashboardLayout>
+      </Box>
+    );
+  },
+};
+
+/**
+ * Collapsible sidebar with Doctor Score Card.
+ * Demonstrates the score card transforming into a compact clinician ring avatar when collapsed.
+ */
+export const CollapsibleWithDoctorScoreCard: Story = {
+  name: 'Collapsible / With Doctor Score Card',
+  args: {
+    user: { name: 'Dr. Amina Bello', email: 'amina@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Amina Bello',
+      role: 'Chief of Cardiology',
+      tier: 'diamond',
+      medixScore: 985,
+    },
+    collapsible: true,
+    defaultCollapsed: false,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Collapsible with Doctor Score Card"
+          description="Notice how the doctor score card smoothly collapses into a sleek circular avatar with the diamond tier gradient ring."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Collapsible sidebar with nested sub-items (flyout popover when collapsed).
+ */
+export const CollapsibleWithSublinks: Story = {
+  name: 'Collapsible / With Sub-items & Flyout',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: NAV_GROUPS_WITH_SUBITEMS,
+    collapsible: true,
+    defaultCollapsed: true,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Collapsible with Sub-items"
+          description="In collapsed rail mode, clicking a navigation item with sub-links opens an anchored floating popover flyout menu."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Non-collapsible sidebar (`collapsible={false}`).
+ */
+export const NonCollapsible: Story = {
+  name: 'Collapsible / Disabled (Non-Collapsible)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: false,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Non-Collapsible Sidebar"
+          description="With collapsible={false}, the toggle buttons are hidden and the sidebar remains permanently expanded at full width."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * TopBar toggle placement option (`collapseTogglePlacement="both"`).
+ */
+export const TopBarTogglePlacement: Story = {
+  name: 'Collapsible / TopBar Toggle Placement (both)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: true,
+    defaultCollapsed: false,
+    collapseTogglePlacement: 'both',
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="TopBar Toggle Button Placement"
+          description="Setting collapseTogglePlacement='both' or 'topbar' renders the collapse/expand toggle button in the sticky topbar."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+

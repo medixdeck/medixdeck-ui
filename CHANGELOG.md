@@ -6,6 +6,22 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 
+- **`DashboardLayout` — Collapsible Sidebar (Compact Icon Rail & Flyouts)**:
+  - Added collapsible desktop sidebar supporting shrinking from full width (`sidebarWidth = 220px`) into a compact icon rail (`collapsedSidebarWidth = 68px`) and expanding back smoothly.
+  - Added toggle icon buttons (`PanelLeftCloseIcon` ◧ and `PanelLeftOpenIcon` ◨) placed in the sidebar header by default (next to logo when expanded, directly below the logo mark in collapsed rail mode) with `collapseTogglePlacement` (`"sidebar-header" | "topbar" | "both" | "none"`).
+  - Uncontrolled (`collapsible={true}`, `defaultCollapsed={false}`) and controlled (`isCollapsed`, `onCollapseChange`) state management.
+  - Collapsed rail mode component transformations:
+    - Logo transforms into the icon mark (`<Logo type="icon" />` or `collapsedLogo`) with the expand button directly below it.
+    - Navigation items become centered 40px icon pills with tooltips and pinned badges/dots.
+    - Nested sub-items open an anchored floating flyout popover menu on click.
+    - Doctor score card smoothly collapses into a centered circular clinician tier ring avatar with full tooltip metadata.
+    - Section group headings collapse into subtle dividers.
+  - Full backward compatibility, zero shadows (`boxShadow="none"`), 1px solid borders, and full dark mode styling.
+
+---
+
+### Added
+
 - **`DashboardLayout` — Automatic Test & Sandbox Environment Banner**:
   - Added built-in cross-framework test & sandbox environment banner that displays automatically in non-production environments (`localhost`, `*.vercel.app`, `*.netlify.app`, `*.pages.dev`, `*staging*`, `*sandbox*`, `*dev*`, `*test*`, or non-production `NODE_ENV` / `MODE` flags).
   - Universal meta-framework compatibility: Safe across SSR and CSR runtimes (Next.js App & Pages Routers, Vite + React, Remix, Astro, TanStack Start, SolidJS bridges) with zero hydration mismatches.

@@ -480,12 +480,59 @@ It is completely safe across SSR and CSR runtimes (Next.js App/Pages Router, Vit
 | `dismissible` | `boolean` | `false` | Shows a close (✕) button |
 | `onDismiss` | `() => void` | — | Called when the close button is clicked |
 
+### Collapsible Sidebar (`collapsible`, `isCollapsed`, `onCollapseChange`)
+
+On desktop (`md+`), `DashboardLayout` supports shrinking the sidebar into a compact icon rail (68px) and expanding it back to full width (220px). Supports both uncontrolled (`defaultCollapsed`) and controlled (`isCollapsed`, `onCollapseChange`) operation:
+
+- **Toggle Buttons**: Built-in panel collapse icon buttons (◧ / ◨) placed in the sidebar header (next to logo when expanded, directly below the logo mark in collapsed rail mode; `collapseTogglePlacement="sidebar-header"` by default).
+- **Icon Rail Transformation**: Logo collapses into the icon mark, navigation items become centered 40px icon pills with tooltips, and badges/dots are pinned on top-right.
+- **Sub-Items Flyout**: Clicking a navigation item with sub-links in collapsed mode opens an anchored floating flyout popover menu.
+- **Doctor Score Card Transformation**: Collapses smoothly into a centered circular clinician tier ring avatar with full tooltip metadata.
+
+```tsx
+// 1. Uncontrolled with default expanded or collapsed
+<DashboardLayout
+  collapsible={true}
+  defaultCollapsed={false}
+  user={user}
+  navGroups={navGroups}
+>
+  {children}
+</DashboardLayout>
+
+// 2. Controlled collapse state
+function App() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  return (
+    <DashboardLayout
+      collapsible={true}
+      isCollapsed={isCollapsed}
+      onCollapseChange={setIsCollapsed}
+      collapsedSidebarWidth={68}
+      user={user}
+      navGroups={navGroups}
+    >
+      {children}
+    </DashboardLayout>
+  );
+}
+```
+
 ### All `DashboardLayout` props
 
 | Prop                     | Type                                | Default    | Description                                   |
 | ------------------------ | ----------------------------------- | ---------- | --------------------------------------------- |
 | `user`                   | `DashboardUser`                     | —          | Name, email, optional avatar                  |
 | `navGroups`              | `DashboardNavGroup[]`               | —          | Sidebar navigation tree                       |
+| `collapsible`            | `boolean`                           | `true`     | Enables collapsible sidebar icon rail         |
+| `defaultCollapsed`       | `boolean`                           | `false`    | Initial collapsed state (uncontrolled)        |
+| `isCollapsed`            | `boolean`                           | —          | Controlled collapsed state                    |
+| `onCollapseChange`       | `(collapsed: boolean) => void`      | —          | Fired when sidebar collapse state toggles     |
+| `sidebarWidth`           | `number`                            | `220`      | Full sidebar width in px                      |
+| `collapsedSidebarWidth`  | `number`                            | `68`       | Compact icon rail width in px                 |
+| `collapseTogglePlacement`| `"sidebar-header" \| "topbar" \| "both" \| "none"` | `"sidebar-header"` | Placement of collapse/expand toggle buttons   |
+| `collapsedLogo`          | `ReactNode`                         | `<Logo type="icon" />` | Custom logo displayed in collapsed mode |
 | `colorScheme`            | `"blue" \| "purple"`                | `"blue"`   | Brand accent colour                           |
 | `environment`            | `DashboardEnvironment`              | `"auto"`   | Auto-detects test/sandbox/staging environments |
 | `showEnvironmentBanner`   | `boolean`                           | auto       | Force show (`true`) or suppress (`false`) banner |
@@ -498,7 +545,6 @@ It is completely safe across SSR and CSR runtimes (Next.js App/Pages Router, Vit
 | `scoreCard`              | `DashboardScoreCardData`            | —          | Doctor identity card (desktop only)           |
 | `topBarSlot`             | `ReactNode`                         | —          | Slot right of greeting (search, bell, etc.)   |
 | `dropdownItems`          | `DashboardDropdownItem[]`           | —          | Extra user dropdown items                     |
-| `sidebarWidth`           | `number`                            | `220`      | Sidebar width in px                           |
 | `renderLink`             | `(item, children) => ReactNode`     | `<a>`      | Router integration                            |
 | `onLogout`               | `() => void`                        | —          | Logout callback                               |
 

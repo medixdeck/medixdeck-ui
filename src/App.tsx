@@ -9,6 +9,10 @@ import {
   LuMessageCircle,
   LuUser,
   LuWallet,
+  LuBell,
+  LuHistory,
+  LuPill,
+  LuClipboardCheck,
 } from 'react-icons/lu';
 
 import * as MedixDeckUI from '../lib';
@@ -318,48 +322,49 @@ export default function App() {
         environmentBanner={
           dashboardEnv === 'custom'
             ? {
-                environment: 'sandbox',
-                badgeLabel: 'SIMULATION TERMINAL',
-                message:
-                  'Interactive testing sandbox for clinicians & automated QA suites. Live data is protected.',
-                action: (
-                  <Button
-                    size="xs"
-                    variant="outline"
-                    colorScheme="amber"
-                    onClick={() => alert('Live app requested')}
-                  >
-                    Switch to Live →
-                  </Button>
-                ),
-                dismissible: bannerDismissible,
-              }
+              environment: 'sandbox',
+              badgeLabel: 'SIMULATION TERMINAL',
+              message:
+                'Interactive testing sandbox for clinicians & automated QA suites. Live data is protected.',
+              action: (
+                <Button
+                  size="xs"
+                  variant="outline"
+                  colorScheme="amber"
+                  onClick={() => alert('Live app requested')}
+                >
+                  Switch to Live →
+                </Button>
+              ),
+              dismissible: bannerDismissible,
+            }
             : {
-                dismissible: bannerDismissible,
-              }
+              dismissible: bannerDismissible,
+            }
         }
         navGroups={[
           {
             items: [
-              { label: 'Home', href: '#home', isActive: true },
-              { label: 'Consult', href: '#consult' },
+              { label: 'Home', href: '#home', isActive: true, icon: <LuHouse size={18} /> },
+              { label: 'Consult', href: '#consult', icon: <LuStethoscope size={18} /> },
               {
                 label: 'Records',
                 href: '#records',
+                icon: <LuFileText size={18} />,
                 subItems: [
-                  { label: 'Medical History', href: '#records-history' },
-                  { label: 'Prescriptions', href: '#records-prescriptions' },
-                  { label: 'Test Results', href: '#records-test-results', badge: 2 },
+                  { label: 'Medical History', href: '#records-history', icon: <LuHistory size={16} /> },
+                  { label: 'Prescriptions', href: '#records-prescriptions', icon: <LuPill size={16} /> },
+                  { label: 'Test Results', href: '#records-test-results', badge: 2, icon: <LuClipboardCheck size={16} /> },
                 ],
               },
-              { label: 'Messages', href: '#messages', badge: 6 },
+              { label: 'Messages', href: '#messages', badge: 6, icon: <LuMessageCircle size={18} /> },
             ],
           },
           {
             groupLabel: 'Account',
             items: [
-              { label: 'Profile', href: '#profile' },
-              { label: 'Notifications', href: '#notifications', hasDot: true },
+              { label: 'Profile', href: '#profile', icon: <LuUser size={18} /> },
+              { label: 'Notifications', href: '#notifications', hasDot: true, icon: <LuBell size={18} /> },
             ],
           },
         ]}
@@ -1187,6 +1192,7 @@ export default function App() {
                     variant="solid"
                     colorScheme="purple"
                     size="md"
+                    // @ts-expect-error margin-top
                     mt="1"
                   >
                     Launch Interactive Dashboard
@@ -1608,7 +1614,7 @@ export default function App() {
               <Tag colorScheme="purple" variant="solid">
                 Psychiatry
               </Tag>
-              <Tag colorScheme="green" onClose={() => {}}>
+              <Tag colorScheme="green" onClose={() => { }}>
                 Pediatrics ×
               </Tag>
               <Tag colorScheme="gray" variant="outline">
@@ -1962,6 +1968,7 @@ export default function App() {
               />
             </Box>
           </Section>
+
 
           <Section title="Tabs" id="navigation" storybookPath="?path=/docs/navigation-tabs--docs">
             <Box w="100%">
