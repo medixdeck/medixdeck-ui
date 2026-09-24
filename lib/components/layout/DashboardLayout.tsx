@@ -719,9 +719,10 @@ const BANNER_STATUS_THEMES: Record<
  * (Next.js, Vite, Remix, TanStack Start, Astro, SolidJS bridges) without throwing
  * ReferenceErrors or causing SSR hydration mismatches.
  */
-function detectDashboardEnvironment(
-  explicitEnv?: DashboardEnvironment
-): { isNonProduction: boolean; detectedEnv: DashboardEnvironment } {
+function detectDashboardEnvironment(explicitEnv?: DashboardEnvironment): {
+  isNonProduction: boolean;
+  detectedEnv: DashboardEnvironment;
+} {
   if (explicitEnv && explicitEnv !== 'auto') {
     const isNonProd = explicitEnv !== 'production' && explicitEnv !== 'live';
     return { isNonProduction: isNonProd, detectedEnv: explicitEnv };
@@ -733,9 +734,7 @@ function detectDashboardEnvironment(
       const nodeEnv = process.env.NODE_ENV;
       const vercelEnv = process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV;
       const medixEnv =
-        process.env.MEDIX_ENV ||
-        process.env.NEXT_PUBLIC_MEDIX_ENV ||
-        process.env.PUBLIC_MEDIX_ENV;
+        process.env.MEDIX_ENV || process.env.NEXT_PUBLIC_MEDIX_ENV || process.env.PUBLIC_MEDIX_ENV;
       const netlifyContext = process.env.CONTEXT;
 
       if (medixEnv) {
@@ -1016,10 +1015,10 @@ const themeOptions: Array<{
   shortLabel: string;
   icon: React.ReactNode;
 }> = [
-    { value: 'light', label: 'Light mode', shortLabel: 'Light', icon: <SunIcon /> },
-    { value: 'dark', label: 'Dark mode', shortLabel: 'Dark', icon: <MoonIcon /> },
-    { value: 'system', label: 'System theme', shortLabel: 'System', icon: <SystemIcon /> },
-  ];
+  { value: 'light', label: 'Light mode', shortLabel: 'Light', icon: <SunIcon /> },
+  { value: 'dark', label: 'Dark mode', shortLabel: 'Dark', icon: <MoonIcon /> },
+  { value: 'system', label: 'System theme', shortLabel: 'System', icon: <SystemIcon /> },
+];
 
 function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[DashboardColorScheme] }) {
   const { mounted, themeMode, themeSetting, setThemeMode } = useThemeMode();
@@ -1454,7 +1453,11 @@ function SidebarNavItem({
           onMouseLeave={() => setHovered(false)}
           onClick={onClick}
           style={{
-            background: isActive ? scheme.activeBgLight : hovered ? scheme.hoverBgLight : 'transparent',
+            background: isActive
+              ? scheme.activeBgLight
+              : hovered
+                ? scheme.hoverBgLight
+                : 'transparent',
             outline: focusVisible ? `2px solid ${scheme.solid}` : undefined,
             outlineOffset: focusVisible ? '2px' : undefined,
             transition: 'background 0.15s ease',
@@ -1667,14 +1670,7 @@ function SidebarNavItem({
           style={{ overflow: 'hidden' }}
           aria-hidden={!expanded}
         >
-          <Box
-            display="flex"
-            flexDirection="column"
-            gap="0.5"
-            pl="9"
-            mt="0.5"
-            mb="1"
-          >
+          <Box display="flex" flexDirection="column" gap="0.5" pl="9" mt="0.5" mb="1">
             {item.subItems!.map((subItem) => (
               <SidebarNavItem
                 key={subItem.href}
@@ -2358,9 +2354,11 @@ function Sidebar({
         >
           {navGroups.map((group, gi) => (
             <Box key={gi} mb={isCollapsed ? '2' : '4'}>
-              {group.groupLabel && (
-                isCollapsed ? (
-                  gi > 0 ? <Box h="1px" bg="border" mx="2" my="2" /> : null
+              {group.groupLabel &&
+                (isCollapsed ? (
+                  gi > 0 ? (
+                    <Box h="1px" bg="border" mx="2" my="2" />
+                  ) : null
                 ) : (
                   <Box
                     px="3"
@@ -2375,8 +2373,7 @@ function Sidebar({
                   >
                     {group.groupLabel}
                   </Box>
-                )
-              )}
+                ))}
               <Box display="flex" flexDirection="column" gap={isCollapsed ? '1.5' : '0.5'}>
                 {group.items.map((item) => (
                   <SidebarNavItem
@@ -2394,7 +2391,14 @@ function Sidebar({
         </Box>
 
         {/* ── Logout ── */}
-        <Box px={isCollapsed ? '2' : '3'} pb="4" pt="2" flexShrink={0} borderTop="1px solid" borderColor="border">
+        <Box
+          px={isCollapsed ? '2' : '3'}
+          pb="4"
+          pt="2"
+          flexShrink={0}
+          borderTop="1px solid"
+          borderColor="border"
+        >
           {isCollapsed ? (
             <Tooltip label="Log out" placement="right">
               <Box
@@ -2565,30 +2569,31 @@ function TopBar({
       </Box>
 
       {/* Desktop collapse / expand toggle */}
-      {collapsible && (collapseTogglePlacement === 'topbar' || collapseTogglePlacement === 'both') && (
-        <Tooltip label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} placement="bottom">
-          <Box
-            as="button"
-            display={{ base: 'none', md: 'inline-flex' }}
-            alignItems="center"
-            justifyContent="center"
-            w="8"
-            h="8"
-            p="0"
-            borderRadius="md"
-            border="none"
-            bg="transparent"
-            color="text.muted"
-            cursor="pointer"
-            _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
-            onClick={onToggleCollapse}
-            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            transition="background 0.15s ease, color 0.15s ease"
-          >
-            {isCollapsed ? <PanelLeftOpenIcon /> : <PanelLeftCloseIcon />}
-          </Box>
-        </Tooltip>
-      )}
+      {collapsible &&
+        (collapseTogglePlacement === 'topbar' || collapseTogglePlacement === 'both') && (
+          <Tooltip label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} placement="bottom">
+            <Box
+              as="button"
+              display={{ base: 'none', md: 'inline-flex' }}
+              alignItems="center"
+              justifyContent="center"
+              w="8"
+              h="8"
+              p="0"
+              borderRadius="md"
+              border="none"
+              bg="transparent"
+              color="text.muted"
+              cursor="pointer"
+              _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
+              onClick={onToggleCollapse}
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              transition="background 0.15s ease, color 0.15s ease"
+            >
+              {isCollapsed ? <PanelLeftOpenIcon /> : <PanelLeftCloseIcon />}
+            </Box>
+          </Tooltip>
+        )}
 
       {/* Greeting */}
       <Box flex="1" minW="0">
@@ -2906,7 +2911,8 @@ export function DashboardLayout({
   }, []);
 
   const isCollapsed =
-    collapsible && (controlledIsCollapsed !== undefined ? controlledIsCollapsed : uncontrolledCollapsed);
+    collapsible &&
+    (controlledIsCollapsed !== undefined ? controlledIsCollapsed : uncontrolledCollapsed);
 
   const handleToggleCollapse = () => {
     if (!collapsible) return;
@@ -2922,7 +2928,9 @@ export function DashboardLayout({
 
   const resolvedGreeting = greeting ?? autoGreeting();
   const resolvedLogo = logo ?? <Logo variant={colorScheme} height={26} />;
-  const resolvedCollapsedLogo = collapsedLogo ?? <Logo type="icon" variant={colorScheme} height={26} />;
+  const resolvedCollapsedLogo = collapsedLogo ?? (
+    <Logo type="icon" variant={colorScheme} height={26} />
+  );
 
   // ─── Environment Banner Detection ───
   const envConfig = environmentBanner || {};

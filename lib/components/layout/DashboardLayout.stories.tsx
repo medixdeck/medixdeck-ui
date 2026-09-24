@@ -806,13 +806,7 @@ export const ControlledCollapse: Story = {
           collapsible={true}
           environment="production"
         >
-          <Box
-            p="6"
-            borderRadius="xl"
-            bg="bg.surface"
-            border="1px solid"
-            borderColor="border"
-          >
+          <Box p="6" borderRadius="xl" bg="bg.surface" border="1px solid" borderColor="border">
             <Text fontSize="lg" fontWeight="700" color="text.heading" mb="2">
               Controlled Sidebar State: {collapsed ? 'Collapsed (Rail)' : 'Expanded (Full)'}
             </Text>
@@ -944,5 +938,3 @@ export const TopBarTogglePlacement: Story = {
     </Box>
   ),
 };
-
-

@@ -121,11 +121,7 @@ describe('DashboardLayout Component', () => {
   it('renders environment banner for sandbox environment', () => {
     render(
       <MedixProvider defaultColorMode="light">
-        <DashboardLayout
-          user={TEST_USER}
-          navGroups={TEST_NAV_GROUPS}
-          environment="sandbox"
-        >
+        <DashboardLayout user={TEST_USER} navGroups={TEST_NAV_GROUPS} environment="sandbox">
           <div>Main Content</div>
         </DashboardLayout>
       </MedixProvider>,
@@ -190,4 +186,3 @@ describe('DashboardLayout Component', () => {
     expect(screen.queryByRole('menu', { name: 'Consultations' })).not.toBeInTheDocument();
   });
 });
-

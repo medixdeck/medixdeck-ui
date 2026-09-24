@@ -306,17 +306,17 @@ export function Header() {
 
 ### `NavItem` properties
 
-| Prop | Type | Description |
-|---|---|---|
-| `label` | `string` | Display text for the item |
-| `href` | `string` | Target URL (optional for dropdown triggers) |
-| `children` | `NavItem[]` | Nested items for desktop floating menus and mobile accordions |
-| `description` | `string` | Subtitle text displayed below label in dropdown items |
-| `icon` | `ReactNode` | Leading icon element |
-| `badge` | `string \| number \| ReactNode` | Status tag or count (e.g. `"Popular"`, `"NDPR"`) |
-| `isActive` | `boolean` | Highlights active route item |
-| `isExternal` | `boolean` | Opens link in a new tab with an external arrow icon |
-| `onClick` | `() => void` | Optional click callback |
+| Prop          | Type                            | Description                                                   |
+| ------------- | ------------------------------- | ------------------------------------------------------------- |
+| `label`       | `string`                        | Display text for the item                                     |
+| `href`        | `string`                        | Target URL (optional for dropdown triggers)                   |
+| `children`    | `NavItem[]`                     | Nested items for desktop floating menus and mobile accordions |
+| `description` | `string`                        | Subtitle text displayed below label in dropdown items         |
+| `icon`        | `ReactNode`                     | Leading icon element                                          |
+| `badge`       | `string \| number \| ReactNode` | Status tag or count (e.g. `"Popular"`, `"NDPR"`)              |
+| `isActive`    | `boolean`                       | Highlights active route item                                  |
+| `isExternal`  | `boolean`                       | Opens link in a new tab with an external arrow icon           |
+| `onClick`     | `() => void`                    | Optional click callback                                       |
 
 ---
 
@@ -470,15 +470,15 @@ It is completely safe across SSR and CSR runtimes (Next.js App/Pages Router, Vit
 
 `DashboardEnvironmentBannerConfig` props:
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `environment` | `"auto" \| "production" \| "live" \| "sandbox" \| "test" \| "development" \| "staging" \| "preview"` | `"auto"` | Environment classification |
-| `badgeLabel` | `string` | auto | Uppercase badge label (e.g., `"SANDBOX ENVIRONMENT"`) |
-| `message` | `string` | auto | Descriptive warning / notice text |
-| `status` | `"warning" \| "info" \| "error" \| "neutral"` | auto | Visual color scheme (amber warning, blue info, red error) |
-| `action` | `ReactNode` | — | Action link or button on the right |
-| `dismissible` | `boolean` | `false` | Shows a close (✕) button |
-| `onDismiss` | `() => void` | — | Called when the close button is clicked |
+| Prop          | Type                                                                                                 | Default  | Description                                               |
+| ------------- | ---------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------- |
+| `environment` | `"auto" \| "production" \| "live" \| "sandbox" \| "test" \| "development" \| "staging" \| "preview"` | `"auto"` | Environment classification                                |
+| `badgeLabel`  | `string`                                                                                             | auto     | Uppercase badge label (e.g., `"SANDBOX ENVIRONMENT"`)     |
+| `message`     | `string`                                                                                             | auto     | Descriptive warning / notice text                         |
+| `status`      | `"warning" \| "info" \| "error" \| "neutral"`                                                        | auto     | Visual color scheme (amber warning, blue info, red error) |
+| `action`      | `ReactNode`                                                                                          | —        | Action link or button on the right                        |
+| `dismissible` | `boolean`                                                                                            | `false`  | Shows a close (✕) button                                  |
+| `onDismiss`   | `() => void`                                                                                         | —        | Called when the close button is clicked                   |
 
 ### Collapsible Sidebar (`collapsible`, `isCollapsed`, `onCollapseChange`)
 
@@ -491,14 +491,9 @@ On desktop (`md+`), `DashboardLayout` supports shrinking the sidebar into a comp
 
 ```tsx
 // 1. Uncontrolled with default expanded or collapsed
-<DashboardLayout
-  collapsible={true}
-  defaultCollapsed={false}
-  user={user}
-  navGroups={navGroups}
->
+<DashboardLayout collapsible={true} defaultCollapsed={false} user={user} navGroups={navGroups}>
   {children}
-</DashboardLayout>
+</DashboardLayout>;
 
 // 2. Controlled collapse state
 function App() {
@@ -521,32 +516,32 @@ function App() {
 
 ### All `DashboardLayout` props
 
-| Prop                     | Type                                | Default    | Description                                   |
-| ------------------------ | ----------------------------------- | ---------- | --------------------------------------------- |
-| `user`                   | `DashboardUser`                     | —          | Name, email, optional avatar                  |
-| `navGroups`              | `DashboardNavGroup[]`               | —          | Sidebar navigation tree                       |
-| `collapsible`            | `boolean`                           | `true`     | Enables collapsible sidebar icon rail         |
-| `defaultCollapsed`       | `boolean`                           | `false`    | Initial collapsed state (uncontrolled)        |
-| `isCollapsed`            | `boolean`                           | —          | Controlled collapsed state                    |
-| `onCollapseChange`       | `(collapsed: boolean) => void`      | —          | Fired when sidebar collapse state toggles     |
-| `sidebarWidth`           | `number`                            | `220`      | Full sidebar width in px                      |
-| `collapsedSidebarWidth`  | `number`                            | `68`       | Compact icon rail width in px                 |
-| `collapseTogglePlacement`| `"sidebar-header" \| "topbar" \| "both" \| "none"` | `"sidebar-header"` | Placement of collapse/expand toggle buttons   |
-| `collapsedLogo`          | `ReactNode`                         | `<Logo type="icon" />` | Custom logo displayed in collapsed mode |
-| `colorScheme`            | `"blue" \| "purple"`                | `"blue"`   | Brand accent colour                           |
-| `environment`            | `DashboardEnvironment`              | `"auto"`   | Auto-detects test/sandbox/staging environments |
-| `showEnvironmentBanner`   | `boolean`                           | auto       | Force show (`true`) or suppress (`false`) banner |
-| `environmentBanner`      | `DashboardEnvironmentBannerConfig`  | —          | Detailed banner message, action, & dismiss config |
-| `environmentBannerSlot`  | `ReactNode`                         | —          | Custom slot overriding the entire banner      |
-| `logo`                   | `ReactNode`                         | `<Logo />` | Override the sidebar logo                     |
-| `greeting`               | `string`                            | auto       | Override "Good morning / afternoon / evening" |
-| `greetingSubtext`        | `string`                            | —          | Subtitle line below the greeting              |
-| `mobileNavItems`         | `DashboardMobileNavItem[]`          | —          | Mobile bottom tab bar items                   |
-| `scoreCard`              | `DashboardScoreCardData`            | —          | Doctor identity card (desktop only)           |
-| `topBarSlot`             | `ReactNode`                         | —          | Slot right of greeting (search, bell, etc.)   |
-| `dropdownItems`          | `DashboardDropdownItem[]`           | —          | Extra user dropdown items                     |
-| `renderLink`             | `(item, children) => ReactNode`     | `<a>`      | Router integration                            |
-| `onLogout`               | `() => void`                        | —          | Logout callback                               |
+| Prop                      | Type                                               | Default                | Description                                       |
+| ------------------------- | -------------------------------------------------- | ---------------------- | ------------------------------------------------- |
+| `user`                    | `DashboardUser`                                    | —                      | Name, email, optional avatar                      |
+| `navGroups`               | `DashboardNavGroup[]`                              | —                      | Sidebar navigation tree                           |
+| `collapsible`             | `boolean`                                          | `true`                 | Enables collapsible sidebar icon rail             |
+| `defaultCollapsed`        | `boolean`                                          | `false`                | Initial collapsed state (uncontrolled)            |
+| `isCollapsed`             | `boolean`                                          | —                      | Controlled collapsed state                        |
+| `onCollapseChange`        | `(collapsed: boolean) => void`                     | —                      | Fired when sidebar collapse state toggles         |
+| `sidebarWidth`            | `number`                                           | `220`                  | Full sidebar width in px                          |
+| `collapsedSidebarWidth`   | `number`                                           | `68`                   | Compact icon rail width in px                     |
+| `collapseTogglePlacement` | `"sidebar-header" \| "topbar" \| "both" \| "none"` | `"sidebar-header"`     | Placement of collapse/expand toggle buttons       |
+| `collapsedLogo`           | `ReactNode`                                        | `<Logo type="icon" />` | Custom logo displayed in collapsed mode           |
+| `colorScheme`             | `"blue" \| "purple"`                               | `"blue"`               | Brand accent colour                               |
+| `environment`             | `DashboardEnvironment`                             | `"auto"`               | Auto-detects test/sandbox/staging environments    |
+| `showEnvironmentBanner`   | `boolean`                                          | auto                   | Force show (`true`) or suppress (`false`) banner  |
+| `environmentBanner`       | `DashboardEnvironmentBannerConfig`                 | —                      | Detailed banner message, action, & dismiss config |
+| `environmentBannerSlot`   | `ReactNode`                                        | —                      | Custom slot overriding the entire banner          |
+| `logo`                    | `ReactNode`                                        | `<Logo />`             | Override the sidebar logo                         |
+| `greeting`                | `string`                                           | auto                   | Override "Good morning / afternoon / evening"     |
+| `greetingSubtext`         | `string`                                           | —                      | Subtitle line below the greeting                  |
+| `mobileNavItems`          | `DashboardMobileNavItem[]`                         | —                      | Mobile bottom tab bar items                       |
+| `scoreCard`               | `DashboardScoreCardData`                           | —                      | Doctor identity card (desktop only)               |
+| `topBarSlot`              | `ReactNode`                                        | —                      | Slot right of greeting (search, bell, etc.)       |
+| `dropdownItems`           | `DashboardDropdownItem[]`                          | —                      | Extra user dropdown items                         |
+| `renderLink`              | `(item, children) => ReactNode`                    | `<a>`                  | Router integration                                |
+| `onLogout`                | `() => void`                                       | —                      | Logout callback                                   |
 
 ## Footer
 

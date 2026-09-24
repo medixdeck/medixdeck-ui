@@ -28,4 +28,3 @@ if (typeof globalThis.fetch === 'function') {
     Promise.resolve(new Response('', { status: 200, statusText: 'OK' })),
   );
 }
-

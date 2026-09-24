@@ -514,7 +514,10 @@ function DesktopNavItem({
             fontWeight="medium"
             fontFamily="var(--font-body)"
             color={item.isActive ? scheme.hover : 'text.body'}
-            _dark={{ color: item.isActive ? scheme.hover : 'text.body', _hover: { bg: scheme.hoverBgDark, color: scheme.hover } }}
+            _dark={{
+              color: item.isActive ? scheme.hover : 'text.body',
+              _hover: { bg: scheme.hoverBgDark, color: scheme.hover },
+            }}
             borderRadius="md"
             transition="all 0.15s"
             _hover={{ color: scheme.hover, bg: scheme.hoverBg }}
@@ -655,7 +658,12 @@ function DesktopNavItem({
                         </Box>
                       )}
                       <Box flex="1" minW="0">
-                        <Box display="flex" alignItems="center" gap="1.5" justifyContent="space-between">
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          gap="1.5"
+                          justifyContent="space-between"
+                        >
                           <Box
                             as="span"
                             display="inline-flex"
@@ -729,7 +737,10 @@ function MobileNavItem({
             fontWeight="medium"
             fontFamily="var(--font-body)"
             color={item.isActive ? scheme.hover : 'text.body'}
-            _dark={{ color: item.isActive ? scheme.hover : 'text.body', _hover: { color: scheme.hover, bg: 'bg.subtle' } }}
+            _dark={{
+              color: item.isActive ? scheme.hover : 'text.body',
+              _hover: { color: scheme.hover, bg: 'bg.subtle' },
+            }}
             borderRadius="md"
             _hover={{ color: scheme.hover, bg: 'bg.subtle' }}
             cursor="pointer"
@@ -831,7 +842,10 @@ function MobileNavItem({
                       py="2"
                       borderRadius="md"
                       color="text.body"
-                      _dark={{ color: 'text.body', _hover: { color: scheme.hover, bg: 'bg.subtle' } }}
+                      _dark={{
+                        color: 'text.body',
+                        _hover: { color: scheme.hover, bg: 'bg.subtle' },
+                      }}
                       _hover={{ color: scheme.hover, bg: 'bg.subtle' }}
                       cursor="pointer"
                       onClick={onCloseMenu}
@@ -854,7 +868,12 @@ function MobileNavItem({
                         </Box>
                       )}
                       <Box flex="1" minW="0">
-                        <Box display="flex" alignItems="center" justifyContent="space-between" gap="1">
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          gap="1"
+                        >
                           <Box
                             as="span"
                             display="inline-flex"

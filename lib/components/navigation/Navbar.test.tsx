@@ -38,13 +38,7 @@ describe('Navbar Component', () => {
 
   it('renders and triggers primary CTA button', () => {
     const handleCta = vi.fn();
-    render(
-      <Navbar
-        navItems={sampleNavItems}
-        ctaLabel="Talk to a Doctor"
-        onCtaClick={handleCta}
-      />,
-    );
+    render(<Navbar navItems={sampleNavItems} ctaLabel="Talk to a Doctor" onCtaClick={handleCta} />);
 
     const ctaButtons = screen.getAllByText('Talk to a Doctor');
     expect(ctaButtons.length).toBeGreaterThan(0);

@@ -322,25 +322,25 @@ export default function App() {
         environmentBanner={
           dashboardEnv === 'custom'
             ? {
-              environment: 'sandbox',
-              badgeLabel: 'SIMULATION TERMINAL',
-              message:
-                'Interactive testing sandbox for clinicians & automated QA suites. Live data is protected.',
-              action: (
-                <Button
-                  size="xs"
-                  variant="outline"
-                  colorScheme="amber"
-                  onClick={() => alert('Live app requested')}
-                >
-                  Switch to Live →
-                </Button>
-              ),
-              dismissible: bannerDismissible,
-            }
+                environment: 'sandbox',
+                badgeLabel: 'SIMULATION TERMINAL',
+                message:
+                  'Interactive testing sandbox for clinicians & automated QA suites. Live data is protected.',
+                action: (
+                  <Button
+                    size="xs"
+                    variant="outline"
+                    colorScheme="amber"
+                    onClick={() => alert('Live app requested')}
+                  >
+                    Switch to Live →
+                  </Button>
+                ),
+                dismissible: bannerDismissible,
+              }
             : {
-              dismissible: bannerDismissible,
-            }
+                dismissible: bannerDismissible,
+              }
         }
         navGroups={[
           {
@@ -352,19 +352,42 @@ export default function App() {
                 href: '#records',
                 icon: <LuFileText size={18} />,
                 subItems: [
-                  { label: 'Medical History', href: '#records-history', icon: <LuHistory size={16} /> },
-                  { label: 'Prescriptions', href: '#records-prescriptions', icon: <LuPill size={16} /> },
-                  { label: 'Test Results', href: '#records-test-results', badge: 2, icon: <LuClipboardCheck size={16} /> },
+                  {
+                    label: 'Medical History',
+                    href: '#records-history',
+                    icon: <LuHistory size={16} />,
+                  },
+                  {
+                    label: 'Prescriptions',
+                    href: '#records-prescriptions',
+                    icon: <LuPill size={16} />,
+                  },
+                  {
+                    label: 'Test Results',
+                    href: '#records-test-results',
+                    badge: 2,
+                    icon: <LuClipboardCheck size={16} />,
+                  },
                 ],
               },
-              { label: 'Messages', href: '#messages', badge: 6, icon: <LuMessageCircle size={18} /> },
+              {
+                label: 'Messages',
+                href: '#messages',
+                badge: 6,
+                icon: <LuMessageCircle size={18} />,
+              },
             ],
           },
           {
             groupLabel: 'Account',
             items: [
               { label: 'Profile', href: '#profile', icon: <LuUser size={18} /> },
-              { label: 'Notifications', href: '#notifications', hasDot: true, icon: <LuBell size={18} /> },
+              {
+                label: 'Notifications',
+                href: '#notifications',
+                hasDot: true,
+                icon: <LuBell size={18} />,
+              },
             ],
           },
         ]}
@@ -391,11 +414,17 @@ export default function App() {
             gap="4"
           >
             <Box>
-              <Text color="text.heading" fontWeight="700" fontSize="xl" fontFamily="var(--font-heading)">
+              <Text
+                color="text.heading"
+                fontWeight="700"
+                fontSize="xl"
+                fontFamily="var(--font-heading)"
+              >
                 Interactive Dashboard Layout Shell
               </Text>
               <Text mt="1" color="text.muted" fontSize="sm" fontFamily="var(--font-body)">
-                Test environment detection, auto-banners, dismissibility, and framework-safe modes live.
+                Test environment detection, auto-banners, dismissibility, and framework-safe modes
+                live.
               </Text>
             </Box>
             <Button onClick={() => setShowDashboard(false)} variant="solid" colorScheme="blue">
@@ -415,7 +444,12 @@ export default function App() {
             flexDirection="column"
             gap="4"
           >
-            <Text fontSize="sm" fontWeight="700" color="text.heading" fontFamily="var(--font-heading)">
+            <Text
+              fontSize="sm"
+              fontWeight="700"
+              color="text.heading"
+              fontFamily="var(--font-heading)"
+            >
               Test Environment Banner Modes
             </Text>
             <Box display="flex" flexWrap="wrap" gap="2.5" alignItems="center">
@@ -487,7 +521,15 @@ export default function App() {
               </Button>
             </Box>
 
-            <Box display="flex" flexWrap="wrap" gap="3" alignItems="center" pt="2" borderTop="1px solid" borderColor="border">
+            <Box
+              display="flex"
+              flexWrap="wrap"
+              gap="3"
+              alignItems="center"
+              pt="2"
+              borderTop="1px solid"
+              borderColor="border"
+            >
               <Button
                 size="xs"
                 variant={bannerDismissible ? 'solid' : 'outline'}
@@ -860,9 +902,16 @@ export default function App() {
                   1 — Dropdown Menus (Rich Sub-items with Icons, Badges & Descriptions)
                 </Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  Hover or click on "Services" and "Resources" to see floating desktop dropdown panels and mobile accordion sub-menus.
+                  Hover or click on "Services" and "Resources" to see floating desktop dropdown
+                  panels and mobile accordion sub-menus.
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
+                <Box
+                  border="1px solid"
+                  borderColor="border"
+                  borderRadius="card"
+                  position="relative"
+                  overflow="visible"
+                >
                   <Navbar
                     colorScheme="blue"
                     navItems={[
@@ -873,10 +922,20 @@ export default function App() {
                           {
                             label: 'Doctor Consultations',
                             href: '#doctors',
-                            description: 'Connect with licensed Nigerian physicians & specialists 24/7.',
+                            description:
+                              'Connect with licensed Nigerian physicians & specialists 24/7.',
                             badge: 'Popular',
                             icon: (
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
                                 <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3" />
                                 <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4" />
                                 <circle cx="20" cy="10" r="2" />
@@ -886,9 +945,19 @@ export default function App() {
                           {
                             label: 'Homecare Visits',
                             href: '#homecare',
-                            description: 'Clinical nursing and post-op care delivered right to your home.',
+                            description:
+                              'Clinical nursing and post-op care delivered right to your home.',
                             icon: (
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
                                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                                 <path d="M12 11.5c-1-1.5-3-1.5-3 .5 0 2 3 4 3 4s3-2 3-4c0-2-2-2-3-.5z" />
                               </svg>
@@ -899,7 +968,16 @@ export default function App() {
                             href: '#outreach',
                             description: 'Corporate and community health screening programs.',
                             icon: (
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                                 <circle cx="9" cy="7" r="4" />
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -915,12 +993,14 @@ export default function App() {
                           {
                             label: 'Health Blog',
                             href: '#blog',
-                            description: 'Verified clinical articles, patient guides, and wellness tips.',
+                            description:
+                              'Verified clinical articles, patient guides, and wellness tips.',
                           },
                           {
                             label: 'NDPR Compliance',
                             href: '#compliance',
-                            description: 'Protected health information security and patient privacy.',
+                            description:
+                              'Protected health information security and patient privacy.',
                             badge: 'NDPR',
                           },
                           {
@@ -960,7 +1040,13 @@ export default function App() {
                   ctaHref="/consult" — both buttons act as standard anchor links (no JS handler
                   needed). Also, `colorScheme="purple"`
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
+                <Box
+                  border="1px solid"
+                  borderColor="border"
+                  borderRadius="card"
+                  position="relative"
+                  overflow="visible"
+                >
                   <Navbar
                     colorScheme="purple"
                     navItems={[
@@ -992,7 +1078,13 @@ export default function App() {
                   onCtaClick opens a modal. onCtaIconClick opens the external app (different
                   destination).
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
+                <Box
+                  border="1px solid"
+                  borderColor="border"
+                  borderRadius="card"
+                  position="relative"
+                  overflow="visible"
+                >
                   <Navbar
                     navItems={[
                       { label: 'Logo', href: '#logo' },
@@ -1028,7 +1120,13 @@ export default function App() {
                   secondaryCtaLabel + secondaryCtaHref + onSecondaryCtaClick — ghost "Sign In" to
                   the left.
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
+                <Box
+                  border="1px solid"
+                  borderColor="border"
+                  borderRadius="card"
+                  position="relative"
+                  overflow="visible"
+                >
                   <Navbar
                     navItems={[
                       { label: 'Logo', href: '#logo' },
@@ -1060,7 +1158,13 @@ export default function App() {
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
                   Pass any ReactNode — replaces the default CTA area entirely.
                 </Text>
-                <Box border="1px solid" borderColor="border" borderRadius="card" position="relative" overflow="visible">
+                <Box
+                  border="1px solid"
+                  borderColor="border"
+                  borderRadius="card"
+                  position="relative"
+                  overflow="visible"
+                >
                   <Navbar
                     navItems={[
                       { label: 'Logo', href: '#logo' },
@@ -1166,7 +1270,8 @@ export default function App() {
                   Dashboard Layout & Test/Sandbox Environment Banner
                 </Text>
                 <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)" mb="3">
-                  A full-featured responsive shell with automatic test/sandbox environment detection, dismissal controls, doctor score cards, and sticky navigation.
+                  A full-featured responsive shell with automatic test/sandbox environment
+                  detection, dismissal controls, doctor score cards, and sticky navigation.
                 </Text>
                 <Box
                   border="1px solid"
@@ -1181,11 +1286,17 @@ export default function App() {
                   gap="3"
                   textAlign="center"
                 >
-                  <Text fontSize="sm" fontWeight="600" color="text.heading" fontFamily="var(--font-heading)">
+                  <Text
+                    fontSize="sm"
+                    fontWeight="600"
+                    color="text.heading"
+                    fontFamily="var(--font-heading)"
+                  >
                     Full-Screen Dashboard with Test & Sandbox Banner
                   </Text>
                   <Text fontSize="xs" color="text.muted" maxW="480px" fontFamily="var(--font-body)">
-                    Click below to open the live interactive shell and test environment switching (Auto, Sandbox, Test, Staging, Production).
+                    Click below to open the live interactive shell and test environment switching
+                    (Auto, Sandbox, Test, Staging, Production).
                   </Text>
                   <Button
                     onClick={() => setShowDashboard(true)}
@@ -1614,7 +1725,7 @@ export default function App() {
               <Tag colorScheme="purple" variant="solid">
                 Psychiatry
               </Tag>
-              <Tag colorScheme="green" onClose={() => { }}>
+              <Tag colorScheme="green" onClose={() => {}}>
                 Pediatrics ×
               </Tag>
               <Tag colorScheme="gray" variant="outline">
@@ -1968,7 +2079,6 @@ export default function App() {
               />
             </Box>
           </Section>
-
 
           <Section title="Tabs" id="navigation" storybookPath="?path=/docs/navigation-tabs--docs">
             <Box w="100%">
