@@ -1467,68 +1467,68 @@ function SidebarNavItem({
               bg: isActive ? scheme.activeBgDark : hovered ? scheme.hoverBgDark : 'transparent',
             }}
           >
-          {item.icon && (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              style={{
-                color: isColoured ? scheme.solid : undefined,
-                opacity: isColoured ? 1 : hovered ? 0.85 : 0.6,
-              }}
-              color={isColoured ? scheme.chakraToken : 'text.body'}
-            >
-              {item.icon}
-            </Box>
-          )}
+            {item.icon && (
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                style={{
+                  color: isColoured ? scheme.solid : undefined,
+                  opacity: isColoured ? 1 : hovered ? 0.85 : 0.6,
+                }}
+                color={isColoured ? scheme.chakraToken : 'text.body'}
+              >
+                {item.icon}
+              </Box>
+            )}
 
-          {/* Numeric count badge bubble */}
-          {typeof item.badge === 'number' && (
-            <Box
-              as="span"
-              position="absolute"
-              top="-2px"
-              right="-2px"
-              minW="16px"
-              h="16px"
-              px="1"
-              borderRadius="full"
-              fontSize="9px"
-              fontWeight="700"
-              lineHeight="1"
-              display="inline-flex"
-              alignItems="center"
-              justifyContent="center"
-              style={{
-                background: scheme.solid,
-                color: '#fff',
-              }}
-            >
-              {item.badge > 99 ? '99+' : item.badge}
-            </Box>
-          )}
+            {/* Numeric count badge bubble */}
+            {typeof item.badge === 'number' && (
+              <Box
+                as="span"
+                position="absolute"
+                top="-2px"
+                right="-2px"
+                minW="16px"
+                h="16px"
+                px="1"
+                borderRadius="full"
+                fontSize="9px"
+                fontWeight="700"
+                lineHeight="1"
+                display="inline-flex"
+                alignItems="center"
+                justifyContent="center"
+                style={{
+                  background: scheme.solid,
+                  color: '#fff',
+                }}
+              >
+                {item.badge > 99 ? '99+' : item.badge}
+              </Box>
+            )}
 
-          {/* Red dot indicator */}
-          {item.hasDot && (
-            <Box
-              as="span"
-              position="absolute"
-              top="2px"
-              right="2px"
-              w="6px"
-              h="6px"
-              borderRadius="full"
-              style={{ background: RED }}
-              aria-label="New notification"
-            />
-          )}
-        </Box>
-      </Tooltip>
-    </Box>
-  );
+            {/* Red dot indicator */}
+            {item.hasDot && (
+              <Box
+                as="span"
+                position="absolute"
+                top="2px"
+                right="2px"
+                w="6px"
+                h="6px"
+                borderRadius="full"
+                style={{ background: RED }}
+                aria-label="New notification"
+              />
+            )}
+          </Box>
+        </Tooltip>
+      </Box>
+    );
 
-  return render(item, railContent);
-}
+    return render(item, railContent);
+  }
 
   // ─── Normal Expanded Mode Rendering ───
   const rowContent = (
