@@ -237,11 +237,90 @@ function NotesForm() {
 }
 ```
 
+## Navbar
+
+The `Navbar` component provides responsive brand navigation with animated desktop dropdown menus and mobile accordion sub-menus.
+
+### Basic & Dropdown Usage
+
+```tsx
+import { Navbar, type NavItem } from '@medixdeck/ui';
+
+const navItems: NavItem[] = [
+  { label: 'Home', href: '/' },
+  {
+    label: 'Services',
+    children: [
+      {
+        label: 'Doctor Consultations',
+        href: '/services/doctors',
+        description: 'Connect with certified Nigerian medical practitioners 24/7.',
+        badge: 'Popular',
+      },
+      {
+        label: 'Homecare Visits',
+        href: '/services/homecare',
+        description: 'Personalized nursing and clinical care at your residence.',
+      },
+      {
+        label: 'Medical Outreach',
+        href: '/services/outreach',
+        description: 'Community screening & corporate healthcare programs.',
+      },
+    ],
+  },
+  {
+    label: 'Resources',
+    children: [
+      {
+        label: 'Health Blog',
+        href: '/blog',
+        description: 'Wellness advice, clinical articles, and healthcare updates.',
+      },
+      {
+        label: 'Developer API',
+        href: 'https://docs.medixdeck.com',
+        description: 'Public health API integration guides.',
+        isExternal: true,
+      },
+    ],
+  },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'About Us', href: '/about' },
+];
+
+export function Header() {
+  return (
+    <Navbar
+      navItems={navItems}
+      ctaLabel="Talk to a Doctor"
+      ctaHref="/consult"
+      secondaryCtaLabel="Sign In"
+      secondaryCtaHref="/login"
+      isSticky
+      colorScheme="blue"
+    />
+  );
+}
+```
+
+### `NavItem` properties
+
+| Prop | Type | Description |
+|---|---|---|
+| `label` | `string` | Display text for the item |
+| `href` | `string` | Target URL (optional for dropdown triggers) |
+| `children` | `NavItem[]` | Nested items for desktop floating menus and mobile accordions |
+| `description` | `string` | Subtitle text displayed below label in dropdown items |
+| `icon` | `ReactNode` | Leading icon element |
+| `badge` | `string \| number \| ReactNode` | Status tag or count (e.g. `"Popular"`, `"NDPR"`) |
+| `isActive` | `boolean` | Highlights active route item |
+| `isExternal` | `boolean` | Opens link in a new tab with an external arrow icon |
+| `onClick` | `() => void` | Optional click callback |
+
+---
+
 ## DashboardLayout
-
-The full-screen authenticated application shell. Renders a fixed sidebar, sticky top bar, and an optional mobile bottom nav.
-
-### Basic usage
 
 ```tsx
 import { DashboardLayout } from '@medixdeck/ui';

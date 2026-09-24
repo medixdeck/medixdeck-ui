@@ -2,7 +2,19 @@
 
 All notable changes to `@medixdeck/ui` are documented here.
 
-## [0.1.18] — 2026-07-27
+## [Unreleased]
+
+### Added
+
+- **`Navbar` — Multi-Level Animated Dropdown Menus & Rich Sub-items**:
+  - Added support for desktop floating dropdown panels via nested `children?: NavItem[]`.
+  - Added rich dropdown item metadata: `description` (subtitles), leading `icon` (SVGs/icons), status/tag `badge` (e.g. "Popular", "NDPR", "New"), and `isExternal` indicator.
+  - Added mobile menu accordion navigation with collapsible sub-menus, smooth Framer Motion height animations, and 180° animated chevron toggles.
+  - Full backward compatibility with simple flat `navItems`.
+  - Strict zero-shadow design system compliance (`boxShadow="none"`, `border="1px solid" borderColor="border"`).
+  - Accessibility improvements: `aria-haspopup="menu"`, `aria-expanded`, keyboard navigation (`Escape`, `Enter`), and click-outside listeners.
+
+---
 
 ### Added
 
