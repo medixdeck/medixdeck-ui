@@ -322,25 +322,25 @@ export default function App() {
         environmentBanner={
           dashboardEnv === 'custom'
             ? {
-                environment: 'sandbox',
-                badgeLabel: 'SIMULATION TERMINAL',
-                message:
-                  'Interactive testing sandbox for clinicians & automated QA suites. Live data is protected.',
-                action: (
-                  <Button
-                    size="xs"
-                    variant="outline"
-                    colorScheme="amber"
-                    onClick={() => alert('Live app requested')}
-                  >
-                    Switch to Live →
-                  </Button>
-                ),
-                dismissible: bannerDismissible,
-              }
+              environment: 'sandbox',
+              badgeLabel: 'SIMULATION TERMINAL',
+              message:
+                'Interactive testing sandbox for clinicians & automated QA suites. Live data is protected.',
+              action: (
+                <Button
+                  size="xs"
+                  variant="outline"
+                  colorScheme="amber"
+                  onClick={() => alert('Live app requested')}
+                >
+                  Switch to Live →
+                </Button>
+              ),
+              dismissible: bannerDismissible,
+            }
             : {
-                dismissible: bannerDismissible,
-              }
+              dismissible: bannerDismissible,
+            }
         }
         navGroups={[
           {
@@ -1725,7 +1725,7 @@ export default function App() {
               <Tag colorScheme="purple" variant="solid">
                 Psychiatry
               </Tag>
-              <Tag colorScheme="green" onClose={() => {}}>
+              <Tag colorScheme="green" onClose={() => { }}>
                 Pediatrics ×
               </Tag>
               <Tag colorScheme="gray" variant="outline">
@@ -1981,11 +1981,13 @@ export default function App() {
           >
             <Box display="flex" flexDirection="column" gap="8" maxW="640px" w="100%">
               <RichTextInput
+                storageKey="showcase-patient-bio"
                 label="Patient Bio (Blue)"
                 colorScheme="blue"
                 placeholder="Write the patient's medical bio..."
-                helperText="Supports bold, italic, headings, lists, links, and more."
+                helperText="Auto-saves draft to localStorage. Supports bold, italic, headings, lists, links, and more."
                 showCharCount
+                showDraftStatus
               />
               <RichTextInput
                 label="Doctor Notes (Purple)"
