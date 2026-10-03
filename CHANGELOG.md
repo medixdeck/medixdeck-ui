@@ -6,6 +6,20 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 
+- **`Textarea` — `localStorage` Draft Auto-Save & Refresh Recovery**:
+  - Added automatic draft saving to `localStorage` enabled by default (`persistDraft = true`), preventing data loss across page refreshes and route transitions.
+  - Multi-instance collision isolation: Resolves storage keys smartly via `storageKey`, `id`, `name`, or `placeholder` slug fallback (`getEffectiveTextareaStorageKey`).
+  - Next.js / SSR hydration-safe restoration: Restores draft during client-side hydration (`useEffect`) to prevent SSR React hydration mismatches.
+  - Supports both controlled (`value` + `onChange`) and uncontrolled (`defaultValue`) modes with character counter (`showCount`) synchronization.
+  - Debounced background saving (`debounceMs = 400`) to avoid blocking typing keystrokes, with immediate emergency flush on `beforeunload`, `pagehide`, and component unmount.
+  - Stale draft expiration handling (`draftMaxAgeMs = 7 days`).
+  - Optional visual draft status indicator in the textarea footer (`showDraftStatus`) displaying `"Saving draft..."` / `"Draft saved"` with a status dot.
+  - Exported draft utilities from `@medixdeck/ui`: `clearTextareaDraft`, `getTextareaDraft`, `saveTextareaDraft`, `getEffectiveTextareaStorageKey`, and `TEXTAREA_DRAFT_PREFIX`, plus `TextareaDraftPayload` type.
+
+---
+
+### Added
+
 - **`RichTextInput` — `localStorage` Draft Auto-Save & Refresh Recovery**:
   - Added automatic draft saving to `localStorage` enabled by default (`persistDraft = true`), ensuring users never lose typed content when refreshing the browser or navigating away.
   - Multi-instance collision isolation: Resolves storage keys smartly via `storageKey`, `id`, `name`, or `label` slug fallback (`getEffectiveStorageKey`).
