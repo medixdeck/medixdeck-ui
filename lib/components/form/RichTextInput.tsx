@@ -234,7 +234,107 @@ export interface ToolbarOptions {
 export type RichTextInputMode = 'wysiwyg' | 'markdown';
 export type RichTextInputFormat = 'html' | 'markdown';
 
+export interface RichTextDraftPayload {
+  /** The saved text/HTML/Markdown content */
+  content: string;
+  /** Active editor composition mode when saved */
+  mode: RichTextInputMode;
+  /** Format of the saved content */
+  format: RichTextInputFormat;
+  /** Timestamp when draft was last written to localStorage (milliseconds) */
+  updatedAt: number;
+  /** Schema version */
+  version: 1;
+}
+
+export const DRAFT_STORAGE_PREFIX = 'medix_rte_draft_';
+
+/**
+ * Returns the effective localStorage key for a RichTextInput instance.
+ */
+export function getEffectiveStorageKey(
+  storageKey?: string,
+  id?: string,
+  name?: string,
+  label?: string,
+): string {
+  if (storageKey) return storageKey;
+  if (id) return `id_${id}`;
+  if (name) return `name_${name}`;
+  if (label) {
+    const slug = label
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '');
+    if (slug) return `label_${slug}`;
+  }
+  return 'default';
+}
+
+/**
+ * Safely removes a saved draft from localStorage.
+ */
+export function clearRichTextDraft(storageKey: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const fullKey = storageKey.startsWith(DRAFT_STORAGE_PREFIX)
+      ? storageKey
+      : `${DRAFT_STORAGE_PREFIX}${storageKey}`;
+    window.localStorage.removeItem(fullKey);
+  } catch {
+    // Ignore localStorage exceptions (e.g. private browsing or quota limits)
+  }
+}
+
+/**
+ * Safely retrieves a saved draft from localStorage.
+ */
+export function getRichTextDraft(
+  storageKey: string,
+  maxAgeMs?: number,
+): RichTextDraftPayload | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const fullKey = storageKey.startsWith(DRAFT_STORAGE_PREFIX)
+      ? storageKey
+      : `${DRAFT_STORAGE_PREFIX}${storageKey}`;
+    const raw = window.localStorage.getItem(fullKey);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as RichTextDraftPayload;
+    if (!parsed || typeof parsed.content !== 'string') return null;
+    if (maxAgeMs && maxAgeMs > 0 && parsed.updatedAt) {
+      if (Date.now() - parsed.updatedAt > maxAgeMs) {
+        window.localStorage.removeItem(fullKey);
+        return null;
+      }
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Safely writes a draft to localStorage.
+ */
+export function saveRichTextDraft(storageKey: string, payload: RichTextDraftPayload): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const fullKey = storageKey.startsWith(DRAFT_STORAGE_PREFIX)
+      ? storageKey
+      : `${DRAFT_STORAGE_PREFIX}${storageKey}`;
+    window.localStorage.setItem(fullKey, JSON.stringify(payload));
+  } catch {
+    // Ignore localStorage exceptions (e.g. QuotaExceededError)
+  }
+}
+
 export interface RichTextInputProps {
+  /** Optional HTML element id */
+  id?: string;
+  /** Optional form field name */
+  name?: string;
   /** Content string (HTML or Markdown depending on outputFormat) */
   value?: string;
   /** Default content string (uncontrolled) */
@@ -281,6 +381,35 @@ export interface RichTextInputProps {
   toolbarOptions?: ToolbarOptions;
   /** Additional CSS class on the wrapper */
   className?: string;
+  /**
+   * Unique storage key for persisting drafts to localStorage.
+   * If omitted, falls back to `id`, `name`, or `label` slug.
+   */
+  storageKey?: string;
+  /**
+   * Automatically save typed content to localStorage to prevent data loss on page refresh.
+   * Defaults to `true`. Set to `false` to disable.
+   */
+  persistDraft?: boolean;
+  /**
+   * Milliseconds of typing inactivity before writing draft to localStorage.
+   * @default 400
+   */
+  debounceMs?: number;
+  /**
+   * Maximum age of a saved draft in ms before it is considered expired.
+   * @default 604800000 (7 days)
+   */
+  draftMaxAgeMs?: number;
+  /**
+   * Display a subtle "Saving draft..." / "Draft saved" status in the footer.
+   * @default false
+   */
+  showDraftStatus?: boolean;
+  /**
+   * Callback invoked when a saved draft is restored from localStorage on mount.
+   */
+  onDraftRestored?: (draft: RichTextDraftPayload) => void;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -931,6 +1060,8 @@ const DEFAULT_TOOLBAR: Required<ToolbarOptions> = {
  * ```
  */
 export function RichTextInput({
+  id,
+  name,
   value,
   defaultValue,
   onChange,
@@ -954,6 +1085,12 @@ export function RichTextInput({
   showCharCount = false,
   toolbarOptions,
   className,
+  storageKey,
+  persistDraft = true,
+  debounceMs = 400,
+  draftMaxAgeMs = 7 * 24 * 60 * 60 * 1000,
+  showDraftStatus = false,
+  onDraftRestored,
 }: RichTextInputProps) {
   const [isFocused, setIsFocused] = React.useState(false);
   const [internalMode, setInternalMode] = React.useState<RichTextInputMode>(defaultMode);
@@ -962,6 +1099,98 @@ export function RichTextInput({
   const isControlled = value !== undefined;
   const accent = COLORS[colorScheme];
   const opts = { ...DEFAULT_TOOLBAR, ...toolbarOptions };
+
+  // Resolve storage key for draft persistence
+  const resolvedKey = React.useMemo(
+    () => getEffectiveStorageKey(storageKey, id, name, label),
+    [storageKey, id, name, label],
+  );
+
+  const [draftStatus, setDraftStatus] = React.useState<'idle' | 'saving' | 'saved'>('idle');
+  const pendingDraftRef = React.useRef<{
+    content: string;
+    mode: RichTextInputMode;
+    format: RichTextInputFormat;
+  } | null>(null);
+  const saveTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasRestoredRef = React.useRef(false);
+
+  // Debounced auto-save function
+  const scheduleSaveDraft = React.useCallback(
+    (content: string, mode: RichTextInputMode, format: RichTextInputFormat) => {
+      if (!persistDraft || disabled) return;
+
+      const isBlank = !content || content === '<p></p>' || content.trim() === '';
+      if (isBlank) {
+        if (saveTimerRef.current) {
+          clearTimeout(saveTimerRef.current);
+          saveTimerRef.current = null;
+        }
+        pendingDraftRef.current = null;
+        clearRichTextDraft(resolvedKey);
+        setDraftStatus('idle');
+        return;
+      }
+
+      pendingDraftRef.current = { content, mode, format };
+      setDraftStatus('saving');
+
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+      }
+
+      saveTimerRef.current = setTimeout(() => {
+        if (pendingDraftRef.current) {
+          saveRichTextDraft(resolvedKey, {
+            content: pendingDraftRef.current.content,
+            mode: pendingDraftRef.current.mode,
+            format: pendingDraftRef.current.format,
+            updatedAt: Date.now(),
+            version: 1,
+          });
+          pendingDraftRef.current = null;
+          setDraftStatus('saved');
+        }
+      }, debounceMs);
+    },
+    [persistDraft, disabled, resolvedKey, debounceMs],
+  );
+
+  // Flush pending draft immediately on page refresh, navigation, or component unmount
+  React.useEffect(() => {
+    if (!persistDraft) return;
+
+    const flushDraft = () => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+      }
+      if (pendingDraftRef.current) {
+        saveRichTextDraft(resolvedKey, {
+          content: pendingDraftRef.current.content,
+          mode: pendingDraftRef.current.mode,
+          format: pendingDraftRef.current.format,
+          updatedAt: Date.now(),
+          version: 1,
+        });
+        pendingDraftRef.current = null;
+        setDraftStatus('saved');
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeunload', flushDraft);
+      window.addEventListener('pagehide', flushDraft);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('beforeunload', flushDraft);
+        window.removeEventListener('pagehide', flushDraft);
+      }
+      flushDraft();
+    };
+  }, [persistDraft, resolvedKey]);
 
   // Raw Markdown text state when in Markdown mode
   const [markdownContent, setMarkdownContent] = React.useState<string>(() => {
@@ -1015,6 +1244,8 @@ export function RichTextInput({
       const emitVal = outputFormat === 'markdown' ? md : cleanHtml;
       if (maxLength !== undefined && e.getText().length > maxLength) return;
       onChange?.(emitVal);
+
+      scheduleSaveDraft(emitVal, 'wysiwyg', outputFormat);
     },
     onFocus() {
       setIsFocused(true);
@@ -1023,6 +1254,69 @@ export function RichTextInput({
       setIsFocused(false);
     },
   });
+
+  // Restore saved draft on mount (client-safe)
+  React.useEffect(() => {
+    if (!editor || hasRestoredRef.current || !persistDraft || disabled) return;
+    hasRestoredRef.current = true;
+
+    const draft = getRichTextDraft(resolvedKey, draftMaxAgeMs);
+    if (!draft || !draft.content || draft.content === '<p></p>' || draft.content.trim() === '') {
+      return;
+    }
+
+    // If controlled with non-empty external value, skip if value already matches draft
+    if (isControlled && value && value.trim() !== '' && value !== '<p></p>') {
+      if (value === draft.content) return;
+    }
+
+    const isDraftMarkdown = draft.format === 'markdown';
+    const draftContent = draft.content;
+
+    if (isDraftMarkdown) {
+      const html = markdownToHtml(draftContent);
+      setMarkdownContent(draftContent);
+      editor.commands.setContent(html, { emitUpdate: false });
+      onMarkdownChange?.(draftContent);
+      onHtmlChange?.(html);
+      onChange?.(outputFormat === 'markdown' ? draftContent : html);
+    } else {
+      const cleanHtml = draftContent === '<p></p>' ? '' : draftContent;
+      const md = htmlToMarkdown(cleanHtml);
+      setMarkdownContent(md);
+      editor.commands.setContent(cleanHtml, { emitUpdate: false });
+      onHtmlChange?.(cleanHtml);
+      onMarkdownChange?.(md);
+      onChange?.(outputFormat === 'markdown' ? md : cleanHtml);
+    }
+
+    if (draft.mode && draft.mode !== activeMode && showModeToggle) {
+      if (controlledMode === undefined) {
+        setInternalMode(draft.mode);
+      }
+      onModeChange?.(draft.mode);
+    }
+
+    setDraftStatus('saved');
+    onDraftRestored?.(draft);
+  }, [
+    editor,
+    persistDraft,
+    disabled,
+    resolvedKey,
+    draftMaxAgeMs,
+    isControlled,
+    value,
+    outputFormat,
+    activeMode,
+    showModeToggle,
+    controlledMode,
+    onChange,
+    onHtmlChange,
+    onMarkdownChange,
+    onModeChange,
+    onDraftRestored,
+  ]);
 
   // Mode switching handler
   const handleModeChange = (nextMode: RichTextInputMode) => {
@@ -1033,11 +1327,19 @@ export function RichTextInput({
       const currentHtml = editor ? editor.getHTML() : '';
       const md = htmlToMarkdown(currentHtml === '<p></p>' ? '' : currentHtml);
       setMarkdownContent(md);
+      if (persistDraft) {
+        const emitVal = outputFormat === 'markdown' ? md : currentHtml;
+        scheduleSaveDraft(emitVal, 'markdown', outputFormat);
+      }
     } else {
       // Switching from Markdown -> WYSIWYG
       const html = markdownToHtml(markdownContent);
       if (editor) {
         editor.commands.setContent(html, { emitUpdate: false });
+      }
+      if (persistDraft) {
+        const emitVal = outputFormat === 'markdown' ? markdownContent : html;
+        scheduleSaveDraft(emitVal, 'wysiwyg', outputFormat);
       }
     }
 
@@ -1064,13 +1366,19 @@ export function RichTextInput({
     if (editor) {
       editor.commands.setContent(html, { emitUpdate: false });
     }
+
+    scheduleSaveDraft(emitVal, 'markdown', outputFormat);
   };
 
   // Insert markdown snippet helper button handler
   const handleInsertMarkdownSnippet = (snippet: string) => {
     const textarea = markdownTextareaRef.current;
     if (!textarea) {
-      setMarkdownContent((prev) => prev + snippet);
+      setMarkdownContent((prev) => {
+        const next = prev + snippet;
+        scheduleSaveDraft(outputFormat === 'markdown' ? next : markdownToHtml(next), 'markdown', outputFormat);
+        return next;
+      });
       return;
     }
 
@@ -1090,6 +1398,8 @@ export function RichTextInput({
     if (editor) {
       editor.commands.setContent(html, { emitUpdate: false });
     }
+
+    scheduleSaveDraft(emitVal, 'markdown', outputFormat);
 
     setTimeout(() => {
       textarea.focus();
@@ -1199,10 +1509,17 @@ export function RichTextInput({
           />
         )}
 
-        {(showCharCount || maxLength) && (
+        {(showCharCount || maxLength || (showDraftStatus && draftStatus !== 'idle')) && (
           <Box
             display="flex"
-            justifyContent={maxLength ? 'flex-end' : 'flex-start'}
+            alignItems="center"
+            justifyContent={
+              showDraftStatus && draftStatus !== 'idle'
+                ? 'space-between'
+                : maxLength
+                  ? 'flex-end'
+                  : 'flex-start'
+            }
             px="3"
             py="1.5"
             borderTop="1px solid"
@@ -1212,14 +1529,32 @@ export function RichTextInput({
               background: 'var(--medix-form-bg)',
             }}
           >
-            <Text
-              fontSize="xs"
-              color={maxLength && charCount > maxLength ? 'red.500' : 'text.muted'}
-              fontFamily="var(--font-body)"
-            >
-              {charCount}
-              {maxLength ? ` / ${maxLength}` : ''} characters
-            </Text>
+            {showDraftStatus && draftStatus !== 'idle' ? (
+              <Box display="inline-flex" alignItems="center" gap="1.5">
+                <Box
+                  w="1.5"
+                  h="1.5"
+                  borderRadius="full"
+                  bg={draftStatus === 'saving' ? 'orange.400' : 'green.500'}
+                />
+                <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)">
+                  {draftStatus === 'saving' ? 'Saving draft...' : 'Draft saved'}
+                </Text>
+              </Box>
+            ) : (
+              <Box />
+            )}
+
+            {(showCharCount || maxLength) && (
+              <Text
+                fontSize="xs"
+                color={maxLength && charCount > maxLength ? 'red.500' : 'text.muted'}
+                fontFamily="var(--font-body)"
+              >
+                {charCount}
+                {maxLength ? ` / ${maxLength}` : ''} characters
+              </Text>
+            )}
           </Box>
         )}
       </Box>
