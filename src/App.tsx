@@ -1829,10 +1829,12 @@ export default function App() {
               </FormControl>
               <FormControl label="Patient Notes">
                 <Textarea
+                  storageKey="showcase-patient-notes"
                   placeholder="Describe your symptoms…"
                   rows={3}
                   maxLength={300}
                   showCount
+                  showDraftStatus
                 />
               </FormControl>
               <Checkbox colorScheme="blue">I agree to share my medical records</Checkbox>
