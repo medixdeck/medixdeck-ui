@@ -8,4 +8,5 @@ Treat this repository as a publishable React component library.
 - Use Chakra UI v3 APIs and semantic tokens.
 - Do NOT use `boxShadow`, `shadow`, `card-light`, or `card-dark` props. Rely on clean borders (`border="1px solid" borderColor="border"`) instead.
 - Ensure collapsible rail items wrapped in `Tooltip` use full-width flex centering, and collapsed nav containers use `overflowY="visible"` for flyout menus.
+- Follow the Form Component Draft Persistence Standard (`persistDraft = true` by default, tiered key resolution, debounced writes, unload flush, SSR safety, companion export helpers) for multi-line inputs and editors.
 - Run `npm run build`, `npm run test`, and `npm run pack:check` for changes that affect library code or package metadata.
