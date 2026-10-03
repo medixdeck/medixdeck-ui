@@ -548,3 +548,38 @@ When building or updating collapsible sidebars, rails, and popovers:
    ```
 4. **Test Environment Font Injection**:
    - `MedixProvider` injects external CDN font links. Always keep `globalThis.fetch` mocked in `lib/test/setup.ts` to prevent Happy-DOM network hangs during Vitest runs.
+
+---
+
+## 16. Form Component Draft Persistence Standard
+
+Any form input, editor, or multi-line text component that manages user-entered content (such as `RichTextInput`, `Textarea`, or future form builders/editors) must support automatic `localStorage` draft saving and recovery following this standard:
+
+1. **Default Enabled**: `persistDraft?: boolean` must default to `true`.
+2. **Tiered Key Resolution (`getEffective*StorageKey`)**:
+   Resolve the localStorage key in this exact priority:
+   1. `storageKey` prop (explicit consumer key)
+   2. `id` prop (e.g. `id_${id}`)
+   3. `name` prop (e.g. `name_${name}`)
+   4. Slugified `placeholder` or `label`
+   5. Fallback: `'default'`
+3. **Debounced Auto-Save & Unload Flush**:
+   - Debounce localStorage writes with `debounceMs` (default: `400ms`).
+   - Listen to `beforeunload` and `pagehide` on `window`, plus the component cleanup/unmount return in `useEffect`, to immediately flush any pending draft before the page refreshes.
+   - Automatically purge the draft from localStorage when the input is completely empty or blank.
+4. **SSR & Hydration Safety**:
+   - Never access `window.localStorage` during the component render phase.
+   - Restore draft content strictly inside client-side `useEffect`.
+   - Wrap all `localStorage` access in safe `try/catch` to gracefully handle private browsing mode and `QuotaExceededError`.
+5. **Status Indicator (`showDraftStatus`)**:
+   - Support optional `showDraftStatus?: boolean` (default: `false`).
+   - When enabled and draft status is not idle, render a subtle indicator in the footer: `"Saving draft..."` (with amber dot) and `"Draft saved"` (with green dot).
+6. **Required Public Companion Exports**:
+   Export companion utilities and payload interfaces from the component file and re-export them from `lib/index.ts`:
+   - `clear<ComponentName>Draft(storageKey: string): void`
+   - `get<ComponentName>Draft(storageKey: string, maxAgeMs?: number): <ComponentName>DraftPayload | null`
+   - `save<ComponentName>Draft(storageKey: string, payload: <ComponentName>DraftPayload): void`
+   - `getEffective<ComponentName>StorageKey(...)`
+   - `<COMPONENT_NAME>_DRAFT_PREFIX` constant
+   - `<ComponentName>DraftPayload` interface
+
