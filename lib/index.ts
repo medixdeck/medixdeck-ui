@@ -106,12 +106,18 @@ export {
   RichTextEditor,
   htmlToMarkdown,
   markdownToHtml,
+  clearRichTextDraft,
+  getRichTextDraft,
+  saveRichTextDraft,
+  getEffectiveStorageKey,
+  DRAFT_STORAGE_PREFIX,
 } from './components/form/RichTextInput';
 export type {
   RichTextInputProps,
   ToolbarOptions,
   RichTextInputMode,
   RichTextInputFormat,
+  RichTextDraftPayload,
 } from './components/form/RichTextInput';
 
 // ─── Layout Components ─────────────────────────────────────────────────────────
