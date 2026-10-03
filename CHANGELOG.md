@@ -6,6 +6,20 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 
+- **`RichTextInput` — `localStorage` Draft Auto-Save & Refresh Recovery**:
+  - Added automatic draft saving to `localStorage` enabled by default (`persistDraft = true`), ensuring users never lose typed content when refreshing the browser or navigating away.
+  - Multi-instance collision isolation: Resolves storage keys smartly via `storageKey`, `id`, `name`, or `label` slug fallback (`getEffectiveStorageKey`).
+  - Next.js / SSR hydration-safe restoration: Restores draft during client-side hydration (`useEffect`) to prevent SSR React hydration mismatches.
+  - Dual-mode and format preservation: Preserves both the content format (`html` / `markdown`) and editor composition mode (`wysiwyg` / `markdown`).
+  - Debounced background saving (`debounceMs = 400`) to avoid blocking typing keystrokes, with immediate emergency flush on `beforeunload`, `pagehide`, and component unmount.
+  - Stale draft expiration handling (`draftMaxAgeMs = 7 days`).
+  - Optional visual draft status indicator in the editor footer (`showDraftStatus`) displaying `"Saving draft..."` / `"Draft saved"` with a status dot.
+  - Exported draft utilities from `@medixdeck/ui`: `clearRichTextDraft`, `getRichTextDraft`, `saveRichTextDraft`, `getEffectiveStorageKey`, and `DRAFT_STORAGE_PREFIX`, plus `RichTextDraftPayload` type.
+
+---
+
+### Added
+
 - **`DashboardLayout` — Collapsible Sidebar (Compact Icon Rail & Flyouts)**:
   - Added collapsible desktop sidebar supporting shrinking from full width (`sidebarWidth = 220px`) into a compact icon rail (`collapsedSidebarWidth = 68px`) and expanding back smoothly.
   - Added toggle icon buttons (`PanelLeftCloseIcon` ◧ and `PanelLeftOpenIcon` ◨) placed in the sidebar header by default (next to logo when expanded, directly below the logo mark in collapsed rail mode) with `collapseTogglePlacement` (`"sidebar-header" | "topbar" | "both" | "none"`).
