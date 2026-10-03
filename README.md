@@ -58,7 +58,7 @@ export function App() {
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Provider + theme  | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports                                                                                                                                                               |
 | Primitive         | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo`                                                                                                                                                         |
-| Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`, `TagsInput`, `TagInput`, `RichTextInput`, `RichTextEditor`, `clearRichTextDraft`, `getRichTextDraft`, `saveRichTextDraft` |
+| Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`, `TagsInput`, `TagInput`, `clearTextareaDraft`, `getTextareaDraft`, `saveTextareaDraft`, `RichTextInput`, `RichTextEditor`, `clearRichTextDraft`, `getRichTextDraft`, `saveRichTextDraft` |
 | Layout            | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer`                                                                                                                               |
 | Navigation        | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper`                                                                                                                                                                                                                  |
 | Feedback          | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt`                                            |
@@ -207,6 +207,42 @@ The `Select` component supports native multiple selection, returning arrays on c
   options={[{ value: 'cardio', label: 'Cardiology' }]}
   onChange={(values) => console.log(values)} // values is string | string[]
 />
+```
+
+### Textarea
+
+Multi-line text input with character limit tracking, error states, and **automatic draft persistence to `localStorage`** across page refreshes (`persistDraft = true`).
+
+```tsx
+import { Textarea, clearTextareaDraft } from '@medixdeck/ui';
+
+function SymptomForm() {
+  const [symptoms, setSymptoms] = React.useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await submitSymptoms(symptoms);
+    // Clear saved draft from localStorage after successful submission
+    clearTextareaDraft('patient-symptoms-input');
+    setSymptoms('');
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Textarea
+        storageKey="patient-symptoms-input"
+        placeholder="Describe your symptoms in detail…"
+        rows={4}
+        maxLength={500}
+        showCount
+        showDraftStatus // displays "Saving draft..." / "Draft saved" in footer
+        value={symptoms}
+        onChange={(e) => setSymptoms(e.target.value)}
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
 ```
 
 ### Rich Text Input (`RichTextInput` / `RichTextEditor`)
