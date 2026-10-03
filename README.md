@@ -58,7 +58,7 @@ export function App() {
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Provider + theme  | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports                                                                                                                                                               |
 | Primitive         | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo`                                                                                                                                                         |
-| Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`, `TagsInput`, `TagInput`, `RichTextInput`, `RichTextEditor` |
+| Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`, `TagsInput`, `TagInput`, `RichTextInput`, `RichTextEditor`, `clearRichTextDraft`, `getRichTextDraft`, `saveRichTextDraft` |
 | Layout            | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer`                                                                                                                               |
 | Navigation        | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper`                                                                                                                                                                                                                  |
 | Feedback          | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt`                                            |
@@ -211,28 +211,42 @@ The `Select` component supports native multiple selection, returning arrays on c
 
 ### Rich Text Input (`RichTextInput` / `RichTextEditor`)
 
-A fully-featured rich text editor powered by TipTap (ProseMirror). Supports headings, formatting, lists, links, alignment, custom color schemes, character limit tracking, and height boundaries (`minHeight`, `maxHeight`).
+A fully-featured rich text editor powered by TipTap (ProseMirror). Supports headings, formatting, lists, links, alignment, custom color schemes, character limit tracking, height boundaries (`minHeight`, `maxHeight`), and **automatic draft persistence to `localStorage`** across page refreshes.
 
 Requires optional peer dependencies (`@tiptap/*`).
 
 ```tsx
-import { RichTextInput } from '@medixdeck/ui';
+import { RichTextInput, clearRichTextDraft } from '@medixdeck/ui';
 
 function NotesForm() {
-  const [content, setContent] = React.useState('<p>Initial clinical note...</p>');
+  const [content, setContent] = React.useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await saveNotesToApi(content);
+    // Clear the saved draft from localStorage upon successful submission
+    clearRichTextDraft('clinical-notes-form');
+    setContent('');
+  };
 
   return (
-    <RichTextInput
-      label="Clinical Notes"
-      value={content}
-      onChange={setContent}
-      colorScheme="purple"
-      placeholder="Type clinical notes..."
-      minHeight="180px"
-      maxHeight="400px"
-      showCharCount
-      maxLength={1000}
-    />
+    <form onSubmit={handleSubmit}>
+      <RichTextInput
+        storageKey="clinical-notes-form"
+        label="Clinical Notes"
+        value={content}
+        onChange={setContent}
+        colorScheme="purple"
+        placeholder="Type clinical notes..."
+        minHeight="180px"
+        maxHeight="400px"
+        persistDraft // defaults to true
+        showDraftStatus // displays "Saving draft..." / "Draft saved" in footer
+        showCharCount
+        maxLength={1000}
+      />
+      <button type="submit">Save Notes</button>
+    </form>
   );
 }
 ```
