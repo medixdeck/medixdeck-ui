@@ -62,8 +62,15 @@ export type { LogoProps, LogoVariant, LogoType } from './components/primitive/Lo
 export { Input, SearchInput } from './components/form/Input';
 export type { InputProps, SearchInputProps } from './components/form/Input';
 
-export { Textarea } from './components/form/Textarea';
-export type { TextareaProps } from './components/form/Textarea';
+export {
+  Textarea,
+  clearTextareaDraft,
+  getTextareaDraft,
+  saveTextareaDraft,
+  getEffectiveTextareaStorageKey,
+  TEXTAREA_DRAFT_PREFIX,
+} from './components/form/Textarea';
+export type { TextareaProps, TextareaDraftPayload } from './components/form/Textarea';
 
 export { Select } from './components/form/Select';
 export type { SelectProps, SelectOption } from './components/form/Select';
