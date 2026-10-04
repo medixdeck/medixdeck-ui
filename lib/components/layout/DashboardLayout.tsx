@@ -836,7 +836,7 @@ function detectDashboardEnvironment(explicitEnv?: DashboardEnvironment): {
     if (host.startsWith('staging.') || host.startsWith('stage.') || host.includes('-staging.')) {
       return { isNonProduction: true, detectedEnv: 'staging' };
     }
-    if (host.startsWith('test.') || host.startsWith('qa.') || host.includes('-test.')) {
+    if (host.startsWith('test.') || host.startsWith('test-') || host.startsWith('qa.') || host.includes('-test.')) {
       return { isNonProduction: true, detectedEnv: 'test' };
     }
     if (host.startsWith('dev.') || host.includes('-dev.')) {
