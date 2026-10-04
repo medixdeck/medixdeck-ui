@@ -274,7 +274,7 @@ export function PWAInstallPrompt({
             position: 'fixed',
             [position]: 16,
             left: '50%',
-            zIndex: 10000,
+            zIndex: 1000,
             width: 'calc(100% - 32px)',
             maxWidth: 480,
             pointerEvents: 'auto',
