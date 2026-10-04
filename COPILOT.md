@@ -13,6 +13,7 @@ Use this repository as a **publishable React UI library**, not an app.
 - Apply dark mode on `document.documentElement`.
 - **Collapsible Rails & Flyouts**: Switch nav containers to `overflowY="visible"` when collapsed to prevent flyout clipping, and wrap `Tooltip` triggers in full-width flex centering containers (`display="flex" justifyContent="center" w="full"`).
 - **Draft Persistence Standard**: Multi-line form inputs and editors (`RichTextInput`, `Textarea`) auto-save to `localStorage` with `persistDraft = true` by default. They resolve keys via `storageKey -> id -> name -> placeholder/label slug`, debounce writes at 400ms with `beforeunload` emergency flush, restore safely inside `useEffect` (SSR-safe), and export `clear*Draft` / `get*Draft` companion utilities from `lib/index.ts`.
+- **Sidebar Navigation & Sub-Item Spacing**: Badges and status indicators (`isNew`) must match the component's `colorScheme` (`scheme.solid` bg, `#fff` text). Nested sub-items in fixed-width sidebars must use compact indentation (`pl="3"` / 12px) and row padding (`px="2"`, `gap="2.5"`). Always set `minW="0"` and `textOverflow="ellipsis"` on nav labels to protect trailing badges from clipping.
 
 ## Release expectations
 
