@@ -25,6 +25,7 @@
     "swipeable",
     "tagsinput",
     "telehealthcallbar",
+    "topbar",
     "Wordmark"
   ],
   "editor.formatOnSave": true,
