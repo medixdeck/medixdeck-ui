@@ -1228,12 +1228,14 @@ function SidebarNavItem({
   onClick,
   scheme,
   isCollapsed = false,
+  isSubItem = false,
 }: {
   item: DashboardNavItem;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   onClick?: () => void;
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
   isCollapsed?: boolean;
+  isSubItem?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
   const [focusVisible, setFocusVisible] = useState(false);
@@ -1457,6 +1459,7 @@ function SidebarNavItem({
                       }}
                       scheme={scheme}
                       isCollapsed={false}
+                      isSubItem={true}
                     />
                   ))}
                 </Box>
@@ -1582,9 +1585,9 @@ function SidebarNavItem({
     <Box
       display="flex"
       alignItems="center"
-      gap="3"
-      px="3"
-      py="2.5"
+      gap={isSubItem ? '2.5' : '3'}
+      px={isSubItem ? '2' : '3'}
+      py={isSubItem ? '2' : '2.5'}
       borderRadius="lg"
       borderLeftRadius={hasSubItems ? 'lg' : 'none'}
       borderTopLeftRadius={hasSubItems ? 'lg' : 'none'}
@@ -1623,9 +1626,13 @@ function SidebarNavItem({
       <Box
         as="span"
         flex="1"
+        minW="0"
         fontSize="sm"
         fontWeight={isColoured ? '600' : '500'}
         fontFamily="var(--font-body)"
+        whiteSpace="nowrap"
+        overflow="hidden"
+        textOverflow="ellipsis"
         style={{
           color: isColoured ? scheme.solid : undefined,
           transition: 'color 0.15s ease',
@@ -1745,7 +1752,7 @@ function SidebarNavItem({
           style={{ overflow: 'hidden' }}
           aria-hidden={!expanded}
         >
-          <Box display="flex" flexDirection="column" gap="0.5" pl="9" mt="0.5" mb="1">
+          <Box display="flex" flexDirection="column" gap="0.5" pl="3" mt="0.5" mb="1">
             {item.subItems!.map((subItem) => (
               <SidebarNavItem
                 key={subItem.href}
@@ -1754,6 +1761,7 @@ function SidebarNavItem({
                 onClick={onClick}
                 scheme={scheme}
                 isCollapsed={false}
+                isSubItem={true}
               />
             ))}
           </Box>
