@@ -258,4 +258,39 @@ describe('DashboardLayout Component', () => {
 
     expect(screen.getByLabelText('New feature')).toBeInTheDocument();
   });
+
+  it('renders NEW badge on expanded sub-items with isNew: true', () => {
+    const navGroupsWithSubNew: DashboardNavGroup[] = [
+      {
+        items: [
+          {
+            label: 'Records',
+            href: '/records',
+            subItems: [
+              { label: 'Prescriptions', href: '/records/prescriptions', isNew: true },
+            ],
+          },
+        ],
+      },
+    ];
+
+    render(
+      <MedixProvider defaultColorMode="light">
+        <DashboardLayout
+          user={TEST_USER}
+          navGroups={navGroupsWithSubNew}
+          environment="production"
+        >
+          <div>Main Content</div>
+        </DashboardLayout>
+      </MedixProvider>,
+    );
+
+    // Expand the accordion
+    const recordsBtn = screen.getByRole('button', { name: /Records/i });
+    fireEvent.click(recordsBtn);
+
+    expect(screen.getByText('Prescriptions')).toBeInTheDocument();
+    expect(screen.getByText('NEW')).toBeInTheDocument();
+  });
 });
