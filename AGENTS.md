@@ -368,6 +368,10 @@ The dev preview (`src/App.tsx`) showcases every component. When you add a new co
 | Keep `overflowY="auto"` on collapsed sidebar rail nav containers                | Set `overflowY="visible"` when collapsed so horizontal flyout dropdown menus are not clipped                        |
 | Rely on default block/inline positioning when wrapping rail items in `Tooltip`  | Wrap with `<Box display="flex" justifyContent="center" alignItems="center" w="full">` to maintain horizontal center |
 | Forget to elevate stacking context on open rail flyout parent items             | Set `zIndex={flyoutOpen ? 100 : 1}` on parent item and `zIndex={1500}` on flyout menu                               |
+| Copy hardcoded colors from third-party screenshots into badges/indicators       | Adhere to component's `colorScheme` (`scheme.solid` `#0685FF` for blue, `#7700CC` for purple, `#fff` text)          |
+| Use deep indentation (`pl="9"`) on nested sidebar sub-items                     | Use compact indentation (`pl="3"` / 12px) and compact row padding (`px="2"`, `gap="2.5"`) to prevent clipping badges |
+| Allow flex labels without `minW="0"` and `textOverflow="ellipsis"` in nav rows  | Add `minW="0"`, `whiteSpace="nowrap"`, `overflow="hidden"`, and `textOverflow="ellipsis"` so trailing badges never clip |
+| Reference undeclared nav datasets in Storybook stories                          | Declare shared datasets (e.g. `NAV_GROUPS_WITH_SUBITEMS`) at the top of the story file                              |
 
 ---
 
@@ -551,7 +555,7 @@ When building or updating collapsible sidebars, rails, and popovers:
 
 ---
 
-## 16. Form Component Draft Persistence Standard
+## 18. Form Component Draft Persistence Standard
 
 Any form input, editor, or multi-line text component that manages user-entered content (such as `RichTextInput`, `Textarea`, or future form builders/editors) must support automatic `localStorage` draft saving and recovery following this standard:
 
@@ -582,4 +586,23 @@ Any form input, editor, or multi-line text component that manages user-entered c
    - `getEffective<ComponentName>StorageKey(...)`
    - `<COMPONENT_NAME>_DRAFT_PREFIX` constant
    - `<ComponentName>DraftPayload` interface
+
+---
+
+## 19. Sidebar Navigation Hierarchy, Spacing & Overflow Protection
+
+When creating or modifying navigation links in fixed-width containers (`DashboardLayout`, `Navbar`, drawers):
+
+1. **Badge & Status Consistency**:
+   - Badges, status pills (`isNew`), and indicators must match the active `colorScheme` (`scheme.solid` background and `#fff` text for solid badges; `#0685FF` for blue, `#7700CC` for purple).
+   - In collapsed rail mode, render an indicator dot matching `scheme.solid` and append the status (e.g. `(NEW)`) to the hover tooltip.
+
+2. **Sub-Item Indentation & Geometry**:
+   - Inside a fixed 220px sidebar, nested child links must use compact indentation: `pl="3"` (12px) on the parent dropdown container.
+   - Child items must use compact padding (`px="2"`, `py="2"`, `gap="2.5"`) to reserve maximum horizontal space for labels and status badges.
+
+3. **Flex Overflow Protection**:
+   - Navigation row labels must have `flex="1"`, `minW="0"`, `whiteSpace="nowrap"`, `overflow="hidden"`, and `textOverflow="ellipsis"`.
+   - Trailing indicators (count badge, `isNew` pill, red dot, chevron) must have `flexShrink={0}` so they remain fully visible and never get clipped by long text labels.
+
 
