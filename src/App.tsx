@@ -3090,7 +3090,7 @@ export default function App() {
         title="Book an Appointment"
         description="Fill in your details to schedule a consultation with a licensed doctor."
         footer={
-          <Flex gap={'12px'} marginY="1rem">
+          <Flex gap={'12px'}>
             <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancel
             </Button>
