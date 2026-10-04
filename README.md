@@ -383,6 +383,7 @@ import { DashboardLayout } from '@medixdeck/ui';
       items: [
         { label: 'Home', href: '/', isActive: true },
         { label: 'Messages', href: '/messages', badge: 6 },
+        { label: 'My Schedule', href: '/schedule', isNew: true },
       ],
     },
     {
@@ -399,6 +400,19 @@ import { DashboardLayout } from '@medixdeck/ui';
   {/* page content */}
 </DashboardLayout>;
 ```
+
+`DashboardNavItem` props:
+
+| Prop       | Type                 | Required | Description                                                                                 |
+| ---------- | -------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| `label`    | `string`             | ✓        | Display label for the sidebar link                                                          |
+| `href`     | `string`             | ✓        | Identifier or URL passed to `renderLink` and used as unique key                             |
+| `icon`     | `ReactNode`          | —        | Optional icon element                                                                       |
+| `badge`    | `number`             | —        | Numeric count badge displayed to the right of the label                                     |
+| `hasDot`   | `boolean`            | —        | Red dot indicator for unread alerts or notifications                                        |
+| `isNew`    | `boolean`            | —        | "NEW" pill badge matching the active `colorScheme` (`blue` or `purple`)                    |
+| `isActive` | `boolean`            | —        | Marks this item as the active navigation route                                              |
+| `subItems` | `DashboardNavItem[]` | —        | Nested sub-links that expand/collapse in an accordion menu                                  |
 
 ### Mobile bottom navigation (`mobileNavItems`)
 
