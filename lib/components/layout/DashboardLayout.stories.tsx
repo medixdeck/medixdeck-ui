@@ -135,6 +135,29 @@ const DOCTOR_NAV_GROUPS = [
   },
 ];
 
+const NAV_GROUPS_WITH_SUBITEMS = [
+  {
+    items: [
+      { label: 'Dashboard', href: '#dashboard', icon: <HomeIcon /> },
+      {
+        label: 'Appointments',
+        href: '#appointments-parent',
+        icon: <CalendarIcon />,
+        isActive: true,
+        subItems: [
+          { label: 'Upcoming', href: '#upcoming', badge: 3 },
+          { label: 'Completed', href: '#completed' },
+          { label: 'Cancelled', href: '#cancelled' },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: 'System',
+    items: [{ label: 'Settings', href: '#settings', icon: <SettingsIcon /> }],
+  },
+];
+
 const MOBILE_NAV_ITEMS = [
   { label: 'Home', href: '#home', icon: <HomeIcon /> },
   { label: 'Appointments', href: '#appointments', icon: <CalendarIcon /> },
@@ -238,28 +261,7 @@ export const Purple: Story = {
 export const WithSublinks: Story = {
   args: {
     user: { name: 'Tobi K.', email: 'tobi@medixdeck.com' },
-    navGroups: [
-      {
-        items: [
-          { label: 'Dashboard', href: '#dashboard', icon: <HomeIcon /> },
-          {
-            label: 'Appointments',
-            href: '#appointments-parent',
-            icon: <CalendarIcon />,
-            isActive: true,
-            subItems: [
-              { label: 'Upcoming', href: '#upcoming', badge: 3 },
-              { label: 'Completed', href: '#completed' },
-              { label: 'Cancelled', href: '#cancelled' },
-            ],
-          },
-        ],
-      },
-      {
-        groupLabel: 'System',
-        items: [{ label: 'Settings', href: '#settings', icon: <SettingsIcon /> }],
-      },
-    ],
+    navGroups: NAV_GROUPS_WITH_SUBITEMS,
   },
   render: (args) => (
     <Box h="100vh" w="100%">
