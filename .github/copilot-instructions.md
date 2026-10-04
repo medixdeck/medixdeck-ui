@@ -9,4 +9,5 @@ Treat this repository as a publishable React component library.
 - Do NOT use `boxShadow`, `shadow`, `card-light`, or `card-dark` props. Rely on clean borders (`border="1px solid" borderColor="border"`) instead.
 - Ensure collapsible rail items wrapped in `Tooltip` use full-width flex centering, and collapsed nav containers use `overflowY="visible"` for flyout menus.
 - Follow the Form Component Draft Persistence Standard (`persistDraft = true` by default, tiered key resolution, debounced writes, unload flush, SSR safety, companion export helpers) for multi-line inputs and editors.
+- Follow Sidebar Navigation standards: Badges (`badge`, `isNew`) must derive colors from `colorScheme`. In sidebars, nested sub-items must use compact indentation (`pl="3"`) and row padding (`px="2"`), with `minW="0"` and text ellipsis on labels to prevent badge clipping.
 - Run `npm run build`, `npm run test`, and `npm run pack:check` for changes that affect library code or package metadata.
