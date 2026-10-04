@@ -1023,10 +1023,10 @@ const themeOptions: Array<{
   shortLabel: string;
   icon: React.ReactNode;
 }> = [
-  { value: 'light', label: 'Light mode', shortLabel: 'Light', icon: <SunIcon /> },
-  { value: 'dark', label: 'Dark mode', shortLabel: 'Dark', icon: <MoonIcon /> },
-  { value: 'system', label: 'System theme', shortLabel: 'System', icon: <SystemIcon /> },
-];
+    { value: 'light', label: 'Light mode', shortLabel: 'Light', icon: <SunIcon /> },
+    { value: 'dark', label: 'Dark mode', shortLabel: 'Dark', icon: <MoonIcon /> },
+    { value: 'system', label: 'System theme', shortLabel: 'System', icon: <SystemIcon /> },
+  ];
 
 function ThemeToggleGroup({ scheme }: { scheme: (typeof SCHEME_COLORS)[DashboardColorScheme] }) {
   const { mounted, themeMode, themeSetting, setThemeMode } = useThemeMode();
