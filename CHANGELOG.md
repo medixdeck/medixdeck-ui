@@ -6,6 +6,17 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 
+- **`DashboardLayout` — Sidebar Links `isNew` Badge**:
+  - Added optional `isNew?: boolean` property to `DashboardNavItem` and `DashboardMobileNavItem` to control rendering a "NEW" badge on sidebar navigation items.
+  - Follows the badge styling with background and text colors matching the active `colorScheme` (`scheme.solid` `#0685FF` for blue, `#7700CC` for purple, and `#fff` text).
+  - Clean pill shape (`borderRadius="full"`), uppercase `"NEW"`, `fontSize="10px"`, `fontWeight="700"`, `fontFamily="var(--font-heading)"` with zero `boxShadow`.
+  - Supports expanded sidebar items, recursive sub-items, collapsed rail icon indicators and tooltips (`(NEW)`), and flyout headers.
+  - Added Storybook story `WithNewBadges` showcasing new features across navigation groups.
+
+---
+
+### Added
+
 - **`Textarea` — `localStorage` Draft Auto-Save & Refresh Recovery**:
   - Added automatic draft saving to `localStorage` enabled by default (`persistDraft = true`), preventing data loss across page refreshes and route transitions.
   - Multi-instance collision isolation: Resolves storage keys smartly via `storageKey`, `id`, `name`, or `placeholder` slug fallback (`getEffectiveTextareaStorageKey`).
