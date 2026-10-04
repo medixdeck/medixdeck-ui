@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { DashboardLayout } from './DashboardLayout';
 import { Box, Text } from '@chakra-ui/react';
+import React from 'react';
 
 // ─── Inline icons (no external deps needed in stories) ────────────────────────
 
@@ -933,6 +934,55 @@ export const TopBarTogglePlacement: Story = {
         <PageContent
           title="TopBar Toggle Button Placement"
           description="Setting collapseTogglePlacement='both' or 'topbar' renders the collapse/expand toggle button in the sticky topbar."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Sidebar navigation items with `isNew: true`.
+ *
+ * Demonstrates the "NEW" pill badge rendered alongside sidebar links.
+ * Matches the badge style with background and color derived from `colorScheme` (blue or purple).
+ */
+export const WithNewBadges: Story = {
+  name: 'Sidebar / With "NEW" Badges',
+  args: {
+    colorScheme: 'blue',
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: [
+      {
+        groupLabel: 'Overview',
+        items: [
+          { label: 'Dashboard', href: '#dashboard', icon: <HomeIcon />, isActive: true },
+          { label: 'Bookings', href: '#bookings', icon: <CalendarIcon /> },
+          { label: 'My Schedule', href: '#schedule', icon: <CalendarIcon />, isNew: true },
+          { label: 'Clients', href: '#clients', icon: <UserIcon /> },
+          { label: 'Notes', href: '#notes', icon: <FileIcon /> },
+        ],
+      },
+      {
+        groupLabel: 'Practice',
+        items: [
+          { label: 'Reports', href: '#reports', icon: <FileIcon />, isNew: true },
+          { label: 'Transactions', href: '#transactions', icon: <FileIcon /> },
+          { label: 'Wallet', href: '#wallet', icon: <FileIcon /> },
+          { label: 'My Ratings', href: '#ratings', icon: <FileIcon />, isNew: true },
+          { label: 'Prime', href: '#prime', icon: <FileIcon />, isNew: true },
+          { label: 'Assessments', href: '#assessments', icon: <FileIcon />, isNew: true },
+        ],
+      },
+    ],
+    collapsible: true,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Sidebar Links with NEW Badges"
+          description='Sidebar links with `isNew: true` render a "NEW" pill badge matching the active colorScheme. In collapsed rail mode, a badge dot indicator and tooltip reflect the new state.'
         />
       </DashboardLayout>
     </Box>
