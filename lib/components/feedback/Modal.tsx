@@ -141,10 +141,10 @@ export function Modal({
           style={
             isBottomSheet
               ? ({
-                '--bottom-sheet-animation': isOpen
-                  ? 'medixBottomSheetIn 0.35s cubic-bezier(0.32,0.72,0,1) both'
-                  : undefined,
-              } as React.CSSProperties)
+                  '--bottom-sheet-animation': isOpen
+                    ? 'medixBottomSheetIn 0.35s cubic-bezier(0.32,0.72,0,1) both'
+                    : undefined,
+                } as React.CSSProperties)
               : undefined
           }
         >

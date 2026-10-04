@@ -34,9 +34,9 @@ describe('RichTextInput localStorage draft utilities', () => {
     });
 
     it('falls back to slugified label when other keys are missing', () => {
-      expect(getEffectiveStorageKey(undefined, undefined, undefined, 'Doctor Notes (Private)')).toBe(
-        'label_doctor_notes_private',
-      );
+      expect(
+        getEffectiveStorageKey(undefined, undefined, undefined, 'Doctor Notes (Private)'),
+      ).toBe('label_doctor_notes_private');
     });
 
     it('falls back to "default" when no identifiers are provided', () => {

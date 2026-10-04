@@ -322,25 +322,25 @@ export default function App() {
         environmentBanner={
           dashboardEnv === 'custom'
             ? {
-              environment: 'sandbox',
-              badgeLabel: 'SIMULATION TERMINAL',
-              message:
-                'Interactive testing sandbox for clinicians & automated QA suites. Live data is protected.',
-              action: (
-                <Button
-                  size="xs"
-                  variant="outline"
-                  colorScheme="amber"
-                  onClick={() => alert('Live app requested')}
-                >
-                  Switch to Live →
-                </Button>
-              ),
-              dismissible: bannerDismissible,
-            }
+                environment: 'sandbox',
+                badgeLabel: 'SIMULATION TERMINAL',
+                message:
+                  'Interactive testing sandbox for clinicians & automated QA suites. Live data is protected.',
+                action: (
+                  <Button
+                    size="xs"
+                    variant="outline"
+                    colorScheme="amber"
+                    onClick={() => alert('Live app requested')}
+                  >
+                    Switch to Live →
+                  </Button>
+                ),
+                dismissible: bannerDismissible,
+              }
             : {
-              dismissible: bannerDismissible,
-            }
+                dismissible: bannerDismissible,
+              }
         }
         navGroups={[
           {
@@ -1731,7 +1731,7 @@ export default function App() {
               <Tag colorScheme="purple" variant="solid">
                 Psychiatry
               </Tag>
-              <Tag colorScheme="green" onClose={() => { }}>
+              <Tag colorScheme="green" onClose={() => {}}>
                 Pediatrics ×
               </Tag>
               <Tag colorScheme="gray" variant="outline">

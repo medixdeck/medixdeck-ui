@@ -266,9 +266,7 @@ describe('DashboardLayout Component', () => {
           {
             label: 'Records',
             href: '/records',
-            subItems: [
-              { label: 'Prescriptions', href: '/records/prescriptions', isNew: true },
-            ],
+            subItems: [{ label: 'Prescriptions', href: '/records/prescriptions', isNew: true }],
           },
         ],
       },
@@ -276,11 +274,7 @@ describe('DashboardLayout Component', () => {
 
     render(
       <MedixProvider defaultColorMode="light">
-        <DashboardLayout
-          user={TEST_USER}
-          navGroups={navGroupsWithSubNew}
-          environment="production"
-        >
+        <DashboardLayout user={TEST_USER} navGroups={navGroupsWithSubNew} environment="production">
           <div>Main Content</div>
         </DashboardLayout>
       </MedixProvider>,

@@ -54,17 +54,17 @@ export function App() {
 
 ## Public API index
 
-| Area              | Exports                                                                                                                                                                                                                                                                  |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Provider + theme  | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports                                                                                                                                                               |
-| Primitive         | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo`                                                                                                                                                         |
+| Area              | Exports                                                                                                                                                                                                                                                                                                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Provider + theme  | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports                                                                                                                                                                                                                                                                                             |
+| Primitive         | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo`                                                                                                                                                                                                                                                                                       |
 | Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`, `TagsInput`, `TagInput`, `clearTextareaDraft`, `getTextareaDraft`, `saveTextareaDraft`, `RichTextInput`, `RichTextEditor`, `clearRichTextDraft`, `getRichTextDraft`, `saveRichTextDraft` |
-| Layout            | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer`                                                                                                                               |
-| Navigation        | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper`                                                                                                                                                                                                                  |
-| Feedback          | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt`                                            |
-| Data display      | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable`                                                                                                                                                                                                                  |
-| Healthcare        | `DoctorCard`, `VitalBadge`, `AppointmentCard`                                                                                                                                                                                                                            |
-| Chakra re-exports | `Box`, `Flex`, `Grid`, `Stack`, `Text`, `Heading`, `Link`, `Image`, `Icon`, `Center`, `Wrap`, `WrapItem`, others in `lib/index.ts`                                                                                                                                       |
+| Layout            | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer`                                                                                                                                                                                                                                                             |
+| Navigation        | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper`                                                                                                                                                                                                                                                                                                                                                |
+| Feedback          | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt`                                                                                                                                                                          |
+| Data display      | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable`                                                                                                                                                                                                                                                                                                                                                |
+| Healthcare        | `DoctorCard`, `VitalBadge`, `AppointmentCard`                                                                                                                                                                                                                                                                                                                                                          |
+| Chakra re-exports | `Box`, `Flex`, `Grid`, `Stack`, `Text`, `Heading`, `Link`, `Image`, `Icon`, `Center`, `Wrap`, `WrapItem`, others in `lib/index.ts`                                                                                                                                                                                                                                                                     |
 
 ## Design-system rules
 
@@ -403,16 +403,16 @@ import { DashboardLayout } from '@medixdeck/ui';
 
 `DashboardNavItem` props:
 
-| Prop       | Type                 | Required | Description                                                                                 |
-| ---------- | -------------------- | -------- | ------------------------------------------------------------------------------------------- |
-| `label`    | `string`             | ✓        | Display label for the sidebar link                                                          |
-| `href`     | `string`             | ✓        | Identifier or URL passed to `renderLink` and used as unique key                             |
-| `icon`     | `ReactNode`          | —        | Optional icon element                                                                       |
-| `badge`    | `number`             | —        | Numeric count badge displayed to the right of the label                                     |
-| `hasDot`   | `boolean`            | —        | Red dot indicator for unread alerts or notifications                                        |
-| `isNew`    | `boolean`            | —        | "NEW" pill badge matching the active `colorScheme` (`blue` or `purple`)                    |
-| `isActive` | `boolean`            | —        | Marks this item as the active navigation route                                              |
-| `subItems` | `DashboardNavItem[]` | —        | Nested sub-links that expand/collapse in an accordion menu                                  |
+| Prop       | Type                 | Required | Description                                                             |
+| ---------- | -------------------- | -------- | ----------------------------------------------------------------------- |
+| `label`    | `string`             | ✓        | Display label for the sidebar link                                      |
+| `href`     | `string`             | ✓        | Identifier or URL passed to `renderLink` and used as unique key         |
+| `icon`     | `ReactNode`          | —        | Optional icon element                                                   |
+| `badge`    | `number`             | —        | Numeric count badge displayed to the right of the label                 |
+| `hasDot`   | `boolean`            | —        | Red dot indicator for unread alerts or notifications                    |
+| `isNew`    | `boolean`            | —        | "NEW" pill badge matching the active `colorScheme` (`blue` or `purple`) |
+| `isActive` | `boolean`            | —        | Marks this item as the active navigation route                          |
+| `subItems` | `DashboardNavItem[]` | —        | Nested sub-links that expand/collapse in an accordion menu              |
 
 ### Mobile bottom navigation (`mobileNavItems`)
 

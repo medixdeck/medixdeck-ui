@@ -1376,7 +1376,11 @@ export function RichTextInput({
     if (!textarea) {
       setMarkdownContent((prev) => {
         const next = prev + snippet;
-        scheduleSaveDraft(outputFormat === 'markdown' ? next : markdownToHtml(next), 'markdown', outputFormat);
+        scheduleSaveDraft(
+          outputFormat === 'markdown' ? next : markdownToHtml(next),
+          'markdown',
+          outputFormat,
+        );
         return next;
       });
       return;
