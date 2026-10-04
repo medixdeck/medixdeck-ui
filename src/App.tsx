@@ -346,7 +346,12 @@ export default function App() {
           {
             items: [
               { label: 'Home', href: '#home', isActive: true, icon: <LuHouse size={18} /> },
-              { label: 'Consult', href: '#consult', icon: <LuStethoscope size={18} /> },
+              {
+                label: 'Consult',
+                href: '#consult',
+                icon: <LuStethoscope size={18} />,
+                isNew: true,
+              },
               {
                 label: 'Records',
                 href: '#records',
@@ -361,6 +366,7 @@ export default function App() {
                     label: 'Prescriptions',
                     href: '#records-prescriptions',
                     icon: <LuPill size={16} />,
+                    isNew: true,
                   },
                   {
                     label: 'Test Results',
