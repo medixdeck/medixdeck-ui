@@ -376,6 +376,12 @@ export interface DashboardNavItem {
   badge?: number;
   /** Red dot indicator (e.g. for unread notifications). */
   hasDot?: boolean;
+  /**
+   * "NEW" badge indicator shown to the right of the label.
+   * Matches the badge style with background and color derived from `colorScheme` (`blue` or `purple`).
+   * In collapsed rail mode, renders a scheme-colored dot indicator and adds "(NEW)" to the tooltip.
+   */
+  isNew?: boolean;
   /** Mark this item as the currently active route. */
   isActive?: boolean;
   /** Optional nested sub-items (creates an expandable dropdown accordion). */
@@ -400,6 +406,8 @@ export interface DashboardMobileNavItem {
   isActive?: boolean;
   /** Numeric count badge shown on the icon (capped at 99+). */
   badge?: number;
+  /** Optional "NEW" indicator dot shown on the icon when no count badge exists. */
+  isNew?: boolean;
 }
 
 /**
@@ -1411,6 +1419,30 @@ function SidebarNavItem({
                     </Box>
                   )}
                   <Box as="span">{item.label}</Box>
+                  {item.isNew && (
+                    <Box
+                      as="span"
+                      display="inline-flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      px="1.5"
+                      py="0.5"
+                      borderRadius="full"
+                      fontSize="10px"
+                      fontWeight="700"
+                      letterSpacing="0.04em"
+                      lineHeight="1"
+                      textTransform="uppercase"
+                      fontFamily="var(--font-heading)"
+                      flexShrink={0}
+                      style={{
+                        background: scheme.solid,
+                        color: '#fff',
+                      }}
+                    >
+                      NEW
+                    </Box>
+                  )}
                 </Box>
 
                 <Box display="flex" flexDirection="column" gap="0.5" px="1">
@@ -1438,7 +1470,7 @@ function SidebarNavItem({
     // Leaf item in collapsed mode
     const railContent = (
       <Box display="flex" justifyContent="center" alignItems="center" w="full">
-        <Tooltip label={item.label} placement="right">
+        <Tooltip label={item.isNew ? `${item.label} (NEW)` : item.label} placement="right">
           <Box
             display="flex"
             alignItems="center"
@@ -1520,6 +1552,21 @@ function SidebarNavItem({
                 borderRadius="full"
                 style={{ background: RED }}
                 aria-label="New notification"
+              />
+            )}
+
+            {/* isNew indicator dot if no numeric badge or red dot */}
+            {item.isNew && typeof item.badge !== 'number' && !item.hasDot && (
+              <Box
+                as="span"
+                position="absolute"
+                top="2px"
+                right="2px"
+                w="6px"
+                h="6px"
+                borderRadius="full"
+                style={{ background: scheme.solid }}
+                aria-label="New feature"
               />
             )}
           </Box>
@@ -1623,6 +1670,32 @@ function SidebarNavItem({
           style={{ background: RED }}
           aria-label="New notification"
         />
+      )}
+
+      {/* "NEW" badge indicator */}
+      {item.isNew && (
+        <Box
+          as="span"
+          display="inline-flex"
+          alignItems="center"
+          justifyContent="center"
+          px="1.5"
+          py="0.5"
+          borderRadius="full"
+          fontSize="10px"
+          fontWeight="700"
+          letterSpacing="0.04em"
+          lineHeight="1"
+          textTransform="uppercase"
+          fontFamily="var(--font-heading)"
+          flexShrink={0}
+          style={{
+            background: scheme.solid,
+            color: '#fff',
+          }}
+        >
+          NEW
+        </Box>
       )}
 
       {/* Chevron for sub-items */}
@@ -1825,6 +1898,24 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
                 >
                   {item.badge > 99 ? '99+' : item.badge}
                 </span>
+              )}
+
+              {/* isNew indicator dot */}
+              {item.isNew && (!item.badge || item.badge <= 0) && (
+                <span
+                  aria-label="New feature"
+                  style={{
+                    position: 'absolute',
+                    top: -2,
+                    right: -2,
+                    width: 6,
+                    height: 6,
+                    borderRadius: 3,
+                    background: scheme.solid,
+                    boxShadow: '0 0 0 2px var(--chakra-colors-bg, #fff)',
+                    pointerEvents: 'none',
+                  }}
+                />
               )}
             </Box>
 
