@@ -4,6 +4,14 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ## [Unreleased]
 
+### Breaking
+
+- **`DashboardLayout` — MedixScore tiers aligned to backend (`MEDIX_SCORE_TIER`)**:
+  - `DashboardScoreCardData.tier` is now `DashboardMedixScoreTier`: `"bronze" | "silver" | "gold" | "platinum" | "elite-i" | "elite-ii" | "elite-iii" | "elite-iv" | "elite-v"`.
+  - Removed fictional `"diamond"` tier; Elite I–V (levels 5–9, 40,000–200,000+) replace it with a violet/purple prestige ramp (`#6D28D9` → `#4C1D95`).
+  - `DASHBOARD_MEDIX_TIER_CONFIG` now carries backend `level`/`minScore`/`maxScore` per tier plus colours; new exports `DASHBOARD_MEDIX_TIER_ORDER`, `getMedixScoreTierForScore(score)`, `getMedixScoreTierMeta(tier)` (safe fallback to Bronze for stale keys).
+  - Storybook, `src/App.tsx`, README, and tests updated to in-band scores (e.g. `gold` + `8,470` instead of `847`).
+
 ### Added
 
 - **`DashboardLayout` — Sidebar Links `isNew` Badge**:
