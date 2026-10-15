@@ -1,7 +1,13 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MedixProvider } from '../provider/MedixProvider';
-import { DashboardLayout, type DashboardNavGroup } from './DashboardLayout';
+import {
+  DashboardLayout,
+  DASHBOARD_MEDIX_TIER_CONFIG,
+  getMedixScoreTierForScore,
+  type DashboardMedixScoreTier,
+  type DashboardNavGroup,
+} from './DashboardLayout';
 
 const TEST_NAV_GROUPS: DashboardNavGroup[] = [
   {
@@ -103,8 +109,8 @@ describe('DashboardLayout Component', () => {
           scoreCard={{
             name: 'Dr. Amina Bello',
             role: 'Chief of Cardiology',
-            tier: 'diamond',
-            medixScore: 985,
+            tier: 'elite-v',
+            medixScore: 250000,
             link: '/doctor/profile',
           }}
         >
@@ -114,8 +120,70 @@ describe('DashboardLayout Component', () => {
     );
 
     expect(screen.getByText('Chief of Cardiology')).toBeInTheDocument();
-    expect(screen.getByText('Diamond Clinician')).toBeInTheDocument();
-    expect(screen.getByText('985 pts')).toBeInTheDocument();
+    expect(screen.getByText('Elite V')).toBeInTheDocument();
+    expect(screen.getByText('250,000 pts')).toBeInTheDocument();
+  });
+
+  it.each([
+    ['bronze', 0, 'Bronze Clinician'],
+    ['bronze', 999, 'Bronze Clinician'],
+    ['silver', 1000, 'Silver Clinician'],
+    ['silver', 4999, 'Silver Clinician'],
+    ['gold', 5000, 'Gold Clinician'],
+    ['gold', 14999, 'Gold Clinician'],
+    ['platinum', 15000, 'Platinum Clinician'],
+    ['platinum', 39999, 'Platinum Clinician'],
+    ['elite-i', 40000, 'Elite I'],
+    ['elite-i', 59999, 'Elite I'],
+    ['elite-ii', 60000, 'Elite II'],
+    ['elite-ii', 79999, 'Elite II'],
+    ['elite-iii', 80000, 'Elite III'],
+    ['elite-iii', 119999, 'Elite III'],
+    ['elite-iv', 120000, 'Elite IV'],
+    ['elite-iv', 199999, 'Elite IV'],
+    ['elite-v', 200000, 'Elite V'],
+    ['elite-v', 500000, 'Elite V'],
+  ] as Array<[DashboardMedixScoreTier, number, string]>)(
+    'resolves score %i to tier %s (%s)',
+    (tier, score, label) => {
+      expect(getMedixScoreTierForScore(score)).toBe(tier);
+      expect(DASHBOARD_MEDIX_TIER_CONFIG[tier].label).toBe(label);
+    },
+  );
+
+  it('renders each of the nine backend-aligned tiers', () => {
+    const tiers: DashboardMedixScoreTier[] = [
+      'bronze',
+      'silver',
+      'gold',
+      'platinum',
+      'elite-i',
+      'elite-ii',
+      'elite-iii',
+      'elite-iv',
+      'elite-v',
+    ];
+    for (const tier of tiers) {
+      const { unmount } = render(
+        <MedixProvider defaultColorMode="light">
+          <DashboardLayout
+            user={TEST_USER}
+            navGroups={TEST_NAV_GROUPS}
+            environment="production"
+            scoreCard={{
+              name: 'Dr. Test',
+              role: 'Test Role',
+              tier,
+              medixScore: DASHBOARD_MEDIX_TIER_CONFIG[tier].minScore,
+            }}
+          >
+            <div>Main Content</div>
+          </DashboardLayout>
+        </MedixProvider>,
+      );
+      expect(screen.getByText(DASHBOARD_MEDIX_TIER_CONFIG[tier].label)).toBeInTheDocument();
+      unmount();
+    }
   });
 
   it('renders environment banner for sandbox environment', () => {
