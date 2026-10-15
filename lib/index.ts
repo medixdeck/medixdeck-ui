@@ -141,12 +141,20 @@ export { ThemeColorPalette } from './components/layout/ThemeColorPalette';
 export type { ThemeColorPaletteProps } from './components/layout/ThemeColorPalette';
 
 export { DashboardLayout } from './components/layout/DashboardLayout';
+export {
+  DASHBOARD_MEDIX_TIER_CONFIG,
+  DASHBOARD_MEDIX_TIER_ORDER,
+  getMedixScoreTierForScore,
+  getMedixScoreTierMeta,
+} from './components/layout/DashboardLayout';
 export type {
   DashboardLayoutProps,
   DashboardNavItem,
   DashboardNavGroup,
   DashboardMobileNavItem,
   DashboardScoreCardData,
+  DashboardMedixScoreTier,
+  DashboardMedixScoreTierMeta,
   DashboardUser,
   DashboardDropdownItem,
   DashboardColorScheme,
