@@ -314,7 +314,7 @@ export default function App() {
           name: 'Dr. Okedi Williams',
           role: 'Cardiologist',
           tier: 'gold',
-          medixScore: 847,
+          medixScore: 8470,
           link: '#doctor-profile',
         }}
         environment={dashboardEnv === 'custom' ? 'auto' : dashboardEnv}
