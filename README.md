@@ -452,8 +452,8 @@ Shown above the sidebar nav on **desktop only**. Only pass this prop for doctor-
     name: 'Dr. Okedi Williams',
     role: 'Cardiologist',
     avatarSrc: '/dr-okedi.jpg', // optional — initials fallback
-    tier: 'gold', // "bronze" | "silver" | "gold" | "platinum" | "diamond"
-    medixScore: 847,
+    tier: 'gold', // "bronze" | "silver" | "gold" | "platinum" | "elite-i" | "elite-ii" | "elite-iii" | "elite-iv" | "elite-v"
+    medixScore: 8470,
     link: '/doctor/profile', // optional — makes the card clickable
   }}
 >
@@ -461,15 +461,21 @@ Shown above the sidebar nav on **desktop only**. Only pass this prop for doctor-
 </DashboardLayout>
 ```
 
-Tier colours:
+Tiers mirror the backend `MEDIX_SCORE_TIER` bands. Use `getMedixScoreTierForScore(score)` to resolve a tier key from a raw balance.
 
-| Tier       | Label colour | Avatar ring |
-| ---------- | ------------ | ----------- |
-| `bronze`   | `#92400E`    | `#D97706`   |
-| `silver`   | `#475569`    | `#94A3B8`   |
-| `gold`     | `#D97706`    | `#F59E0B`   |
-| `platinum` | `#0284C7`    | `#38BDF8`   |
-| `diamond`  | `#7C3AED`    | `#A78BFA`   |
+Tier colours and score bands:
+
+| Tier        | Level | Score band        | Label colour | Avatar ring |
+| ----------- | :---: | ----------------- | ------------ | ----------- |
+| `bronze`    |   1   | 0 – 999           | `#92400E`    | `#D97706`   |
+| `silver`    |   2   | 1,000 – 4,999     | `#475569`    | `#94A3B8`   |
+| `gold`      |   3   | 5,000 – 14,999    | `#D97706`    | `#F59E0B`   |
+| `platinum`  |   4   | 15,000 – 39,999   | `#0284C7`    | `#38BDF8`   |
+| `elite-i`   |   5   | 40,000 – 59,999   | `#6D28D9`    | `#8B5CF6`   |
+| `elite-ii`  |   6   | 60,000 – 79,999   | `#7C3AED`    | `#A78BFA`   |
+| `elite-iii` |   7   | 80,000 – 119,999  | `#7700CC`    | `#A855F7`   |
+| `elite-iv`  |   8   | 120,000 – 199,999 | `#5B21B6`    | `#7C3AED`   |
+| `elite-v`   |   9   | 200,000+          | `#4C1D95`    | `#6D28D9`   |
 
 ### Greeting subtitle (`greetingSubtext`)
 
