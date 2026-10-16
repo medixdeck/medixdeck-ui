@@ -180,6 +180,7 @@ The `toast` utility exposes `success`, `error`, `info`, and `warning` shorthand 
 <ServerErrorPage
   errorMessage="TypeError: Cannot read properties of undefined (reading 'id')"
   onAction={() => reset()}
+  colorScheme="purple" // "blue" | "purple", default "blue" — buttons (and the 404 watermark) follow the scheme; the 500 error icon stays red
 />
 ```
 
