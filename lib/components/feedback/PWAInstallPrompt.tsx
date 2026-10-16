@@ -54,6 +54,11 @@ export interface PWAInstallPromptProps {
    */
   position?: 'top' | 'bottom';
   /**
+   * Brand accent for the install button, iOS share icon, and step badges.
+   * @default "blue"
+   */
+  colorScheme?: 'blue' | 'purple';
+  /**
    * Number of seconds to delay the prompt after the conditions are met.
    * @default 0
    */
@@ -155,6 +160,7 @@ function DefaultAppIcon() {
  *   title="Install MedixDeck"
  *   description="Get faster access and offline support."
  *   delaySeconds={5}
+ *   colorScheme="purple"
  * />
  * ```
  */
@@ -169,6 +175,7 @@ export function PWAInstallPrompt({
   appName = 'this app',
   icon,
   position = 'bottom',
+  colorScheme = 'blue',
   delaySeconds = 0,
   forceVisible,
   forceIOS,
@@ -261,6 +268,14 @@ export function PWAInstallPrompt({
   const borderColor = isDark ? '#1E3050' : '#E4E8F0';
   const shadowColor = isDark ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.08)';
 
+  // ── Brand accent (colorScheme) ────────────────────────────────────────────
+  const brandSolid = colorScheme === 'blue' ? '#0685FF' : '#7700CC';
+  const brandSoft = isDark
+    ? colorScheme === 'blue'
+      ? '#70B6FF'
+      : '#C084FC'
+    : brandSolid;
+
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
     <AnimatePresence>
@@ -318,7 +333,7 @@ export function PWAInstallPrompt({
                       <span
                         style={{ display: 'inline-flex', verticalAlign: 'middle', margin: '0 2px' }}
                       >
-                        <IOSShareIcon size={16} color={isDark ? '#70B6FF' : '#0685FF'} />
+                        <IOSShareIcon size={16} color={brandSoft} />
                       </span>{' '}
                       Share button in Safari, then select{' '}
                       <span style={{ fontWeight: 700, color: isDark ? '#F0F6FF' : '#111926' }}>
@@ -351,7 +366,7 @@ export function PWAInstallPrompt({
                             borderRadius="full"
                             flexShrink={0}
                             style={{
-                              background: isDark ? '#0685FF' : '#0685FF',
+                              background: brandSolid,
                               color: '#FFFFFF',
                               fontSize: '11px',
                               fontWeight: 700,
@@ -387,7 +402,7 @@ export function PWAInstallPrompt({
                 {/* Buttons */}
                 <Flex gap="3" align="center">
                   {!isIOS && (
-                    <Button variant="solid" colorScheme="blue" size="sm" onClick={handleInstall}>
+                    <Button variant="solid" colorScheme={colorScheme} size="sm" onClick={handleInstall}>
                       {installLabel}
                     </Button>
                   )}
