@@ -14,6 +14,16 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Added
 
+- **`PWAInstallPrompt` — `colorScheme` prop** (`"blue" | "purple"`, default `"blue"`):
+  - Passing `"purple"` switches every brand accent — install button, iOS share icon, and step badges — to MedixDeck secondary purple (`#7700CC`, `#C084FC` in dark mode) without changing any other behaviour or layout.
+  - Default `"blue"` preserves existing rendering exactly.
+  - New Storybook `PurpleScheme` story and `PWAInstallPrompt.test.tsx` coverage.
+
+- **`NotFoundPage` & `ServerErrorPage` — `colorScheme` prop** (`"blue" | "purple"`, default `"blue"`):
+  - Passing `"purple"` switches the CTA buttons (and the `"404"` watermark) to MedixDeck secondary purple (`#7700CC` / `purple.500`) without changing any other behaviour or layout.
+  - The 500 error icon disc stays red on all schemes as a status color.
+  - New `PurpleScheme` stories and `NotFoundPage.test.tsx` / `ServerErrorPage.test.tsx` coverage.
+
 - **`DashboardLayout` — Sidebar Links `isNew` Badge**:
   - Added optional `isNew?: boolean` property to `DashboardNavItem` and `DashboardMobileNavItem` to control rendering a "NEW" badge on sidebar navigation items.
   - Follows the badge styling with background and text colors matching the active `colorScheme` (`scheme.solid` `#0685FF` for blue, `#7700CC` for purple, and `#fff` text).
