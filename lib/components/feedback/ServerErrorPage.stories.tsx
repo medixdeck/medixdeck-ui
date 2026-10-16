@@ -5,6 +5,9 @@ const meta: Meta<typeof ServerErrorPage> = {
   title: 'Feedback/ServerErrorPage',
   component: ServerErrorPage,
   tags: ['autodocs'],
+  argTypes: {
+    colorScheme: { control: 'select', options: ['blue', 'purple'] },
+  },
   parameters: {
     layout: 'fullscreen',
   },
@@ -37,6 +40,15 @@ export const CriticalError: Story = {
       'We are having trouble connecting to our database. Our engineers have been notified.',
     errorMessage: 'Error Code: DB_CONN_TIMEOUT_NODE_04',
     actionLabel: 'Try Again',
+    secondaryLabel: 'System Status',
+    onAction: () => console.log('Try again clicked'),
+    onSecondaryAction: () => window.open('https://status.medixdeck.com', '_blank'),
+  },
+};
+
+export const PurpleScheme: Story = {
+  args: {
+    colorScheme: 'purple',
     secondaryLabel: 'System Status',
     onAction: () => console.log('Try again clicked'),
     onSecondaryAction: () => window.open('https://status.medixdeck.com', '_blank'),
