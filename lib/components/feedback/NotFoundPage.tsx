@@ -19,6 +19,11 @@ export interface NotFoundPageProps extends BoxProps {
   secondaryLabel?: string;
   /** Secondary button onClick handler */
   onSecondaryAction?: () => void;
+  /**
+   * Brand accent for the CTA buttons and the "404" watermark.
+   * @default "blue"
+   */
+  colorScheme?: 'blue' | 'purple';
 }
 
 /**
@@ -34,7 +39,7 @@ export interface NotFoundPageProps extends BoxProps {
  *
  * export default function NotFound() {
  *   const router = useRouter();
- *   return <NotFoundPage onAction={() => router.push("/")} />;
+ *   return <NotFoundPage onAction={() => router.push("/")} colorScheme="purple" />;
  * }
  * ```
  */
@@ -46,6 +51,7 @@ export function NotFoundPage({
   onAction,
   secondaryLabel,
   onSecondaryAction,
+  colorScheme = 'blue',
   ...props
 }: NotFoundPageProps) {
   return (
@@ -63,7 +69,7 @@ export function NotFoundPage({
       <Box
         fontSize="8xl"
         fontWeight="bold"
-        color="blue.500"
+        color={colorScheme === 'blue' ? 'blue.500' : 'purple.500'}
         fontFamily="var(--font-heading)"
         lineHeight="1"
         mb="4"
@@ -112,12 +118,12 @@ export function NotFoundPage({
 
       <Box display="flex" gap="4">
         {actionLabel && (
-          <Button variant="solid" colorScheme="blue" onClick={onAction}>
+          <Button variant="solid" colorScheme={colorScheme} onClick={onAction}>
             {actionLabel}
           </Button>
         )}
         {secondaryLabel && (
-          <Button variant="outline" colorScheme="blue" onClick={onSecondaryAction}>
+          <Button variant="outline" colorScheme={colorScheme} onClick={onSecondaryAction}>
             {secondaryLabel}
           </Button>
         )}

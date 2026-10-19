@@ -18,6 +18,12 @@ export interface ServerErrorPageProps extends BoxProps {
   secondaryLabel?: string;
   /** Secondary button onClick handler */
   onSecondaryAction?: () => void;
+  /**
+   * Brand accent for the CTA buttons.
+   * The error icon stays red as a status color on all schemes.
+   * @default "blue"
+   */
+  colorScheme?: 'blue' | 'purple';
 }
 
 /**
@@ -32,7 +38,7 @@ export interface ServerErrorPageProps extends BoxProps {
  * import { ServerErrorPage } from "@medixdeck/ui";
  *
  * export default function Error({ error, reset }: { error: Error; reset: () => void }) {
- *   return <ServerErrorPage errorMessage={error.message} onAction={() => reset()} />;
+ *   return <ServerErrorPage errorMessage={error.message} onAction={() => reset()} colorScheme="purple" />;
  * }
  * ```
  */
@@ -44,6 +50,7 @@ export function ServerErrorPage({
   onAction,
   secondaryLabel,
   onSecondaryAction,
+  colorScheme = 'blue',
   ...props
 }: ServerErrorPageProps) {
   return (
@@ -128,12 +135,12 @@ export function ServerErrorPage({
 
       <Box display="flex" gap="4">
         {actionLabel && (
-          <Button variant="solid" colorScheme="blue" onClick={onAction}>
+          <Button variant="solid" colorScheme={colorScheme} onClick={onAction}>
             {actionLabel}
           </Button>
         )}
         {secondaryLabel && (
-          <Button variant="outline" colorScheme="blue" onClick={onSecondaryAction}>
+          <Button variant="outline" colorScheme={colorScheme} onClick={onSecondaryAction}>
             {secondaryLabel}
           </Button>
         )}
