@@ -376,6 +376,12 @@ export interface DashboardNavItem {
   badge?: number;
   /** Red dot indicator (e.g. for unread notifications). */
   hasDot?: boolean;
+  /**
+   * "NEW" badge indicator shown to the right of the label.
+   * Matches the badge style with background and color derived from `colorScheme` (`blue` or `purple`).
+   * In collapsed rail mode, renders a scheme-colored dot indicator and adds "(NEW)" to the tooltip.
+   */
+  isNew?: boolean;
   /** Mark this item as the currently active route. */
   isActive?: boolean;
   /** Optional nested sub-items (creates an expandable dropdown accordion). */
@@ -400,7 +406,28 @@ export interface DashboardMobileNavItem {
   isActive?: boolean;
   /** Numeric count badge shown on the icon (capped at 99+). */
   badge?: number;
+  /** Optional "NEW" indicator dot shown on the icon when no count badge exists. */
+  isNew?: boolean;
 }
+
+/**
+ * MedixScore clinician tier key.
+ *
+ * Mirrors the backend `MEDIX_SCORE_TIER` bands
+ * (`medixdeck-backend/src/utils/medixScore.constants.ts`):
+ * Bronze (L1) → Silver (L2) → Gold (L3) → Platinum (L4) →
+ * Elite I (L5) → Elite II (L6) → Elite III (L7) → Elite IV (L8) → Elite V (L9).
+ */
+export type DashboardMedixScoreTier =
+  | 'bronze'
+  | 'silver'
+  | 'gold'
+  | 'platinum'
+  | 'elite-i'
+  | 'elite-ii'
+  | 'elite-iii'
+  | 'elite-iv'
+  | 'elite-v';
 
 /**
  * Data for the doctor identity card shown at the top of the sidebar.
@@ -416,7 +443,7 @@ export interface DashboardScoreCardData {
   /** Optional href to navigate to the doctor's profile when the card is clicked. */
   link?: string;
   /** Clinician tier — determines avatar ring colour and badge text colour. */
-  tier: 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
+  tier: DashboardMedixScoreTier;
   /** Numeric MedixScore displayed next to the tier label. */
   medixScore: number;
 }
@@ -606,7 +633,7 @@ export interface DashboardLayoutProps extends Omit<BoxProps, 'children'> {
    *   role: "Cardiologist",
    *   avatarSrc: "/dr-okedi.jpg",
    *   tier: "gold",
-   *   medixScore: 847,
+   *   medixScore: 8470,
    *   link: "/doctor/profile",
    * }}
    * ```
@@ -828,7 +855,12 @@ function detectDashboardEnvironment(explicitEnv?: DashboardEnvironment): {
     if (host.startsWith('staging.') || host.startsWith('stage.') || host.includes('-staging.')) {
       return { isNonProduction: true, detectedEnv: 'staging' };
     }
-    if (host.startsWith('test.') || host.startsWith('qa.') || host.includes('-test.')) {
+    if (
+      host.startsWith('test.') ||
+      host.startsWith('test-') ||
+      host.startsWith('qa.') ||
+      host.includes('-test.')
+    ) {
       return { isNonProduction: true, detectedEnv: 'test' };
     }
     if (host.startsWith('dev.') || host.includes('-dev.')) {
@@ -1220,12 +1252,14 @@ function SidebarNavItem({
   onClick,
   scheme,
   isCollapsed = false,
+  isSubItem = false,
 }: {
   item: DashboardNavItem;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   onClick?: () => void;
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
   isCollapsed?: boolean;
+  isSubItem?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
   const [focusVisible, setFocusVisible] = useState(false);
@@ -1411,6 +1445,30 @@ function SidebarNavItem({
                     </Box>
                   )}
                   <Box as="span">{item.label}</Box>
+                  {item.isNew && (
+                    <Box
+                      as="span"
+                      display="inline-flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      px="1.5"
+                      py="0.5"
+                      borderRadius="full"
+                      fontSize="10px"
+                      fontWeight="700"
+                      letterSpacing="0.04em"
+                      lineHeight="1"
+                      textTransform="uppercase"
+                      fontFamily="var(--font-heading)"
+                      flexShrink={0}
+                      style={{
+                        background: scheme.solid,
+                        color: '#fff',
+                      }}
+                    >
+                      NEW
+                    </Box>
+                  )}
                 </Box>
 
                 <Box display="flex" flexDirection="column" gap="0.5" px="1">
@@ -1425,6 +1483,7 @@ function SidebarNavItem({
                       }}
                       scheme={scheme}
                       isCollapsed={false}
+                      isSubItem={true}
                     />
                   ))}
                 </Box>
@@ -1438,7 +1497,7 @@ function SidebarNavItem({
     // Leaf item in collapsed mode
     const railContent = (
       <Box display="flex" justifyContent="center" alignItems="center" w="full">
-        <Tooltip label={item.label} placement="right">
+        <Tooltip label={item.isNew ? `${item.label} (NEW)` : item.label} placement="right">
           <Box
             display="flex"
             alignItems="center"
@@ -1522,6 +1581,21 @@ function SidebarNavItem({
                 aria-label="New notification"
               />
             )}
+
+            {/* isNew indicator dot if no numeric badge or red dot */}
+            {item.isNew && typeof item.badge !== 'number' && !item.hasDot && (
+              <Box
+                as="span"
+                position="absolute"
+                top="2px"
+                right="2px"
+                w="6px"
+                h="6px"
+                borderRadius="full"
+                style={{ background: scheme.solid }}
+                aria-label="New feature"
+              />
+            )}
           </Box>
         </Tooltip>
       </Box>
@@ -1535,9 +1609,9 @@ function SidebarNavItem({
     <Box
       display="flex"
       alignItems="center"
-      gap="3"
-      px="3"
-      py="2.5"
+      gap={isSubItem ? '2.5' : '3'}
+      px={isSubItem ? '2' : '3'}
+      py={isSubItem ? '2' : '2.5'}
       borderRadius="lg"
       borderLeftRadius={hasSubItems ? 'lg' : 'none'}
       borderTopLeftRadius={hasSubItems ? 'lg' : 'none'}
@@ -1576,9 +1650,13 @@ function SidebarNavItem({
       <Box
         as="span"
         flex="1"
+        minW="0"
         fontSize="sm"
         fontWeight={isColoured ? '600' : '500'}
         fontFamily="var(--font-body)"
+        whiteSpace="nowrap"
+        overflow="hidden"
+        textOverflow="ellipsis"
         style={{
           color: isColoured ? scheme.solid : undefined,
           transition: 'color 0.15s ease',
@@ -1623,6 +1701,32 @@ function SidebarNavItem({
           style={{ background: RED }}
           aria-label="New notification"
         />
+      )}
+
+      {/* "NEW" badge indicator */}
+      {item.isNew && (
+        <Box
+          as="span"
+          display="inline-flex"
+          alignItems="center"
+          justifyContent="center"
+          px="1.5"
+          py="0.5"
+          borderRadius="full"
+          fontSize="10px"
+          fontWeight="700"
+          letterSpacing="0.04em"
+          lineHeight="1"
+          textTransform="uppercase"
+          fontFamily="var(--font-heading)"
+          flexShrink={0}
+          style={{
+            background: scheme.solid,
+            color: '#fff',
+          }}
+        >
+          NEW
+        </Box>
       )}
 
       {/* Chevron for sub-items */}
@@ -1672,7 +1776,7 @@ function SidebarNavItem({
           style={{ overflow: 'hidden' }}
           aria-hidden={!expanded}
         >
-          <Box display="flex" flexDirection="column" gap="0.5" pl="9" mt="0.5" mb="1">
+          <Box display="flex" flexDirection="column" gap="0.5" pl="3" mt="0.5" mb="1">
             {item.subItems!.map((subItem) => (
               <SidebarNavItem
                 key={subItem.href}
@@ -1681,6 +1785,7 @@ function SidebarNavItem({
                 onClick={onClick}
                 scheme={scheme}
                 isCollapsed={false}
+                isSubItem={true}
               />
             ))}
           </Box>
@@ -1826,6 +1931,24 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
                   {item.badge > 99 ? '99+' : item.badge}
                 </span>
               )}
+
+              {/* isNew indicator dot */}
+              {item.isNew && (!item.badge || item.badge <= 0) && (
+                <span
+                  aria-label="New feature"
+                  style={{
+                    position: 'absolute',
+                    top: -2,
+                    right: -2,
+                    width: 6,
+                    height: 6,
+                    borderRadius: 3,
+                    background: scheme.solid,
+                    boxShadow: '0 0 0 2px var(--chakra-colors-bg, #fff)',
+                    pointerEvents: 'none',
+                  }}
+                />
+              )}
             </Box>
 
             {/* Label */}
@@ -1875,33 +1998,174 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
 
 // ─── MedixScoreCard (internal sidebar component) ─────────────────────────────
 
-const TIER_CONFIG = {
+// ─── MedixScore tier system (mirrors backend `MEDIX_SCORE_TIER`) ─────────────
+
+export interface DashboardMedixScoreTierMeta {
+  /** Display name — matches backend tier `NAME` exactly (e.g. "Elite I"). */
+  label: string;
+  /** Tier level 1–9 — matches backend tier `LEVEL`. */
+  level: number;
+  /** Inclusive lower score bound — matches backend `MIN_SCORE`. */
+  minScore: number;
+  /** Inclusive upper score bound — matches backend `MAX_SCORE` (`null` = unbounded, Elite V). */
+  maxScore: number | null;
+  /** Label / badge text colour. */
+  color: string;
+  /** Avatar gradient-ring colour. */
+  ring: string;
+  /** Avatar fallback / tint background. */
+  bg: string;
+}
+
+/**
+ * Visual + band metadata for every backend-supported MedixScore tier.
+ *
+ * Score bands (backend `MEDIX_SCORE_TIER`):
+ * Bronze 0–999 · Silver 1,000–4,999 · Gold 5,000–14,999 ·
+ * Platinum 15,000–39,999 · Elite I 40,000–59,999 · Elite II 60,000–79,999 ·
+ * Elite III 80,000–119,999 · Elite IV 120,000–199,999 · Elite V 200,000+.
+ *
+ * Base tiers keep their established colours; Elite I–V use a violet/purple
+ * prestige ramp culminating in brand purple (`#7700CC`) and deep royal tones.
+ */
+export const DASHBOARD_MEDIX_TIER_CONFIG: Record<
+  DashboardMedixScoreTier,
+  DashboardMedixScoreTierMeta
+> = {
   bronze: {
     label: 'Bronze Clinician',
+    level: 1,
+    minScore: 0,
+    maxScore: 999,
     color: '#92400E',
     ring: '#D97706',
     bg: 'rgba(217,119,6,0.10)',
   },
   silver: {
     label: 'Silver Clinician',
+    level: 2,
+    minScore: 1000,
+    maxScore: 4999,
     color: '#475569',
     ring: '#94A3B8',
     bg: 'rgba(148,163,184,0.10)',
   },
-  gold: { label: 'Gold Clinician', color: '#D97706', ring: '#F59E0B', bg: 'rgba(245,158,11,0.10)' },
+  gold: {
+    label: 'Gold Clinician',
+    level: 3,
+    minScore: 5000,
+    maxScore: 14999,
+    color: '#D97706',
+    ring: '#F59E0B',
+    bg: 'rgba(245,158,11,0.10)',
+  },
   platinum: {
     label: 'Platinum Clinician',
+    level: 4,
+    minScore: 15000,
+    maxScore: 39999,
     color: '#0284C7',
     ring: '#38BDF8',
     bg: 'rgba(56,189,248,0.10)',
   },
-  diamond: {
-    label: 'Diamond Clinician',
+  'elite-i': {
+    label: 'Elite I',
+    level: 5,
+    minScore: 40000,
+    maxScore: 59999,
+    color: '#6D28D9',
+    ring: '#8B5CF6',
+    bg: 'rgba(139,92,246,0.12)',
+  },
+  'elite-ii': {
+    label: 'Elite II',
+    level: 6,
+    minScore: 60000,
+    maxScore: 79999,
     color: '#7C3AED',
     ring: '#A78BFA',
-    bg: 'rgba(167,139,250,0.10)',
+    bg: 'rgba(167,139,250,0.12)',
+  },
+  'elite-iii': {
+    label: 'Elite III',
+    level: 7,
+    minScore: 80000,
+    maxScore: 119999,
+    color: '#7700CC',
+    ring: '#A855F7',
+    bg: 'rgba(119,0,204,0.12)',
+  },
+  'elite-iv': {
+    label: 'Elite IV',
+    level: 8,
+    minScore: 120000,
+    maxScore: 199999,
+    color: '#5B21B6',
+    ring: '#7C3AED',
+    bg: 'rgba(124,58,237,0.12)',
+  },
+  'elite-v': {
+    label: 'Elite V',
+    level: 9,
+    minScore: 200000,
+    maxScore: null,
+    color: '#4C1D95',
+    ring: '#6D28D9',
+    bg: 'rgba(109,40,217,0.14)',
   },
 } as const;
+
+/** Tier keys ordered by ascending level (Bronze → Elite V). */
+export const DASHBOARD_MEDIX_TIER_ORDER: DashboardMedixScoreTier[] = [
+  'bronze',
+  'silver',
+  'gold',
+  'platinum',
+  'elite-i',
+  'elite-ii',
+  'elite-iii',
+  'elite-iv',
+  'elite-v',
+];
+
+/**
+ * Resolve the tier key for a raw MedixScore balance using backend bands.
+ * Negative / NaN inputs floor to `bronze`; Elite V has no upper bound.
+ *
+ * @example
+ * ```ts
+ * getMedixScoreTierForScore(0)      // "bronze"
+ * getMedixScoreTierForScore(5000)   // "gold"
+ * getMedixScoreTierForScore(250000) // "elite-v"
+ * ```
+ */
+export function getMedixScoreTierForScore(score: number): DashboardMedixScoreTier {
+  const normalized = typeof score === 'number' && Number.isFinite(score) ? Math.floor(score) : 0;
+  if (normalized < 0) return 'bronze';
+  for (const key of DASHBOARD_MEDIX_TIER_ORDER) {
+    const meta = DASHBOARD_MEDIX_TIER_CONFIG[key];
+    if (meta.maxScore === null ? normalized >= meta.minScore : normalized <= meta.maxScore) {
+      return key;
+    }
+  }
+  return 'elite-v';
+}
+
+/**
+ * Safe tier metadata accessor — falls back to Bronze for unknown keys
+ * (e.g. stale persisted values such as the removed `diamond` tier).
+ */
+export function getMedixScoreTierMeta(
+  tier: DashboardMedixScoreTier | (string & {}),
+): DashboardMedixScoreTierMeta {
+  return (
+    (DASHBOARD_MEDIX_TIER_CONFIG as Record<string, DashboardMedixScoreTierMeta>)[tier] ??
+    DASHBOARD_MEDIX_TIER_CONFIG.bronze
+  );
+}
+
+// Back-compat alias — prefer `DASHBOARD_MEDIX_TIER_CONFIG` in new code.
+const TIER_CONFIG = DASHBOARD_MEDIX_TIER_CONFIG;
 
 const AwardIcon = ({ color }: { color: string }) => (
   <svg
@@ -1943,7 +2207,7 @@ function SidebarScoreCard({
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   isCollapsed?: boolean;
 }) {
-  const tier = TIER_CONFIG[data.tier];
+  const tier = getMedixScoreTierMeta(data.tier);
   const initials = data.name
     .split(' ')
     .map((w) => w[0])

@@ -62,8 +62,15 @@ export type { LogoProps, LogoVariant, LogoType } from './components/primitive/Lo
 export { Input, SearchInput } from './components/form/Input';
 export type { InputProps, SearchInputProps } from './components/form/Input';
 
-export { Textarea } from './components/form/Textarea';
-export type { TextareaProps } from './components/form/Textarea';
+export {
+  Textarea,
+  clearTextareaDraft,
+  getTextareaDraft,
+  saveTextareaDraft,
+  getEffectiveTextareaStorageKey,
+  TEXTAREA_DRAFT_PREFIX,
+} from './components/form/Textarea';
+export type { TextareaProps, TextareaDraftPayload } from './components/form/Textarea';
 
 export { Select } from './components/form/Select';
 export type { SelectProps, SelectOption } from './components/form/Select';
@@ -106,12 +113,18 @@ export {
   RichTextEditor,
   htmlToMarkdown,
   markdownToHtml,
+  clearRichTextDraft,
+  getRichTextDraft,
+  saveRichTextDraft,
+  getEffectiveStorageKey,
+  DRAFT_STORAGE_PREFIX,
 } from './components/form/RichTextInput';
 export type {
   RichTextInputProps,
   ToolbarOptions,
   RichTextInputMode,
   RichTextInputFormat,
+  RichTextDraftPayload,
 } from './components/form/RichTextInput';
 
 // ─── Layout Components ─────────────────────────────────────────────────────────
@@ -128,12 +141,20 @@ export { ThemeColorPalette } from './components/layout/ThemeColorPalette';
 export type { ThemeColorPaletteProps } from './components/layout/ThemeColorPalette';
 
 export { DashboardLayout } from './components/layout/DashboardLayout';
+export {
+  DASHBOARD_MEDIX_TIER_CONFIG,
+  DASHBOARD_MEDIX_TIER_ORDER,
+  getMedixScoreTierForScore,
+  getMedixScoreTierMeta,
+} from './components/layout/DashboardLayout';
 export type {
   DashboardLayoutProps,
   DashboardNavItem,
   DashboardNavGroup,
   DashboardMobileNavItem,
   DashboardScoreCardData,
+  DashboardMedixScoreTier,
+  DashboardMedixScoreTierMeta,
   DashboardUser,
   DashboardDropdownItem,
   DashboardColorScheme,

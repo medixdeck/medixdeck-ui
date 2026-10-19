@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { RichTextInput } from './RichTextInput';
+import { RichTextInput, clearRichTextDraft } from './RichTextInput';
 
 const meta: Meta<typeof RichTextInput> = {
   title: 'Form/RichTextInput',
@@ -223,5 +223,50 @@ export const MinimalToolbar: Story = {
     },
     minHeight: '120px',
     placeholder: 'Quick note...',
+  },
+};
+
+export const DraftPersistence: Story = {
+  render: () => {
+    const [clearedKey, setClearedKey] = React.useState(0);
+    const storageKey = 'storybook_doctor_consultation_draft';
+
+    const handleClear = () => {
+      clearRichTextDraft(storageKey);
+      setClearedKey((prev) => prev + 1);
+    };
+
+    return (
+      <div style={{ maxWidth: '600px' }}>
+        <RichTextInput
+          key={clearedKey}
+          storageKey={storageKey}
+          label="Doctor Consultation Notes (Auto-saves to localStorage)"
+          placeholder="Start typing notes, then refresh the page to test persistence..."
+          helperText="Content typed here is saved to localStorage. Refresh the browser to see it automatically restored."
+          showDraftStatus
+          showCharCount
+          maxLength={1000}
+        />
+        <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+          <button
+            type="button"
+            onClick={handleClear}
+            style={{
+              padding: '6px 14px',
+              fontSize: '12px',
+              fontWeight: 600,
+              background: '#DC2626',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+            }}
+          >
+            Clear Stored Draft
+          </button>
+        </div>
+      </div>
+    );
   },
 };

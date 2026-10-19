@@ -314,7 +314,7 @@ export default function App() {
           name: 'Dr. Okedi Williams',
           role: 'Cardiologist',
           tier: 'gold',
-          medixScore: 847,
+          medixScore: 8470,
           link: '#doctor-profile',
         }}
         environment={dashboardEnv === 'custom' ? 'auto' : dashboardEnv}
@@ -346,7 +346,12 @@ export default function App() {
           {
             items: [
               { label: 'Home', href: '#home', isActive: true, icon: <LuHouse size={18} /> },
-              { label: 'Consult', href: '#consult', icon: <LuStethoscope size={18} /> },
+              {
+                label: 'Consult',
+                href: '#consult',
+                icon: <LuStethoscope size={18} />,
+                isNew: true,
+              },
               {
                 label: 'Records',
                 href: '#records',
@@ -361,6 +366,7 @@ export default function App() {
                     label: 'Prescriptions',
                     href: '#records-prescriptions',
                     icon: <LuPill size={16} />,
+                    isNew: true,
                   },
                   {
                     label: 'Test Results',
@@ -1829,10 +1835,12 @@ export default function App() {
               </FormControl>
               <FormControl label="Patient Notes">
                 <Textarea
+                  storageKey="showcase-patient-notes"
                   placeholder="Describe your symptoms…"
                   rows={3}
                   maxLength={300}
                   showCount
+                  showDraftStatus
                 />
               </FormControl>
               <Checkbox colorScheme="blue">I agree to share my medical records</Checkbox>
@@ -1981,11 +1989,13 @@ export default function App() {
           >
             <Box display="flex" flexDirection="column" gap="8" maxW="640px" w="100%">
               <RichTextInput
+                storageKey="showcase-patient-bio"
                 label="Patient Bio (Blue)"
                 colorScheme="blue"
                 placeholder="Write the patient's medical bio..."
-                helperText="Supports bold, italic, headings, lists, links, and more."
+                helperText="Auto-saves draft to localStorage. Supports bold, italic, headings, lists, links, and more."
                 showCharCount
+                showDraftStatus
               />
               <RichTextInput
                 label="Doctor Notes (Purple)"
@@ -3080,7 +3090,7 @@ export default function App() {
         title="Book an Appointment"
         description="Fill in your details to schedule a consultation with a licensed doctor."
         footer={
-          <Flex gap={'12px'} marginY="1rem">
+          <Flex gap={'12px'}>
             <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancel
             </Button>
