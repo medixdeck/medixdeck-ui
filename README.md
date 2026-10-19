@@ -54,17 +54,17 @@ export function App() {
 
 ## Public API index
 
-| Area              | Exports                                                                                                                                                                                                                                                                  |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Provider + theme  | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports                                                                                                                                                               |
-| Primitive         | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo`                                                                                                                                                         |
-| Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`, `TagsInput`, `TagInput`, `RichTextInput`, `RichTextEditor` |
-| Layout            | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer`                                                                                                                               |
-| Navigation        | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper`                                                                                                                                                                                                                  |
-| Feedback          | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt`                                            |
-| Data display      | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable`                                                                                                                                                                                                                  |
-| Healthcare        | `DoctorCard`, `VitalBadge`, `AppointmentCard`                                                                                                                                                                                                                            |
-| Chakra re-exports | `Box`, `Flex`, `Grid`, `Stack`, `Text`, `Heading`, `Link`, `Image`, `Icon`, `Center`, `Wrap`, `WrapItem`, others in `lib/index.ts`                                                                                                                                       |
+| Area              | Exports                                                                                                                                                                                                                                                                                                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Provider + theme  | `MedixProvider`, `useThemeMode`, `useIsDarkMode`, `useColorScheme`, `system`, `medixConfig`, token exports                                                                                                                                                                                                                                                                                             |
+| Primitive         | `Button`, `IconButton`, `Badge`, `Avatar`, `AvatarGroup`, `Spinner`, `FullPageSpinner`, `Tag`, `Divider`, `Logo`                                                                                                                                                                                                                                                                                       |
+| Form              | `Input`, `SearchInput`, `Textarea`, `Select`, `Checkbox`, `RadioGroup`, `Switch`, `FormControl`, `OTPInput`, `PinInput`, `PhoneInput`, `DatePicker`, `DateRangePicker`, `Calendar`, `Combobox`, `FileUpload`, `TagsInput`, `TagInput`, `clearTextareaDraft`, `getTextareaDraft`, `saveTextareaDraft`, `RichTextInput`, `RichTextEditor`, `clearRichTextDraft`, `getRichTextDraft`, `saveRichTextDraft` |
+| Layout            | `Card`, `CardHeader`, `CardBody`, `CardFooter`, `StatCard`, `Container`, `SectionHeader`, `ThemeColorPalette`, `DashboardLayout`, `Footer`                                                                                                                                                                                                                                                             |
+| Navigation        | `Navbar`, `Breadcrumb`, `Tabs`, `Pagination`, `Stepper`                                                                                                                                                                                                                                                                                                                                                |
+| Feedback          | `Alert`, `Skeleton`, `SkeletonText`, `SkeletonCard`, `Progress`, `Modal`, `Drawer`, `Tooltip`, `EmptyState`, `NotFoundPage`, `ServerErrorPage`, `Toaster`, `toast`, `dismissToast`, `CookieConsentBanner`, `PWAInstallPrompt`                                                                                                                                                                          |
+| Data display      | `Accordion`, `TestimonialCard`, `BlogCard`, `DataTable`                                                                                                                                                                                                                                                                                                                                                |
+| Healthcare        | `DoctorCard`, `VitalBadge`, `AppointmentCard`                                                                                                                                                                                                                                                                                                                                                          |
+| Chakra re-exports | `Box`, `Flex`, `Grid`, `Stack`, `Text`, `Heading`, `Link`, `Image`, `Icon`, `Center`, `Wrap`, `WrapItem`, others in `lib/index.ts`                                                                                                                                                                                                                                                                     |
 
 ## Design-system rules
 
@@ -180,6 +180,7 @@ The `toast` utility exposes `success`, `error`, `info`, and `warning` shorthand 
 <ServerErrorPage
   errorMessage="TypeError: Cannot read properties of undefined (reading 'id')"
   onAction={() => reset()}
+  colorScheme="purple" // "blue" | "purple", default "blue" — buttons (and the 404 watermark) follow the scheme; the 500 error icon stays red
 />
 ```
 
@@ -209,30 +210,80 @@ The `Select` component supports native multiple selection, returning arrays on c
 />
 ```
 
+### Textarea
+
+Multi-line text input with character limit tracking, error states, and **automatic draft persistence to `localStorage`** across page refreshes (`persistDraft = true`).
+
+```tsx
+import { Textarea, clearTextareaDraft } from '@medixdeck/ui';
+
+function SymptomForm() {
+  const [symptoms, setSymptoms] = React.useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await submitSymptoms(symptoms);
+    // Clear saved draft from localStorage after successful submission
+    clearTextareaDraft('patient-symptoms-input');
+    setSymptoms('');
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Textarea
+        storageKey="patient-symptoms-input"
+        placeholder="Describe your symptoms in detail…"
+        rows={4}
+        maxLength={500}
+        showCount
+        showDraftStatus // displays "Saving draft..." / "Draft saved" in footer
+        value={symptoms}
+        onChange={(e) => setSymptoms(e.target.value)}
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
 ### Rich Text Input (`RichTextInput` / `RichTextEditor`)
 
-A fully-featured rich text editor powered by TipTap (ProseMirror). Supports headings, formatting, lists, links, alignment, custom color schemes, character limit tracking, and height boundaries (`minHeight`, `maxHeight`).
+A fully-featured rich text editor powered by TipTap (ProseMirror). Supports headings, formatting, lists, links, alignment, custom color schemes, character limit tracking, height boundaries (`minHeight`, `maxHeight`), and **automatic draft persistence to `localStorage`** across page refreshes.
 
 Requires optional peer dependencies (`@tiptap/*`).
 
 ```tsx
-import { RichTextInput } from '@medixdeck/ui';
+import { RichTextInput, clearRichTextDraft } from '@medixdeck/ui';
 
 function NotesForm() {
-  const [content, setContent] = React.useState('<p>Initial clinical note...</p>');
+  const [content, setContent] = React.useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await saveNotesToApi(content);
+    // Clear the saved draft from localStorage upon successful submission
+    clearRichTextDraft('clinical-notes-form');
+    setContent('');
+  };
 
   return (
-    <RichTextInput
-      label="Clinical Notes"
-      value={content}
-      onChange={setContent}
-      colorScheme="purple"
-      placeholder="Type clinical notes..."
-      minHeight="180px"
-      maxHeight="400px"
-      showCharCount
-      maxLength={1000}
-    />
+    <form onSubmit={handleSubmit}>
+      <RichTextInput
+        storageKey="clinical-notes-form"
+        label="Clinical Notes"
+        value={content}
+        onChange={setContent}
+        colorScheme="purple"
+        placeholder="Type clinical notes..."
+        minHeight="180px"
+        maxHeight="400px"
+        persistDraft // defaults to true
+        showDraftStatus // displays "Saving draft..." / "Draft saved" in footer
+        showCharCount
+        maxLength={1000}
+      />
+      <button type="submit">Save Notes</button>
+    </form>
   );
 }
 ```
@@ -333,6 +384,7 @@ import { DashboardLayout } from '@medixdeck/ui';
       items: [
         { label: 'Home', href: '/', isActive: true },
         { label: 'Messages', href: '/messages', badge: 6 },
+        { label: 'My Schedule', href: '/schedule', isNew: true },
       ],
     },
     {
@@ -349,6 +401,19 @@ import { DashboardLayout } from '@medixdeck/ui';
   {/* page content */}
 </DashboardLayout>;
 ```
+
+`DashboardNavItem` props:
+
+| Prop       | Type                 | Required | Description                                                             |
+| ---------- | -------------------- | -------- | ----------------------------------------------------------------------- |
+| `label`    | `string`             | ✓        | Display label for the sidebar link                                      |
+| `href`     | `string`             | ✓        | Identifier or URL passed to `renderLink` and used as unique key         |
+| `icon`     | `ReactNode`          | —        | Optional icon element                                                   |
+| `badge`    | `number`             | —        | Numeric count badge displayed to the right of the label                 |
+| `hasDot`   | `boolean`            | —        | Red dot indicator for unread alerts or notifications                    |
+| `isNew`    | `boolean`            | —        | "NEW" pill badge matching the active `colorScheme` (`blue` or `purple`) |
+| `isActive` | `boolean`            | —        | Marks this item as the active navigation route                          |
+| `subItems` | `DashboardNavItem[]` | —        | Nested sub-links that expand/collapse in an accordion menu              |
 
 ### Mobile bottom navigation (`mobileNavItems`)
 
@@ -388,8 +453,8 @@ Shown above the sidebar nav on **desktop only**. Only pass this prop for doctor-
     name: 'Dr. Okedi Williams',
     role: 'Cardiologist',
     avatarSrc: '/dr-okedi.jpg', // optional — initials fallback
-    tier: 'gold', // "bronze" | "silver" | "gold" | "platinum" | "diamond"
-    medixScore: 847,
+    tier: 'gold', // "bronze" | "silver" | "gold" | "platinum" | "elite-i" | "elite-ii" | "elite-iii" | "elite-iv" | "elite-v"
+    medixScore: 8470,
     link: '/doctor/profile', // optional — makes the card clickable
   }}
 >
@@ -397,15 +462,21 @@ Shown above the sidebar nav on **desktop only**. Only pass this prop for doctor-
 </DashboardLayout>
 ```
 
-Tier colours:
+Tiers mirror the backend `MEDIX_SCORE_TIER` bands. Use `getMedixScoreTierForScore(score)` to resolve a tier key from a raw balance.
 
-| Tier       | Label colour | Avatar ring |
-| ---------- | ------------ | ----------- |
-| `bronze`   | `#92400E`    | `#D97706`   |
-| `silver`   | `#475569`    | `#94A3B8`   |
-| `gold`     | `#D97706`    | `#F59E0B`   |
-| `platinum` | `#0284C7`    | `#38BDF8`   |
-| `diamond`  | `#7C3AED`    | `#A78BFA`   |
+Tier colours and score bands:
+
+| Tier        | Level | Score band        | Label colour | Avatar ring |
+| ----------- | :---: | ----------------- | ------------ | ----------- |
+| `bronze`    |   1   | 0 – 999           | `#92400E`    | `#D97706`   |
+| `silver`    |   2   | 1,000 – 4,999     | `#475569`    | `#94A3B8`   |
+| `gold`      |   3   | 5,000 – 14,999    | `#D97706`    | `#F59E0B`   |
+| `platinum`  |   4   | 15,000 – 39,999   | `#0284C7`    | `#38BDF8`   |
+| `elite-i`   |   5   | 40,000 – 59,999   | `#6D28D9`    | `#8B5CF6`   |
+| `elite-ii`  |   6   | 60,000 – 79,999   | `#7C3AED`    | `#A78BFA`   |
+| `elite-iii` |   7   | 80,000 – 119,999  | `#7700CC`    | `#A855F7`   |
+| `elite-iv`  |   8   | 120,000 – 199,999 | `#5B21B6`    | `#7C3AED`   |
+| `elite-v`   |   9   | 200,000+          | `#4C1D95`    | `#6D28D9`   |
 
 ### Greeting subtitle (`greetingSubtext`)
 

@@ -348,23 +348,30 @@ The dev preview (`src/App.tsx`) showcases every component. When you add a new co
 
 ## 11. Anti-Patterns to Avoid
 
-| ❌ Don't                                                                        | ✅ Do instead                                                                                                       |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Add components to `src/` as library files                                       | Add to `lib/components/`                                                                                            |
-| Forget to export from `lib/index.ts`                                            | Always export both value and type                                                                                   |
-| Use raw hex colors                                                              | Use semantic tokens                                                                                                 |
-| Use `Box as="img"` with `src`                                                   | Use native `<img>` with `style`                                                                                     |
-| Use `Box as="label"` with `htmlFor`                                             | Use native `<label>` with `style`                                                                                   |
-| Extend `BoxProps` when adding `onChange`, `size`, `columns`                     | `Omit<BoxProps, "onChange" \| "size">` first                                                                        |
-| Use `sx` prop                                                                   | Inject keyframes via `document.createElement("style")`                                                              |
-| Import from v2 Chakra API                                                       | Use Chakra v3 compound API                                                                                          |
-| Leave build errors                                                              | Fix all before committing                                                                                           |
-| Write components that import from `src/`                                        | Only import from `lib/`                                                                                             |
-| Apply `className="dark"` on an inner `<Box>`                                    | Apply on `document.documentElement` so all components including Navbar get dark mode                                |
-| Add font `<link>` tags in consuming project's `<head>`                          | `MedixProvider` injects them automatically — nothing needed in host HTML                                            |
-| Use Chakra `colorPalette` for interactive components (Button, Checkbox, Switch) | Build as native HTML with explicit brand hex values — Chakra recipe engine leaks default blue in hover/focus states |
-| Use string easing in Framer Motion v12 (`ease: "easeOut"`)                      | Use bezier tuples: `[0.0, 0.0, 0.2, 1.0] as [number,number,number,number]`                                          |
-| Use `boxShadow`, `shadow`, `card-light`, or `card-dark`                         | Omit shadows completely; use `boxShadow="none"` and clean borders (`border="1px solid" borderColor="border"`)       |
+| ❌ Don't                                                                        | ✅ Do instead                                                                                                           |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Add components to `src/` as library files                                       | Add to `lib/components/`                                                                                                |
+| Forget to export from `lib/index.ts`                                            | Always export both value and type                                                                                       |
+| Use raw hex colors                                                              | Use semantic tokens                                                                                                     |
+| Use `Box as="img"` with `src`                                                   | Use native `<img>` with `style`                                                                                         |
+| Use `Box as="label"` with `htmlFor`                                             | Use native `<label>` with `style`                                                                                       |
+| Extend `BoxProps` when adding `onChange`, `size`, `columns`                     | `Omit<BoxProps, "onChange" \| "size">` first                                                                            |
+| Use `sx` prop                                                                   | Inject keyframes via `document.createElement("style")`                                                                  |
+| Import from v2 Chakra API                                                       | Use Chakra v3 compound API                                                                                              |
+| Leave build errors                                                              | Fix all before committing                                                                                               |
+| Write components that import from `src/`                                        | Only import from `lib/`                                                                                                 |
+| Apply `className="dark"` on an inner `<Box>`                                    | Apply on `document.documentElement` so all components including Navbar get dark mode                                    |
+| Add font `<link>` tags in consuming project's `<head>`                          | `MedixProvider` injects them automatically — nothing needed in host HTML                                                |
+| Use Chakra `colorPalette` for interactive components (Button, Checkbox, Switch) | Build as native HTML with explicit brand hex values — Chakra recipe engine leaks default blue in hover/focus states     |
+| Use string easing in Framer Motion v12 (`ease: "easeOut"`)                      | Use bezier tuples: `[0.0, 0.0, 0.2, 1.0] as [number,number,number,number]`                                              |
+| Use `boxShadow`, `shadow`, `card-light`, or `card-dark`                         | Omit shadows completely; use `boxShadow="none"` and clean borders (`border="1px solid" borderColor="border"`)           |
+| Keep `overflowY="auto"` on collapsed sidebar rail nav containers                | Set `overflowY="visible"` when collapsed so horizontal flyout dropdown menus are not clipped                            |
+| Rely on default block/inline positioning when wrapping rail items in `Tooltip`  | Wrap with `<Box display="flex" justifyContent="center" alignItems="center" w="full">` to maintain horizontal center     |
+| Forget to elevate stacking context on open rail flyout parent items             | Set `zIndex={flyoutOpen ? 100 : 1}` on parent item and `zIndex={1500}` on flyout menu                                   |
+| Copy hardcoded colors from third-party screenshots into badges/indicators       | Adhere to component's `colorScheme` (`scheme.solid` `#0685FF` for blue, `#7700CC` for purple, `#fff` text)              |
+| Use deep indentation (`pl="9"`) on nested sidebar sub-items                     | Use compact indentation (`pl="3"` / 12px) and compact row padding (`px="2"`, `gap="2.5"`) to prevent clipping badges    |
+| Allow flex labels without `minW="0"` and `textOverflow="ellipsis"` in nav rows  | Add `minW="0"`, `whiteSpace="nowrap"`, `overflow="hidden"`, and `textOverflow="ellipsis"` so trailing badges never clip |
+| Reference undeclared nav datasets in Storybook stories                          | Declare shared datasets (e.g. `NAV_GROUPS_WITH_SUBITEMS`) at the top of the story file                                  |
 
 ---
 
@@ -521,3 +528,79 @@ The `Navbar` falls back to `<Logo height={28} />` when no `logo` prop is supplie
 <Navbar logo={<Logo variant="purple" height={28} />} navItems={[...]} />
 <Navbar logo={<img src="/my-logo.png" height={28} alt="Brand" />} navItems={[...]} />
 ```
+
+---
+
+## 17. Collapsible Rails & Flyout Menus
+
+When building or updating collapsible sidebars, rails, and popovers:
+
+1. **Header Toggle Placement**:
+   - In expanded state, collapse toggle resides in the sidebar header alongside brand mark and title.
+   - In collapsed state (e.g., 68px rail), position the expand toggle directly **below** the centered logo mark.
+2. **Overflow & Clipping**:
+   - When sidebar is expanded: `overflowY="auto"` (allows vertical scrolling for long menus).
+   - When sidebar is collapsed: `overflowY="visible"` and `overflowX="visible"` (prevents horizontal flyout menus from being clipped).
+3. **Tooltip Alignment in Narrow Rails**:
+   - Tooltips wrap triggers in `inline-flex` spans. To keep icons, scorecards, avatars, and action buttons centered in narrow rails:
+   ```tsx
+   <Box display="flex" justifyContent="center" alignItems="center" w="full">
+     <Tooltip content="Label" placement="right">
+       <IconButton aria-label="Label" ... />
+     </Tooltip>
+   </Box>
+   ```
+4. **Test Environment Font Injection**:
+   - `MedixProvider` injects external CDN font links. Always keep `globalThis.fetch` mocked in `lib/test/setup.ts` to prevent Happy-DOM network hangs during Vitest runs.
+
+---
+
+## 18. Form Component Draft Persistence Standard
+
+Any form input, editor, or multi-line text component that manages user-entered content (such as `RichTextInput`, `Textarea`, or future form builders/editors) must support automatic `localStorage` draft saving and recovery following this standard:
+
+1. **Default Enabled**: `persistDraft?: boolean` must default to `true`.
+2. **Tiered Key Resolution (`getEffective*StorageKey`)**:
+   Resolve the localStorage key in this exact priority:
+   1. `storageKey` prop (explicit consumer key)
+   2. `id` prop (e.g. `id_${id}`)
+   3. `name` prop (e.g. `name_${name}`)
+   4. Slugified `placeholder` or `label`
+   5. Fallback: `'default'`
+3. **Debounced Auto-Save & Unload Flush**:
+   - Debounce localStorage writes with `debounceMs` (default: `400ms`).
+   - Listen to `beforeunload` and `pagehide` on `window`, plus the component cleanup/unmount return in `useEffect`, to immediately flush any pending draft before the page refreshes.
+   - Automatically purge the draft from localStorage when the input is completely empty or blank.
+4. **SSR & Hydration Safety**:
+   - Never access `window.localStorage` during the component render phase.
+   - Restore draft content strictly inside client-side `useEffect`.
+   - Wrap all `localStorage` access in safe `try/catch` to gracefully handle private browsing mode and `QuotaExceededError`.
+5. **Status Indicator (`showDraftStatus`)**:
+   - Support optional `showDraftStatus?: boolean` (default: `false`).
+   - When enabled and draft status is not idle, render a subtle indicator in the footer: `"Saving draft..."` (with amber dot) and `"Draft saved"` (with green dot).
+6. **Required Public Companion Exports**:
+   Export companion utilities and payload interfaces from the component file and re-export them from `lib/index.ts`:
+   - `clear<ComponentName>Draft(storageKey: string): void`
+   - `get<ComponentName>Draft(storageKey: string, maxAgeMs?: number): <ComponentName>DraftPayload | null`
+   - `save<ComponentName>Draft(storageKey: string, payload: <ComponentName>DraftPayload): void`
+   - `getEffective<ComponentName>StorageKey(...)`
+   - `<COMPONENT_NAME>_DRAFT_PREFIX` constant
+   - `<ComponentName>DraftPayload` interface
+
+---
+
+## 19. Sidebar Navigation Hierarchy, Spacing & Overflow Protection
+
+When creating or modifying navigation links in fixed-width containers (`DashboardLayout`, `Navbar`, drawers):
+
+1. **Badge & Status Consistency**:
+   - Badges, status pills (`isNew`), and indicators must match the active `colorScheme` (`scheme.solid` background and `#fff` text for solid badges; `#0685FF` for blue, `#7700CC` for purple).
+   - In collapsed rail mode, render an indicator dot matching `scheme.solid` and append the status (e.g. `(NEW)`) to the hover tooltip.
+
+2. **Sub-Item Indentation & Geometry**:
+   - Inside a fixed 220px sidebar, nested child links must use compact indentation: `pl="3"` (12px) on the parent dropdown container.
+   - Child items must use compact padding (`px="2"`, `py="2"`, `gap="2.5"`) to reserve maximum horizontal space for labels and status badges.
+
+3. **Flex Overflow Protection**:
+   - Navigation row labels must have `flex="1"`, `minW="0"`, `whiteSpace="nowrap"`, `overflow="hidden"`, and `textOverflow="ellipsis"`.
+   - Trailing indicators (count badge, `isNew` pill, red dot, chevron) must have `flexShrink={0}` so they remain fully visible and never get clipped by long text labels.

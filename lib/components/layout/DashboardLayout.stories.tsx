@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { DashboardLayout } from './DashboardLayout';
 import { Box, Text } from '@chakra-ui/react';
+import React from 'react';
 
 // ─── Inline icons (no external deps needed in stories) ────────────────────────
 
@@ -134,6 +135,29 @@ const DOCTOR_NAV_GROUPS = [
   },
 ];
 
+const NAV_GROUPS_WITH_SUBITEMS = [
+  {
+    items: [
+      { label: 'Dashboard', href: '#dashboard', icon: <HomeIcon /> },
+      {
+        label: 'Appointments',
+        href: '#appointments-parent',
+        icon: <CalendarIcon />,
+        isActive: true,
+        subItems: [
+          { label: 'Upcoming', href: '#upcoming', badge: 3 },
+          { label: 'Completed', href: '#completed' },
+          { label: 'Cancelled', href: '#cancelled' },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: 'System',
+    items: [{ label: 'Settings', href: '#settings', icon: <SettingsIcon /> }],
+  },
+];
+
 const MOBILE_NAV_ITEMS = [
   { label: 'Home', href: '#home', icon: <HomeIcon /> },
   { label: 'Appointments', href: '#appointments', icon: <CalendarIcon /> },
@@ -237,28 +261,7 @@ export const Purple: Story = {
 export const WithSublinks: Story = {
   args: {
     user: { name: 'Tobi K.', email: 'tobi@medixdeck.com' },
-    navGroups: [
-      {
-        items: [
-          { label: 'Dashboard', href: '#dashboard', icon: <HomeIcon /> },
-          {
-            label: 'Appointments',
-            href: '#appointments-parent',
-            icon: <CalendarIcon />,
-            isActive: true,
-            subItems: [
-              { label: 'Upcoming', href: '#upcoming', badge: 3 },
-              { label: 'Completed', href: '#completed' },
-              { label: 'Cancelled', href: '#cancelled' },
-            ],
-          },
-        ],
-      },
-      {
-        groupLabel: 'System',
-        items: [{ label: 'Settings', href: '#settings', icon: <SettingsIcon /> }],
-      },
-    ],
+    navGroups: NAV_GROUPS_WITH_SUBITEMS,
   },
   render: (args) => (
     <Box h="100vh" w="100%">
@@ -303,7 +306,8 @@ export const WithMobileNav: Story = {
  *
  * Only rendered on desktop (`display={{ base: "none", md: "block" }}`).
  * The `tier` prop controls the avatar ring gradient and the tier label colour.
- * Five tiers: `bronze`, `silver`, `gold`, `platinum`, `diamond`.
+ * Nine backend-aligned tiers: `bronze`, `silver`, `gold`, `platinum`,
+ * `elite-i`, `elite-ii`, `elite-iii`, `elite-iv`, `elite-v`.
  */
 export const WithDoctorScoreCard: Story = {
   args: {
@@ -314,7 +318,7 @@ export const WithDoctorScoreCard: Story = {
       name: 'Dr. Okedi Williams',
       role: 'Cardiologist',
       tier: 'gold',
-      medixScore: 847,
+      medixScore: 8470,
       link: '#doctor-profile',
     },
   },
@@ -330,7 +334,7 @@ export const WithDoctorScoreCard: Story = {
   ),
 };
 
-/** All five tier variants displayed as separate stories via the `name` pattern. */
+/** All nine backend-aligned tier variants displayed as separate stories via the `name` pattern. */
 export const ScoreCardBronzeTier: Story = {
   name: 'ScoreCard / Bronze tier',
   args: {
@@ -341,14 +345,14 @@ export const ScoreCardBronzeTier: Story = {
       name: 'Dr. Ada Okonkwo',
       role: 'General Practitioner',
       tier: 'bronze',
-      medixScore: 123,
+      medixScore: 450,
     },
   },
   render: (args) => (
     <Box h="100vh" w="100%">
       <DashboardLayout {...args}>
         <PageContent
-          title="Bronze tier"
+          title="Bronze tier (Level 1 · 0–999)"
           description="Warm copper ring + dark amber label (#92400E)."
         />
       </DashboardLayout>
@@ -366,13 +370,41 @@ export const ScoreCardSilverTier: Story = {
       name: 'Dr. Emeka Nwankwo',
       role: 'Surgeon',
       tier: 'silver',
-      medixScore: 410,
+      medixScore: 2410,
     },
   },
   render: (args) => (
     <Box h="100vh" w="100%">
       <DashboardLayout {...args}>
-        <PageContent title="Silver tier" description="Steel ring + slate label (#475569)." />
+        <PageContent
+          title="Silver tier (Level 2 · 1,000–4,999)"
+          description="Steel ring + slate label (#475569)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardGoldTier: Story = {
+  name: 'ScoreCard / Gold tier',
+  args: {
+    colorScheme: 'blue',
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Okedi Williams',
+      role: 'Cardiologist',
+      tier: 'gold',
+      medixScore: 8470,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Gold tier (Level 3 · 5,000–14,999)"
+          description="Amber ring + dark amber label (#D97706)."
+        />
       </DashboardLayout>
     </Box>
   ),
@@ -388,14 +420,14 @@ export const ScoreCardPlatinumTier: Story = {
       name: 'Dr. Ngozi Abara',
       role: 'Neurologist',
       tier: 'platinum',
-      medixScore: 1240,
+      medixScore: 18500,
     },
   },
   render: (args) => (
     <Box h="100vh" w="100%">
       <DashboardLayout {...args}>
         <PageContent
-          title="Platinum tier"
+          title="Platinum tier (Level 4 · 15,000–39,999)"
           description="Sky-blue ring + info blue label (#0284C7)."
         />
       </DashboardLayout>
@@ -403,8 +435,8 @@ export const ScoreCardPlatinumTier: Story = {
   ),
 };
 
-export const ScoreCardDiamondTier: Story = {
-  name: 'ScoreCard / Diamond tier',
+export const ScoreCardEliteITier: Story = {
+  name: 'ScoreCard / Elite I tier',
   args: {
     colorScheme: 'purple',
     user: { name: 'Dr. Chidi Obi', email: 'chidi@medixdeck.com' },
@@ -412,14 +444,117 @@ export const ScoreCardDiamondTier: Story = {
     scoreCard: {
       name: 'Dr. Chidi Obi',
       role: 'Oncologist',
-      tier: 'diamond',
-      medixScore: 2100,
+      tier: 'elite-i',
+      medixScore: 45000,
     },
   },
   render: (args) => (
     <Box h="100vh" w="100%">
       <DashboardLayout {...args}>
-        <PageContent title="Diamond tier" description="Violet ring + purple label (#7C3AED)." />
+        <PageContent
+          title="Elite I tier (Level 5 · 40,000–59,999)"
+          description="Violet ring + deep violet label (#6D28D9)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardEliteIITier: Story = {
+  name: 'ScoreCard / Elite II tier',
+  args: {
+    colorScheme: 'purple',
+    user: { name: 'Dr. Funke Adeyemi', email: 'funke@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Funke Adeyemi',
+      role: 'Pediatrician',
+      tier: 'elite-ii',
+      medixScore: 65000,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Elite II tier (Level 6 · 60,000–79,999)"
+          description="Light violet ring + violet label (#7C3AED)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardEliteIIITier: Story = {
+  name: 'ScoreCard / Elite III tier',
+  args: {
+    colorScheme: 'purple',
+    user: { name: 'Dr. Ibrahim Musa', email: 'ibrahim@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Ibrahim Musa',
+      role: 'Dermatologist',
+      tier: 'elite-iii',
+      medixScore: 95000,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Elite III tier (Level 7 · 80,000–119,999)"
+          description="Brand purple ring + brand purple label (#7700CC)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardEliteIVTier: Story = {
+  name: 'ScoreCard / Elite IV tier',
+  args: {
+    colorScheme: 'purple',
+    user: { name: 'Dr. Sarah Eze', email: 'sarah@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Sarah Eze',
+      role: 'Orthopedic Surgeon',
+      tier: 'elite-iv',
+      medixScore: 150000,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Elite IV tier (Level 8 · 120,000–199,999)"
+          description="Royal violet ring + deep royal label (#5B21B6)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardEliteVTier: Story = {
+  name: 'ScoreCard / Elite V tier',
+  args: {
+    colorScheme: 'purple',
+    user: { name: 'Dr. Olumide Bakare', email: 'olumide@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Olumide Bakare',
+      role: 'Neurosurgeon',
+      tier: 'elite-v',
+      medixScore: 250000,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Elite V tier (Level 9 · 200,000+)"
+          description="Deep royal ring + darkest prestige label (#4C1D95). Highest backend tier."
+        />
       </DashboardLayout>
     </Box>
   ),
@@ -442,7 +577,7 @@ export const WithGreetingSubtext: Story = {
       name: 'Dr. Okedi Williams',
       role: 'Cardiologist',
       tier: 'gold',
-      medixScore: 847,
+      medixScore: 8470,
       link: '#doctor-profile',
     },
   },
@@ -471,7 +606,7 @@ export const FullDoctorDashboard: Story = {
       name: 'Dr. Okedi Williams',
       role: 'Cardiologist',
       tier: 'gold',
-      medixScore: 847,
+      medixScore: 8470,
       link: '#doctor-profile',
     },
     navGroups: DOCTOR_NAV_GROUPS,
@@ -848,8 +983,8 @@ export const CollapsibleWithDoctorScoreCard: Story = {
     scoreCard: {
       name: 'Dr. Amina Bello',
       role: 'Chief of Cardiology',
-      tier: 'diamond',
-      medixScore: 985,
+      tier: 'elite-v',
+      medixScore: 250000,
     },
     collapsible: true,
     defaultCollapsed: false,
@@ -860,7 +995,7 @@ export const CollapsibleWithDoctorScoreCard: Story = {
       <DashboardLayout {...args}>
         <PageContent
           title="Collapsible with Doctor Score Card"
-          description="Notice how the doctor score card smoothly collapses into a sleek circular avatar with the diamond tier gradient ring."
+          description="Notice how the doctor score card smoothly collapses into a sleek circular avatar with the Elite V tier gradient ring."
         />
       </DashboardLayout>
     </Box>
@@ -933,6 +1068,55 @@ export const TopBarTogglePlacement: Story = {
         <PageContent
           title="TopBar Toggle Button Placement"
           description="Setting collapseTogglePlacement='both' or 'topbar' renders the collapse/expand toggle button in the sticky topbar."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Sidebar navigation items with `isNew: true`.
+ *
+ * Demonstrates the "NEW" pill badge rendered alongside sidebar links.
+ * Matches the badge style with background and color derived from `colorScheme` (blue or purple).
+ */
+export const WithNewBadges: Story = {
+  name: 'Sidebar / With "NEW" Badges',
+  args: {
+    colorScheme: 'blue',
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: [
+      {
+        groupLabel: 'Overview',
+        items: [
+          { label: 'Dashboard', href: '#dashboard', icon: <HomeIcon />, isActive: true },
+          { label: 'Bookings', href: '#bookings', icon: <CalendarIcon /> },
+          { label: 'My Schedule', href: '#schedule', icon: <CalendarIcon />, isNew: true },
+          { label: 'Clients', href: '#clients', icon: <UserIcon /> },
+          { label: 'Notes', href: '#notes', icon: <FileIcon /> },
+        ],
+      },
+      {
+        groupLabel: 'Practice',
+        items: [
+          { label: 'Reports', href: '#reports', icon: <FileIcon />, isNew: true },
+          { label: 'Transactions', href: '#transactions', icon: <FileIcon /> },
+          { label: 'Wallet', href: '#wallet', icon: <FileIcon /> },
+          { label: 'My Ratings', href: '#ratings', icon: <FileIcon />, isNew: true },
+          { label: 'Prime', href: '#prime', icon: <FileIcon />, isNew: true },
+          { label: 'Assessments', href: '#assessments', icon: <FileIcon />, isNew: true },
+        ],
+      },
+    ],
+    collapsible: true,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Sidebar Links with NEW Badges"
+          description='Sidebar links with `isNew: true` render a "NEW" pill badge matching the active colorScheme. In collapsed rail mode, a badge dot indicator and tooltip reflect the new state.'
         />
       </DashboardLayout>
     </Box>

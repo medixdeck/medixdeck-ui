@@ -6,6 +6,9 @@ const meta: Meta<typeof PWAInstallPrompt> = {
   title: 'Feedback/PWAInstallPrompt',
   component: PWAInstallPrompt,
   tags: ['autodocs'],
+  argTypes: {
+    colorScheme: { control: 'select', options: ['blue', 'purple'] },
+  },
   parameters: {
     docs: {
       description: {
@@ -66,6 +69,18 @@ export const WithDelay: Story = {
     delaySeconds: 5,
     title: 'Install MedixDeck',
     description: 'This prompt appeared 5 seconds after page load.',
+    appName: 'MedixDeck',
+  },
+};
+
+export const PurpleScheme: Story = {
+  args: {
+    forceVisible: true,
+    forceIOS: true,
+    colorScheme: 'purple',
+    title: 'Install MedixDeck',
+    description:
+      'Add MedixDeck to your home screen for faster access and a better healthcare experience.',
     appName: 'MedixDeck',
   },
 };
