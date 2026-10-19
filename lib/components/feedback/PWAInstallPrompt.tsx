@@ -270,11 +270,7 @@ export function PWAInstallPrompt({
 
   // ── Brand accent (colorScheme) ────────────────────────────────────────────
   const brandSolid = colorScheme === 'blue' ? '#0685FF' : '#7700CC';
-  const brandSoft = isDark
-    ? colorScheme === 'blue'
-      ? '#70B6FF'
-      : '#C084FC'
-    : brandSolid;
+  const brandSoft = isDark ? (colorScheme === 'blue' ? '#70B6FF' : '#C084FC') : brandSolid;
 
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
@@ -402,7 +398,12 @@ export function PWAInstallPrompt({
                 {/* Buttons */}
                 <Flex gap="3" align="center">
                   {!isIOS && (
-                    <Button variant="solid" colorScheme={colorScheme} size="sm" onClick={handleInstall}>
+                    <Button
+                      variant="solid"
+                      colorScheme={colorScheme}
+                      size="sm"
+                      onClick={handleInstall}
+                    >
                       {installLabel}
                     </Button>
                   )}

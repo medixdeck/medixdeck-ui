@@ -2028,7 +2028,10 @@ export interface DashboardMedixScoreTierMeta {
  * Base tiers keep their established colours; Elite I–V use a violet/purple
  * prestige ramp culminating in brand purple (`#7700CC`) and deep royal tones.
  */
-export const DASHBOARD_MEDIX_TIER_CONFIG: Record<DashboardMedixScoreTier, DashboardMedixScoreTierMeta> = {
+export const DASHBOARD_MEDIX_TIER_CONFIG: Record<
+  DashboardMedixScoreTier,
+  DashboardMedixScoreTierMeta
+> = {
   bronze: {
     label: 'Bronze Clinician',
     level: 1,
