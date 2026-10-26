@@ -11,8 +11,18 @@ export default defineConfig({
   },
   test: {
     environment: 'happy-dom',
+    environmentOptions: {
+      happyDOM: {
+        settings: {
+          disableCSSFileLoading: true,
+          disableJavaScriptFileLoading: true,
+          handleDisabledFileLoadingAsSuccess: true,
+        },
+      },
+    },
     globals: true,
     pool: 'threads',
+    maxWorkers: process.env.CI ? 2 : 1,
     setupFiles: './lib/test/setup.ts',
     include: ['lib/**/*.test.{ts,tsx}'],
   },
