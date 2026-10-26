@@ -14,7 +14,7 @@ All notable changes to `@medixdeck/ui` are documented here.
 - Supply a literal provider-owned theme bootstrap through standard script elements; keep the dependency's duplicate bootstrap inert through its public API. No private-bundle substitution or unsupported Pages flag is needed.
 - Declare the actual parser runtime requirement, Node 20.19.0 or newer.
 - Add direct built-package ESM/CommonJS import/render checks without `window` or `document`, plus a saved-dark-mode hydration regression test. Build/test with Node 24 in the publish workflow.
-- Prepare the unpublished `0.1.27-ssr.0` integration candidate. No npm publication is implied by a local pack.
+- Prepare stable version `0.1.27` for the `latest` npm tag; normalize repository metadata and require stable versions in the production publishing workflow. Simplify the package README around installation, usage and component documentation.
 
 ### Breaking
 

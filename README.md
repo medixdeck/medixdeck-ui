@@ -1,59 +1,21 @@
 # @medixdeck/ui
 
-> Shared React UI component library for MedixDeck, published as `@medixdeck/ui`.
+React components and design tokens for MedixDeck applications, built with
+TypeScript and Chakra UI v3. Includes forms, navigation, dashboards, feedback,
+healthcare components, and light/dark themes.
 
-## SSR and framework integration
-
-The SSR integration candidate is `0.1.27-ssr.0` (a local pack is not an npm
-publication). ESM and CommonJS entries support import and server rendering without
-`window`, `document`, jsdom or a consumer-side rewrite of this library's bundle.
-Use Node 20.19.0 or newer, a single compatible React/React DOM pair and the documented peer dependencies.
-In Next.js App Router, keep stateful UI inside the normal client-component boundary;
-those components can still be server-rendered to HTML.
-
-The build resolves universal dependency code instead of embedding browser-only
-conditional exports. HTML accordion answers use the same parser on server and
-browser. At the owner's request, the policy preserves the previous DOMPurify
-vocabulary as closely as possible: rich text, SVG, MathML, forms, authored CSS,
-media, accessibility attributes and safe link formats. It removes scripts, event
-handlers, frames and unsafe URL schemes, and protects known document/form names.
-Retaining authored CSS means answers can affect page styling, as before.
-This is a compatibility policy, not a claim of identical
-behavior to every DOMPurify configuration; review existing rich content on upgrade.
-
-The first theme-hook render is deterministic (`light`, `system`, not mounted).
-Stored light/dark/system preferences apply after mounting, without a global loading
-screen. TipTap creates its DOM-backed editor after hydration; its field shell is
-server-renderable. Existing component layout, colors and navbar interactions remain
-unchanged.
-
-`MedixProvider` owns a literal pre-hydration theme script rather than serializing a
-dependency's function after a consuming bundler may have changed its body. It uses
-the same `theme` storage key, default/forced modes and HTML classes as `next-themes`,
-which continues to manage preference changes. The dependency's duplicate bootstrap
-is inert via its public `scriptProps` API. Cloudflare Pages needs no unsupported
-function-name setting and no rewrite of either package's compiled source.
-
-Build with Node 24 and verify the actual distributable before packing:
-
-```sh
-npm ci
-npm run build
-npm test
-npm run test:ssr
-npm run pack:check
-```
-
-`test:ssr` imports and renders both built entry formats in a real DOM-free Node
-process. The hydration regression test uses markup produced by that process and a
-saved dark preference. Cloudflare Pages compatibility is additionally checked in
-the consuming website; these checks do not promise every framework/runtime version.
-
+[![npm](https://img.shields.io/npm/v/@medixdeck/ui)](https://www.npmjs.com/package/@medixdeck/ui)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
 [![Chakra UI](https://img.shields.io/badge/Chakra%20UI-v3-teal)](https://chakra-ui.com/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
-`@medixdeck/ui` is a Vite library-mode package built with React 18, TypeScript 5, Chakra UI v3, semantic design tokens, and dual ESM/CJS output for npm publishing.
+## Features
+
+- Typed component props and named exports.
+- Shared blue/purple palettes and semantic design tokens.
+- Responsive navigation, dashboard layouts, and healthcare components.
+- Light, dark, and system color modes.
+- Server rendering support, with ESM, CommonJS, and TypeScript declarations.
 
 ## Install
 
@@ -64,6 +26,9 @@ npm install @medixdeck/ui @chakra-ui/react react react-dom
 # Optional: If using RichTextInput (TipTap Rich Text Editor)
 npm install @tiptap/react @tiptap/pm @tiptap/starter-kit @tiptap/extension-link @tiptap/extension-underline @tiptap/extension-text-align @tiptap/extension-placeholder
 ```
+
+Requires React and React DOM 18 or newer, Chakra UI 3 or newer, and Node.js
+20.19 or newer for server rendering. Keep React and React DOM on matching versions.
 
 ## Quick start
 
@@ -113,14 +78,15 @@ export function App() {
 | Healthcare        | `DoctorCard`, `VitalBadge`, `AppointmentCard`                                                                                                                                                                                                                                                                                                                                                          |
 | Chakra re-exports | `Box`, `Flex`, `Grid`, `Stack`, `Text`, `Heading`, `Link`, `Image`, `Icon`, `Center`, `Wrap`, `WrapItem`, others in `lib/index.ts`                                                                                                                                                                                                                                                                     |
 
-## Design-system rules
+## Styling and server rendering
 
-- Use Chakra UI **v3** APIs only.
-- All library source lives in `lib\`; `src\` is dev-preview only.
-- Use semantic tokens such as `bg.surface`, `text.heading`, and `border` instead of raw hex for normal component styling.
-- **No `boxShadow` / `shadow`**: Do NOT use `boxShadow`, `shadow`, `card-light`, or `card-dark` props. Rely on clean borders (`border="1px solid" borderColor="border"`) for visual separation.
-- For color-critical interactive controls, prefer the repo's native-first pattern instead of Chakra recipes.
-- Apply dark mode on `document.documentElement`, not an inner container.
+Wrap your application in `MedixProvider` once to enable shared tokens, fonts,
+theme preferences, and toast notifications. Use semantic tokens such as
+`bg.surface`, `text.heading`, and `border` when styling with Chakra props.
+
+In Next.js App Router, place interactive components inside a `"use client"`
+boundary. Theme-dependent labels should wait for `useThemeMode().mounted` as in
+the quick start. The rich text editor initializes after hydration.
 
 ## Theme hooks
 
@@ -200,20 +166,14 @@ function Page() {
 
 ### Toast Notifications
 
-The MedixDeck UI includes a fully automated `Toast` system powered by Chakra UI v3's `createToaster` API, styled to match MedixDeck `Alert` components.
-
-To use it, render the `<Toaster />` at the root of your application, and then use the `toast` helper to trigger notifications from anywhere.
+`MedixProvider` includes the toast host. Use the `toast` helper to trigger
+notifications from components inside your application.
 
 ```tsx
-import { Toaster, toast } from '@medixdeck/ui';
+import { toast } from '@medixdeck/ui';
 
-function App() {
-  return (
-    <>
-      <Toaster />
-      <button onClick={() => toast.success('Changes saved successfully!')}>Save</button>
-    </>
-  );
+function SaveButton() {
+  return <button onClick={() => toast.success('Changes saved successfully!')}>Save</button>;
 }
 ```
 
@@ -235,7 +195,8 @@ The `toast` utility exposes `success`, `error`, `info`, and `warning` shorthand 
 
 ### Accordion with HTML/Markdown
 
-The `Accordion` supports passing rich text answers via the `answerType` prop. Use `"HTML"` (sanitized with the same DOM-free `sanitize-html` parser on server and browser) or `"MD"` (parsed via `react-markdown`).
+The `Accordion` supports rich text answers through `answerType`: use `"HTML"` for
+sanitized HTML or `"MD"` for Markdown.
 
 ```tsx
 <Accordion
@@ -702,63 +663,12 @@ export function DesignTokensPage() {
 
 `ThemeColorPalette` renders the semantic design tokens side by side for light and dark mode, then lists the raw brand, status, and neutral scales that power the theme.
 
-## Repository index
+## Contributing
 
-```txt
-lib\                         library source and npm entrypoint
-src\                         local showcase app only
-.github\workflows\publish.yml npm publish workflow
-AGENTS.md                    full multi-agent repo guide
-COPILOT.md                   concise AI contributor guide
-.github\copilot-instructions.md GitHub Copilot repo instructions
-CONTRIBUTING.md              contributor workflow
-CHANGELOG.md                 release history
-LICENSE                      package license
-package.json                 npm metadata and scripts
-```
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for local setup, development, testing, and contribution guidelines.
 
-## Development commands
+See [CHANGELOG.md](./CHANGELOG.md) for release notes. Report bugs and request features through [GitHub Issues](https://github.com/medixdeck/medixdeck-ui/issues).
 
-```bash
-npm run dev
-npm run build
-npm run test
-npm run pack:check
-```
+## License
 
-## Publishing notes
-
-- The package publishes from `dist\` with ESM, CJS, sourcemaps, and `.d.ts` declarations.
-- Public API changes must stay in sync across `lib\index.ts`, `README.md`, `src\App.tsx`, Storybook stories, and `CHANGELOG.md`.
-- The GitHub Actions workflow installs dependencies, runs build and test checks, performs `npm pack --dry-run`, and then publishes to npm.
-
-## Project structure
-
-```txt
-medixdeck-ui\
-├── lib\
-│   ├── index.ts
-│   ├── theme\
-│   └── components\
-│       ├── provider\
-│       ├── primitive\
-│       ├── form\
-│       ├── layout\
-│       ├── navigation\
-│       ├── feedback\
-│       ├── data\
-│       └── healthcare\
-├── src\
-├── .github\
-│   ├── copilot-instructions.md
-│   └── workflows\publish.yml
-├── AGENTS.md
-├── COPILOT.md
-├── CONTRIBUTING.md
-├── CHANGELOG.md
-├── LICENSE
-├── package.json
-├── vite.config.ts
-├── vitest.config.ts
-└── tsconfig.build.json
-```
+MIT © MedixDeck Team. See [LICENSE](./LICENSE).
