@@ -35,14 +35,14 @@ Environment: Node 24.19.0; React and React DOM 19.2.5. The declared runtime mini
 is Node 20.19.0, matching the parser dependency. Other declared framework/React
 versions have not all been independently exercised.
 
-| Check | Result |
-| --- | --- |
-| Production build and declarations | Passed |
-| Actual built ESM and CommonJS import/render without window or document | Both passed |
-| Unit/component/hydration tests | 97 passed across 13 files |
-| Sanitizer/reference compatibility checks | 14 passed, included in the 97 |
-| Saved-dark-mode hydration from real Node SSR HTML | Passed, included in the 97 |
-| Package content inspection | Passed: 17 files, about 1.4 MB packed / 7.1 MB unpacked |
+| Check                                                                  | Result                                                  |
+| ---------------------------------------------------------------------- | ------------------------------------------------------- |
+| Production build and declarations                                      | Passed                                                  |
+| Actual built ESM and CommonJS import/render without window or document | Both passed                                             |
+| Unit/component/hydration tests                                         | 97 passed across 13 files                               |
+| Sanitizer/reference compatibility checks                               | 14 passed, included in the 97                           |
+| Saved-dark-mode hydration from real Node SSR HTML                      | Passed, included in the 97                              |
+| Package content inspection                                             | Passed: 17 files, about 1.4 MB packed / 7.1 MB unpacked |
 
 The passing test suite emits React `act(...)` warnings in existing component tests;
 those are test-harness warnings, not evidence of a browser hydration pass. Do not
