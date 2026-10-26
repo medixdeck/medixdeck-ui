@@ -2,6 +2,53 @@
 
 > Shared React UI component library for MedixDeck, published as `@medixdeck/ui`.
 
+## SSR and framework integration
+
+The SSR integration candidate is `0.1.27-ssr.0` (a local pack is not an npm
+publication). ESM and CommonJS entries support import and server rendering without
+`window`, `document`, jsdom or a consumer-side rewrite of this library's bundle.
+Use Node 20.19.0 or newer, a single compatible React/React DOM pair and the documented peer dependencies.
+In Next.js App Router, keep stateful UI inside the normal client-component boundary;
+those components can still be server-rendered to HTML.
+
+The build resolves universal dependency code instead of embedding browser-only
+conditional exports. HTML accordion answers use the same parser on server and
+browser. At the owner's request, the policy preserves the previous DOMPurify
+vocabulary as closely as possible: rich text, SVG, MathML, forms, authored CSS,
+media, accessibility attributes and safe link formats. It removes scripts, event
+handlers, frames and unsafe URL schemes, and protects known document/form names.
+Retaining authored CSS means answers can affect page styling, as before.
+This is a compatibility policy, not a claim of identical
+behavior to every DOMPurify configuration; review existing rich content on upgrade.
+
+The first theme-hook render is deterministic (`light`, `system`, not mounted).
+Stored light/dark/system preferences apply after mounting, without a global loading
+screen. TipTap creates its DOM-backed editor after hydration; its field shell is
+server-renderable. Existing component layout, colors and navbar interactions remain
+unchanged.
+
+`MedixProvider` owns a literal pre-hydration theme script rather than serializing a
+dependency's function after a consuming bundler may have changed its body. It uses
+the same `theme` storage key, default/forced modes and HTML classes as `next-themes`,
+which continues to manage preference changes. The dependency's duplicate bootstrap
+is inert via its public `scriptProps` API. Cloudflare Pages needs no unsupported
+function-name setting and no rewrite of either package's compiled source.
+
+Build with Node 24 and verify the actual distributable before packing:
+
+```sh
+npm ci
+npm run build
+npm test
+npm run test:ssr
+npm run pack:check
+```
+
+`test:ssr` imports and renders both built entry formats in a real DOM-free Node
+process. The hydration regression test uses markup produced by that process and a
+saved dark preference. Cloudflare Pages compatibility is additionally checked in
+the consuming website; these checks do not promise every framework/runtime version.
+
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
 [![Chakra UI](https://img.shields.io/badge/Chakra%20UI-v3-teal)](https://chakra-ui.com/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -188,7 +235,7 @@ The `toast` utility exposes `success`, `error`, `info`, and `warning` shorthand 
 
 ### Accordion with HTML/Markdown
 
-The `Accordion` supports passing rich text answers via the `answerType` prop. Use `"HTML"` (safely sanitized via `isomorphic-dompurify`) or `"MD"` (parsed via `react-markdown`).
+The `Accordion` supports passing rich text answers via the `answerType` prop. Use `"HTML"` (sanitized with the same DOM-free `sanitize-html` parser on server and browser) or `"MD"` (parsed via `react-markdown`).
 
 ```tsx
 <Accordion

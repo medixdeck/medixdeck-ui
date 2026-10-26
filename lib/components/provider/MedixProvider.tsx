@@ -5,6 +5,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { system } from '../../theme';
 import { Toaster } from '../feedback/Toast';
+import { getThemeBootstrapScript } from './themeBootstrap';
 
 export interface MedixProviderProps {
   children: React.ReactNode;
@@ -274,7 +275,17 @@ export function MedixProvider({
       defaultTheme={defaultColorMode}
       forcedTheme={forcedColorMode}
       disableTransitionOnChange
+      // Own the executable bootstrap instead of serializing a dependency's
+      // function after a consuming bundler may have injected private helpers.
+      scriptProps={{ type: 'text/plain', id: 'medixdeck-inactive-theme-bootstrap' }}
     >
+      <script
+        data-medixdeck="theme-bootstrap"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: getThemeBootstrapScript(defaultColorMode, forcedColorMode),
+        }}
+      />
       <ChakraProvider value={system}>
         {children}
         <Toaster />

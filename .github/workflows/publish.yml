@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.16.0'
+          node-version: '24.19.0'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
@@ -31,6 +31,9 @@ jobs:
 
       - name: Run tests
         run: npm run test -- --passWithNoTests
+
+      - name: Verify built package without a browser DOM
+        run: npm run test:ssr
 
       - name: Verify publish contents
         run: npm run pack:check

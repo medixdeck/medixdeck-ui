@@ -66,10 +66,13 @@ export function useThemeMode(): UseThemeModeResult {
     setMounted(true);
   }, []);
 
-  const isDark = resolvedTheme === 'dark' || isDomDark;
+  // Local storage and next-themes' early script are browser-only information.
+  // The first client render must match the server palette; restore the saved
+  // preference after mounting, without replacing the page with a skeleton.
+  const isDark = mounted && (resolvedTheme === 'dark' || isDomDark);
   const themeMode: ThemeMode = isDark ? 'dark' : 'light';
   const themeSetting: ThemeModeSetting =
-    theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
+    mounted && (theme === 'light' || theme === 'dark' || theme === 'system') ? theme : 'system';
 
   const setThemeMode = useCallback(
     (mode: ThemeModeSetting) => {

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box, type BoxProps } from '@chakra-ui/react';
-import DOMPurify from 'isomorphic-dompurify';
+import { sanitizeHtml } from '../../utils/sanitizeHtml';
 import ReactMarkdown from 'react-markdown';
 
 export interface AccordionItem {
@@ -195,7 +195,7 @@ export function Accordion({
                   answerType === 'MD' ? (
                     <ReactMarkdown>{item.answer}</ReactMarkdown>
                   ) : (
-                    <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.answer) }} />
+                    <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.answer) }} />
                   )
                 ) : (
                   item.answer

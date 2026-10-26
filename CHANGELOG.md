@@ -4,6 +4,18 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ## [Unreleased]
 
+### Fixed — SSR compatibility
+
+- Build the shared ESM/CommonJS entries without freezing browser-only dependency conditions. Runtime dependencies remain external where compatible with both output formats; the ESM-only Markdown renderer is bundled using its universal implementation.
+- Replace DOM-dependent accordion HTML sanitization with one parser-based policy for Node SSR, DOM-free edge SSR and browsers. At the owner's request, preserve the previous DOMPurify vocabulary as closely as possible, including SVG, MathML, forms, authored CSS and media. Filter scripts, event handlers, frames, unsafe URLs and known document/form property names. Parsing normalization can differ from DOMPurify; the derived vocabulary's license is included.
+- Keep the theme hook's initial mode and setting deterministic during hydration, then restore saved light/dark/system preferences after mounting.
+- Initialize TipTap after hydration with `immediatelyRender: false`.
+- Convert editor HTML to Markdown without `document`, retaining the existing conversion rules during SSR and hydration.
+- Supply a literal provider-owned theme bootstrap through standard script elements; keep the dependency's duplicate bootstrap inert through its public API. No private-bundle substitution or unsupported Pages flag is needed.
+- Declare the actual parser runtime requirement, Node 20.19.0 or newer.
+- Add direct built-package ESM/CommonJS import/render checks without `window` or `document`, plus a saved-dark-mode hydration regression test. Build/test with Node 24 in the publish workflow.
+- Prepare the unpublished `0.1.27-ssr.0` integration candidate. No npm publication is implied by a local pack.
+
 ### Breaking
 
 - **`DashboardLayout` — MedixScore tiers aligned to backend (`MEDIX_SCORE_TIER`)**:

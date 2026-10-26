@@ -8,77 +8,15 @@ import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import Placeholder from '@tiptap/extension-placeholder';
+import { htmlToMarkdown } from '../../utils/htmlToMarkdown';
+
+export { htmlToMarkdown };
 
 // ─── Markdown Utilities ───────────────────────────────────────────────────────
 
 /**
  * Converts HTML content to clean, standard Markdown text.
  */
-export function htmlToMarkdown(html: string): string {
-  if (!html || typeof document === 'undefined') return html || '';
-
-  // If input doesn't contain HTML tags, return as-is
-  if (!/<[a-z][\s\S]*>/i.test(html)) return html;
-
-  const div = document.createElement('div');
-  div.innerHTML = html;
-
-  function parseNode(node: Node): string {
-    if (node.nodeType === Node.TEXT_NODE) {
-      return node.textContent || '';
-    }
-    if (node.nodeType !== Node.ELEMENT_NODE) return '';
-
-    const el = node as HTMLElement;
-    const tag = el.tagName.toLowerCase();
-    const childrenText = Array.from(el.childNodes).map(parseNode).join('');
-
-    switch (tag) {
-      case 'h1':
-        return `# ${childrenText.trim()}\n\n`;
-      case 'h2':
-        return `## ${childrenText.trim()}\n\n`;
-      case 'h3':
-        return `### ${childrenText.trim()}\n\n`;
-      case 'p':
-        return childrenText.trim() ? `${childrenText.trim()}\n\n` : '';
-      case 'strong':
-      case 'b':
-        return childrenText.trim() ? `**${childrenText}**` : '';
-      case 'em':
-      case 'i':
-        return childrenText.trim() ? `*${childrenText}*` : '';
-      case 'u':
-        return childrenText.trim() ? `<u>${childrenText}</u>` : '';
-      case 's':
-      case 'del':
-      case 'strike':
-        return childrenText.trim() ? `~~${childrenText}~~` : '';
-      case 'blockquote':
-        return `> ${childrenText.trim()}\n\n`;
-      case 'ul':
-        return `${Array.from(el.children)
-          .map((li) => `- ${parseNode(li).trim()}`)
-          .join('\n')}\n\n`;
-      case 'ol':
-        return `${Array.from(el.children)
-          .map((li, idx) => `${idx + 1}. ${parseNode(li).trim()}`)
-          .join('\n')}\n\n`;
-      case 'li':
-        return childrenText;
-      case 'a': {
-        const href = el.getAttribute('href') || '';
-        return `[${childrenText}](${href})`;
-      }
-      case 'br':
-        return '\n';
-      default:
-        return childrenText;
-    }
-  }
-
-  return parseNode(div).trim();
-}
 
 /**
  * Converts standard Markdown text to HTML.
@@ -632,7 +570,7 @@ const IconAlignRight = () => (
 // ─── Headings Select ──────────────────────────────────────────────────────────
 
 interface HeadingSelectProps {
-  editor: ReturnType<typeof useEditor>;
+  editor: ReturnType<typeof useEditor> | null;
   accentColor: string;
   disabled?: boolean;
 }
@@ -760,7 +698,7 @@ function ModeSwitcher({
 // ─── Toolbar ─────────────────────────────────────────────────────────────────
 
 interface ToolbarProps {
-  editor: ReturnType<typeof useEditor>;
+  editor: ReturnType<typeof useEditor> | null;
   accentColor: string;
   disabled?: boolean;
   opts: Required<ToolbarOptions>;
@@ -1206,6 +1144,8 @@ export function RichTextInput({
 
   // TipTap editor instance
   const editor = useEditor({
+    // TipTap must create its DOM-backed editor after hydration, not during SSR.
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
