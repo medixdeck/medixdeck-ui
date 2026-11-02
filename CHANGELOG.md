@@ -2,7 +2,13 @@
 
 All notable changes to `@medixdeck/ui` are documented here.
 
-## [Unreleased]
+## [0.1.27] - 2026-11-02
+
+### Fixed — PWA install prompt
+
+- Respect dismissal cooldowns on subsequent browser install events and before delayed banners appear, including native install-dialog dismissals. Keep the cooldown in memory when storage is unavailable.
+- Cancel pending display timers on dismissal, installation, and unmount; replace earlier timers when a new install event arrives.
+- Consume each browser install event once, suppress duplicate installation attempts, and hide the banner after installation. Document `forceVisible` as a preview-only option that must be omitted in production apps.
 
 ### Fixed — SSR compatibility
 
