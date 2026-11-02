@@ -12,7 +12,6 @@ import { useIsDarkMode } from '../../hooks/useThemeMode';
 const STORAGE_KEY = 'medixdeck_pwa_dismissed';
 const DEFAULT_COOLDOWN_DAYS = 14;
 
-const EASE_OUT = [0.0, 0.0, 0.2, 1.0] as [number, number, number, number];
 const EASE_IN_OUT = [0.4, 0.0, 0.2, 1.0] as [number, number, number, number];
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
@@ -64,7 +63,8 @@ export interface PWAInstallPromptProps {
    */
   delaySeconds?: number;
   /**
-   * For documentation/storybook purposes. Forces the banner to be visible.
+   * For documentation/storybook purposes only. Bypasses installation and cooldown
+   * checks without capturing a browser install event. Omit in production apps.
    */
   forceVisible?: boolean;
   /**
@@ -78,17 +78,17 @@ export interface PWAInstallPromptProps {
 function isInStandaloneMode(): boolean {
   if (typeof window === 'undefined') return false;
   const standaloneQuery = window.matchMedia('(display-mode: standalone)').matches;
-  const iosStandalone = (window.navigator as any).standalone === true;
+  const iosStandalone =
+    (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
   return standaloneQuery || iosStandalone;
 }
 
 function isIOSDevice(): boolean {
   if (typeof navigator === 'undefined') return false;
-  return /iPhone|iPad|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+  return /iPhone|iPad|iPod/.test(navigator.userAgent) && !('MSStream' in window);
 }
 
 function isDismissedRecently(cooldownDays: number): boolean {
-  if (typeof localStorage === 'undefined') return false;
   try {
     const dismissed = localStorage.getItem(STORAGE_KEY);
     if (!dismissed) return false;
@@ -185,88 +185,125 @@ export function PWAInstallPrompt({
   const [isIOS, setIsIOS] = useState(false);
   const deferredPromptRef = useRef<BeforeInstallPromptEvent | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dismissedAtRef = useRef<number | null>(null);
+  const installedRef = useRef(false);
+  const installingRef = useRef(false);
+
+  const clearPromptTimeout = useCallback(() => {
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
 
   // ── Initialisation ──────────────────────────────────────────────────────────
   useEffect(() => {
+    const canShowPrompt = () => {
+      const dismissedInMemory =
+        dismissedAtRef.current !== null &&
+        Date.now() - dismissedAtRef.current < cooldownDays * 24 * 60 * 60 * 1000;
+      return (
+        !installedRef.current &&
+        !installingRef.current &&
+        !isInStandaloneMode() &&
+        !dismissedInMemory &&
+        !isDismissedRecently(cooldownDays)
+      );
+    };
+
     const showPrompt = () => {
+      clearPromptTimeout();
+      if (!forceVisible && !canShowPrompt()) return;
+
       if (delaySeconds > 0) {
-        timeoutRef.current = setTimeout(() => setVisible(true), delaySeconds * 1000);
+        timeoutRef.current = setTimeout(() => {
+          timeoutRef.current = null;
+          if (forceVisible || canShowPrompt()) setVisible(true);
+        }, delaySeconds * 1000);
       } else {
         setVisible(true);
       }
     };
 
-    const cleanupTimeout = () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-
     if (forceVisible) {
-      if (forceIOS) setIsIOS(true);
+      setIsIOS(Boolean(forceIOS));
       showPrompt();
-      return cleanupTimeout;
+      return clearPromptTimeout;
     }
 
-    // Already installed — never show
-    if (isInStandaloneMode()) return cleanupTimeout;
+    const ios = isIOSDevice();
+    setIsIOS(ios);
 
-    // User recently dismissed — respect cooldown
-    if (isDismissedRecently(cooldownDays)) return cleanupTimeout;
-
-    // iOS path
-    if (isIOSDevice()) {
-      setIsIOS(true);
-      showPrompt();
-      return cleanupTimeout;
-    }
-
-    // Chromium-based browsers (Desktop Chrome, Edge, Opera, Brave + Android)
-    // The beforeinstallprompt event fires on all Chromium-based browsers.
+    // Only offer native installation after the browser supplies a usable event.
     const handler = (e: Event) => {
       e.preventDefault();
+      if (!canShowPrompt()) return;
       deferredPromptRef.current = e as BeforeInstallPromptEvent;
       showPrompt();
     };
 
-    window.addEventListener('beforeinstallprompt', handler);
+    if (ios) showPrompt();
+    else window.addEventListener('beforeinstallprompt', handler);
 
-    // Also listen for the install completion to auto-hide
-    const installed = () => setVisible(false);
+    const installed = () => {
+      installedRef.current = true;
+      deferredPromptRef.current = null;
+      clearPromptTimeout();
+      setVisible(false);
+    };
     window.addEventListener('appinstalled', installed);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
       window.removeEventListener('appinstalled', installed);
-      cleanupTimeout();
+      clearPromptTimeout();
     };
-  }, [cooldownDays, delaySeconds, forceVisible, forceIOS]);
+  }, [cooldownDays, delaySeconds, forceVisible, forceIOS, clearPromptTimeout]);
 
   // ── Actions ─────────────────────────────────────────────────────────────────
-  const handleInstall = useCallback(async () => {
-    if (deferredPromptRef.current) {
-      try {
-        await deferredPromptRef.current.prompt();
-        const choice = await deferredPromptRef.current.userChoice;
-        if (choice.outcome === 'accepted') {
-          onInstall?.();
-        }
-      } catch {
-        // prompt() failed — some browsers throw on double-invoke
-      }
-      deferredPromptRef.current = null;
-    }
-    setVisible(false);
-  }, [onInstall]);
-
   const handleDismiss = useCallback(() => {
+    dismissedAtRef.current = Date.now();
     saveDismissal();
+    clearPromptTimeout();
+    deferredPromptRef.current = null;
     setVisible(false);
     onDismiss?.();
-  }, [onDismiss]);
+  }, [clearPromptTimeout, onDismiss]);
+
+  const handleInstall = useCallback(async () => {
+    const prompt = deferredPromptRef.current;
+    if (installingRef.current) return;
+
+    clearPromptTimeout();
+    setVisible(false);
+    if (!prompt) return;
+
+    // Consume the event before awaiting: prompt() may only be called once.
+    deferredPromptRef.current = null;
+    installingRef.current = true;
+    let choice: Awaited<BeforeInstallPromptEvent['userChoice']>;
+    try {
+      // Keep this call in the click handler's user activation.
+      await prompt.prompt();
+      choice = await prompt.userChoice;
+    } catch {
+      // A failed/consumed event cannot be retried; wait for a fresh browser event.
+      return;
+    } finally {
+      installingRef.current = false;
+    }
+
+    if (choice.outcome === 'accepted') {
+      installedRef.current = true;
+      onInstall?.();
+    } else {
+      handleDismiss();
+    }
+  }, [clearPromptTimeout, handleDismiss, onInstall]);
 
   // ── Theme colours (exact hex, same pattern as CookieConsentBanner) ──────────
   const bgColor = isDark ? '#152035' : '#FFFFFF';
   const borderColor = isDark ? '#1E3050' : '#E4E8F0';
-  const shadowColor = isDark ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.08)';
 
   // ── Brand accent (colorScheme) ────────────────────────────────────────────
   const brandSolid = colorScheme === 'blue' ? '#0685FF' : '#7700CC';
