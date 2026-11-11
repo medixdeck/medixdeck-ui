@@ -6,7 +6,9 @@ const meta: Meta<typeof Pagination> = {
   title: 'Navigation/Pagination',
   component: Pagination,
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    colorScheme: { control: 'select', options: ['blue', 'purple'] },
+  },
 };
 
 export default meta;
@@ -23,5 +25,20 @@ export const SmallPageCount: Story = {
   render: () => {
     const [page, setPage] = React.useState(1);
     return <Pagination currentPage={page} total={30} pageSize={10} onChange={setPage} />;
+  },
+};
+
+export const Purple: Story = {
+  render: () => {
+    const [page, setPage] = React.useState(3);
+    return (
+      <Pagination
+        currentPage={page}
+        total={100}
+        pageSize={10}
+        onChange={setPage}
+        colorScheme="purple"
+      />
+    );
   },
 };

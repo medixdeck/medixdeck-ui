@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import { Calendar } from './Calendar';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface DatePickerProps {
   /** Controlled value (ISO date string: YYYY-MM-DD) */
@@ -23,6 +25,15 @@ export interface DatePickerProps {
   id?: string;
   /** Whether to also show time input */
   includeTime?: boolean;
+  /** Haptic feedback intent/pattern on open/selection. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this date picker. */
+  disableHaptic?: boolean;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -54,7 +65,15 @@ export function DatePicker({
   placeholder = 'Select date',
   id,
   includeTime = false,
+  haptic,
+  disableHaptic = false,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: DatePickerProps) {
+  const { trigger } = useHaptics();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -167,14 +186,23 @@ export function DatePicker({
           value={displayValue}
           placeholder={placeholder}
           disabled={isDisabled}
-          aria-invalid={isInvalid}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-invalid={isInvalid || ariaInvalid || undefined}
+          aria-required={ariaRequired}
           aria-haspopup="dialog"
           aria-expanded={isOpen}
-          onClick={() => !isDisabled && setIsOpen(!isOpen)}
+          onClick={() => {
+            if (isDisabled) return;
+            if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+            setIsOpen(!isOpen);
+          }}
           onKeyDown={(e) => {
             if (!isDisabled) {
               if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
                 e.preventDefault();
+                if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
                 setIsOpen(true);
               } else if (e.key === 'Escape') {
                 setIsOpen(false);
@@ -237,7 +265,7 @@ export function DatePicker({
           borderRadius="card"
           border="1px solid"
           borderColor="border"
-          bg="bg.surface"
+          bg="bg"
           overflow="hidden"
         >
           <Calendar
@@ -246,6 +274,8 @@ export function DatePicker({
             minDate={parseLocalDate(min)}
             maxDate={parseLocalDate(max)}
             colorScheme={colorScheme}
+            haptic={haptic}
+            disableHaptic={disableHaptic}
           />
           {includeTime && (
             <Box px="5" pb="4" borderTop="1px solid" borderColor="border">

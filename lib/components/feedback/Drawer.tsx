@@ -13,6 +13,8 @@ import {
   DrawerBackdrop,
   type DrawerRootProps,
 } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
 export type DrawerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
@@ -27,6 +29,10 @@ export interface DrawerProps {
   closeOnEscape?: boolean;
   footer?: React.ReactNode;
   children?: React.ReactNode;
+  /** Haptic feedback intent/pattern when the drawer closes. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for drawer close actions. */
+  disableHaptic?: boolean;
 }
 
 // Chakra UI v3 DrawerRoot expects 'start' | 'end' | 'top' | 'bottom'
@@ -61,14 +67,20 @@ export function Drawer({
   closeOnEscape = true,
   footer,
   children,
+  haptic,
+  disableHaptic = false,
 }: DrawerProps) {
+  const { trigger } = useHaptics();
   const mappedPlacement = placementMap[placement] ?? 'end';
 
   return (
     <DrawerRoot
       open={isOpen}
       onOpenChange={(details) => {
-        if (!details.open) onClose();
+        if (!details.open) {
+          if (!disableHaptic && haptic !== false) trigger(haptic ?? 'impactLight');
+          onClose();
+        }
       }}
       placement={mappedPlacement}
       size={size as ChakraDrawerSize}
@@ -80,8 +92,19 @@ export function Drawer({
 
       {/* Positioner portals the drawer into body */}
       <DrawerPositioner>
-        <DrawerContent bg="bg.surface" border="1px solid" borderColor="border" boxShadow="none">
+        <DrawerContent
+          display="flex"
+          flexDirection="column"
+          overflow="hidden"
+          bg="bg.surface"
+          border="1px solid"
+          borderColor="border"
+          boxShadow="none"
+          maxH={mappedPlacement === 'top' || mappedPlacement === 'bottom' ? '100dvh' : '100dvh'}
+          h={mappedPlacement === 'start' || mappedPlacement === 'end' ? '100dvh' : undefined}
+        >
           <DrawerHeader
+            flexShrink={0}
             borderBottom={title ? '1px solid' : 'none'}
             borderColor="border"
             px="6"
@@ -134,12 +157,20 @@ export function Drawer({
             </DrawerCloseTrigger>
           </DrawerHeader>
 
-          <DrawerBody px="6" py="5">
+          <DrawerBody
+            px="6"
+            py="5"
+            flex="1"
+            minH="0"
+            overflowY="auto"
+            style={{ overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}
+          >
             {children}
           </DrawerBody>
 
           {footer && (
             <DrawerFooter
+              flexShrink={0}
               borderTop="1px solid"
               borderColor="border"
               px="6"
@@ -147,6 +178,11 @@ export function Drawer({
               display="flex"
               justifyContent="flex-end"
               gap="3"
+              style={
+                mappedPlacement === 'bottom'
+                  ? { paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 16px)' }
+                  : undefined
+              }
             >
               {footer}
             </DrawerFooter>

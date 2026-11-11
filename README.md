@@ -64,6 +64,14 @@ export function App() {
 }
 ```
 
+## PWA installation
+
+Use `<PWAInstallPrompt appName="MedixDeck" delaySeconds={30} />` in consuming apps.
+Omit `forceVisible` and `forceIOS`: these options are for Storybook previews only.
+Native installation is offered after the browser emits `beforeinstallprompt`;
+iOS displays manual installation instructions. Banner and native-dialog dismissals
+share the configurable `cooldownDays` period (14 days by default).
+
 ## Public API index
 
 | Area              | Exports                                                                                                                                                                                                                                                                                                                                                                                                |

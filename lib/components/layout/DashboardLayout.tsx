@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useId } from 'react';
-import { Box, type BoxProps } from '@chakra-ui/react';
+import { Box, chakra, type BoxProps } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useThemeMode, type ThemeModeSetting } from '../../hooks/useThemeMode';
 import { Logo } from '../primitive/Logo';
@@ -789,12 +789,12 @@ function detectDashboardEnvironment(explicitEnv?: DashboardEnvironment): {
 
   // 2. Check import.meta.env (Vite, Astro, ES modules)
   try {
-    // @ts-ignore
-    if (typeof import.meta !== 'undefined' && import.meta && import.meta.env) {
-      // @ts-ignore
-      const viteMode = import.meta.env.MODE;
-      // @ts-ignore
-      const viteMedixEnv = import.meta.env.VITE_MEDIX_ENV || import.meta.env.PUBLIC_MEDIX_ENV;
+    const importMeta = import.meta as unknown as {
+      env?: Record<string, string | boolean | undefined>;
+    };
+    if (typeof import.meta !== 'undefined' && importMeta.env) {
+      const viteMode = importMeta.env.MODE;
+      const viteMedixEnv = importMeta.env.VITE_MEDIX_ENV || importMeta.env.PUBLIC_MEDIX_ENV;
 
       if (viteMedixEnv) {
         const lower = String(viteMedixEnv).toLowerCase();
@@ -1007,9 +1007,7 @@ function DashboardEnvironmentBanner({
         {config.action}
 
         {config.dismissible && (
-          <Box
-            as="button"
-            // @ts-expect-error type button
+          <chakra.button
             type="button"
             onClick={onDismiss}
             aria-label="Dismiss environment banner"
@@ -1034,7 +1032,7 @@ function DashboardEnvironmentBanner({
             transition="background 0.15s ease, opacity 0.15s ease"
           >
             <CloseBannerIcon />
-          </Box>
+          </chakra.button>
         )}
       </Box>
     </Box>
@@ -1388,7 +1386,7 @@ function SidebarNavItem({
           {flyoutOpen ? (
             triggerBtn
           ) : (
-            <Tooltip label={item.label} placement="right">
+            <Tooltip label={item.label} placement="right" toggleOnTouch={false}>
               {triggerBtn}
             </Tooltip>
           )}
@@ -1497,7 +1495,11 @@ function SidebarNavItem({
     // Leaf item in collapsed mode
     const railContent = (
       <Box display="flex" justifyContent="center" alignItems="center" w="full">
-        <Tooltip label={item.isNew ? `${item.label} (NEW)` : item.label} placement="right">
+        <Tooltip
+          label={item.isNew ? `${item.label} (NEW)` : item.label}
+          placement="right"
+          toggleOnTouch={false}
+        >
           <Box
             display="flex"
             alignItems="center"
@@ -2221,6 +2223,7 @@ function SidebarScoreCard({
         <Tooltip
           label={`${data.role} — ${data.name} (${tier.label}, ${data.medixScore} pts)`}
           placement="right"
+          toggleOnTouch={false}
         >
           <Box
             display="flex"
@@ -2538,7 +2541,7 @@ function Sidebar({
             {collapsible &&
               (collapseTogglePlacement === 'sidebar-header' ||
                 collapseTogglePlacement === 'both') && (
-                <Tooltip label="Expand sidebar" placement="right">
+                <Tooltip label="Expand sidebar" placement="right" toggleOnTouch={false}>
                   <Box
                     as="button"
                     display="inline-flex"
@@ -2579,7 +2582,7 @@ function Sidebar({
             {collapsible &&
               (collapseTogglePlacement === 'sidebar-header' ||
                 collapseTogglePlacement === 'both') && (
-                <Tooltip label="Collapse sidebar" placement="bottom">
+                <Tooltip label="Collapse sidebar" placement="bottom" toggleOnTouch={false}>
                   <Box
                     as="button"
                     display={{ base: 'none', md: 'inline-flex' }}
@@ -2680,7 +2683,7 @@ function Sidebar({
           w="full"
         >
           {isCollapsed ? (
-            <Tooltip label="Log out" placement="right">
+            <Tooltip label="Log out" placement="right" toggleOnTouch={false}>
               <Box
                 as="button"
                 display="flex"
@@ -2852,7 +2855,11 @@ function TopBar({
       {/* Desktop collapse / expand toggle */}
       {collapsible &&
         (collapseTogglePlacement === 'topbar' || collapseTogglePlacement === 'both') && (
-          <Tooltip label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} placement="bottom">
+          <Tooltip
+            label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            placement="bottom"
+            toggleOnTouch={false}
+          >
             <Box
               as="button"
               display={{ base: 'none', md: 'inline-flex' }}

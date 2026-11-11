@@ -8,6 +8,7 @@ const meta: Meta<typeof Tabs> = {
   argTypes: {
     variant: { control: 'select', options: ['line', 'pill'] },
     size: { control: 'select', options: ['sm', 'md', 'lg'] },
+    colorScheme: { control: 'select', options: ['blue', 'purple'] },
   },
 };
 
@@ -64,4 +65,8 @@ export const WithBadges: Story = {
       },
     ],
   },
+};
+
+export const PurpleLine: Story = {
+  args: { tabs: tabItems, variant: 'line', colorScheme: 'purple' },
 };

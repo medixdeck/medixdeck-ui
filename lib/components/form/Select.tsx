@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface SelectOption {
   value: string;
@@ -7,7 +9,7 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-export interface SelectProps {
+interface SelectCommonProps {
   options?: SelectOption[];
   placeholder?: string;
   isInvalid?: boolean;
@@ -20,18 +22,40 @@ export interface SelectProps {
   icon?: React.ReactNode;
 
   // Form control props
-  value?: string | string[];
-  defaultValue?: string | string[];
-  onChange?: (value: any) => void;
   name?: string;
   id?: string;
   disabled?: boolean;
-  multiple?: boolean;
+  /** Haptic feedback intent/pattern on selection/toggle. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this select. */
+  disableHaptic?: boolean;
   onBlur?: React.FocusEventHandler<HTMLDivElement | HTMLInputElement>;
   onFocus?: React.FocusEventHandler<HTMLDivElement | HTMLInputElement>;
   style?: React.CSSProperties;
   className?: string;
+  /** Accessible label/description wiring for custom trigger */
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
+
+export interface SingleSelectProps extends SelectCommonProps {
+  multiple?: false;
+  value?: string;
+  defaultValue?: string | string[];
+  onChange?: (value: string) => void;
+}
+
+export interface MultiSelectProps extends SelectCommonProps {
+  multiple: true;
+  value?: string[];
+  defaultValue?: string[] | string;
+  onChange?: (value: string[]) => void;
+}
+
+export type SelectProps = SingleSelectProps | MultiSelectProps;
 
 const sizeStyles: Record<'sm' | 'md' | 'lg', { h: string; px: string; fontSize: string }> = {
   sm: { h: '8', px: '3', fontSize: 'sm' },
@@ -42,26 +66,32 @@ const sizeStyles: Record<'sm' | 'md' | 'lg', { h: string; px: string; fontSize: 
 /**
  * Custom SingleSelect component with MedixDeck popover dropdown options.
  */
-function SingleSelect({
-  options = [],
-  placeholder = 'Select option...',
-  isInvalid = false,
-  errorMessage,
-  size = 'md',
-  colorScheme = 'blue',
-  icon,
-  value,
-  defaultValue,
-  onChange,
-  disabled = false,
-  name,
-  id,
-}: SelectProps) {
+function SingleSelect(props: SelectProps) {
+  const {
+    options = [],
+    placeholder = 'Select option...',
+    isInvalid = false,
+    errorMessage,
+    size = 'md',
+    colorScheme = 'blue',
+    icon,
+    value,
+    defaultValue,
+    onChange,
+    disabled = false,
+    haptic,
+    disableHaptic = false,
+    name,
+    id,
+    ...ariaProps
+  } = props as SingleSelectProps & Record<string, unknown>;
+  const { trigger } = useHaptics();
   const [isOpen, setIsOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
+  const [activeIndex, setActiveIndex] = React.useState(-1);
   const [internalValue, setInternalValue] = React.useState<string>(() => {
     if (typeof defaultValue === 'string') return defaultValue;
-    if (Array.isArray(defaultValue) && defaultValue.length > 0) return defaultValue[0];
+    if (Array.isArray(defaultValue)) return defaultValue[0] ?? '';
     return '';
   });
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -71,8 +101,8 @@ function SingleSelect({
   const selectedValue = isControlled
     ? typeof value === 'string'
       ? value
-      : Array.isArray(value) && value.length > 0
-        ? value[0]
+      : Array.isArray(value)
+        ? (value[0] ?? '')
         : ''
     : internalValue;
 
@@ -103,10 +133,13 @@ function SingleSelect({
 
   const handleSelectOption = (optValue: string) => {
     if (disabled) return;
+    if (!disableHaptic && haptic !== false && optValue !== selectedValue) {
+      trigger(haptic ?? 'selection');
+    }
     if (!isControlled) {
       setInternalValue(optValue);
     }
-    onChange?.(optValue);
+    (onChange as ((value: string) => void) | undefined)?.(optValue);
     setIsOpen(false);
   };
 
@@ -130,14 +163,45 @@ function SingleSelect({
       {name && <input type="hidden" name={name} id={id} value={selectedValue} />}
 
       <Box
-        onClick={() => !disabled && setIsOpen(!isOpen)}
+        {...(ariaProps as Record<string, unknown>)}
+        role="combobox"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-controls={id ? `${id}-listbox` : undefined}
+        aria-invalid={
+          isInvalid
+            ? true
+            : ((ariaProps as Record<string, unknown>)['aria-invalid'] as
+                | boolean
+                | 'true'
+                | 'false'
+                | undefined)
+        }
+        aria-disabled={disabled || undefined}
+        tabIndex={disabled ? -1 : 0}
+        onClick={() => {
+          if (disabled) return;
+          if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+          setIsOpen(!isOpen);
+        }}
+        onKeyDown={(e) => {
+          if (disabled) return;
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+            setIsOpen((o) => !o);
+          } else if (e.key === 'Escape' && isOpen) {
+            e.preventDefault();
+            setIsOpen(false);
+          }
+        }}
         display="flex"
         alignItems="center"
         justifyContent="space-between"
         h={sz.h}
         px={sz.px}
         borderRadius="md"
-        bg="bg.surface"
+        bg="bg"
         cursor={disabled ? 'not-allowed' : 'pointer'}
         opacity={disabled ? 0.55 : 1}
         transition="border-color 0.15s ease"
@@ -197,6 +261,8 @@ function SingleSelect({
 
       {isOpen && (
         <Box
+          id={id ? `${id}-listbox` : undefined}
+          role="listbox"
           position="absolute"
           top="100%"
           left="0"
@@ -261,21 +327,26 @@ function SingleSelect({
                 No options found
               </Box>
             ) : (
-              filteredOptions.map((opt) => {
+              filteredOptions.map((opt, idx) => {
                 const isSelected = opt.value === selectedValue;
+                const isActive = idx === activeIndex;
                 return (
                   <button
                     key={opt.value}
                     type="button"
+                    role="option"
+                    aria-selected={isSelected}
                     disabled={opt.disabled}
                     onClick={() => handleSelectOption(opt.value)}
+                    onMouseEnter={() => setActiveIndex(idx)}
                     style={{
                       display: 'flex',
                       width: '100%',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       padding: '8px 14px',
-                      background: isSelected ? 'var(--medix-form-bg-subtle)' : 'transparent',
+                      background:
+                        isActive || isSelected ? 'var(--medix-form-bg-subtle)' : 'transparent',
                       border: 'none',
                       cursor: opt.disabled ? 'not-allowed' : 'pointer',
                       textAlign: 'left',
@@ -284,19 +355,6 @@ function SingleSelect({
                       color: 'var(--medix-form-text)',
                       opacity: opt.disabled ? 0.5 : 1,
                       transition: 'background 0.1s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!opt.disabled) {
-                        (e.currentTarget as HTMLButtonElement).style.background =
-                          'var(--medix-form-bg-subtle)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!opt.disabled) {
-                        (e.currentTarget as HTMLButtonElement).style.background = isSelected
-                          ? 'var(--medix-form-bg-subtle)'
-                          : 'transparent';
-                      }
                     }}
                   >
                     <span style={{ fontWeight: isSelected ? 600 : 400 }}>{opt.label}</span>
@@ -325,23 +383,28 @@ function SingleSelect({
 /**
  * Interactive MultiSelect component when `multiple={true}`.
  */
-function MultiSelect({
-  options = [],
-  placeholder = 'Select options...',
-  isInvalid = false,
-  errorMessage,
-  size = 'md',
-  colorScheme = 'blue',
-  icon,
-  value,
-  defaultValue,
-  onChange,
-  disabled = false,
-  name,
-  id,
-}: SelectProps) {
+function MultiSelect(props: SelectProps) {
+  const {
+    options = [],
+    placeholder = 'Select options...',
+    isInvalid = false,
+    errorMessage,
+    size = 'md',
+    colorScheme = 'blue',
+    icon,
+    value,
+    defaultValue,
+    onChange,
+    disabled = false,
+    haptic,
+    disableHaptic = false,
+    name,
+    id,
+    ...ariaProps
+  } = props as MultiSelectProps & Record<string, unknown>;
   const [isOpen, setIsOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
+  const [activeIndex, setActiveIndex] = React.useState(-1);
   const [internalValues, setInternalValues] = React.useState<string[]>(() => {
     if (Array.isArray(defaultValue)) return defaultValue;
     if (typeof defaultValue === 'string' && defaultValue) return [defaultValue];
@@ -375,10 +438,12 @@ function MultiSelect({
 
   React.useEffect(() => {
     if (isOpen) {
+      setActiveIndex(0);
       const timer = setTimeout(() => searchInputRef.current?.focus(), 50);
       return () => clearTimeout(timer);
     } else {
       setSearch('');
+      setActiveIndex(-1);
     }
   }, [isOpen]);
 
@@ -388,20 +453,26 @@ function MultiSelect({
     const nextValues = isSelected
       ? selectedValues.filter((v) => v !== optValue)
       : [...selectedValues, optValue];
+    if (!disableHaptic && haptic !== false) {
+      trigger(haptic ?? 'selection');
+    }
     if (!isControlled) {
       setInternalValues(nextValues);
     }
-    onChange?.(nextValues);
+    (onChange as ((value: string[]) => void) | undefined)?.(nextValues);
   };
 
   const removeOption = (optValue: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (disabled) return;
+    if (!disableHaptic && haptic !== false) {
+      trigger(haptic ?? 'selection');
+    }
     const nextValues = selectedValues.filter((v) => v !== optValue);
     if (!isControlled) {
       setInternalValues(nextValues);
     }
-    onChange?.(nextValues);
+    (onChange as ((value: string[]) => void) | undefined)?.(nextValues);
   };
 
   const filteredOptions = React.useMemo(() => {
@@ -410,6 +481,11 @@ function MultiSelect({
     return options.filter((opt) => opt.label.toLowerCase().includes(q));
   }, [options, search]);
 
+  React.useEffect(() => {
+    setActiveIndex(filteredOptions.length > 0 ? 0 : -1);
+  }, [filteredOptions.length, search]);
+
+  const { trigger } = useHaptics();
   const focusBorderColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
   const activeBorderColor = isInvalid
     ? '#DC2626'
@@ -426,7 +502,66 @@ function MultiSelect({
       {name && <input type="hidden" name={name} id={id} value={selectedValues.join(',')} />}
 
       <Box
-        onClick={() => !disabled && setIsOpen(!isOpen)}
+        {...(ariaProps as Record<string, unknown>)}
+        role="combobox"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-controls={id ? `${id}-listbox` : undefined}
+        aria-invalid={
+          isInvalid
+            ? true
+            : ((ariaProps as Record<string, unknown>)['aria-invalid'] as
+                | boolean
+                | 'true'
+                | 'false'
+                | undefined)
+        }
+        aria-disabled={disabled || undefined}
+        tabIndex={disabled ? -1 : 0}
+        onClick={() => {
+          if (disabled) return;
+          if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+          setIsOpen(!isOpen);
+        }}
+        onKeyDown={(e) => {
+          if (disabled) return;
+          if (!isOpen) {
+            if (
+              e.key === 'Enter' ||
+              e.key === ' ' ||
+              e.key === 'ArrowDown' ||
+              e.key === 'ArrowUp'
+            ) {
+              e.preventDefault();
+              if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+              setIsOpen(true);
+            }
+            return;
+          }
+
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            setIsOpen(false);
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActiveIndex((i) => {
+              const len = filteredOptions.length;
+              if (len === 0) return -1;
+              return i < 0 ? 0 : (i + 1) % len;
+            });
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActiveIndex((i) => {
+              const len = filteredOptions.length;
+              if (len === 0) return -1;
+              return i <= 0 ? len - 1 : i - 1;
+            });
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const opt = filteredOptions[activeIndex];
+            if (opt && !opt.disabled) toggleOption(opt.value);
+          }
+        }}
         display="flex"
         alignItems="center"
         justifyContent="space-between"
@@ -434,7 +569,7 @@ function MultiSelect({
         py="1.5"
         px="3"
         borderRadius="md"
-        bg="bg.surface"
+        bg="bg"
         cursor={disabled ? 'not-allowed' : 'pointer'}
         opacity={disabled ? 0.55 : 1}
         transition="border-color 0.15s ease"
@@ -550,6 +685,8 @@ function MultiSelect({
 
       {isOpen && (
         <Box
+          id={id ? `${id}-listbox` : undefined}
+          role="listbox"
           position="absolute"
           top="100%"
           left="0"
@@ -614,21 +751,26 @@ function MultiSelect({
                 No options found
               </Box>
             ) : (
-              filteredOptions.map((opt) => {
+              filteredOptions.map((opt, idx) => {
                 const isSelected = selectedValues.includes(opt.value);
+                const isActive = idx === activeIndex;
                 return (
                   <button
                     key={opt.value}
                     type="button"
+                    role="option"
+                    aria-selected={isSelected}
                     disabled={opt.disabled}
                     onClick={() => toggleOption(opt.value)}
+                    onMouseEnter={() => setActiveIndex(idx)}
                     style={{
                       display: 'flex',
                       width: '100%',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       padding: '8px 14px',
-                      background: isSelected ? 'var(--medix-form-bg-subtle)' : 'transparent',
+                      background:
+                        isActive || isSelected ? 'var(--medix-form-bg-subtle)' : 'transparent',
                       border: 'none',
                       cursor: opt.disabled ? 'not-allowed' : 'pointer',
                       textAlign: 'left',
@@ -637,19 +779,6 @@ function MultiSelect({
                       color: 'var(--medix-form-text)',
                       opacity: opt.disabled ? 0.5 : 1,
                       transition: 'background 0.1s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!opt.disabled) {
-                        (e.currentTarget as HTMLButtonElement).style.background =
-                          'var(--medix-form-bg-subtle)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!opt.disabled) {
-                        (e.currentTarget as HTMLButtonElement).style.background = isSelected
-                          ? 'var(--medix-form-bg-subtle)'
-                          : 'transparent';
-                      }
                     }}
                   >
                     <span style={{ fontWeight: isSelected ? 600 : 400 }}>{opt.label}</span>

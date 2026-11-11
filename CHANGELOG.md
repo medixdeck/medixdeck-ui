@@ -4,6 +4,41 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ## [Unreleased]
 
+### Changed
+
+- **`Badge` & `Tag` — leading status dots by default**:
+  - Added `showDot?: boolean` (default `true`) to `Badge` and primitive `Tag` to render a leading status dot for faster visual scanning.
+  - Dot colors are chosen per variant/status or color scheme to remain distinguishable from the component background (including solid variants).
+  - Set `showDot={false}` to restore the previous no-dot appearance.
+  - `TagsInput` tag pills now also render a leading dot by default for visual consistency.
+  - Updated Badge Storybook stories and `src/App.tsx` showcase.
+
+### Improved
+
+- **Accessibility & form semantics (incremental backlog pass)**:
+  - `FormControl` now generates stable control IDs and wires label/helper/error associations (`aria-describedby`, `aria-invalid`, `aria-required`) to valid child controls.
+  - Added/forwarded ARIA props (`id`, `name`, `aria-label`, `aria-labelledby`, `aria-describedby`, `aria-invalid`, `aria-required`) and baseline roles/keyboard behavior to custom controls including `Select`, `Combobox`, `DatePicker`, `DateRangePicker`, `PhoneInput`, `TagsInput`, `FileUpload`, `OTPInput`, `Switch`, `Checkbox`, `RadioGroup`, and `RichTextInput` (markdown mode).
+  - `Select` and `Combobox` gained improved listbox semantics and keyboard interaction support (open/close, arrow-key navigation, active option handling, Enter selection/toggle).
+  - `Calendar` day grid received basic keyboard accessibility improvements (focusable day cells, grid semantics/labels, and arrow-key focus movement within available day buttons).
+  - `Button` typing/haptics handling improved and disabled non-button (`as="a"`) behavior now avoids navigation/tab focus while preserving `aria-disabled`.
+- **Overlay/layout behavior**:
+  - `Modal` and `Drawer` content areas are viewport-constrained with scrollable bodies to keep headers/close actions and footers accessible on small screens.
+  - `DataTable` container/background updated to use `bg` while preserving readable header/row/hover contrast.
+  - `Tooltip` adds `toggleOnTouch` (default `true`) to allow primary tap actions (e.g. collapsed sidebar links/buttons) without tooltip tap interception.
+- **Suppression/typing cleanup (targeted)**:
+  - Replaced `Calendar` button `@ts-expect-error` workarounds with typed `chakra.button` elements.
+  - Reduced/adjusted suppressions in `DashboardLayout` and `Footer` where feasible during this pass.
+- **Docs/stories**:
+  - Added Storybook stories for `Tag`, `Divider`, `Spinner`/`FullPageSpinner`, `IconButton`, and `FormControl`.
+
+## [0.1.27] - 2026-11-02
+
+### Fixed — PWA install prompt
+
+- Respect dismissal cooldowns on subsequent browser install events and before delayed banners appear, including native install-dialog dismissals. Keep the cooldown in memory when storage is unavailable.
+- Cancel pending display timers on dismissal, installation, and unmount; replace earlier timers when a new install event arrives.
+- Consume each browser install event once, suppress duplicate installation attempts, and hide the banner after installation. Document `forceVisible` as a preview-only option that must be omitted in production apps.
+
 ### Fixed — SSR compatibility
 
 - Build the shared ESM/CommonJS entries without freezing browser-only dependency conditions. Runtime dependencies remain external where compatible with both output formats; the ESM-only Markdown renderer is bundled using its universal implementation.
