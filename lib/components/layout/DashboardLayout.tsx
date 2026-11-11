@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useId } from 'react';
-import { Box, type BoxProps } from '@chakra-ui/react';
+import { Box, chakra, type BoxProps } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useThemeMode, type ThemeModeSetting } from '../../hooks/useThemeMode';
 import { Logo } from '../primitive/Logo';
@@ -789,12 +789,12 @@ function detectDashboardEnvironment(explicitEnv?: DashboardEnvironment): {
 
   // 2. Check import.meta.env (Vite, Astro, ES modules)
   try {
-    // @ts-ignore
-    if (typeof import.meta !== 'undefined' && import.meta && import.meta.env) {
-      // @ts-ignore
-      const viteMode = import.meta.env.MODE;
-      // @ts-ignore
-      const viteMedixEnv = import.meta.env.VITE_MEDIX_ENV || import.meta.env.PUBLIC_MEDIX_ENV;
+    const importMeta = import.meta as unknown as {
+      env?: Record<string, string | boolean | undefined>;
+    };
+    if (typeof import.meta !== 'undefined' && importMeta.env) {
+      const viteMode = importMeta.env.MODE;
+      const viteMedixEnv = importMeta.env.VITE_MEDIX_ENV || importMeta.env.PUBLIC_MEDIX_ENV;
 
       if (viteMedixEnv) {
         const lower = String(viteMedixEnv).toLowerCase();
@@ -1007,9 +1007,7 @@ function DashboardEnvironmentBanner({
         {config.action}
 
         {config.dismissible && (
-          <Box
-            as="button"
-            // @ts-expect-error type button
+          <chakra.button
             type="button"
             onClick={onDismiss}
             aria-label="Dismiss environment banner"
@@ -1034,7 +1032,7 @@ function DashboardEnvironmentBanner({
             transition="background 0.15s ease, opacity 0.15s ease"
           >
             <CloseBannerIcon />
-          </Box>
+          </chakra.button>
         )}
       </Box>
     </Box>
