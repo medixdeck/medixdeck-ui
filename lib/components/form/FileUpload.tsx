@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface FileUploadProps {
   /** Accepted file types (e.g. ".pdf,.jpg,.png" or "image/*") */
@@ -23,6 +25,10 @@ export interface FileUploadProps {
   dropzoneTitle?: string;
   /** Custom ID for the file input */
   id?: string;
+  /** Haptic feedback intent/pattern on file selection/error. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for file upload interactions. */
+  disableHaptic?: boolean;
 }
 
 const UPLOAD_ICON = (
@@ -69,7 +75,10 @@ export function FileUpload({
   onChange,
   dropzoneTitle = 'Click or drag to upload',
   id,
+  haptic,
+  disableHaptic = false,
 }: FileUploadProps) {
+  const { trigger } = useHaptics();
   const [isDragging, setIsDragging] = React.useState(false);
   const [selectedFileNames, setSelectedFileNames] = React.useState<string[]>([]);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -100,6 +109,7 @@ export function FileUpload({
     if (oversized && maxSize) {
       const maxMb = Math.round(maxSize / (1024 * 1024));
       setFileError(`File "${oversized.name}" exceeds the maximum limit of ${maxMb}MB.`);
+      if (!disableHaptic && haptic !== false) trigger(haptic ?? 'error');
     }
 
     const validFiles = fileArray.filter((file) => {
@@ -109,6 +119,7 @@ export function FileUpload({
 
     if (validFiles.length > 0) {
       setSelectedFileNames(validFiles.map((f) => f.name));
+      if (!disableHaptic && haptic !== false) trigger(haptic ?? 'impactLight');
       onChange?.(validFiles);
     }
   };
