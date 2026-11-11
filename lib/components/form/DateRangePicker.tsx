@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import { Calendar } from './Calendar';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface DateRangePickerProps {
   /** Controlled start date value (ISO date string: YYYY-MM-DD) */
@@ -25,6 +27,15 @@ export interface DateRangePickerProps {
   startPlaceholder?: string;
   endPlaceholder?: string;
   id?: string;
+  /** Haptic feedback intent/pattern on open/selection. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this date range picker. */
+  disableHaptic?: boolean;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -59,7 +70,15 @@ export function DateRangePicker({
   startPlaceholder = 'Start date',
   endPlaceholder = 'End date',
   id,
+  haptic,
+  disableHaptic = false,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: DateRangePickerProps) {
+  const { trigger } = useHaptics();
   const [activeInput, setActiveInput] = useState<'start' | 'end' | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -196,14 +215,23 @@ export function DateRangePicker({
           value={displayStart}
           placeholder={startPlaceholder}
           disabled={isDisabled}
-          aria-invalid={isInvalid}
+          aria-label={ariaLabel ? `${ariaLabel} start date` : undefined}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-invalid={isInvalid || ariaInvalid || undefined}
+          aria-required={ariaRequired}
           aria-haspopup="dialog"
           aria-expanded={activeInput === 'start'}
-          onClick={() => !isDisabled && setActiveInput('start')}
+          onClick={() => {
+            if (isDisabled) return;
+            if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+            setActiveInput('start');
+          }}
           onKeyDown={(e) => {
             if (!isDisabled) {
               if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
                 e.preventDefault();
+                if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
                 setActiveInput('start');
               } else if (e.key === 'Escape') {
                 setActiveInput(null);
@@ -223,14 +251,23 @@ export function DateRangePicker({
           value={displayEnd}
           placeholder={endPlaceholder}
           disabled={isDisabled}
-          aria-invalid={isInvalid}
+          aria-label={ariaLabel ? `${ariaLabel} end date` : undefined}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-invalid={isInvalid || ariaInvalid || undefined}
+          aria-required={ariaRequired}
           aria-haspopup="dialog"
           aria-expanded={activeInput === 'end'}
-          onClick={() => !isDisabled && setActiveInput('end')}
+          onClick={() => {
+            if (isDisabled) return;
+            if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+            setActiveInput('end');
+          }}
           onKeyDown={(e) => {
             if (!isDisabled) {
               if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
                 e.preventDefault();
+                if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
                 setActiveInput('end');
               } else if (e.key === 'Escape') {
                 setActiveInput(null);
@@ -251,7 +288,7 @@ export function DateRangePicker({
           borderRadius="card"
           border="1px solid"
           borderColor="border"
-          bg="bg.surface"
+          bg="bg"
           overflow="hidden"
         >
           <Calendar
@@ -264,6 +301,8 @@ export function DateRangePicker({
             }
             maxDate={parseLocalDate(max)}
             colorScheme={colorScheme}
+            haptic={haptic}
+            disableHaptic={disableHaptic}
           />
         </Box>
       )}

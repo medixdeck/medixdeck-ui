@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 // ─── Brand palette (mirrors Button.tsx exactly) ───────────────────────────────
 const COLORS = {
@@ -28,12 +30,21 @@ export interface CheckboxProps {
   disabled?: boolean;
   /** Show indeterminate dash instead of tick */
   indeterminate?: boolean;
+  /** Haptic feedback intent/pattern on toggle. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this checkbox. */
+  disableHaptic?: boolean;
   children?: React.ReactNode;
   /** Helper text below the label */
   description?: string;
   name?: string;
   value?: string;
   id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -54,14 +65,22 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       onChange,
       disabled = false,
       indeterminate = false,
+      haptic,
+      disableHaptic = false,
       children,
       description,
       name,
       value,
       id,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-invalid': ariaInvalid,
+      'aria-required': ariaRequired,
     },
     ref,
   ) => {
+    const { trigger } = useHaptics();
     const c = COLORS[colorScheme];
     const uid = id ?? React.useId();
 
@@ -71,6 +90,9 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     const isOn = controlledChecked !== undefined ? controlledChecked : localChecked;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!disabled && !disableHaptic && haptic !== false) {
+        trigger(haptic ?? 'selection');
+      }
       if (controlledChecked === undefined) setLocalChecked(e.target.checked);
       onChange?.(e.target.checked);
     };
@@ -113,6 +135,11 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             value={value}
             checked={isOn}
             disabled={disabled}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={ariaInvalid}
+            aria-required={ariaRequired}
             onChange={handleChange}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
@@ -208,6 +235,16 @@ export interface RadioGroupProps {
   /** Brand color for the selected dot */
   colorScheme?: 'blue' | 'purple';
   direction?: 'row' | 'column';
+  /** Haptic feedback intent/pattern on selection. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this radio group. */
+  disableHaptic?: boolean;
+  id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -232,22 +269,40 @@ export function RadioGroup({
   options,
   colorScheme = 'blue',
   direction = 'column',
+  haptic,
+  disableHaptic = false,
+  id,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: RadioGroupProps) {
+  const { trigger } = useHaptics();
   const c = COLORS[colorScheme];
   const [localValue, setLocalValue] = React.useState<string>('');
   const selectedValue = controlledValue !== undefined ? controlledValue : localValue;
 
   const handleChange = (val: string) => {
+    if (!disableHaptic && haptic !== false && val !== selectedValue) {
+      trigger(haptic ?? 'selection');
+    }
     if (controlledValue === undefined) setLocalValue(val);
     onChange?.(val);
   };
 
   return (
     <Box
+      id={id}
       display="flex"
       flexDirection={direction}
       gap={direction === 'row' ? '5' : '3'}
       role="radiogroup"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-invalid={ariaInvalid}
+      aria-required={ariaRequired}
     >
       {options.map((opt) => {
         const isSelected = selectedValue === opt.value;

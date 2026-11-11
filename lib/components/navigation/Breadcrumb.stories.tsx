@@ -5,6 +5,9 @@ const meta: Meta<typeof Breadcrumb> = {
   title: 'Navigation/Breadcrumb',
   component: Breadcrumb,
   tags: ['autodocs'],
+  argTypes: {
+    colorScheme: { control: 'select', options: ['blue', 'purple'] },
+  },
 };
 
 export default meta;
@@ -23,5 +26,16 @@ export const Default: Story = {
 export const SingleLevel: Story = {
   args: {
     items: [{ label: 'Home', href: '/' }, { label: 'Profile' }],
+  },
+};
+
+export const Purple: Story = {
+  args: {
+    colorScheme: 'purple',
+    items: [
+      { label: 'Home', href: '/' },
+      { label: 'Appointments', href: '/appointments' },
+      { label: 'Book Appointment' },
+    ],
   },
 };

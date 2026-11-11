@@ -2,6 +2,10 @@
 
 import React from 'react';
 import { Box, type BoxProps } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
+
+export type PaginationColorScheme = 'blue' | 'purple';
 
 // Omit onChange to avoid conflict with BoxProps (which defines onChange as FormEventHandler)
 export interface PaginationProps extends Omit<BoxProps, 'onChange'> {
@@ -19,7 +23,54 @@ export interface PaginationProps extends Omit<BoxProps, 'onChange'> {
   showEdges?: boolean;
   /** Compact mode */
   compact?: boolean;
+  /**
+   * Brand accent color for active/interactive pagination controls.
+   * @default "blue"
+   */
+  colorScheme?: PaginationColorScheme;
+  /** Haptic feedback intent/pattern on page change. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for pagination. */
+  disableHaptic?: boolean;
 }
+
+const PAGINATION_SCHEME: Record<
+  PaginationColorScheme,
+  {
+    activeBg: string;
+    activeColor: string;
+    inactiveBg: string;
+    inactiveColor: string;
+    inactiveBgDark: string;
+    inactiveColorDark: string;
+    hoverBg: string;
+    hoverBgDark: string;
+    navHoverColor: string;
+  }
+> = {
+  blue: {
+    activeBg: 'blue.500',
+    activeColor: 'white',
+    inactiveBg: 'blue.100',
+    inactiveColor: 'blue.500',
+    inactiveBgDark: 'rgba(6, 133, 255, 0.12)',
+    inactiveColorDark: 'blue.200',
+    hoverBg: 'blue.200',
+    hoverBgDark: 'rgba(6, 133, 255, 0.2)',
+    navHoverColor: 'blue.500',
+  },
+  purple: {
+    activeBg: '#7700CC',
+    activeColor: 'white',
+    inactiveBg: '#F3E8FF',
+    inactiveColor: '#7700CC',
+    inactiveBgDark: 'rgba(119, 0, 204, 0.18)',
+    inactiveColorDark: '#D8B4FE',
+    hoverBg: '#E9D5FF',
+    hoverBgDark: 'rgba(119, 0, 204, 0.28)',
+    navHoverColor: '#7700CC',
+  },
+};
 
 function buildPages(
   currentPage: number,
@@ -76,12 +127,23 @@ export function Pagination({
   siblingCount = 1,
   showEdges = true,
   compact = false,
+  colorScheme = 'blue',
+  haptic,
+  disableHaptic = false,
   ...props
 }: PaginationProps) {
+  const { trigger } = useHaptics();
   const pageCount = Math.ceil(total / pageSize);
+  const scheme = PAGINATION_SCHEME[colorScheme];
   if (pageCount <= 1) return null;
 
   const pages = buildPages(currentPage, pageCount, siblingCount);
+
+  const changePage = (page: number) => {
+    if (page === currentPage || page < 1 || page > pageCount) return;
+    if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+    onChange?.(page);
+  };
 
   const btnBase: BoxProps = {
     display: 'inline-flex',
@@ -136,7 +198,7 @@ export function Pagination({
       pointerEvents={disabled ? 'none' : undefined}
       onClick={onClick}
       aria-label={label}
-      _hover={{ color: 'blue.500' }}
+      _hover={{ color: scheme.navHoverColor }}
     >
       {!isNext && icon && (
         <Box as="span" display="flex" alignItems="center">
@@ -196,7 +258,7 @@ export function Pagination({
       {showEdges && (
         <NavBtn
           disabled={currentPage === 1}
-          onClick={() => onChange?.(1)}
+          onClick={() => changePage(1)}
           label="First page"
           icon={ChevronLeft}
         >
@@ -205,7 +267,7 @@ export function Pagination({
       )}
       <NavBtn
         disabled={currentPage === 1}
-        onClick={() => onChange?.(currentPage - 1)}
+        onClick={() => changePage(currentPage - 1)}
         label="Previous page"
         icon={ChevronLeft}
       >
@@ -230,18 +292,18 @@ export function Pagination({
               key={page}
               as="button"
               {...btnBase}
-              bg={currentPage === page ? 'blue.500' : 'blue.100'}
-              color={currentPage === page ? 'white' : 'blue.500'}
+              bg={currentPage === page ? scheme.activeBg : scheme.inactiveBg}
+              color={currentPage === page ? scheme.activeColor : scheme.inactiveColor}
               _dark={{
-                bg: currentPage === page ? 'blue.500' : 'rgba(6, 133, 255, 0.12)',
-                color: currentPage === page ? 'white' : 'blue.200',
+                bg: currentPage === page ? scheme.activeBg : scheme.inactiveBgDark,
+                color: currentPage === page ? scheme.activeColor : scheme.inactiveColorDark,
               }}
-              onClick={() => onChange?.(page as number)}
+              onClick={() => changePage(page as number)}
               aria-label={`Page ${page}`}
               aria-current={currentPage === page ? 'page' : undefined}
               _hover={
                 currentPage !== page
-                  ? { bg: 'blue.200', _dark: { bg: 'rgba(6, 133, 255, 0.2)' } }
+                  ? { bg: scheme.hoverBg, _dark: { bg: scheme.hoverBgDark } }
                   : undefined
               }
             >
@@ -264,7 +326,7 @@ export function Pagination({
 
       <NavBtn
         disabled={currentPage === pageCount}
-        onClick={() => onChange?.(currentPage + 1)}
+        onClick={() => changePage(currentPage + 1)}
         label="Next page"
         icon={ChevronRight}
         isNext
@@ -274,7 +336,7 @@ export function Pagination({
       {showEdges && (
         <NavBtn
           disabled={currentPage === pageCount}
-          onClick={() => onChange?.(pageCount)}
+          onClick={() => changePage(pageCount)}
           label="Last page"
           icon={ChevronRight}
           isNext

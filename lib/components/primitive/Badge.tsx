@@ -18,6 +18,8 @@ export interface BadgeProps {
   size?: BadgeSize;
   /** Whether to apply a fully rounded (100px) pill border radius vs the standard 4px */
   rounded?: boolean;
+  /** Show a leading status dot. Dotted badges are the default. */
+  showDot?: boolean;
   children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -72,30 +74,41 @@ const STATUS_COLORS: Record<
   },
 };
 
-const SIZE_STYLES: Record<BadgeSize, React.CSSProperties> = {
-  sm: { padding: '1px 6px', fontSize: 10, lineHeight: '18px' },
-  md: { padding: '2px 8px', fontSize: 11, lineHeight: '20px' },
-  lg: { padding: '3px 10px', fontSize: 12, lineHeight: '22px' },
+const SIZE_STYLES: Record<
+  BadgeSize,
+  { padding: string; fontSize: number; lineHeight: string; dotSize: number; gap: number }
+> = {
+  sm: { padding: '1px 6px', fontSize: 10, lineHeight: '18px', dotSize: 6, gap: 4 },
+  md: { padding: '2px 8px', fontSize: 11, lineHeight: '20px', dotSize: 7, gap: 5 },
+  lg: { padding: '3px 10px', fontSize: 12, lineHeight: '22px', dotSize: 8, gap: 6 },
 };
 
 /**
  * MedixDeck Badge
  *
  * Status indicator chip using exact MedixDeck brand colours.
+ * Includes a leading status dot by default for quick visual scanning.
  *
  * @example
  * ```tsx
- * <Badge rounded={true} status="success">Verified</Badge>
- * <Badge rounded={true} status="warning" variant="subtle">Pending</Badge>
- * <Badge rounded={true} status="error" variant="solid">Cancelled</Badge>
- * <Badge rounded={false} status="success">Verified</Badge>
- * <Badge rounded={false} status="warning" variant="subtle">Pending</Badge>
- * <Badge rounded={false} status="error" variant="solid">Cancelled</Badge>
+ * <Badge rounded status="success">Verified</Badge>
+ * <Badge rounded status="warning" variant="subtle">Pending</Badge>
+ * <Badge rounded status="error" variant="solid">Cancelled</Badge>
+ * <Badge status="info" showDot={false}>No dot</Badge>
  * ```
  */
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   (
-    { variant = 'subtle', status = 'neutral', size = 'md', rounded, children, style, ...props },
+    {
+      variant = 'subtle',
+      status = 'neutral',
+      size = 'md',
+      rounded,
+      showDot = true,
+      children,
+      style,
+      ...props
+    },
     ref,
   ) => {
     const c = STATUS_COLORS[status];
@@ -127,10 +140,14 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         break;
     }
 
+    // Dot must remain distinguishable from the badge background in every variant.
+    const dotColor = variant === 'solid' ? c.solidText : c.solid;
+
     const baseStyle: React.CSSProperties = {
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
+      gap: showDot ? sz.gap : 0,
       fontFamily: 'var(--font-body)',
       fontWeight: 500,
       letterSpacing: '0.03em',
@@ -140,12 +157,27 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       background: bg,
       color,
       whiteSpace: 'nowrap',
-      ...sz,
+      padding: sz.padding,
+      fontSize: sz.fontSize,
+      lineHeight: sz.lineHeight,
       ...style,
     };
 
     return (
       <span ref={ref} style={baseStyle} {...props}>
+        {showDot && (
+          <span
+            aria-hidden="true"
+            style={{
+              width: sz.dotSize,
+              height: sz.dotSize,
+              borderRadius: '50%',
+              background: dotColor,
+              flexShrink: 0,
+              display: 'inline-block',
+            }}
+          />
+        )}
         {children}
       </span>
     );

@@ -81,7 +81,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...sizeStyles[size]}
             pl={hasLeft ? '10' : sizeStyles[size].px}
             pr={hasRight ? '10' : sizeStyles[size].px}
-            bg="bg.surface"
+            bg="bg"
             border="1px solid"
             borderColor={isInvalid ? 'red.500' : 'border'}
             borderRadius="md"
@@ -94,7 +94,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               outline: 'none',
             }}
             _dark={{
-              bg: 'bg.surface',
+              bg: 'bg',
               borderColor: isInvalid ? 'red.500' : 'border',
               color: 'text.heading',
             }}
