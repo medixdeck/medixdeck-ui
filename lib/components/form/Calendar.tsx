@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Text, type BoxProps } from '@chakra-ui/react';
+import { Box, Flex, Text, chakra, type BoxProps } from '@chakra-ui/react';
 import { useHaptics } from '../../hooks/useHaptics';
 import type { HapticInput } from '../../utils/haptics';
 
@@ -222,6 +222,7 @@ export function Calendar({
   };
 
   // ─── Day-view cell rendering ────────────────────────────────────────────────
+  const dayGridRef = React.useRef<HTMLDivElement>(null);
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay = shiftDay(getFirstDayOfMonth(year, month));
   const prevMonthDays = getDaysInMonth(year, month - 1);
@@ -233,24 +234,65 @@ export function Calendar({
     return value.getDate() === d && value.getMonth() === m && value.getFullYear() === y;
   };
 
+  const today = new Date();
+  const focusableDay =
+    (value && value.getMonth() === month && value.getFullYear() === year ? value.getDate() : null) ??
+    (today.getMonth() === month && today.getFullYear() === year ? today.getDate() : 1);
+
+  const handleDayGridKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (viewMode !== 'day') return;
+    const key = e.key;
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(key)) return;
+
+    const grid = dayGridRef.current;
+    if (!grid) return;
+    const buttons = Array.from(
+      grid.querySelectorAll<HTMLButtonElement>('button[data-day-cell="true"]:not([disabled])'),
+    );
+    if (buttons.length === 0) return;
+
+    const currentIndex = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    if (currentIndex < 0) return;
+
+    let nextIndex = currentIndex;
+    if (key === 'ArrowLeft') nextIndex = Math.max(0, currentIndex - 1);
+    if (key === 'ArrowRight') nextIndex = Math.min(buttons.length - 1, currentIndex + 1);
+    if (key === 'ArrowUp') nextIndex = Math.max(0, currentIndex - 7);
+    if (key === 'ArrowDown') nextIndex = Math.min(buttons.length - 1, currentIndex + 7);
+    if (key === 'Home') nextIndex = 0;
+    if (key === 'End') nextIndex = buttons.length - 1;
+
+    if (nextIndex !== currentIndex) {
+      e.preventDefault();
+      buttons[nextIndex]?.focus();
+    }
+  };
+
   const renderDayCells = () => {
     const cells = [];
 
     for (let i = 0; i < firstDay; i++) {
       const dayNum = prevMonthDays - firstDay + i + 1;
-      cells.push(<DayCell key={`prev-${i}`} day={dayNum} isMuted accentColor={accentColor} />);
+      cells.push(
+        <DayCell key={`prev-${i}`} day={dayNum} isMuted accentColor={accentColor} tabIndex={-1} />,
+      );
     }
 
     for (let i = 1; i <= daysInMonth; i++) {
       const outOfRange = isDateOutOfRange(i, month, year, minDate, maxDate);
+      const selected = isSelected(i, month, year);
+      const tabbable = !outOfRange && (selected || i === focusableDay);
       cells.push(
         <DayCell
           key={`curr-${i}`}
           day={i}
-          isActive={isSelected(i, month, year)}
+          isActive={selected}
           isDisabled={outOfRange}
           accentColor={accentColor}
           accentLight={accentLight}
+          tabIndex={outOfRange ? -1 : tabbable ? 0 : -1}
+          dataDayCell={!outOfRange}
+          ariaLabel={`${MONTHS[month]} ${i}, ${year}`}
           onClick={
             outOfRange
               ? undefined
@@ -264,7 +306,9 @@ export function Calendar({
     }
 
     for (let i = 1; i <= daysInNextMonth; i++) {
-      cells.push(<DayCell key={`next-${i}`} day={i} isMuted accentColor={accentColor} />);
+      cells.push(
+        <DayCell key={`next-${i}`} day={i} isMuted accentColor={accentColor} tabIndex={-1} />,
+      );
     }
 
     return cells;
@@ -413,9 +457,7 @@ export function Calendar({
         </Flex>
 
         {/* Today button */}
-        <Box
-          as="button"
-          // @ts-expect-error type is valid when as="button"
+        <chakra.button
           type="button"
           onClick={handleToday}
           px="3"
@@ -426,10 +468,12 @@ export function Calendar({
           border="1px solid"
           borderColor="border"
           color="text.heading"
+          bg="transparent"
+          cursor="pointer"
           _hover={{ bg: 'bg.subtle' }}
         >
           Today
-        </Box>
+        </chakra.button>
       </Flex>
 
       {/* ── Views ── */}
@@ -452,7 +496,15 @@ export function Calendar({
           </Flex>
 
           {/* Day grid */}
-          <Box display="grid" gridTemplateColumns="repeat(7, 1fr)" gapY="2">
+          <Box
+            ref={dayGridRef}
+            role="grid"
+            aria-label={`${MONTHS[month]} ${year}`}
+            display="grid"
+            gridTemplateColumns="repeat(7, 1fr)"
+            gapY="2"
+            onKeyDown={handleDayGridKeyDown}
+          >
             {renderDayCells()}
           </Box>
         </>
@@ -481,9 +533,7 @@ function NavChevronButton({
   ariaLabel?: string;
 }) {
   return (
-    <Box
-      as="button"
-      // @ts-expect-error type is valid when as="button"
+    <chakra.button
       type="button"
       aria-label={ariaLabel ?? (direction === 'prev' ? 'Go to previous month' : 'Go to next month')}
       aria-disabled={!enabled}
@@ -495,6 +545,8 @@ function NavChevronButton({
       w="7"
       h="7"
       borderRadius="md"
+      border="none"
+      bg="transparent"
       cursor={enabled ? 'pointer' : 'not-allowed'}
       color={enabled ? 'text.heading' : 'text.muted'}
       opacity={enabled ? 1 : 0.35}
@@ -515,7 +567,7 @@ function NavChevronButton({
       >
         {direction === 'prev' ? <path d="M15 18l-6-6 6-6" /> : <path d="M9 18l6-6-6-6" />}
       </svg>
-    </Box>
+    </chakra.button>
   );
 }
 
@@ -534,9 +586,7 @@ function HeaderPillButton({
   onClick: () => void;
 }) {
   return (
-    <Box
-      as="button"
-      // @ts-expect-error type is valid when as="button"
+    <chakra.button
       type="button"
       onClick={onClick}
       title={isActive ? 'Click to collapse' : 'Click to browse'}
@@ -546,6 +596,7 @@ function HeaderPillButton({
       px="2"
       py="0.5"
       borderRadius="md"
+      border="none"
       bg={isActive ? accentLight : 'transparent'}
       color={isActive ? accentColor : 'text.heading'}
       fontWeight="semibold"
@@ -576,7 +627,7 @@ function HeaderPillButton({
       >
         <path d="M6 9l6 6 6-6" />
       </svg>
-    </Box>
+    </chakra.button>
   );
 }
 
@@ -597,12 +648,10 @@ function MonthYearCell({
   onClick: () => void;
 }) {
   return (
-    <Box
-      as="button"
-      // @ts-expect-error type is valid when as="button"
+    <chakra.button
       type="button"
       onClick={isDisabled ? undefined : onClick}
-      {...({ disabled: isDisabled } as Record<string, unknown>)}
+      disabled={isDisabled}
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -629,7 +678,7 @@ function MonthYearCell({
       transition="all 0.15s"
     >
       {label}
-    </Box>
+    </chakra.button>
   );
 }
 
@@ -641,6 +690,9 @@ function DayCell({
   accentColor,
   accentLight,
   onClick,
+  tabIndex,
+  dataDayCell,
+  ariaLabel,
 }: {
   day: number;
   isActive?: boolean;
@@ -650,23 +702,31 @@ function DayCell({
   accentColor: string;
   accentLight?: string;
   onClick?: () => void;
+  tabIndex?: number;
+  dataDayCell?: boolean;
+  ariaLabel?: string;
 }) {
+  const interactive = !isMuted && !isDisabled;
   return (
-    <Flex justify="center" align="center" h="10">
-      <Box
-        as="button"
-        // @ts-expect-error type is valid when as="button"
+    <Flex justify="center" align="center" h="10" role="gridcell">
+      <chakra.button
         type="button"
+        data-day-cell={dataDayCell ? 'true' : undefined}
+        aria-label={ariaLabel}
+        aria-selected={isActive || undefined}
+        aria-disabled={!interactive || undefined}
+        tabIndex={tabIndex ?? (interactive ? 0 : -1)}
         display="flex"
         alignItems="center"
         justifyContent="center"
         w="9"
         h="9"
         borderRadius="full"
+        border="none"
         fontSize="sm"
         fontWeight="medium"
         onClick={onClick}
-        {...({ disabled: isMuted || isDisabled } as Record<string, unknown>)}
+        disabled={isMuted || isDisabled}
         cursor={isMuted ? 'default' : isDisabled ? 'not-allowed' : 'pointer'}
         opacity={isDisabled ? 0.35 : 1}
         style={{
@@ -686,7 +746,7 @@ function DayCell({
         transition="all 0.2s"
       >
         {day}
-      </Box>
+      </chakra.button>
     </Flex>
   );
 }
