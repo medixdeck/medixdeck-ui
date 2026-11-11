@@ -1388,7 +1388,7 @@ function SidebarNavItem({
           {flyoutOpen ? (
             triggerBtn
           ) : (
-            <Tooltip label={item.label} placement="right">
+            <Tooltip label={item.label} placement="right" toggleOnTouch={false}>
               {triggerBtn}
             </Tooltip>
           )}
@@ -1497,7 +1497,11 @@ function SidebarNavItem({
     // Leaf item in collapsed mode
     const railContent = (
       <Box display="flex" justifyContent="center" alignItems="center" w="full">
-        <Tooltip label={item.isNew ? `${item.label} (NEW)` : item.label} placement="right">
+        <Tooltip
+          label={item.isNew ? `${item.label} (NEW)` : item.label}
+          placement="right"
+          toggleOnTouch={false}
+        >
           <Box
             display="flex"
             alignItems="center"
@@ -2221,6 +2225,7 @@ function SidebarScoreCard({
         <Tooltip
           label={`${data.role} — ${data.name} (${tier.label}, ${data.medixScore} pts)`}
           placement="right"
+          toggleOnTouch={false}
         >
           <Box
             display="flex"
@@ -2538,7 +2543,7 @@ function Sidebar({
             {collapsible &&
               (collapseTogglePlacement === 'sidebar-header' ||
                 collapseTogglePlacement === 'both') && (
-                <Tooltip label="Expand sidebar" placement="right">
+                <Tooltip label="Expand sidebar" placement="right" toggleOnTouch={false}>
                   <Box
                     as="button"
                     display="inline-flex"
@@ -2579,7 +2584,7 @@ function Sidebar({
             {collapsible &&
               (collapseTogglePlacement === 'sidebar-header' ||
                 collapseTogglePlacement === 'both') && (
-                <Tooltip label="Collapse sidebar" placement="bottom">
+                <Tooltip label="Collapse sidebar" placement="bottom" toggleOnTouch={false}>
                   <Box
                     as="button"
                     display={{ base: 'none', md: 'inline-flex' }}
@@ -2680,7 +2685,7 @@ function Sidebar({
           w="full"
         >
           {isCollapsed ? (
-            <Tooltip label="Log out" placement="right">
+            <Tooltip label="Log out" placement="right" toggleOnTouch={false}>
               <Box
                 as="button"
                 display="flex"
@@ -2852,7 +2857,11 @@ function TopBar({
       {/* Desktop collapse / expand toggle */}
       {collapsible &&
         (collapseTogglePlacement === 'topbar' || collapseTogglePlacement === 'both') && (
-          <Tooltip label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} placement="bottom">
+          <Tooltip
+            label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            placement="bottom"
+            toggleOnTouch={false}
+          >
             <Box
               as="button"
               display={{ base: 'none', md: 'inline-flex' }}
