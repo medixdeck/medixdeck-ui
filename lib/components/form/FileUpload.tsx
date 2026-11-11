@@ -29,6 +29,11 @@ export interface FileUploadProps {
   haptic?: HapticInput;
   /** Disable haptic feedback for file upload interactions. */
   disableHaptic?: boolean;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 const UPLOAD_ICON = (
@@ -77,6 +82,11 @@ export function FileUpload({
   id,
   haptic,
   disableHaptic = false,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: FileUploadProps) {
   const { trigger } = useHaptics();
   const [isDragging, setIsDragging] = React.useState(false);
@@ -182,6 +192,11 @@ export function FileUpload({
           accept={accept}
           multiple={multiple}
           disabled={isDisabled}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-invalid={isInvalid || ariaInvalid || undefined}
+          aria-required={ariaRequired}
           style={{ display: 'none' }}
           onChange={handleChange}
         />
