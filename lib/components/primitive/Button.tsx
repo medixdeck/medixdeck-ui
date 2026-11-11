@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Box } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import { getButtonHapticIntent, type HapticInput } from '../../utils/haptics';
 
 // ─── MedixDeck brand color definitions ────────────────────────────────────────
 // Using raw hex values ensures the Button always renders with the correct brand
@@ -97,6 +99,10 @@ export interface ButtonProps {
   rightIcon?: React.ReactElement;
   /** Disabled state */
   disabled?: boolean;
+  /** Haptic feedback intent/pattern on press. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this button. */
+  disableHaptic?: boolean;
   /** HTML type attribute */
   type?: 'button' | 'submit' | 'reset';
   /** Click handler */
@@ -147,6 +153,8 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
       leftIcon,
       rightIcon,
       disabled,
+      haptic,
+      disableHaptic = false,
       children,
       style,
       as: Component = 'button',
@@ -157,6 +165,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
     },
     ref,
   ) => {
+    const { trigger } = useHaptics();
     // Safely fallback to blue if an invalid/unsupported color scheme is passed
     const c = COLORS[colorScheme] || COLORS.blue;
     const s = SIZE[size as keyof typeof SIZE] || SIZE.md;
@@ -306,6 +315,9 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
           if (Component !== 'button' && (disabled || isLoading)) {
             e.preventDefault();
             return;
+          }
+          if (!disableHaptic && haptic !== false && !disabled && !isLoading) {
+            trigger(haptic ?? getButtonHapticIntent(variant));
           }
           props.onClick?.(e);
         }}
