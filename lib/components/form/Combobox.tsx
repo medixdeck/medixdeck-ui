@@ -2,6 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface ComboboxOption {
   label: string;
@@ -20,6 +22,10 @@ export interface ComboboxProps {
   colorScheme?: 'blue' | 'purple';
   isInvalid?: boolean;
   isDisabled?: boolean;
+  /** Haptic feedback intent/pattern on selection. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this combobox. */
+  disableHaptic?: boolean;
 }
 
 const CHEVRON_DOWN = (
@@ -48,7 +54,10 @@ export function Combobox({
   colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
+  haptic,
+  disableHaptic = false,
 }: ComboboxProps) {
+  const { trigger } = useHaptics();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
@@ -176,6 +185,9 @@ export function Combobox({
                 cursor="pointer"
                 _hover={{ bg: 'bg.subtle' }}
                 onClick={() => {
+                  if (!disableHaptic && haptic !== false && opt.value !== value) {
+                    trigger(haptic ?? 'selection');
+                  }
                   onChange?.(opt.value);
                   setSearch(opt.label);
                   setIsOpen(false);
