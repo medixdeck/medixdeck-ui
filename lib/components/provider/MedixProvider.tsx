@@ -6,6 +6,8 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { system } from '../../theme';
 import { Toaster } from '../feedback/Toast';
 import { getThemeBootstrapScript } from './themeBootstrap';
+import { HapticsProvider } from '../../hooks/useHaptics';
+import type { HapticsConfig } from '../../utils/haptics';
 
 export interface MedixProviderProps {
   children: React.ReactNode;
@@ -18,6 +20,12 @@ export interface MedixProviderProps {
    * Force a specific color mode (disables user toggle)
    */
   forcedColorMode?: 'light' | 'dark';
+  /**
+   * Global haptic feedback configuration. Pass `false` to disable all haptics.
+   * Respects `prefers-reduced-motion` by default on supported devices.
+   * @default true
+   */
+  haptics?: boolean | HapticsConfig;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -69,7 +77,8 @@ const GLOBAL_STYLES = `
 
   /* ── Form & Scrollbar color tokens (light mode defaults) ────────────────────── */
   :root {
-    --medix-form-bg:          #F6F6F6;
+    /* Default input/control background aligned to semantic page bg */
+    --medix-form-bg:          #FEFEFE;
     --medix-form-bg-subtle:   #F0F4F8;
     --medix-form-text:        #111926;
     --medix-form-text-muted:  #6B7280;
@@ -83,7 +92,8 @@ const GLOBAL_STYLES = `
 
   /* ── Dark mode overrides — activates whenever .dark or [data-theme="dark"] is present ──── */
   .dark, [data-theme="dark"], html.dark, body.dark {
-    --medix-form-bg:          #152035;
+    /* Default input/control background aligned to semantic page bg */
+    --medix-form-bg:          #0A1220;
     --medix-form-bg-subtle:   #0F1C2E;
     --medix-form-text:        #F5F6F8;
     --medix-form-text-muted:  #94A3B8;
@@ -262,6 +272,7 @@ export function MedixProvider({
   children,
   defaultColorMode = 'system',
   forcedColorMode,
+  haptics = true,
 }: MedixProviderProps) {
   // Run on mount — safe in SSR (typeof document guard inside each fn)
   React.useEffect(() => {
@@ -287,8 +298,10 @@ export function MedixProvider({
         }}
       />
       <ChakraProvider value={system}>
-        {children}
-        <Toaster />
+        <HapticsProvider haptics={haptics}>
+          {children}
+          <Toaster />
+        </HapticsProvider>
       </ChakraProvider>
     </NextThemesProvider>
   );
