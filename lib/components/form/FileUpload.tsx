@@ -13,6 +13,8 @@ export interface FileUploadProps {
   label?: string;
   helperText?: string;
   errorMessage?: string;
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   isInvalid?: boolean;
   isDisabled?: boolean;
   /** Callback fired when files are selected or dropped */
@@ -61,6 +63,7 @@ export function FileUpload({
   label,
   helperText,
   errorMessage,
+  colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
   onChange,
@@ -76,22 +79,38 @@ export function FileUpload({
     if (!isDisabled) setIsDragging(true);
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!isDisabled) setIsDragging(true);
+  };
+
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
   };
 
+  const [fileError, setFileError] = React.useState<string | null>(null);
+
   const processFiles = (files: FileList | null) => {
     if (!files || files.length === 0) return;
+    const fileArray = Array.from(files);
+    setFileError(null);
 
-    // Filter by max size if needed
-    const validFiles = Array.from(files).filter((file) => {
+    const oversized = fileArray.find((f) => maxSize && f.size > maxSize);
+    if (oversized && maxSize) {
+      const maxMb = Math.round(maxSize / (1024 * 1024));
+      setFileError(`File "${oversized.name}" exceeds the maximum limit of ${maxMb}MB.`);
+    }
+
+    const validFiles = fileArray.filter((file) => {
       if (maxSize && file.size > maxSize) return false;
       return true;
     });
 
-    setSelectedFileNames(validFiles.map((f) => f.name));
-    onChange?.(validFiles);
+    if (validFiles.length > 0) {
+      setSelectedFileNames(validFiles.map((f) => f.name));
+      onChange?.(validFiles);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -104,9 +123,11 @@ export function FileUpload({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     processFiles(e.target.files);
+    e.target.value = '';
   };
 
-  const borderColor = isInvalid ? 'red.500' : isDragging ? 'blue.500' : 'border';
+  const focusBorder = colorScheme === 'purple' ? 'purple.500' : 'blue.500';
+  const borderColor = isInvalid ? 'red.500' : isDragging ? focusBorder : 'border';
 
   const bg = isDragging ? 'bg.subtle' : 'transparent';
 
@@ -136,9 +157,9 @@ export function FileUpload({
         transition="all 0.2s ease"
         opacity={isDisabled ? 0.5 : 1}
         cursor={isDisabled ? 'not-allowed' : 'pointer'}
-        _hover={!isDisabled ? { borderColor: 'blue.500', bg: 'bg.subtle' } : undefined}
+        _hover={!isDisabled ? { borderColor: focusBorder, bg: 'bg.subtle' } : undefined}
         onDragEnter={handleDragEnter}
-        onDragOver={handleDragEnter}
+        onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !isDisabled && inputRef.current?.click()}
@@ -192,14 +213,14 @@ export function FileUpload({
         )}
       </Box>
 
-      {(helperText || errorMessage) && (
+      {(helperText || errorMessage || fileError) && (
         <Text
           mt="1.5"
           fontSize="xs"
-          color={isInvalid ? 'red.500' : 'text.muted'}
+          color={isInvalid || fileError ? 'red.500' : 'text.muted'}
           fontFamily="var(--font-body)"
         >
-          {isInvalid ? errorMessage : helperText}
+          {fileError || (isInvalid ? errorMessage : helperText)}
         </Text>
       )}
     </Box>

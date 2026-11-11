@@ -46,3 +46,19 @@ export const Default: Story = {
     );
   },
 };
+
+export const WithoutHeader: Story = {
+  render: (args) => {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open Headless Modal</Button>
+        <Modal {...args} isOpen={open} onClose={() => setOpen(false)}>
+          <p style={{ fontFamily: 'var(--font-body)', color: 'var(--chakra-colors-text-body)' }}>
+            Modal without title or description (close trigger is still accessible at top-right).
+          </p>
+        </Modal>
+      </>
+    );
+  },
+};

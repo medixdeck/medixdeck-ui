@@ -1,5 +1,6 @@
 import { Box, type BoxProps } from '@chakra-ui/react';
 import { Badge } from '../primitive/Badge';
+import { Tooltip } from '../feedback/Tooltip';
 
 // ─── DoctorCard ───────────────────────────────────────────────────────────────
 
@@ -108,22 +109,28 @@ export function DoctorCard({
                 {name}
               </Box>
               {isVerified && (
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                <Tooltip
+                  label="This practitioner's identity has been verified by MedixDeck"
+                  placement="top"
                 >
-                  <path
-                    d="M10.5213 2.62368C11.3147 1.75255 12.6853 1.75255 13.4787 2.62368L14.4989 3.74391C14.8998 4.18418 15.4761 4.42288 16.071 4.39508L17.5845 4.32435C18.7614 4.26934 19.7307 5.23857 19.6757 6.41554L19.6049 7.92905C19.5771 8.52388 19.8158 9.10016 20.2561 9.50111L21.3763 10.5213C22.2475 11.3147 22.2475 12.6853 21.3763 13.4787L20.2561 14.4989C19.8158 14.8998 19.5771 15.4761 19.6049 16.071L19.6757 17.5845C19.7307 18.7614 18.7614 19.7307 17.5845 19.6757L16.071 19.6049C15.4761 19.5771 14.8998 19.8158 14.4989 20.2561L13.4787 21.3763C12.6853 22.2475 11.3147 22.2475 10.5213 21.3763L9.50111 20.2561C9.10016 19.8158 8.52388 19.5771 7.92905 19.6049L6.41554 19.6757C5.23857 19.7307 4.26934 18.7614 4.32435 17.5845L4.39508 16.071C4.42288 15.4761 4.18418 14.8998 3.74391 14.4989L2.62368 13.4787C1.75255 12.6853 1.75255 11.3147 2.62368 10.5213L3.74391 9.50111C4.18418 9.10016 4.42288 8.52388 4.39508 7.92905L4.32435 6.41554C4.26934 5.23857 5.23857 4.26934 6.41554 4.32435L7.92905 4.39508C8.52388 4.42288 9.10016 4.18418 9.50111 3.74391L10.5213 2.62368Z"
-                    fill="#0685FF"
-                  />
-                  <path
-                    d="M10.5 15.5L6.5 11.5L7.91 10.09L10.5 12.67L16.09 7.09L17.5 8.5L10.5 15.5Z"
-                    fill="white"
-                  />
-                </svg>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ cursor: 'pointer', flexShrink: 0 }}
+                  >
+                    <path
+                      d="M10.5213 2.62368C11.3147 1.75255 12.6853 1.75255 13.4787 2.62368L14.4989 3.74391C14.8998 4.18418 15.4761 4.42288 16.071 4.39508L17.5845 4.32435C18.7614 4.26934 19.7307 5.23857 19.6757 6.41554L19.6049 7.92905C19.5771 8.52388 19.8158 9.10016 20.2561 9.50111L21.3763 10.5213C22.2475 11.3147 22.2475 12.6853 21.3763 13.4787L20.2561 14.4989C19.8158 14.8998 19.5771 15.4761 19.6049 16.071L19.6757 17.5845C19.7307 18.7614 18.7614 19.7307 17.5845 19.6757L16.071 19.6049C15.4761 19.5771 14.8998 19.8158 14.4989 20.2561L13.4787 21.3763C12.6853 22.2475 11.3147 22.2475 10.5213 21.3763L9.50111 20.2561C9.10016 19.8158 8.52388 19.5771 7.92905 19.6049L6.41554 19.6757C5.23857 19.7307 4.26934 18.7614 4.32435 17.5845L4.39508 16.071C4.42288 15.4761 4.18418 14.8998 3.74391 14.4989L2.62368 13.4787C1.75255 12.6853 1.75255 11.3147 2.62368 10.5213L3.74391 9.50111C4.18418 9.10016 4.42288 8.52388 4.39508 7.92905L4.32435 6.41554C4.26934 5.23857 5.23857 4.26934 6.41554 4.32435L7.92905 4.39508C8.52388 4.42288 9.10016 4.18418 9.50111 3.74391L10.5213 2.62368Z"
+                      fill="#0685FF"
+                    />
+                    <path
+                      d="M10.5 15.5L6.5 11.5L7.91 10.09L10.5 12.67L16.09 7.09L17.5 8.5L10.5 15.5Z"
+                      fill="white"
+                    />
+                  </svg>
+                </Tooltip>
               )}
             </Box>
             <Box fontSize="md" color="text.muted" fontFamily="var(--font-body)" mt="0.5">
@@ -401,7 +408,7 @@ export function DoctorCard({
       {...props}
     >
       <Box display="flex" gap="4" alignItems="flex-start" justifyContent="space-between">
-        <Box display="flex" gap="4">
+        <Box display="flex" gap="4" minW="0" flex="1">
           <Box flexShrink={0}>
             {avatar ? (
               <img
@@ -432,36 +439,54 @@ export function DoctorCard({
               </Box>
             )}
           </Box>
-          <Box pt="1">
-            <Box display="flex" alignItems="center" gap="2" flexWrap="wrap">
+          <Box pt="1" minW="0" flex="1">
+            <Box display="flex" alignItems="center" gap="2" minW="0">
               <Box
                 fontSize="xl"
                 fontWeight="bold"
                 color="text.heading"
                 fontFamily="var(--font-heading)"
+                overflow="hidden"
+                textOverflow="ellipsis"
+                whiteSpace="nowrap"
+                minW="0"
+                flex="1"
               >
                 {name}
               </Box>
               {isVerified && (
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                <Tooltip
+                  label="This practitioner's identity has been verified by MedixDeck"
+                  placement="top"
                 >
-                  <path
-                    d="M10.5213 2.62368C11.3147 1.75255 12.6853 1.75255 13.4787 2.62368L14.4989 3.74391C14.8998 4.18418 15.4761 4.42288 16.071 4.39508L17.5845 4.32435C18.7614 4.26934 19.7307 5.23857 19.6757 6.41554L19.6049 7.92905C19.5771 8.52388 19.8158 9.10016 20.2561 9.50111L21.3763 10.5213C22.2475 11.3147 22.2475 12.6853 21.3763 13.4787L20.2561 14.4989C19.8158 14.8998 19.5771 15.4761 19.6049 16.071L19.6757 17.5845C19.7307 18.7614 18.7614 19.7307 17.5845 19.6757L16.071 19.6049C15.4761 19.5771 14.8998 19.8158 14.4989 20.2561L13.4787 21.3763C12.6853 22.2475 11.3147 22.2475 10.5213 21.3763L9.50111 20.2561C9.10016 19.8158 8.52388 19.5771 7.92905 19.6049L6.41554 19.6757C5.23857 19.7307 4.26934 18.7614 4.32435 17.5845L4.39508 16.071C4.42288 15.4761 4.18418 14.8998 3.74391 14.4989L2.62368 13.4787C1.75255 12.6853 1.75255 11.3147 2.62368 10.5213L3.74391 9.50111C4.18418 9.10016 4.42288 8.52388 4.39508 7.92905L4.32435 6.41554C4.26934 5.23857 5.23857 4.26934 6.41554 4.32435L7.92905 4.39508C8.52388 4.42288 9.10016 4.18418 9.50111 3.74391L10.5213 2.62368Z"
-                    fill="#0685FF"
-                  />
-                  <path
-                    d="M10.5 15.5L6.5 11.5L7.91 10.09L10.5 12.67L16.09 7.09L17.5 8.5L10.5 15.5Z"
-                    fill="white"
-                  />
-                </svg>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ cursor: 'pointer', flexShrink: 0 }}
+                  >
+                    <path
+                      d="M10.5213 2.62368C11.3147 1.75255 12.6853 1.75255 13.4787 2.62368L14.4989 3.74391C14.8998 4.18418 15.4761 4.42288 16.071 4.39508L17.5845 4.32435C18.7614 4.26934 19.7307 5.23857 19.6757 6.41554L19.6049 7.92905C19.5771 8.52388 19.8158 9.10016 20.2561 9.50111L21.3763 10.5213C22.2475 11.3147 22.2475 12.6853 21.3763 13.4787L20.2561 14.4989C19.8158 14.8998 19.5771 15.4761 19.6049 16.071L19.6757 17.5845C19.7307 18.7614 18.7614 19.7307 17.5845 19.6757L16.071 19.6049C15.4761 19.5771 14.8998 19.8158 14.4989 20.2561L13.4787 21.3763C12.6853 22.2475 11.3147 22.2475 10.5213 21.3763L9.50111 20.2561C9.10016 19.8158 8.52388 19.5771 7.92905 19.6049L6.41554 19.6757C5.23857 19.7307 4.26934 18.7614 4.32435 17.5845L4.39508 16.071C4.42288 15.4761 4.18418 14.8998 3.74391 14.4989L2.62368 13.4787C1.75255 12.6853 1.75255 11.3147 2.62368 10.5213L3.74391 9.50111C4.18418 9.10016 4.42288 8.52388 4.39508 7.92905L4.32435 6.41554C4.26934 5.23857 5.23857 4.26934 6.41554 4.32435L7.92905 4.39508C8.52388 4.42288 9.10016 4.18418 9.50111 3.74391L10.5213 2.62368Z"
+                      fill="#0685FF"
+                    />
+                    <path
+                      d="M10.5 15.5L6.5 11.5L7.91 10.09L10.5 12.67L16.09 7.09L17.5 8.5L10.5 15.5Z"
+                      fill="white"
+                    />
+                  </svg>
+                </Tooltip>
               )}
             </Box>
-            <Box fontSize="md" color="text.muted" fontFamily="var(--font-body)">
+            <Box
+              fontSize="md"
+              color="text.muted"
+              fontFamily="var(--font-body)"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+            >
               {specialty}
               {location ? ` • ${location}` : ''}
             </Box>
@@ -611,25 +636,88 @@ export interface VitalBadgeProps extends BoxProps {
 
 const vitalStatusConfig: Record<
   VitalStatus,
-  { bg: string; dot: string; border: string; text: string }
+  {
+    bg: string;
+    indicator: string;
+    border: string;
+    text: string;
+    icon: React.ReactNode;
+    ariaLabel: string;
+  }
 > = {
   normal: {
     bg: 'color-mix(in srgb, var(--chakra-colors-status-success) 8%, transparent)',
-    dot: 'status.success',
+    indicator: 'status.success',
     border: 'color-mix(in srgb, var(--chakra-colors-status-success) 20%, transparent)',
     text: 'status.success',
+    ariaLabel: 'Normal',
+    icon: (
+      // Checkmark circle — normal / healthy
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        style={{ flexShrink: 0 }}
+      >
+        <circle cx="12" cy="12" r="11" fill="var(--chakra-colors-status-success)" />
+        <path
+          d="M7 12.5l3.5 3.5 6.5-7"
+          stroke="white"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
   },
   warning: {
     bg: 'color-mix(in srgb, var(--chakra-colors-status-warning) 8%, transparent)',
-    dot: 'status.warning',
+    indicator: 'status.warning',
     border: 'color-mix(in srgb, var(--chakra-colors-status-warning) 20%, transparent)',
     text: 'status.warning',
+    ariaLabel: 'Warning',
+    icon: (
+      // Triangle exclamation — elevated / warning
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        style={{ flexShrink: 0 }}
+      >
+        <path d="M12 2L2 21h20L12 2z" fill="var(--chakra-colors-status-warning)" />
+        <path d="M12 9v5" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
+        <circle cx="12" cy="17" r="1" fill="white" />
+      </svg>
+    ),
   },
   critical: {
     bg: 'color-mix(in srgb, var(--chakra-colors-status-error) 8%, transparent)',
-    dot: 'status.error',
+    indicator: 'status.error',
     border: 'color-mix(in srgb, var(--chakra-colors-status-error) 20%, transparent)',
     text: 'status.error',
+    ariaLabel: 'Critical',
+    icon: (
+      // Octagon stop — critical
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        style={{ flexShrink: 0 }}
+      >
+        <path
+          d="M8.5 2h7l6.5 6.5v7L15.5 22h-7L2 15.5v-7L8.5 2z"
+          fill="var(--chakra-colors-status-error)"
+        />
+        <path d="M12 7v6" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
+        <circle cx="12" cy="16.5" r="1" fill="white" />
+      </svg>
+    ),
   },
 };
 
@@ -659,7 +747,12 @@ export function VitalBadge({ label, value, unit, status = 'normal', ...props }: 
       borderColor={cfg.border}
       {...props}
     >
-      <Box w="2" h="2" borderRadius="full" bg={cfg.dot} flexShrink={0} />
+      <span
+        aria-label={cfg.ariaLabel}
+        style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
+      >
+        {cfg.icon}
+      </span>
       <Box>
         <Box
           fontSize="2xs"

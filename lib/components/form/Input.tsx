@@ -9,6 +9,8 @@ import {
 export interface InputProps extends Omit<ChakraInputProps, 'size'> {
   /** Input size */
   size?: 'sm' | 'md' | 'lg';
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   /** Left icon or element */
   leftElement?: React.ReactNode;
   /** Right icon or element */
@@ -28,7 +30,7 @@ const sizeStyles = {
 /**
  * MedixDeck Input
  *
- * Text input field. Supports icons, validation, and all standard HTML input types.
+ * Text input field. Supports icons, validation, brand colorScheme, and all standard HTML input types.
  *
  * @example
  * ```tsx
@@ -37,12 +39,25 @@ const sizeStyles = {
  *   leftElement={<SearchIcon />}
  * />
  * <Input isInvalid errorMessage="Email is required" type="email" />
+ * <Input colorScheme="purple" placeholder="Purple focus ring" />
  * ```
  */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ size = 'md', leftElement, rightElement, isInvalid, errorMessage, ...props }, ref) => {
+  (
+    {
+      size = 'md',
+      colorScheme = 'blue',
+      leftElement,
+      rightElement,
+      isInvalid,
+      errorMessage,
+      ...props
+    },
+    ref,
+  ) => {
     const hasLeft = Boolean(leftElement);
     const hasRight = Boolean(rightElement);
+    const focusBorder = colorScheme === 'purple' ? 'purple.500' : 'blue.500';
 
     return (
       <Box w="100%">
@@ -74,10 +89,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             fontFamily="var(--font-body)"
             _placeholder={{ color: 'text.muted' }}
             _focus={{
-              borderColor: isInvalid ? 'red.500' : 'blue.500',
-              boxShadow: isInvalid
-                ? '0 0 0 3px rgba(220, 38, 38, 0.15)'
-                : '0 0 0 3px rgba(6, 133, 255, 0.15)',
+              borderColor: isInvalid ? 'red.500' : focusBorder,
+              boxShadow: 'none',
               outline: 'none',
             }}
             _dark={{

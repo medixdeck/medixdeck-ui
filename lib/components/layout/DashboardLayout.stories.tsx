@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { DashboardLayout } from './DashboardLayout';
 import { Box, Text } from '@chakra-ui/react';
+import React from 'react';
 
 // ─── Inline icons (no external deps needed in stories) ────────────────────────
 
@@ -134,6 +135,29 @@ const DOCTOR_NAV_GROUPS = [
   },
 ];
 
+const NAV_GROUPS_WITH_SUBITEMS = [
+  {
+    items: [
+      { label: 'Dashboard', href: '#dashboard', icon: <HomeIcon /> },
+      {
+        label: 'Appointments',
+        href: '#appointments-parent',
+        icon: <CalendarIcon />,
+        isActive: true,
+        subItems: [
+          { label: 'Upcoming', href: '#upcoming', badge: 3 },
+          { label: 'Completed', href: '#completed' },
+          { label: 'Cancelled', href: '#cancelled' },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: 'System',
+    items: [{ label: 'Settings', href: '#settings', icon: <SettingsIcon /> }],
+  },
+];
+
 const MOBILE_NAV_ITEMS = [
   { label: 'Home', href: '#home', icon: <HomeIcon /> },
   { label: 'Appointments', href: '#appointments', icon: <CalendarIcon /> },
@@ -159,6 +183,7 @@ and an optional mobile bottom navigation bar for native-app-style UX on small sc
 ### Features
 - Responsive sidebar that slides in on mobile
 - Built-in light/dark/system theme toggle (top-right of top bar)
+- **Automatic Test / Sandbox Environment Banner**: automatically shown in non-production environments with custom badges, messages, actions, and dismiss triggers
 - \`colorScheme\` prop → brand blue or purple accent on all interactive elements
 - \`scoreCard\` prop → doctor identity card (avatar ring + MedixScore tier) shown above the sidebar nav on desktop
 - \`mobileNavItems\` prop → fixed bottom tab bar with icon + badge support (mobile only)
@@ -236,28 +261,7 @@ export const Purple: Story = {
 export const WithSublinks: Story = {
   args: {
     user: { name: 'Tobi K.', email: 'tobi@medixdeck.com' },
-    navGroups: [
-      {
-        items: [
-          { label: 'Dashboard', href: '#dashboard', icon: <HomeIcon /> },
-          {
-            label: 'Appointments',
-            href: '#appointments-parent',
-            icon: <CalendarIcon />,
-            isActive: true,
-            subItems: [
-              { label: 'Upcoming', href: '#upcoming', badge: 3 },
-              { label: 'Completed', href: '#completed' },
-              { label: 'Cancelled', href: '#cancelled' },
-            ],
-          },
-        ],
-      },
-      {
-        groupLabel: 'System',
-        items: [{ label: 'Settings', href: '#settings', icon: <SettingsIcon /> }],
-      },
-    ],
+    navGroups: NAV_GROUPS_WITH_SUBITEMS,
   },
   render: (args) => (
     <Box h="100vh" w="100%">
@@ -302,7 +306,8 @@ export const WithMobileNav: Story = {
  *
  * Only rendered on desktop (`display={{ base: "none", md: "block" }}`).
  * The `tier` prop controls the avatar ring gradient and the tier label colour.
- * Five tiers: `bronze`, `silver`, `gold`, `platinum`, `diamond`.
+ * Nine backend-aligned tiers: `bronze`, `silver`, `gold`, `platinum`,
+ * `elite-i`, `elite-ii`, `elite-iii`, `elite-iv`, `elite-v`.
  */
 export const WithDoctorScoreCard: Story = {
   args: {
@@ -313,7 +318,7 @@ export const WithDoctorScoreCard: Story = {
       name: 'Dr. Okedi Williams',
       role: 'Cardiologist',
       tier: 'gold',
-      medixScore: 847,
+      medixScore: 8470,
       link: '#doctor-profile',
     },
   },
@@ -329,7 +334,7 @@ export const WithDoctorScoreCard: Story = {
   ),
 };
 
-/** All five tier variants displayed as separate stories via the `name` pattern. */
+/** All nine backend-aligned tier variants displayed as separate stories via the `name` pattern. */
 export const ScoreCardBronzeTier: Story = {
   name: 'ScoreCard / Bronze tier',
   args: {
@@ -340,14 +345,14 @@ export const ScoreCardBronzeTier: Story = {
       name: 'Dr. Ada Okonkwo',
       role: 'General Practitioner',
       tier: 'bronze',
-      medixScore: 123,
+      medixScore: 450,
     },
   },
   render: (args) => (
     <Box h="100vh" w="100%">
       <DashboardLayout {...args}>
         <PageContent
-          title="Bronze tier"
+          title="Bronze tier (Level 1 · 0–999)"
           description="Warm copper ring + dark amber label (#92400E)."
         />
       </DashboardLayout>
@@ -365,13 +370,41 @@ export const ScoreCardSilverTier: Story = {
       name: 'Dr. Emeka Nwankwo',
       role: 'Surgeon',
       tier: 'silver',
-      medixScore: 410,
+      medixScore: 2410,
     },
   },
   render: (args) => (
     <Box h="100vh" w="100%">
       <DashboardLayout {...args}>
-        <PageContent title="Silver tier" description="Steel ring + slate label (#475569)." />
+        <PageContent
+          title="Silver tier (Level 2 · 1,000–4,999)"
+          description="Steel ring + slate label (#475569)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardGoldTier: Story = {
+  name: 'ScoreCard / Gold tier',
+  args: {
+    colorScheme: 'blue',
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Okedi Williams',
+      role: 'Cardiologist',
+      tier: 'gold',
+      medixScore: 8470,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Gold tier (Level 3 · 5,000–14,999)"
+          description="Amber ring + dark amber label (#D97706)."
+        />
       </DashboardLayout>
     </Box>
   ),
@@ -387,14 +420,14 @@ export const ScoreCardPlatinumTier: Story = {
       name: 'Dr. Ngozi Abara',
       role: 'Neurologist',
       tier: 'platinum',
-      medixScore: 1240,
+      medixScore: 18500,
     },
   },
   render: (args) => (
     <Box h="100vh" w="100%">
       <DashboardLayout {...args}>
         <PageContent
-          title="Platinum tier"
+          title="Platinum tier (Level 4 · 15,000–39,999)"
           description="Sky-blue ring + info blue label (#0284C7)."
         />
       </DashboardLayout>
@@ -402,8 +435,8 @@ export const ScoreCardPlatinumTier: Story = {
   ),
 };
 
-export const ScoreCardDiamondTier: Story = {
-  name: 'ScoreCard / Diamond tier',
+export const ScoreCardEliteITier: Story = {
+  name: 'ScoreCard / Elite I tier',
   args: {
     colorScheme: 'purple',
     user: { name: 'Dr. Chidi Obi', email: 'chidi@medixdeck.com' },
@@ -411,14 +444,117 @@ export const ScoreCardDiamondTier: Story = {
     scoreCard: {
       name: 'Dr. Chidi Obi',
       role: 'Oncologist',
-      tier: 'diamond',
-      medixScore: 2100,
+      tier: 'elite-i',
+      medixScore: 45000,
     },
   },
   render: (args) => (
     <Box h="100vh" w="100%">
       <DashboardLayout {...args}>
-        <PageContent title="Diamond tier" description="Violet ring + purple label (#7C3AED)." />
+        <PageContent
+          title="Elite I tier (Level 5 · 40,000–59,999)"
+          description="Violet ring + deep violet label (#6D28D9)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardEliteIITier: Story = {
+  name: 'ScoreCard / Elite II tier',
+  args: {
+    colorScheme: 'purple',
+    user: { name: 'Dr. Funke Adeyemi', email: 'funke@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Funke Adeyemi',
+      role: 'Pediatrician',
+      tier: 'elite-ii',
+      medixScore: 65000,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Elite II tier (Level 6 · 60,000–79,999)"
+          description="Light violet ring + violet label (#7C3AED)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardEliteIIITier: Story = {
+  name: 'ScoreCard / Elite III tier',
+  args: {
+    colorScheme: 'purple',
+    user: { name: 'Dr. Ibrahim Musa', email: 'ibrahim@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Ibrahim Musa',
+      role: 'Dermatologist',
+      tier: 'elite-iii',
+      medixScore: 95000,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Elite III tier (Level 7 · 80,000–119,999)"
+          description="Brand purple ring + brand purple label (#7700CC)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardEliteIVTier: Story = {
+  name: 'ScoreCard / Elite IV tier',
+  args: {
+    colorScheme: 'purple',
+    user: { name: 'Dr. Sarah Eze', email: 'sarah@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Sarah Eze',
+      role: 'Orthopedic Surgeon',
+      tier: 'elite-iv',
+      medixScore: 150000,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Elite IV tier (Level 8 · 120,000–199,999)"
+          description="Royal violet ring + deep royal label (#5B21B6)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+export const ScoreCardEliteVTier: Story = {
+  name: 'ScoreCard / Elite V tier',
+  args: {
+    colorScheme: 'purple',
+    user: { name: 'Dr. Olumide Bakare', email: 'olumide@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Olumide Bakare',
+      role: 'Neurosurgeon',
+      tier: 'elite-v',
+      medixScore: 250000,
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Elite V tier (Level 9 · 200,000+)"
+          description="Deep royal ring + darkest prestige label (#4C1D95). Highest backend tier."
+        />
       </DashboardLayout>
     </Box>
   ),
@@ -441,7 +577,7 @@ export const WithGreetingSubtext: Story = {
       name: 'Dr. Okedi Williams',
       role: 'Cardiologist',
       tier: 'gold',
-      medixScore: 847,
+      medixScore: 8470,
       link: '#doctor-profile',
     },
   },
@@ -470,7 +606,7 @@ export const FullDoctorDashboard: Story = {
       name: 'Dr. Okedi Williams',
       role: 'Cardiologist',
       tier: 'gold',
-      medixScore: 847,
+      medixScore: 8470,
       link: '#doctor-profile',
     },
     navGroups: DOCTOR_NAV_GROUPS,
@@ -482,6 +618,505 @@ export const FullDoctorDashboard: Story = {
         <PageContent
           title="Full doctor dashboard"
           description="Doctor score card, mobile bottom nav, and greeting subtext all active simultaneously."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+// ─── Environment Banner Stories ───────────────────────────────────────────────
+
+/**
+ * Default auto-detection:
+ * In a development / localhost / Storybook environment, the banner is automatically
+ * displayed with a warning tone without needing any explicit props.
+ */
+export const SandboxAuto: Story = {
+  name: 'Environment / Auto Detection',
+  args: {
+    user: { name: 'Dr. Amaka Okonkwo', email: 'amaka@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'auto',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Automatic Environment Detection"
+          description="The banner is automatically rendered because this environment is detected as non-production (localhost/dev/preview)."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Explicit Sandbox environment (`environment="sandbox"`).
+ */
+export const SandboxExplicit: Story = {
+  name: 'Environment / Explicit Sandbox',
+  args: {
+    user: { name: 'Tobi Daniels', email: 'tobi@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'sandbox',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Explicit Sandbox Environment"
+          description="Renders an amber banner with 'SANDBOX ENVIRONMENT' badge."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Explicit Test environment (`environment="test"`).
+ */
+export const TestEnvironment: Story = {
+  name: 'Environment / Test Mode',
+  args: {
+    user: { name: 'QA Engineer', email: 'qa@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'test',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Test Environment"
+          description="Renders a red/error-tinted alert banner for automated QA and testing environments."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Explicit Staging environment (`environment="staging"`).
+ */
+export const StagingEnvironment: Story = {
+  name: 'Environment / Staging Mode',
+  args: {
+    user: { name: 'Clinical Reviewer', email: 'reviewer@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'staging',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Staging Environment"
+          description="Renders an info-blue banner with 'STAGING ENVIRONMENT' badge."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Custom banner configuration with custom badge label, message, and action link.
+ */
+export const CustomBannerConfig: Story = {
+  name: 'Environment / Custom Message & Action',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    environmentBanner: {
+      environment: 'sandbox',
+      badgeLabel: 'SIMULATION LAB',
+      message:
+        'This clinical terminal is running in simulation mode for training and compliance review.',
+      action: (
+        <a
+          href="https://app.medixdeck.com"
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            fontSize: '11px',
+            fontWeight: 700,
+            textDecoration: 'none',
+            color: '#92400E',
+            background: 'rgba(245,158,11,0.15)',
+            border: '1px solid rgba(245,158,11,0.4)',
+            padding: '3px 9px',
+            borderRadius: '6px',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          Go to Live App →
+        </a>
+      ),
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Custom Banner Message & Action"
+          description="Custom badge label ('SIMULATION LAB'), custom message, and an inline action link."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Dismissible banner (`dismissible: true`).
+ */
+export const DismissibleBanner: Story = {
+  name: 'Environment / Dismissible Banner',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    environmentBanner: {
+      environment: 'sandbox',
+      dismissible: true,
+      onDismiss: () => console.log('Environment banner dismissed'),
+    },
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Dismissible Banner"
+          description="Click the ✕ button in the top-right corner to dismiss the banner for the current session."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Custom banner slot (`environmentBannerSlot`).
+ */
+export const CustomBannerSlot: Story = {
+  name: 'Environment / Custom Banner Slot',
+  args: {
+    user: { name: 'Dr. Ada Okonkwo', email: 'ada@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environmentBannerSlot: (
+      <Box
+        bg="purple.500"
+        color="#FFFFFF"
+        px="4"
+        py="2"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        fontSize="xs"
+        fontWeight="600"
+      >
+        <Box display="flex" alignItems="center" gap="2">
+          <span style={{ fontSize: '14px' }}>⚡</span>
+          <span>SPECIAL CLINICAL TRIAL BUILD v2.4 (NON-PROD)</span>
+        </Box>
+        <span style={{ fontSize: '11px', opacity: 0.85 }}>Confidential Internal Preview</span>
+      </Box>
+    ),
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Custom Banner Slot"
+          description="Completely custom banner component passed via environmentBannerSlot."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Production environment (`environment="production"`) — the banner is suppressed.
+ */
+export const ProductionSuppressed: Story = {
+  name: 'Environment / Production (Hidden)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Production Environment"
+          description="The banner is automatically suppressed because environment is set to 'production'."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Explicitly suppressed banner (`showEnvironmentBanner={false}`).
+ */
+export const ExplicitlySuppressed: Story = {
+  name: 'Environment / Explicitly Suppressed (showEnvironmentBanner=false)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    showEnvironmentBanner: false,
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Banner Suppressed"
+          description="Passing showEnvironmentBanner={false} completely hides the banner in any environment."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+// ─── Collapsible Sidebar Stories ────────────────────────────────────────────
+
+/**
+ * Default collapsible sidebar (`collapsible={true}`, `defaultCollapsed={false}`).
+ * Toggle via the header icon button or the sticky topbar button.
+ */
+export const CollapsibleDefault: Story = {
+  name: 'Collapsible / Default (Expanded)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: true,
+    defaultCollapsed: false,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Collapsible Sidebar (Expanded)"
+          description="Click the panel collapse icon in the sidebar header or top bar to shrink the sidebar into a compact icon rail."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Starts in collapsed rail mode (`defaultCollapsed={true}`).
+ */
+export const DefaultCollapsed: Story = {
+  name: 'Collapsible / Default Collapsed (Rail)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: true,
+    defaultCollapsed: true,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Default Collapsed Sidebar"
+          description="The sidebar is initialized in collapsed icon rail mode (68px). Hover over icons to see titles or click the expand button in the top bar to expand."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Controlled collapsed state with external triggers.
+ */
+export const ControlledCollapse: Story = {
+  name: 'Collapsible / Controlled Collapse',
+  render: () => {
+    const [collapsed, setCollapsed] = React.useState(false);
+    return (
+      <Box h="100vh" w="100%">
+        <DashboardLayout
+          user={{ name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' }}
+          navGroups={BASE_NAV_GROUPS}
+          isCollapsed={collapsed}
+          onCollapseChange={setCollapsed}
+          collapsible={true}
+          environment="production"
+        >
+          <Box p="6" borderRadius="xl" bg="bg.surface" border="1px solid" borderColor="border">
+            <Text fontSize="lg" fontWeight="700" color="text.heading" mb="2">
+              Controlled Sidebar State: {collapsed ? 'Collapsed (Rail)' : 'Expanded (Full)'}
+            </Text>
+            <Text fontSize="sm" color="text.muted" mb="4">
+              You can control the sidebar programmatically using <code>isCollapsed</code> and{' '}
+              <code>onCollapseChange</code>.
+            </Text>
+            <Box
+              as="button"
+              px="4"
+              py="2"
+              borderRadius="md"
+              bg="blue.500"
+              color="#fff"
+              border="none"
+              fontWeight="600"
+              fontSize="sm"
+              cursor="pointer"
+              onClick={() => setCollapsed((c) => !c)}
+            >
+              {collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+            </Box>
+          </Box>
+        </DashboardLayout>
+      </Box>
+    );
+  },
+};
+
+/**
+ * Collapsible sidebar with Doctor Score Card.
+ * Demonstrates the score card transforming into a compact clinician ring avatar when collapsed.
+ */
+export const CollapsibleWithDoctorScoreCard: Story = {
+  name: 'Collapsible / With Doctor Score Card',
+  args: {
+    user: { name: 'Dr. Amina Bello', email: 'amina@medixdeck.com' },
+    navGroups: DOCTOR_NAV_GROUPS,
+    scoreCard: {
+      name: 'Dr. Amina Bello',
+      role: 'Chief of Cardiology',
+      tier: 'elite-v',
+      medixScore: 250000,
+    },
+    collapsible: true,
+    defaultCollapsed: false,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Collapsible with Doctor Score Card"
+          description="Notice how the doctor score card smoothly collapses into a sleek circular avatar with the Elite V tier gradient ring."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Collapsible sidebar with nested sub-items (flyout popover when collapsed).
+ */
+export const CollapsibleWithSublinks: Story = {
+  name: 'Collapsible / With Sub-items & Flyout',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: NAV_GROUPS_WITH_SUBITEMS,
+    collapsible: true,
+    defaultCollapsed: true,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Collapsible with Sub-items"
+          description="In collapsed rail mode, clicking a navigation item with sub-links opens an anchored floating popover flyout menu."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Non-collapsible sidebar (`collapsible={false}`).
+ */
+export const NonCollapsible: Story = {
+  name: 'Collapsible / Disabled (Non-Collapsible)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: false,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Non-Collapsible Sidebar"
+          description="With collapsible={false}, the toggle buttons are hidden and the sidebar remains permanently expanded at full width."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * TopBar toggle placement option (`collapseTogglePlacement="both"`).
+ */
+export const TopBarTogglePlacement: Story = {
+  name: 'Collapsible / TopBar Toggle Placement (both)',
+  args: {
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: BASE_NAV_GROUPS,
+    collapsible: true,
+    defaultCollapsed: false,
+    collapseTogglePlacement: 'both',
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="TopBar Toggle Button Placement"
+          description="Setting collapseTogglePlacement='both' or 'topbar' renders the collapse/expand toggle button in the sticky topbar."
+        />
+      </DashboardLayout>
+    </Box>
+  ),
+};
+
+/**
+ * Sidebar navigation items with `isNew: true`.
+ *
+ * Demonstrates the "NEW" pill badge rendered alongside sidebar links.
+ * Matches the badge style with background and color derived from `colorScheme` (blue or purple).
+ */
+export const WithNewBadges: Story = {
+  name: 'Sidebar / With "NEW" Badges',
+  args: {
+    colorScheme: 'blue',
+    user: { name: 'Dr. Okedi Williams', email: 'williams@medixdeck.com' },
+    navGroups: [
+      {
+        groupLabel: 'Overview',
+        items: [
+          { label: 'Dashboard', href: '#dashboard', icon: <HomeIcon />, isActive: true },
+          { label: 'Bookings', href: '#bookings', icon: <CalendarIcon /> },
+          { label: 'My Schedule', href: '#schedule', icon: <CalendarIcon />, isNew: true },
+          { label: 'Clients', href: '#clients', icon: <UserIcon /> },
+          { label: 'Notes', href: '#notes', icon: <FileIcon /> },
+        ],
+      },
+      {
+        groupLabel: 'Practice',
+        items: [
+          { label: 'Reports', href: '#reports', icon: <FileIcon />, isNew: true },
+          { label: 'Transactions', href: '#transactions', icon: <FileIcon /> },
+          { label: 'Wallet', href: '#wallet', icon: <FileIcon /> },
+          { label: 'My Ratings', href: '#ratings', icon: <FileIcon />, isNew: true },
+          { label: 'Prime', href: '#prime', icon: <FileIcon />, isNew: true },
+          { label: 'Assessments', href: '#assessments', icon: <FileIcon />, isNew: true },
+        ],
+      },
+    ],
+    collapsible: true,
+    environment: 'production',
+  },
+  render: (args) => (
+    <Box h="100vh" w="100%">
+      <DashboardLayout {...args}>
+        <PageContent
+          title="Sidebar Links with NEW Badges"
+          description='Sidebar links with `isNew: true` render a "NEW" pill badge matching the active colorScheme. In collapsed rail mode, a badge dot indicator and tooltip reflect the new state.'
         />
       </DashboardLayout>
     </Box>

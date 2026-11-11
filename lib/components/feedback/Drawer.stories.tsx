@@ -21,7 +21,7 @@ export const RightDrawer: Story = {
     const [open, setOpen] = React.useState(false);
     return (
       <>
-        <Button onClick={() => setOpen(true)}>Open Drawer</Button>
+        <Button onClick={() => setOpen(true)}>Open Right Drawer</Button>
         <Drawer
           {...args}
           isOpen={open}
@@ -38,7 +38,89 @@ export const RightDrawer: Story = {
           }
         >
           <p style={{ fontFamily: 'var(--font-body)', color: 'var(--chakra-colors-text-body)' }}>
-            Drawer content goes here.
+            Right drawer content goes here.
+          </p>
+        </Drawer>
+      </>
+    );
+  },
+};
+
+export const LeftDrawer: Story = {
+  render: (args) => {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open Left Drawer</Button>
+        <Drawer
+          {...args}
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          title="Navigation Menu"
+          placement="left"
+        >
+          <p style={{ fontFamily: 'var(--font-body)', color: 'var(--chakra-colors-text-body)' }}>
+            Left navigation drawer content.
+          </p>
+        </Drawer>
+      </>
+    );
+  },
+};
+
+export const TopDrawer: Story = {
+  render: (args) => {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open Top Drawer</Button>
+        <Drawer
+          {...args}
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          title="System Notifications"
+          placement="top"
+        >
+          <p style={{ fontFamily: 'var(--font-body)', color: 'var(--chakra-colors-text-body)' }}>
+            Top drawer alert bar content.
+          </p>
+        </Drawer>
+      </>
+    );
+  },
+};
+
+export const BottomDrawer: Story = {
+  render: (args) => {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open Bottom Drawer</Button>
+        <Drawer
+          {...args}
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          title="Quick Actions"
+          placement="bottom"
+        >
+          <p style={{ fontFamily: 'var(--font-body)', color: 'var(--chakra-colors-text-body)' }}>
+            Bottom sheet action panel content.
+          </p>
+        </Drawer>
+      </>
+    );
+  },
+};
+
+export const WithoutTitle: Story = {
+  render: (args) => {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Open Headless Drawer</Button>
+        <Drawer {...args} isOpen={open} onClose={() => setOpen(false)} placement="right">
+          <p style={{ fontFamily: 'var(--font-body)', color: 'var(--chakra-colors-text-body)' }}>
+            Drawer without explicit title (close trigger is still accessible at top-right).
           </p>
         </Drawer>
       </>

@@ -42,8 +42,8 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
         borderColor="border"
         borderRadius="card"
         p="6"
-        boxShadow="card-light"
-        _dark={{ boxShadow: 'card-dark' }}
+        boxShadow="none"
+        _dark={{ boxShadow: 'none' }}
         {...props}
       >
         {icon && (

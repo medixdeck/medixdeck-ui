@@ -8,6 +8,8 @@ export interface CalendarProps extends Omit<BoxProps, 'onChange'> {
   onChange?: (date: Date) => void;
   minDate?: Date;
   maxDate?: Date;
+  /** Brand color scheme ('blue' | 'purple') — defaults to 'blue' */
+  colorScheme?: 'blue' | 'purple';
 }
 
 const WEEKDAYS = ['MON', 'TUES', 'WED', 'THURS', 'FRI', 'SAT', 'SUN'];
@@ -25,6 +27,24 @@ const MONTHS = [
   'November',
   'December',
 ];
+
+const MONTH_ABBR = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
+/** Number of years shown per page in the year-picker view */
+const YEARS_PER_PAGE = 12;
 
 // Helper to get number of days in month
 function getDaysInMonth(year: number, month: number) {
@@ -61,16 +81,61 @@ function isDateOutOfRange(
   return false;
 }
 
+// Returns true if the entire month is outside the min/max bounds
+function isMonthOutOfRange(m: number, y: number, minDate?: Date, maxDate?: Date): boolean {
+  const lastDay = getDaysInMonth(y, m);
+  const firstOfMonth = new Date(y, m, 1);
+  const lastOfMonth = new Date(y, m, lastDay);
+  if (minDate) {
+    const minNorm = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+    if (lastOfMonth < minNorm) return true;
+  }
+  if (maxDate) {
+    const maxNorm = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+    if (firstOfMonth > maxNorm) return true;
+  }
+  return false;
+}
+
+// Returns true if the entire year is outside the min/max bounds
+function isYearOutOfRange(y: number, minDate?: Date, maxDate?: Date): boolean {
+  if (minDate && y < minDate.getFullYear()) return true;
+  if (maxDate && y > maxDate.getFullYear()) return true;
+  return false;
+}
+
+/** Base page offset: first page shows the 12 years whose range contains `year` */
+function getInitialYearPage(year: number): number {
+  // Page 0 starts at (year - 5), giving a 12-year window centred around the current year
+  return 0;
+}
+
 /**
  * MedixDeck Re-usable Calendar Component
  *
+ * Supports clicking the month or year label in the header to jump directly to
+ * a month-picker or year-picker view, avoiding tedious arrow navigation.
+ *
  * @example
  * ```tsx
- * <Calendar value={date} onChange={setDate} />
+ * <Calendar value={date} onChange={setDate} colorScheme="purple" />
  * ```
  */
-export function Calendar({ value, onChange, minDate, maxDate, ...props }: CalendarProps) {
+export function Calendar({
+  value,
+  onChange,
+  minDate,
+  maxDate,
+  colorScheme = 'blue',
+  ...props
+}: CalendarProps) {
+  const accentColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
+  const accentLight = colorScheme === 'purple' ? 'rgba(119,0,204,0.14)' : 'rgba(6,133,255,0.14)';
+
   const [currentMonth, setCurrentMonth] = useState(() => (value ? new Date(value) : new Date()));
+  const [viewMode, setViewMode] = useState<'day' | 'month' | 'year'>('day');
+  // yearPage offset — each page shows YEARS_PER_PAGE years
+  const [yearPageOffset, setYearPageOffset] = useState(0);
 
   // Sync displayed month whenever the controlled value moves to a different month
   useEffect(() => {
@@ -88,7 +153,14 @@ export function Calendar({ value, onChange, minDate, maxDate, ...props }: Calend
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
 
-  // Constrain month navigation to minDate/maxDate bounds
+  // ─── Year page helpers ───────────────────────────────────────────────────────
+  // The "base" year for page 0: floor to the nearest YEARS_PER_PAGE boundary
+  // e.g. 2026 → base 2024 so the grid shows 2024–2035
+  const baseYear = Math.floor(year / YEARS_PER_PAGE) * YEARS_PER_PAGE;
+  const yearPageStart = baseYear + yearPageOffset * YEARS_PER_PAGE;
+  const yearPageEnd = yearPageStart + YEARS_PER_PAGE - 1;
+
+  // ─── Day-view nav constraints ────────────────────────────────────────────────
   const canGoPrev =
     !minDate ||
     year > minDate.getFullYear() ||
@@ -110,7 +182,7 @@ export function Calendar({ value, onChange, minDate, maxDate, ...props }: Calend
   const handleToday = () => {
     const today = new Date();
     setCurrentMonth(today);
-    // Only fire onChange if today is within the allowed range
+    setViewMode('day');
     if (
       onChange &&
       !isDateOutOfRange(today.getDate(), today.getMonth(), today.getFullYear(), minDate, maxDate)
@@ -119,11 +191,23 @@ export function Calendar({ value, onChange, minDate, maxDate, ...props }: Calend
     }
   };
 
+  // ─── Month-picker selection ─────────────────────────────────────────────────
+  const handleMonthSelect = (m: number) => {
+    setCurrentMonth(new Date(year, m, 1));
+    setViewMode('day');
+  };
+
+  // ─── Year-picker selection ──────────────────────────────────────────────────
+  const handleYearSelect = (y: number) => {
+    setCurrentMonth(new Date(y, month, 1));
+    setYearPageOffset(0); // reset page offset for next time the year picker opens
+    setViewMode('month'); // drop into month-picker after choosing a year
+  };
+
+  // ─── Day-view cell rendering ────────────────────────────────────────────────
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay = shiftDay(getFirstDayOfMonth(year, month));
-
   const prevMonthDays = getDaysInMonth(year, month - 1);
-  // Show either 5 or 6 rows depending on month overlap
   const totalCells = firstDay + daysInMonth > 35 ? 42 : 35;
   const daysInNextMonth = totalCells - (firstDay + daysInMonth);
 
@@ -132,16 +216,14 @@ export function Calendar({ value, onChange, minDate, maxDate, ...props }: Calend
     return value.getDate() === d && value.getMonth() === m && value.getFullYear() === y;
   };
 
-  const renderCells = () => {
+  const renderDayCells = () => {
     const cells = [];
 
-    // Previous month cells
     for (let i = 0; i < firstDay; i++) {
       const dayNum = prevMonthDays - firstDay + i + 1;
-      cells.push(<DayCell key={`prev-${i}`} day={dayNum} isMuted />);
+      cells.push(<DayCell key={`prev-${i}`} day={dayNum} isMuted accentColor={accentColor} />);
     }
 
-    // Current month cells
     for (let i = 1; i <= daysInMonth; i++) {
       const outOfRange = isDateOutOfRange(i, month, year, minDate, maxDate);
       cells.push(
@@ -150,19 +232,94 @@ export function Calendar({ value, onChange, minDate, maxDate, ...props }: Calend
           day={i}
           isActive={isSelected(i, month, year)}
           isDisabled={outOfRange}
+          accentColor={accentColor}
+          accentLight={accentLight}
           onClick={outOfRange ? undefined : () => onChange?.(new Date(year, month, i))}
         />,
       );
     }
 
-    // Next month cells
     for (let i = 1; i <= daysInNextMonth; i++) {
-      cells.push(<DayCell key={`next-${i}`} day={i} isMuted />);
+      cells.push(<DayCell key={`next-${i}`} day={i} isMuted accentColor={accentColor} />);
     }
 
     return cells;
   };
 
+  // ─── Month grid ─────────────────────────────────────────────────────────────
+  const renderMonthGrid = () => (
+    <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap="2" p="1" mt="2">
+      {MONTH_ABBR.map((abbr, idx) => {
+        const isActive = idx === month;
+        const disabled = isMonthOutOfRange(idx, year, minDate, maxDate);
+        return (
+          <MonthYearCell
+            key={abbr}
+            label={abbr}
+            isActive={isActive}
+            isDisabled={disabled}
+            accentColor={accentColor}
+            accentLight={accentLight}
+            onClick={() => !disabled && handleMonthSelect(idx)}
+          />
+        );
+      })}
+    </Box>
+  );
+
+  // ─── Year grid ──────────────────────────────────────────────────────────────
+  const renderYearGrid = () => {
+    const years = Array.from({ length: YEARS_PER_PAGE }, (_, i) => yearPageStart + i);
+    return (
+      <>
+        {/* Year-page navigation */}
+        <Flex justify="space-between" align="center" mb="3">
+          <NavChevronButton
+            direction="prev"
+            enabled
+            accentColor={accentColor}
+            onClick={() => setYearPageOffset((p) => p - 1)}
+            ariaLabel="Previous years"
+          />
+          <Text
+            fontSize="sm"
+            fontWeight="semibold"
+            color="text.heading"
+            fontFamily="var(--font-body)"
+          >
+            {yearPageStart} – {yearPageEnd}
+          </Text>
+          <NavChevronButton
+            direction="next"
+            enabled
+            accentColor={accentColor}
+            onClick={() => setYearPageOffset((p) => p + 1)}
+            ariaLabel="Next years"
+          />
+        </Flex>
+
+        <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap="2" p="1">
+          {years.map((y) => {
+            const isActive = y === year;
+            const disabled = isYearOutOfRange(y, minDate, maxDate);
+            return (
+              <MonthYearCell
+                key={y}
+                label={String(y)}
+                isActive={isActive}
+                isDisabled={disabled}
+                accentColor={accentColor}
+                accentLight={accentLight}
+                onClick={() => !disabled && handleYearSelect(y)}
+              />
+            );
+          })}
+        </Box>
+      </>
+    );
+  };
+
+  // ─── Render ──────────────────────────────────────────────────────────────────
   return (
     <Box
       w="100%"
@@ -173,16 +330,57 @@ export function Calendar({ value, onChange, minDate, maxDate, ...props }: Calend
       fontFamily="var(--font-body)"
       {...props}
     >
-      {/* Header */}
-      <Flex justify="space-between" align="center" mb="6">
-        <Flex align="center" gap="4">
-          <MonthNavButton enabled={canGoPrev} onClick={handlePrevMonth} direction="prev" />
-          <Text fontWeight="semibold" fontSize="md" color="text.heading">
-            {MONTHS[month]} {year}
-          </Text>
-          <MonthNavButton enabled={canGoNext} onClick={handleNextMonth} direction="next" />
+      {/* ── Header ── */}
+      <Flex justify="space-between" align="center" mb={viewMode === 'day' ? '6' : '4'}>
+        <Flex align="center" gap="1">
+          {/* Prev arrow — only shown in day-view */}
+          {viewMode === 'day' && (
+            <NavChevronButton
+              direction="prev"
+              enabled={canGoPrev}
+              accentColor={accentColor}
+              onClick={handlePrevMonth}
+              ariaLabel="Go to previous month"
+            />
+          )}
+
+          {/* Month label — clickable to toggle month-picker */}
+          <HeaderPillButton
+            label={MONTHS[month]}
+            isActive={viewMode === 'month'}
+            accentColor={accentColor}
+            accentLight={accentLight}
+            onClick={() => {
+              setViewMode((v) => (v === 'month' ? 'day' : 'month'));
+              setYearPageOffset(0);
+            }}
+          />
+
+          {/* Year label — clickable to toggle year-picker */}
+          <HeaderPillButton
+            label={String(year)}
+            isActive={viewMode === 'year'}
+            accentColor={accentColor}
+            accentLight={accentLight}
+            onClick={() => {
+              setViewMode((v) => (v === 'year' ? 'day' : 'year'));
+              setYearPageOffset(0);
+            }}
+          />
+
+          {/* Next arrow — only shown in day-view */}
+          {viewMode === 'day' && (
+            <NavChevronButton
+              direction="next"
+              enabled={canGoNext}
+              accentColor={accentColor}
+              onClick={handleNextMonth}
+              ariaLabel="Go to next month"
+            />
+          )}
         </Flex>
 
+        {/* Today button */}
         <Box
           as="button"
           // @ts-expect-error type is valid when as="button"
@@ -202,55 +400,80 @@ export function Calendar({ value, onChange, minDate, maxDate, ...props }: Calend
         </Box>
       </Flex>
 
-      {/* Weekdays */}
-      <Flex mb="3">
-        {WEEKDAYS.map((day) => (
-          <Box
-            key={day}
-            flex="1"
-            textAlign="center"
-            fontSize="xs"
-            fontWeight="medium"
-            color="text.muted"
-          >
-            {day}
-          </Box>
-        ))}
-      </Flex>
+      {/* ── Views ── */}
+      {viewMode === 'day' && (
+        <>
+          {/* Weekday headers */}
+          <Flex mb="3">
+            {WEEKDAYS.map((day) => (
+              <Box
+                key={day}
+                flex="1"
+                textAlign="center"
+                fontSize="xs"
+                fontWeight="medium"
+                color="text.muted"
+              >
+                {day}
+              </Box>
+            ))}
+          </Flex>
 
-      {/* Grid */}
-      <Box display="grid" gridTemplateColumns="repeat(7, 1fr)" gapY="2">
-        {renderCells()}
-      </Box>
+          {/* Day grid */}
+          <Box display="grid" gridTemplateColumns="repeat(7, 1fr)" gapY="2">
+            {renderDayCells()}
+          </Box>
+        </>
+      )}
+
+      {viewMode === 'month' && renderMonthGrid()}
+      {viewMode === 'year' && renderYearGrid()}
     </Box>
   );
 }
 
-function MonthNavButton({
+// ─── Sub-components ────────────────────────────────────────────────────────────
+
+/** Chevron nav button used for month nav (day view) and year-page nav (year view) */
+function NavChevronButton({
   enabled,
   onClick,
   direction,
+  accentColor,
+  ariaLabel,
 }: {
   enabled: boolean;
   onClick: () => void;
   direction: 'prev' | 'next';
+  accentColor: string;
+  ariaLabel?: string;
 }) {
   return (
     <Box
       as="button"
       // @ts-expect-error type is valid when as="button"
       type="button"
-      aria-label={direction === 'prev' ? 'Go to previous month' : 'Go to next month'}
+      aria-label={ariaLabel ?? (direction === 'prev' ? 'Go to previous month' : 'Go to next month')}
       aria-disabled={!enabled}
+      disabled={!enabled}
       onClick={enabled ? onClick : undefined}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      w="7"
+      h="7"
+      borderRadius="md"
       cursor={enabled ? 'pointer' : 'not-allowed'}
       color={enabled ? 'text.heading' : 'text.muted'}
-      opacity={enabled ? 1 : 0.4}
-      _hover={enabled ? { color: 'blue.500' } : undefined}
+      opacity={enabled ? 1 : 0.35}
+      p="0"
+      flexShrink={0}
+      _hover={enabled ? { color: accentColor, bg: 'bg.subtle' } : undefined}
+      transition="all 0.15s"
     >
       <svg
-        width="18"
-        height="18"
+        width="16"
+        height="16"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -264,11 +487,127 @@ function MonthNavButton({
   );
 }
 
+/** Clickable pill button for the Month and Year labels in the calendar header */
+function HeaderPillButton({
+  label,
+  isActive,
+  accentColor,
+  accentLight,
+  onClick,
+}: {
+  label: string;
+  isActive: boolean;
+  accentColor: string;
+  accentLight: string;
+  onClick: () => void;
+}) {
+  return (
+    <Box
+      as="button"
+      // @ts-expect-error type is valid when as="button"
+      type="button"
+      onClick={onClick}
+      title={isActive ? 'Click to collapse' : 'Click to browse'}
+      display="inline-flex"
+      alignItems="center"
+      gap="0.5"
+      px="2"
+      py="0.5"
+      borderRadius="md"
+      bg={isActive ? accentLight : 'transparent'}
+      color={isActive ? accentColor : 'text.heading'}
+      fontWeight="semibold"
+      fontSize="15px"
+      fontFamily="var(--font-body)"
+      cursor="pointer"
+      lineHeight="1.4"
+      _hover={!isActive ? { bg: accentLight, color: accentColor } : undefined}
+      transition="all 0.15s"
+    >
+      {label}
+      {/* Small caret indicator */}
+      <svg
+        width="10"
+        height="10"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{
+          transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 0.2s',
+          opacity: 0.7,
+          marginTop: '1px',
+        }}
+      >
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </Box>
+  );
+}
+
+/** Cell used in the month-picker and year-picker grids */
+function MonthYearCell({
+  label,
+  isActive,
+  isDisabled,
+  accentColor,
+  accentLight,
+  onClick,
+}: {
+  label: string;
+  isActive: boolean;
+  isDisabled: boolean;
+  accentColor: string;
+  accentLight: string;
+  onClick: () => void;
+}) {
+  return (
+    <Box
+      as="button"
+      // @ts-expect-error type is valid when as="button"
+      type="button"
+      onClick={isDisabled ? undefined : onClick}
+      {...({ disabled: isDisabled } as Record<string, unknown>)}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      h="10"
+      borderRadius="md"
+      border="1.5px solid"
+      borderColor={isActive ? accentColor : 'transparent'}
+      bg={isActive ? accentColor : 'transparent'}
+      color={isActive ? 'white' : isDisabled ? 'text.muted' : 'text.heading'}
+      fontSize="13px"
+      fontWeight={isActive ? 'semibold' : 'medium'}
+      fontFamily="var(--font-body)"
+      cursor={isDisabled ? 'not-allowed' : 'pointer'}
+      opacity={isDisabled ? 0.35 : 1}
+      _hover={
+        !isDisabled && !isActive
+          ? {
+              bg: accentLight,
+              color: accentColor,
+              borderColor: accentColor,
+            }
+          : undefined
+      }
+      transition="all 0.15s"
+    >
+      {label}
+    </Box>
+  );
+}
+
 function DayCell({
   day,
   isActive,
   isMuted,
   isDisabled,
+  accentColor,
+  accentLight,
   onClick,
 }: {
   day: number;
@@ -276,6 +615,8 @@ function DayCell({
   isMuted?: boolean;
   /** Out-of-range day: visible but not selectable */
   isDisabled?: boolean;
+  accentColor: string;
+  accentLight?: string;
   onClick?: () => void;
 }) {
   return (
@@ -293,15 +634,22 @@ function DayCell({
         fontSize="sm"
         fontWeight="medium"
         onClick={onClick}
-        // Native disabled prevents focus and click activation for both muted
-        // (overflow) and out-of-range days, improving screen reader behavior.
         {...({ disabled: isMuted || isDisabled } as Record<string, unknown>)}
         cursor={isMuted ? 'default' : isDisabled ? 'not-allowed' : 'pointer'}
         opacity={isDisabled ? 0.35 : 1}
-        bg={isActive ? 'blue.500' : 'transparent'}
-        color={isActive ? 'white' : isMuted || isDisabled ? 'text.muted' : 'text.heading'}
+        style={{
+          background: isActive ? accentColor : 'transparent',
+          color: isActive ? '#ffffff' : undefined,
+          transition: 'background 0.15s, color 0.15s',
+        }}
+        color={!isActive ? (isMuted || isDisabled ? 'text.muted' : 'text.heading') : undefined}
         _hover={
-          !isMuted && !isDisabled && !isActive ? { bg: 'bg.subtle', color: 'blue.500' } : undefined
+          !isMuted && !isDisabled && !isActive
+            ? {
+                bg: accentLight,
+                color: accentColor,
+              }
+            : undefined
         }
         transition="all 0.2s"
       >

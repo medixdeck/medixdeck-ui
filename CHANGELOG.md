@@ -2,6 +2,126 @@
 
 All notable changes to `@medixdeck/ui` are documented here.
 
+## [Unreleased]
+
+### Fixed — SSR compatibility
+
+- Build the shared ESM/CommonJS entries without freezing browser-only dependency conditions. Runtime dependencies remain external where compatible with both output formats; the ESM-only Markdown renderer is bundled using its universal implementation.
+- Replace DOM-dependent accordion HTML sanitization with one parser-based policy for Node SSR, DOM-free edge SSR and browsers. At the owner's request, preserve the previous DOMPurify vocabulary as closely as possible, including SVG, MathML, forms, authored CSS and media. Filter scripts, event handlers, frames, unsafe URLs and known document/form property names. Parsing normalization can differ from DOMPurify; the derived vocabulary's license is included.
+- Keep the theme hook's initial mode and setting deterministic during hydration, then restore saved light/dark/system preferences after mounting.
+- Initialize TipTap after hydration with `immediatelyRender: false`.
+- Convert editor HTML to Markdown without `document`, retaining the existing conversion rules during SSR and hydration.
+- Supply a literal provider-owned theme bootstrap through standard script elements; keep the dependency's duplicate bootstrap inert through its public API. No private-bundle substitution or unsupported Pages flag is needed.
+- Declare the actual parser runtime requirement, Node 20.19.0 or newer.
+- Add direct built-package ESM/CommonJS import/render checks without `window` or `document`, plus a saved-dark-mode hydration regression test. Build/test with Node 24 in the publish workflow.
+- Prepare stable version `0.1.27` for the `latest` npm tag; normalize repository metadata and require stable versions in the production publishing workflow. Simplify the package README around installation, usage and component documentation.
+
+### Breaking
+
+- **`DashboardLayout` — MedixScore tiers aligned to backend (`MEDIX_SCORE_TIER`)**:
+  - `DashboardScoreCardData.tier` is now `DashboardMedixScoreTier`: `"bronze" | "silver" | "gold" | "platinum" | "elite-i" | "elite-ii" | "elite-iii" | "elite-iv" | "elite-v"`.
+  - Removed fictional `"diamond"` tier; Elite I–V (levels 5–9, 40,000–200,000+) replace it with a violet/purple prestige ramp (`#6D28D9` → `#4C1D95`).
+  - `DASHBOARD_MEDIX_TIER_CONFIG` now carries backend `level`/`minScore`/`maxScore` per tier plus colours; new exports `DASHBOARD_MEDIX_TIER_ORDER`, `getMedixScoreTierForScore(score)`, `getMedixScoreTierMeta(tier)` (safe fallback to Bronze for stale keys).
+  - Storybook, `src/App.tsx`, README, and tests updated to in-band scores (e.g. `gold` + `8,470` instead of `847`).
+
+### Added
+
+- **`PWAInstallPrompt` — `colorScheme` prop** (`"blue" | "purple"`, default `"blue"`):
+  - Passing `"purple"` switches every brand accent — install button, iOS share icon, and step badges — to MedixDeck secondary purple (`#7700CC`, `#C084FC` in dark mode) without changing any other behaviour or layout.
+  - Default `"blue"` preserves existing rendering exactly.
+  - New Storybook `PurpleScheme` story and `PWAInstallPrompt.test.tsx` coverage.
+
+- **`NotFoundPage` & `ServerErrorPage` — `colorScheme` prop** (`"blue" | "purple"`, default `"blue"`):
+  - Passing `"purple"` switches the CTA buttons (and the `"404"` watermark) to MedixDeck secondary purple (`#7700CC` / `purple.500`) without changing any other behaviour or layout.
+  - The 500 error icon disc stays red on all schemes as a status color.
+  - New `PurpleScheme` stories and `NotFoundPage.test.tsx` / `ServerErrorPage.test.tsx` coverage.
+
+- **`DashboardLayout` — Sidebar Links `isNew` Badge**:
+  - Added optional `isNew?: boolean` property to `DashboardNavItem` and `DashboardMobileNavItem` to control rendering a "NEW" badge on sidebar navigation items.
+  - Follows the badge styling with background and text colors matching the active `colorScheme` (`scheme.solid` `#0685FF` for blue, `#7700CC` for purple, and `#fff` text).
+  - Clean pill shape (`borderRadius="full"`), uppercase `"NEW"`, `fontSize="10px"`, `fontWeight="700"`, `fontFamily="var(--font-heading)"` with zero `boxShadow`.
+  - Supports expanded sidebar items, recursive sub-items, collapsed rail icon indicators and tooltips (`(NEW)`), and flyout headers.
+  - Added Storybook story `WithNewBadges` showcasing new features across navigation groups.
+
+---
+
+### Added
+
+- **`Textarea` — `localStorage` Draft Auto-Save & Refresh Recovery**:
+  - Added automatic draft saving to `localStorage` enabled by default (`persistDraft = true`), preventing data loss across page refreshes and route transitions.
+  - Multi-instance collision isolation: Resolves storage keys smartly via `storageKey`, `id`, `name`, or `placeholder` slug fallback (`getEffectiveTextareaStorageKey`).
+  - Next.js / SSR hydration-safe restoration: Restores draft during client-side hydration (`useEffect`) to prevent SSR React hydration mismatches.
+  - Supports both controlled (`value` + `onChange`) and uncontrolled (`defaultValue`) modes with character counter (`showCount`) synchronization.
+  - Debounced background saving (`debounceMs = 400`) to avoid blocking typing keystrokes, with immediate emergency flush on `beforeunload`, `pagehide`, and component unmount.
+  - Stale draft expiration handling (`draftMaxAgeMs = 7 days`).
+  - Optional visual draft status indicator in the textarea footer (`showDraftStatus`) displaying `"Saving draft..."` / `"Draft saved"` with a status dot.
+  - Exported draft utilities from `@medixdeck/ui`: `clearTextareaDraft`, `getTextareaDraft`, `saveTextareaDraft`, `getEffectiveTextareaStorageKey`, and `TEXTAREA_DRAFT_PREFIX`, plus `TextareaDraftPayload` type.
+
+---
+
+### Added
+
+- **`RichTextInput` — `localStorage` Draft Auto-Save & Refresh Recovery**:
+  - Added automatic draft saving to `localStorage` enabled by default (`persistDraft = true`), ensuring users never lose typed content when refreshing the browser or navigating away.
+  - Multi-instance collision isolation: Resolves storage keys smartly via `storageKey`, `id`, `name`, or `label` slug fallback (`getEffectiveStorageKey`).
+  - Next.js / SSR hydration-safe restoration: Restores draft during client-side hydration (`useEffect`) to prevent SSR React hydration mismatches.
+  - Dual-mode and format preservation: Preserves both the content format (`html` / `markdown`) and editor composition mode (`wysiwyg` / `markdown`).
+  - Debounced background saving (`debounceMs = 400`) to avoid blocking typing keystrokes, with immediate emergency flush on `beforeunload`, `pagehide`, and component unmount.
+  - Stale draft expiration handling (`draftMaxAgeMs = 7 days`).
+  - Optional visual draft status indicator in the editor footer (`showDraftStatus`) displaying `"Saving draft..."` / `"Draft saved"` with a status dot.
+  - Exported draft utilities from `@medixdeck/ui`: `clearRichTextDraft`, `getRichTextDraft`, `saveRichTextDraft`, `getEffectiveStorageKey`, and `DRAFT_STORAGE_PREFIX`, plus `RichTextDraftPayload` type.
+
+---
+
+### Added
+
+- **`DashboardLayout` — Collapsible Sidebar (Compact Icon Rail & Flyouts)**:
+  - Added collapsible desktop sidebar supporting shrinking from full width (`sidebarWidth = 220px`) into a compact icon rail (`collapsedSidebarWidth = 68px`) and expanding back smoothly.
+  - Added toggle icon buttons (`PanelLeftCloseIcon` ◧ and `PanelLeftOpenIcon` ◨) placed in the sidebar header by default (next to logo when expanded, directly below the logo mark in collapsed rail mode) with `collapseTogglePlacement` (`"sidebar-header" | "topbar" | "both" | "none"`).
+  - Uncontrolled (`collapsible={true}`, `defaultCollapsed={false}`) and controlled (`isCollapsed`, `onCollapseChange`) state management.
+  - Collapsed rail mode component transformations:
+    - Logo transforms into the icon mark (`<Logo type="icon" />` or `collapsedLogo`) with the expand button directly below it.
+    - Navigation items become centered 40px icon pills with tooltips and pinned badges/dots.
+    - Nested sub-items open an anchored floating flyout popover menu on click.
+    - Doctor score card smoothly collapses into a centered circular clinician tier ring avatar with full tooltip metadata.
+    - Section group headings collapse into subtle dividers.
+  - Full backward compatibility, zero shadows (`boxShadow="none"`), 1px solid borders, and full dark mode styling.
+
+---
+
+### Added
+
+- **`DashboardLayout` — Automatic Test & Sandbox Environment Banner**:
+  - Added built-in cross-framework test & sandbox environment banner that displays automatically in non-production environments (`localhost`, `*.vercel.app`, `*.netlify.app`, `*.pages.dev`, `*staging*`, `*sandbox*`, `*dev*`, `*test*`, or non-production `NODE_ENV` / `MODE` flags).
+  - Universal meta-framework compatibility: Safe across SSR and CSR runtimes (Next.js App & Pages Routers, Vite + React, Remix, Astro, TanStack Start, SolidJS bridges) with zero hydration mismatches.
+  - Added `environment` prop (`"auto" | "production" | "live" | "sandbox" | "test" | "development" | "staging" | "preview"`), `showEnvironmentBanner` (boolean override), `environmentBanner` configuration object (`badgeLabel`, `message`, `status`, `action`, `dismissible`, `onDismiss`), and `environmentBannerSlot` (custom slot replacement).
+  - Fully styled with MedixDeck design system rules: zero `boxShadow`, clean 1px solid borders, semantic tokens, dark mode compatibility, and inline SVGs.
+  - Exported `DashboardEnvironment`, `DashboardEnvironmentBannerStatus`, `DashboardEnvironmentBannerConfig` from `@medixdeck/ui`.
+
+---
+
+### Added
+
+- **`Navbar` — Multi-Level Animated Dropdown Menus & Rich Sub-items**:
+  - Added support for desktop floating dropdown panels via nested `children?: NavItem[]`.
+  - Added rich dropdown item metadata: `description` (subtitles), leading `icon` (SVGs/icons), status/tag `badge` (e.g. "Popular", "NDPR", "New"), and `isExternal` indicator.
+  - Added mobile menu accordion navigation with collapsible sub-menus, smooth Framer Motion height animations, and 180° animated chevron toggles.
+  - Full backward compatibility with simple flat `navItems`.
+  - Strict zero-shadow design system compliance (`boxShadow="none"`, `border="1px solid" borderColor="border"`).
+  - Accessibility improvements: `aria-haspopup="menu"`, `aria-expanded`, keyboard navigation (`Escape`, `Enter`), and click-outside listeners.
+
+---
+
+### Added
+
+- **`RichTextInput` / `RichTextEditor` — Rich Text Editor Component**:
+  - Added full-featured rich text input component powered by TipTap (ProseMirror engine).
+  - Features bold, italic, underline, strikethrough, headings (H1-H3), bullet & ordered lists, blockquote, link insertion/editing, text alignment, and clear formatting.
+  - Full `colorScheme="blue" | "purple"` focus ring and active toolbar styling.
+  - Supports `minHeight` (default `'180px'`) and `maxHeight` (default `'400px'` with auto vertical scrolling when content overflows).
+  - Supports character counter display (`showCharCount`) and character limits (`maxLength`).
+  - Added optional peer dependencies for consuming projects (`@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`, `@tiptap/extension-link`, `@tiptap/extension-underline`, `@tiptap/extension-text-align`, `@tiptap/extension-placeholder`).
+
 ---
 
 ## [0.1.17] — 2026-06-07
@@ -230,7 +350,7 @@ All notable changes to `@medixdeck/ui` are documented here.
 
 ### Changed
 
-- **`Footer`**: The default `copyright` text was updated to `"© {year} MedixDeck Health Solution Ltd. All Rights Reserved."`.
+- **`Footer`**: The default `copyright` text was updated to `"© {year} MedixDeck Health Solutions Ltd. All Rights Reserved."`.
 - **`DashboardLayout` stories**: Expanded with 8 new stories covering `WithMobileNav`, `WithDoctorScoreCard`, five tier-specific card variants, `WithGreetingSubtext`, and `FullDoctorDashboard`.
 - **`Footer` stories**: Added `WithCertifications` story.
 - **`CookieConsentBanner` and `PWAInstallPrompt` stories**: Added Storybook documentation for the new feedback components.

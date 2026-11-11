@@ -7,17 +7,25 @@ afterEach(() => {
   cleanup();
 });
 
-// Mock matchMedia since JSDOM does not implement it
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: vi.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(), // deprecated
-    removeListener: vi.fn(), // deprecated
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-});
+// Mock matchMedia since JSDOM / happy-dom does not implement it
+if (typeof window !== 'undefined')
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(), // deprecated
+      removeListener: vi.fn(), // deprecated
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+
+// Mock fetch to avoid real network calls to external CDNs (Fontshare, Google Fonts)
+if (typeof globalThis.fetch === 'function') {
+  vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+    Promise.resolve(new Response('', { status: 200, statusText: 'OK' })),
+  );
+}

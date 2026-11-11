@@ -30,8 +30,8 @@ export function TestimonialCard({
       display="flex"
       flexDirection="column"
       gap="4"
-      boxShadow="card-light"
-      _dark={{ boxShadow: 'card-dark' }}
+      boxShadow="none"
+      _dark={{ boxShadow: 'none' }}
       {...props}
     >
       {rating !== undefined && (
@@ -249,7 +249,9 @@ export function BlogCard({
             flexDirection="column"
             alignItems="center"
             minW="44px"
-            boxShadow="0 2px 8px rgba(0,0,0,0.16)"
+            border="1px solid"
+            borderColor="border"
+            boxShadow="none"
           >
             {/* Day number — large blue */}
             <Box

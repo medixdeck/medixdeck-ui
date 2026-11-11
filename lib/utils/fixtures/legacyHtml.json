@@ -1,0 +1,33 @@
+{
+  "reference": "DOMPurify 3.4.9, default configuration, jsdom",
+  "examples": [
+    {
+      "input": "<div><h2 id=\"answer-heading\">Care &amp; advice</h2><p class=\"answer\" style=\"display:grid;gap:12px;--accent:#0685ff\">Text <strong>bold</strong> <u>underlined</u></p><style>.answer { padding: 4px }</style></div>",
+      "expected": "<div><h2 id=\"answer-heading\">Care &amp; advice</h2><p class=\"answer\" style=\"display:grid;gap:12px;--accent:#0685ff\">Text <strong>bold</strong> <u>underlined</u></p><style>.answer { padding: 4px }</style></div>"
+    },
+    {
+      "input": "<svg viewBox=\"0 0 10 10\"><defs><linearGradient id=\"gradient\"><stop offset=\"0%\" stop-color=\"blue\" /></linearGradient></defs><circle cx=\"5\" cy=\"5\" r=\"4\" fill=\"url(#gradient)\" /></svg>",
+      "expected": "<svg viewBox=\"0 0 10 10\"><defs><linearGradient id=\"gradient\"><stop offset=\"0%\" stop-color=\"blue\"></stop></linearGradient></defs><circle cx=\"5\" cy=\"5\" r=\"4\" fill=\"url(#gradient)\"></circle></svg>"
+    },
+    {
+      "input": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mn>1</mn><mn>2</mn></mfrac></math>",
+      "expected": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfrac><mn>1</mn><mn>2</mn></mfrac></math>"
+    },
+    {
+      "input": "<form action=\"/search\" method=\"get\"><label for=\"query\">Search</label><input id=\"query\" name=\"query\" required><button type=\"submit\">Go</button></form>",
+      "expected": "<form action=\"/search\" method=\"get\"><label for=\"query\">Search</label><input id=\"query\" name=\"query\" required=\"\"><button type=\"submit\">Go</button></form>"
+    },
+    {
+      "input": "<picture><source srcset=\"//cdn.example.test/a.webp 1x, //cdn.example.test/b.webp 2x\"><img src=\"data:image/png;base64,YQ==\" alt=\"Guide\"></picture><a href=\"sms:+123\">Text</a><a href=\"ftp://example.test/file\">File</a>",
+      "expected": "<picture><source srcset=\"//cdn.example.test/a.webp 1x, //cdn.example.test/b.webp 2x\"><img src=\"data:image/png;base64,YQ==\" alt=\"Guide\"></picture><a href=\"sms:+123\">Text</a><a href=\"ftp://example.test/file\">File</a>"
+    },
+    {
+      "input": "<table><tbody><tr><th scope=\"row\">Advice</th><td colspan=\"2\" data-note=\"yes\" aria-label=\"Care\">Cell</td></tr></tbody></table>",
+      "expected": "<table><tbody><tr><th scope=\"row\">Advice</th><td colspan=\"2\" data-note=\"yes\" aria-label=\"Care\">Cell</td></tr></tbody></table>"
+    },
+    {
+      "input": "<form id=\"attributes\"><input name=\"submit\"><a href=\"javascript:alert(1)\" onclick=\"alert(1)\">Read</a><script>alert(1)</script></form>",
+      "expected": "<form><input><a>Read</a></form>"
+    }
+  ]
+}

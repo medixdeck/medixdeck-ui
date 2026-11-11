@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Select } from './Select';
+import React from 'react';
+import { LuWallet } from 'react-icons/lu';
 
 const meta: Meta<typeof Select> = {
   title: 'Form/Select',
@@ -39,8 +41,6 @@ export const Disabled: Story = {
   args: { placeholder: 'Select', options: specialtyOptions, disabled: true },
 };
 
-import { LuWallet } from 'react-icons/lu';
-
 export const WithIcon: Story = {
   args: {
     placeholder: 'Any price',
@@ -54,9 +54,34 @@ export const WithIcon: Story = {
 };
 
 export const MultipleSelection: Story = {
-  args: {
-    placeholder: 'Select multiple specialties',
-    options: specialtyOptions,
-    multiple: true,
+  render: (args) => {
+    const [selected, setSelected] = React.useState<string[]>(['cardiology', 'pediatrics']);
+    return (
+      <Select
+        {...args}
+        multiple
+        value={selected}
+        onChange={(val) => setSelected(val as string[])}
+        placeholder="Select multiple specialties..."
+        options={specialtyOptions}
+      />
+    );
+  },
+};
+
+export const PurpleMultiSelect: Story = {
+  render: (args) => {
+    const [selected, setSelected] = React.useState<string[]>(['dermatology']);
+    return (
+      <Select
+        {...args}
+        multiple
+        colorScheme="purple"
+        value={selected}
+        onChange={(val) => setSelected(val as string[])}
+        placeholder="Select symptoms (Purple theme)..."
+        options={specialtyOptions}
+      />
+    );
   },
 };

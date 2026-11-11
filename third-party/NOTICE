@@ -1,0 +1,4 @@
+The HTML sanitizer vocabulary in lib/utils/htmlPolicy.ts is adapted from DOMPurify 3.4.9.
+Copyright Cure53 and other contributors. Licensed under Apache-2.0.
+https://github.com/cure53/DOMPurify
+The DOMPurify implementation is not included in the runtime.

@@ -62,8 +62,15 @@ export type { LogoProps, LogoVariant, LogoType } from './components/primitive/Lo
 export { Input, SearchInput } from './components/form/Input';
 export type { InputProps, SearchInputProps } from './components/form/Input';
 
-export { Textarea } from './components/form/Textarea';
-export type { TextareaProps } from './components/form/Textarea';
+export {
+  Textarea,
+  clearTextareaDraft,
+  getTextareaDraft,
+  saveTextareaDraft,
+  getEffectiveTextareaStorageKey,
+  TEXTAREA_DRAFT_PREFIX,
+} from './components/form/Textarea';
+export type { TextareaProps, TextareaDraftPayload } from './components/form/Textarea';
 
 export { Select } from './components/form/Select';
 export type { SelectProps, SelectOption } from './components/form/Select';
@@ -98,6 +105,28 @@ export type { ComboboxProps, ComboboxOption } from './components/form/Combobox';
 export { FileUpload } from './components/form/FileUpload';
 export type { FileUploadProps } from './components/form/FileUpload';
 
+export { TagsInput, TagInput } from './components/form/TagsInput';
+export type { TagsInputProps, TagInputProps } from './components/form/TagsInput';
+
+export {
+  RichTextInput,
+  RichTextEditor,
+  htmlToMarkdown,
+  markdownToHtml,
+  clearRichTextDraft,
+  getRichTextDraft,
+  saveRichTextDraft,
+  getEffectiveStorageKey,
+  DRAFT_STORAGE_PREFIX,
+} from './components/form/RichTextInput';
+export type {
+  RichTextInputProps,
+  ToolbarOptions,
+  RichTextInputMode,
+  RichTextInputFormat,
+  RichTextDraftPayload,
+} from './components/form/RichTextInput';
+
 // ─── Layout Components ─────────────────────────────────────────────────────────
 export { Card, CardHeader, CardBody, CardFooter } from './components/layout/Card';
 export type { CardProps, CardHeaderProps } from './components/layout/Card';
@@ -112,15 +141,26 @@ export { ThemeColorPalette } from './components/layout/ThemeColorPalette';
 export type { ThemeColorPaletteProps } from './components/layout/ThemeColorPalette';
 
 export { DashboardLayout } from './components/layout/DashboardLayout';
+export {
+  DASHBOARD_MEDIX_TIER_CONFIG,
+  DASHBOARD_MEDIX_TIER_ORDER,
+  getMedixScoreTierForScore,
+  getMedixScoreTierMeta,
+} from './components/layout/DashboardLayout';
 export type {
   DashboardLayoutProps,
   DashboardNavItem,
   DashboardNavGroup,
   DashboardMobileNavItem,
   DashboardScoreCardData,
+  DashboardMedixScoreTier,
+  DashboardMedixScoreTierMeta,
   DashboardUser,
   DashboardDropdownItem,
   DashboardColorScheme,
+  DashboardEnvironment,
+  DashboardEnvironmentBannerStatus,
+  DashboardEnvironmentBannerConfig,
 } from './components/layout/DashboardLayout';
 
 // ─── Navigation Components ─────────────────────────────────────────────────────
@@ -162,7 +202,7 @@ export { Progress } from './components/feedback/Progress';
 export type { ProgressProps } from './components/feedback/Progress';
 
 export { Modal } from './components/feedback/Modal';
-export type { ModalProps, ModalSize } from './components/feedback/Modal';
+export type { ModalProps, ModalSize, ModalMobileVariant } from './components/feedback/Modal';
 
 export { Tooltip } from './components/feedback/Tooltip';
 export type { TooltipProps } from './components/feedback/Tooltip';
@@ -216,6 +256,37 @@ export type {
   AppointmentType,
   AppointmentStatus,
 } from './components/healthcare/DoctorCard';
+
+export { PrescriptionCard } from './components/healthcare/PrescriptionCard';
+export type {
+  PrescriptionCardProps,
+  PrescriptionDrug,
+} from './components/healthcare/PrescriptionCard';
+
+export {
+  MedicalRecordBadge,
+  ICD10Badge,
+  BloodTypeBadge,
+  AllergyBadge,
+} from './components/healthcare/MedicalRecordBadge';
+export type {
+  MedicalRecordBadgeProps,
+  ICD10BadgeProps,
+  BloodTypeBadgeProps,
+  BloodType,
+  AllergyBadgeProps,
+  AllergySeverity,
+} from './components/healthcare/MedicalRecordBadge';
+
+export { TelehealthCallBar } from './components/healthcare/TelehealthCallBar';
+export type { TelehealthCallBarProps } from './components/healthcare/TelehealthCallBar';
+
+export { PatientTimeline } from './components/healthcare/PatientTimeline';
+export type {
+  PatientTimelineProps,
+  TimelineEvent,
+  TimelineEventType,
+} from './components/healthcare/PatientTimeline';
 
 // ─── Re-export useful Chakra UI primitives ─────────────────────────────────────
 export {

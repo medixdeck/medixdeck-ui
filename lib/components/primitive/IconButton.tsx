@@ -160,8 +160,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         onMouseDown={() => setPressed(true)}
         onMouseUp={() => setPressed(false)}
         onFocus={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.boxShadow =
-            `0 0 0 2px #fff, 0 0 0 4px ${c.solid}`;
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
         }}
         onBlur={(e) => {
           (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';

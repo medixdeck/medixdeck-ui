@@ -24,4 +24,16 @@ if [ $LINT_EXIT -ne 0 ]; then
   exit 1
 fi
 
+# ── Run TypeScript type check ─────────────────────────────────────────────────
+echo "📐  [pre-push] Running TypeScript type check..."
+npm run type-check
+TYPE_EXIT=$?
+
+if [ $TYPE_EXIT -ne 0 ]; then
+  echo ""
+  echo "❌  TypeScript type check failed (see errors above)."
+  echo "    Resolve them manually, commit, then push again."
+  exit 1
+fi
+
 echo "✅  All checks passed. Pushing..."

@@ -88,7 +88,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       flexShrink: 0,
       marginTop: 2,
       transition: 'background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease',
-      boxShadow: focused ? `0 0 0 3px ${c.ring}` : 'none',
+      boxShadow: 'none',
       pointerEvents: 'none',
     };
 
@@ -332,7 +332,7 @@ function RadioItem({
           flexShrink: 0,
           marginTop: 2,
           transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
-          boxShadow: focused ? `0 0 0 3px ${ring}` : 'none',
+          boxShadow: 'none',
           pointerEvents: 'none',
         }}
       >

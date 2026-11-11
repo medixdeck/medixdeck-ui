@@ -15,6 +15,8 @@ export interface DatePickerProps {
   label?: string;
   helperText?: string;
   errorMessage?: string;
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   isInvalid?: boolean;
   isDisabled?: boolean;
   placeholder?: string;
@@ -46,6 +48,7 @@ export function DatePicker({
   label,
   helperText,
   errorMessage,
+  colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
   placeholder = 'Select date',
@@ -69,11 +72,14 @@ export function DatePicker({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const activeBorderColor = isInvalid ? '#DC2626' : isOpen ? '#0685FF' : 'var(--medix-form-border)';
+  const focusColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
+  const activeBorderColor = isInvalid
+    ? '#DC2626'
+    : isOpen
+      ? focusColor
+      : 'var(--medix-form-border)';
 
-  const boxShadow = isOpen
-    ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
-    : 'none';
+  const boxShadow = 'none';
 
   const handleDateSelect = (date: Date) => {
     const yyyy = date.getFullYear();
@@ -140,7 +146,7 @@ export function DatePicker({
       : '';
 
   return (
-    <Box w="100%" position="relative" ref={containerRef}>
+    <Box w="100%" position="relative" zIndex={isOpen ? 1000 : undefined} ref={containerRef}>
       {label && (
         <Text
           mb="1.5"
@@ -226,8 +232,8 @@ export function DatePicker({
           position="absolute"
           top="calc(100% + 8px)"
           left="0"
-          zIndex="popover"
-          boxShadow="lg"
+          zIndex={1000}
+          boxShadow="none"
           borderRadius="card"
           border="1px solid"
           borderColor="border"
@@ -239,6 +245,7 @@ export function DatePicker({
             onChange={handleDateSelect}
             minDate={parseLocalDate(min)}
             maxDate={parseLocalDate(max)}
+            colorScheme={colorScheme}
           />
           {includeTime && (
             <Box px="5" pb="4" borderTop="1px solid" borderColor="border">

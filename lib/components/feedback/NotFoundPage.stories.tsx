@@ -5,6 +5,9 @@ const meta: Meta<typeof NotFoundPage> = {
   title: 'Feedback/NotFoundPage',
   component: NotFoundPage,
   tags: ['autodocs'],
+  argTypes: {
+    colorScheme: { control: 'select', options: ['blue', 'purple'] },
+  },
   parameters: {
     layout: 'fullscreen',
   },
@@ -27,6 +30,15 @@ export const CustomContent: Story = {
     actionLabel: 'Return to Dashboard',
     secondaryLabel: 'Contact Support',
     onAction: () => console.log('Return to Dashboard clicked'),
+    onSecondaryAction: () => console.log('Contact Support clicked'),
+  },
+};
+
+export const PurpleScheme: Story = {
+  args: {
+    colorScheme: 'purple',
+    secondaryLabel: 'Contact Support',
+    onAction: () => console.log('Go back home clicked'),
     onSecondaryAction: () => console.log('Contact Support clicked'),
   },
 };

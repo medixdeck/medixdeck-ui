@@ -16,6 +16,8 @@ export interface ComboboxProps {
   label?: string;
   helperText?: string;
   errorMessage?: string;
+  /** Brand color scheme ('blue' | 'purple') */
+  colorScheme?: 'blue' | 'purple';
   isInvalid?: boolean;
   isDisabled?: boolean;
 }
@@ -43,6 +45,7 @@ export function Combobox({
   label,
   helperText,
   errorMessage,
+  colorScheme = 'blue',
   isInvalid = false,
   isDisabled = false,
 }: ComboboxProps) {
@@ -79,14 +82,17 @@ export function Combobox({
     opt.label.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const activeBorderColor = isInvalid ? '#DC2626' : isOpen ? '#0685FF' : 'var(--medix-form-border)';
+  const focusColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
+  const activeBorderColor = isInvalid
+    ? '#DC2626'
+    : isOpen
+      ? focusColor
+      : 'var(--medix-form-border)';
 
-  const boxShadow = isOpen
-    ? `0 0 0 3px ${isInvalid ? 'rgba(220,38,38,0.15)' : 'rgba(6,133,255,0.15)'}`
-    : 'none';
+  const boxShadow = 'none';
 
   return (
-    <Box w="100%" position="relative" ref={containerRef}>
+    <Box w="100%" position="relative" zIndex={isOpen ? 1000 : undefined} ref={containerRef}>
       {label && (
         <Text
           mb="1.5"
@@ -144,7 +150,7 @@ export function Combobox({
       {isOpen && !isDisabled && (
         <Box
           position="absolute"
-          zIndex={10}
+          zIndex={1000}
           top="100%"
           left="0"
           right="0"
@@ -153,7 +159,7 @@ export function Combobox({
           border="1px solid"
           borderColor="border"
           borderRadius="md"
-          boxShadow="sm"
+          boxShadow="none"
           maxH="200px"
           overflowY="auto"
           py="1"
