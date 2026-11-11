@@ -6,9 +6,16 @@ export interface BreadcrumbItem {
   href?: string;
 }
 
+export type BreadcrumbColorScheme = 'blue' | 'purple';
+
 export interface BreadcrumbProps extends BoxProps {
   items: BreadcrumbItem[];
   separator?: React.ReactNode;
+  /**
+   * Brand accent color for interactive breadcrumb link hover state.
+   * @default "blue"
+   */
+  colorScheme?: BreadcrumbColorScheme;
   renderLink?: (item: BreadcrumbItem, children: React.ReactNode) => React.ReactNode;
 }
 
@@ -41,12 +48,19 @@ const defaultRenderLink = (item: BreadcrumbItem, children: React.ReactNode) =>
  * ]} />
  * ```
  */
+const BREADCRUMB_SCHEME: Record<BreadcrumbColorScheme, { hoverColor: string }> = {
+  blue: { hoverColor: 'blue.500' },
+  purple: { hoverColor: '#7700CC' },
+};
+
 export function Breadcrumb({
   items,
   separator = defaultSeparator,
+  colorScheme = 'blue',
   renderLink = defaultRenderLink,
   ...props
 }: BreadcrumbProps) {
+  const scheme = BREADCRUMB_SCHEME[colorScheme];
   return (
     <Box
       as="nav"
@@ -71,7 +85,7 @@ export function Breadcrumb({
                 fontFamily="var(--font-body)"
                 fontWeight={isLast ? 'medium' : 'normal'}
                 color={isLast ? 'text.heading' : 'text.muted'}
-                _hover={!isLast ? { color: 'blue.500' } : undefined}
+                _hover={!isLast ? { color: scheme.hoverColor } : undefined}
                 cursor={!isLast && item.href ? 'pointer' : 'default'}
                 transition="color 0.15s"
                 wordBreak="break-word"
