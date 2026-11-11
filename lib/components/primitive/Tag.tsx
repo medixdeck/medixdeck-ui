@@ -7,6 +7,8 @@ export type TagColorScheme = 'blue' | 'purple' | 'green' | 'gray' | 'red' | 'amb
 export interface TagProps extends BoxProps {
   variant?: TagVariant;
   colorScheme?: TagColorScheme;
+  /** Show a leading status dot. Dotted tags are the default. */
+  showDot?: boolean;
   /** Optional close-button handler */
   onClose?: () => void;
   children: React.ReactNode;
@@ -31,21 +33,29 @@ const variantStyleMap: Record<TagVariant, Record<string, string>> = {
  * MedixDeck Tag / Chip
  *
  * For filters, categories, and selections.
+ * Includes a leading dot by default for quick visual scanning.
  *
  * @example
  * ```tsx
  * <Tag colorScheme="blue" variant="subtle">Cardiology</Tag>
+ * <Tag colorScheme="purple" variant="solid" showDot={false}>No dot</Tag>
  * ```
  */
 export const Tag = React.forwardRef<HTMLDivElement, TagProps>(
-  ({ variant = 'subtle', colorScheme = 'blue', onClose, children, ...props }, ref) => {
+  (
+    { variant = 'subtle', colorScheme = 'blue', showDot = true, onClose, children, ...props },
+    ref,
+  ) => {
+    // Dot must remain distinguishable from the tag background in every variant.
+    const dotBg = variant === 'solid' ? 'white' : `${colorScheme}.500`;
+
     return (
       <Box
         ref={ref}
         as="span"
         display="inline-flex"
         alignItems="center"
-        gap="1"
+        gap="1.5"
         px="2.5"
         py="1"
         borderRadius="full"
@@ -66,12 +76,23 @@ export const Tag = React.forwardRef<HTMLDivElement, TagProps>(
         cursor={onClose ? 'default' : undefined}
         {...props}
       >
+        {showDot && (
+          <Box
+            as="span"
+            aria-hidden="true"
+            w="6px"
+            h="6px"
+            borderRadius="full"
+            bg={dotBg}
+            flexShrink={0}
+          />
+        )}
         {children}
         {onClose && (
           <Box
             as="button"
             onClick={onClose}
-            ml="1"
+            ml="0.5"
             opacity={0.7}
             _hover={{ opacity: 1 }}
             lineHeight="1"
