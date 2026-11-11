@@ -9,7 +9,18 @@ import { getButtonHapticIntent, type HapticInput } from '../../utils/haptics';
 // Using raw hex values ensures the Button always renders with the correct brand
 // colors regardless of how Chakra's colorPalette semantic-token bridge resolves.
 
-const COLORS = {
+type BrandColorScheme = 'blue' | 'purple' | 'green' | 'red' | 'amber' | 'black' | 'gray';
+interface ColorTokens {
+  solid: string;
+  solidHover: string;
+  solidActive: string;
+  tint: string;
+  tintHover: string;
+  fg: string;
+  fgHover: string;
+}
+
+const COLORS: Record<BrandColorScheme, ColorTokens> = {
   blue: {
     solid: '#0685FF',
     solidHover: '#0575E6',
@@ -73,7 +84,7 @@ const COLORS = {
     fg: '#4B5563',
     fgHover: '#1F2937',
   },
-} as Record<string, any>;
+};
 
 const SIZE = {
   xs: { height: '28px', px: '12px', fontSize: '11px' },
@@ -125,6 +136,8 @@ export interface ButtonProps {
   target?: string;
   /** Link rel if rendered as an anchor */
   rel?: string;
+  /** Optional tab index (disabled non-button elements are removed from tab order) */
+  tabIndex?: number;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -167,8 +180,8 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
   ) => {
     const { trigger } = useHaptics();
     // Safely fallback to blue if an invalid/unsupported color scheme is passed
-    const c = COLORS[colorScheme] || COLORS.blue;
-    const s = SIZE[size as keyof typeof SIZE] || SIZE.md;
+    const c = COLORS[colorScheme as BrandColorScheme] ?? COLORS.blue;
+    const s = SIZE[size] ?? SIZE.md;
 
     // ── Compute base styles per variant ────────────────────────────────────
     const base: React.CSSProperties = {
@@ -283,14 +296,19 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
       ...style,
     };
 
+    const isDisabled = Boolean(disabled || isLoading);
+    const isNativeButton = Component === 'button';
+    const isDisabledNonButton = !isNativeButton && isDisabled;
+
     return (
       <Component
-        ref={ref as any}
-        type={Component === 'button' ? (props.type ?? 'button') : undefined}
-        href={href}
-        target={target}
-        rel={rel}
-        disabled={Component === 'button' ? disabled || isLoading : undefined}
+        ref={ref as React.Ref<HTMLButtonElement & HTMLAnchorElement>}
+        type={isNativeButton ? (props.type ?? 'button') : undefined}
+        href={isDisabledNonButton ? undefined : href}
+        target={isDisabledNonButton ? undefined : target}
+        rel={isDisabledNonButton ? undefined : rel}
+        tabIndex={isDisabledNonButton ? -1 : props.tabIndex}
+        disabled={isNativeButton ? isDisabled : undefined}
         style={composedStyle}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => {
@@ -307,16 +325,17 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(
         }}
         {...props}
         aria-disabled={
-          Component !== 'button' && (disabled || isLoading)
+          !isNativeButton && isDisabled
             ? true
             : (props as { 'aria-disabled'?: boolean | 'true' | 'false' })['aria-disabled']
         }
-        onClick={(e: any) => {
-          if (Component !== 'button' && (disabled || isLoading)) {
+        onClick={(e: React.MouseEvent<HTMLElement>) => {
+          if (!isNativeButton && isDisabled) {
             e.preventDefault();
+            e.stopPropagation();
             return;
           }
-          if (!disableHaptic && haptic !== false && !disabled && !isLoading) {
+          if (!disableHaptic && haptic !== false && !isDisabled) {
             trigger(haptic ?? getButtonHapticIntent(variant));
           }
           props.onClick?.(e);
