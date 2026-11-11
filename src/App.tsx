@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Box, Flex, Link, Text } from '@chakra-ui/react';
-import { useThemeMode } from '../lib';
+import { triggerHaptic, useHaptics, useThemeMode } from '../lib';
 import {
   LuHouse,
   LuStethoscope,
@@ -1732,7 +1732,7 @@ export default function App() {
                 Psychiatry
               </Tag>
               <Tag colorScheme="green" onClose={() => {}}>
-                Pediatrics ×
+                Pediatrics
               </Tag>
               <Tag colorScheme="gray" variant="outline">
                 General Practice
@@ -2135,6 +2135,19 @@ export default function App() {
                 ]}
               />
             </Box>
+            <Box w="100%" mt="4">
+              <Text fontSize="xs" color="text.muted" mb="2" fontFamily="var(--font-body)">
+                Purple (line)
+              </Text>
+              <Tabs
+                colorScheme="purple"
+                tabs={[
+                  { id: 'p-overview', label: 'Overview', content: <Box p="2">Overview…</Box> },
+                  { id: 'p-records', label: 'Records', badge: '3', content: <Box p="2">Records…</Box> },
+                  { id: 'p-appts', label: 'Appointments', content: <Box p="2">Appointments…</Box> },
+                ]}
+              />
+            </Box>
           </Section>
 
           <Section
@@ -2219,8 +2232,27 @@ export default function App() {
             id="pagination"
             storybookPath="?path=/docs/navigation-pagination--docs"
           >
-            <Pagination total={245} pageSize={10} currentPage={page} onChange={setPage} />
-            <Pagination total={50} pageSize={10} currentPage={2} compact />
+            <Box display="flex" flexDirection="column" gap="4" w="100%">
+              <Box>
+                <Text fontSize="xs" color="text.muted" mb="2" fontFamily="var(--font-body)">
+                  Blue (default)
+                </Text>
+                <Pagination total={245} pageSize={10} currentPage={page} onChange={setPage} />
+              </Box>
+              <Box>
+                <Text fontSize="xs" color="text.muted" mb="2" fontFamily="var(--font-body)">
+                  Purple
+                </Text>
+                <Pagination
+                  total={245}
+                  pageSize={10}
+                  currentPage={page}
+                  onChange={setPage}
+                  colorScheme="purple"
+                />
+              </Box>
+              <Pagination total={50} pageSize={10} currentPage={2} compact colorScheme="purple" />
+            </Box>
           </Section>
 
           {/* ────────────────────────────────────────────────────
@@ -3025,6 +3057,54 @@ export default function App() {
                 href="/blog/emergency-room"
               />
             ))}
+          </Section>
+
+          <Section
+            title="Haptic Feedback"
+            id="haptics"
+            storybookPath="?path=/docs/feedback-haptics--docs"
+          >
+            <Box display="flex" flexDirection="column" gap="4" w="100%">
+              <Text fontSize="sm" color="text.muted" fontFamily="var(--font-body)">
+                Haptics enhance supported interactions on devices/browsers with vibration support
+                (typically Android/Chromium). They respect <code>prefers-reduced-motion</code> and
+                can be disabled globally via <code>MedixProvider haptics</code> or per component.
+              </Text>
+              <Box display="flex" flexWrap="wrap" gap="3" alignItems="center">
+                <Button onClick={() => triggerHaptic('selection')} variant="outline" colorScheme="blue">
+                  Selection
+                </Button>
+                <Button onClick={() => triggerHaptic('impactLight')} variant="secondary" colorScheme="blue">
+                  Light Impact
+                </Button>
+                <Button onClick={() => triggerHaptic('impactMedium')} variant="solid" colorScheme="blue">
+                  Medium Impact
+                </Button>
+                <Button onClick={() => triggerHaptic('success')} variant="solid" colorScheme="green">
+                  Success
+                </Button>
+                <Button onClick={() => triggerHaptic('warning')} variant="solid" colorScheme="amber">
+                  Warning
+                </Button>
+                <Button onClick={() => triggerHaptic('error')} variant="solid" colorScheme="red">
+                  Error
+                </Button>
+              </Box>
+              <Box display="flex" flexWrap="wrap" gap="4" alignItems="center">
+                <Switch label="Haptic-enabled switch" defaultChecked />
+                <Checkbox defaultChecked>Haptic-enabled checkbox</Checkbox>
+                <RadioGroup
+                  name="haptic-radio-demo"
+                  options={[
+                    { value: 'a', label: 'Option A' },
+                    { value: 'b', label: 'Option B' },
+                  ]}
+                />
+              </Box>
+              <Text fontSize="xs" color="text.muted" fontFamily="var(--font-body)">
+                Tip: open this preview on an Android device with vibration enabled to feel feedback.
+              </Text>
+            </Box>
           </Section>
 
           {/* Footer Showcase */}
