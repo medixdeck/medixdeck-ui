@@ -4,6 +4,8 @@ import React, { useState, useMemo } from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { SearchInput } from '../form/Input';
 import { Pagination } from '../navigation/Pagination';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface Column<T = Record<string, unknown>> {
   /** Unique key matching the data field */
@@ -61,6 +63,10 @@ export interface DataTableProps<T = Record<string, unknown>> {
    * @default false
    */
   stickyFirstColumn?: boolean;
+  /** Haptic feedback intent/pattern for sort/row interactions. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for table interactions. */
+  disableHaptic?: boolean;
 }
 
 /**
@@ -108,7 +114,10 @@ export function DataTable<T extends Record<string, unknown>>({
   style,
   className,
   stickyFirstColumn = false,
+  haptic,
+  disableHaptic = false,
 }: DataTableProps<T>) {
+  const { trigger } = useHaptics();
   // ─── Search State ──────────────────────────────────────────────────────────
   const [internalSearch, setInternalSearch] = useState('');
   const activeSearch = searchQuery ?? internalSearch;
@@ -131,6 +140,7 @@ export function DataTable<T extends Record<string, unknown>>({
   };
 
   const handleSort = (key: string) => {
+    if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
     const newDir = activeSortKey === key && activeDirection === 'asc' ? 'desc' : 'asc';
     setInternalSortKey(key);
     setInternalDirection(newDir);
@@ -198,7 +208,7 @@ export function DataTable<T extends Record<string, unknown>>({
       borderColor="border"
       borderRadius="card"
       overflow="hidden"
-      bg="bg.surface"
+      bg="bg"
       boxShadow="none"
       _dark={{ boxShadow: 'none' }}
       style={style}
@@ -206,7 +216,7 @@ export function DataTable<T extends Record<string, unknown>>({
     >
       {/* Search Header Toolbar */}
       {enableSearch && (
-        <Box p="4" borderBottom="1px solid" borderColor="border" bg="bg.surface">
+        <Box p="4" borderBottom="1px solid" borderColor="border" bg="bg">
           <SearchInput
             placeholder={searchPlaceholder}
             value={activeSearch}
@@ -316,7 +326,12 @@ export function DataTable<T extends Record<string, unknown>>({
                   <Box
                     as="tr"
                     key={key}
-                    onClick={() => onRowClick?.(row, rowIdx)}
+                    onClick={() => {
+                      if (onRowClick && !disableHaptic && haptic !== false) {
+                        trigger(haptic ?? 'selection');
+                      }
+                      onRowClick?.(row, rowIdx);
+                    }}
                     bg={striped && rowIdx % 2 === 1 ? 'bg.subtle' : 'transparent'}
                     borderBottom="1px solid"
                     borderColor="border"
@@ -345,7 +360,7 @@ export function DataTable<T extends Record<string, unknown>>({
                             isStickyCol
                               ? striped && rowIdx % 2 === 1
                                 ? 'bg.subtle'
-                                : 'bg.surface'
+                                : 'bg'
                               : undefined
                           }
                           borderRight={isStickyCol ? '1px solid' : undefined}
@@ -372,7 +387,7 @@ export function DataTable<T extends Record<string, unknown>>({
           p="4"
           borderTop="1px solid"
           borderColor="border"
-          bg="bg.surface"
+          bg="bg"
           align="center"
           justify="space-between"
           flexWrap="wrap"
@@ -388,6 +403,8 @@ export function DataTable<T extends Record<string, unknown>>({
             currentPage={activePage}
             onChange={handlePageChange}
             compact
+            haptic={haptic}
+            disableHaptic={disableHaptic}
           />
         </Flex>
       )}
