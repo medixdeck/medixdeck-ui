@@ -102,7 +102,7 @@ function SingleSelect(props: SelectProps) {
     ? typeof value === 'string'
       ? value
       : Array.isArray(value)
-        ? value[0] ?? ''
+        ? (value[0] ?? '')
         : ''
     : internalValue;
 
@@ -526,7 +526,12 @@ function MultiSelect(props: SelectProps) {
         onKeyDown={(e) => {
           if (disabled) return;
           if (!isOpen) {
-            if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            if (
+              e.key === 'Enter' ||
+              e.key === ' ' ||
+              e.key === 'ArrowDown' ||
+              e.key === 'ArrowUp'
+            ) {
               e.preventDefault();
               if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
               setIsOpen(true);

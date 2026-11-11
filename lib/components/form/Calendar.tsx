@@ -236,8 +236,9 @@ export function Calendar({
 
   const today = new Date();
   const focusableDay =
-    (value && value.getMonth() === month && value.getFullYear() === year ? value.getDate() : null) ??
-    (today.getMonth() === month && today.getFullYear() === year ? today.getDate() : 1);
+    (value && value.getMonth() === month && value.getFullYear() === year
+      ? value.getDate()
+      : null) ?? (today.getMonth() === month && today.getFullYear() === year ? today.getDate() : 1);
 
   const handleDayGridKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (viewMode !== 'day') return;

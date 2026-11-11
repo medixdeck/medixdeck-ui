@@ -51,13 +51,19 @@ export function FormControl({
   let control = children;
   if (React.isValidElement(children)) {
     const childProps = children.props as Record<string, unknown>;
-    const childDescribedBy = typeof childProps['aria-describedby'] === 'string' ? childProps['aria-describedby'] : undefined;
-    const mergedDescribedBy = [childDescribedBy, describedBy].filter(Boolean).join(' ') || undefined;
+    const childDescribedBy =
+      typeof childProps['aria-describedby'] === 'string'
+        ? childProps['aria-describedby']
+        : undefined;
+    const mergedDescribedBy =
+      [childDescribedBy, describedBy].filter(Boolean).join(' ') || undefined;
 
     control = React.cloneElement(children as React.ReactElement<Record<string, unknown>>, {
       id: (childProps.id as string | undefined) ?? controlId,
       isInvalid: isInvalid || Boolean(childProps.isInvalid) || undefined,
-      'aria-invalid': isInvalid ? true : (childProps['aria-invalid'] as boolean | 'true' | 'false' | undefined),
+      'aria-invalid': isInvalid
+        ? true
+        : (childProps['aria-invalid'] as boolean | 'true' | 'false' | undefined),
       'aria-required':
         isRequired || childProps.required || childProps.isRequired || childProps['aria-required']
           ? true
@@ -110,13 +116,7 @@ export function FormControl({
       )}
 
       {errorId && errorMessage && (
-        <Text
-          id={errorId}
-          fontSize="xs"
-          color="red.500"
-          fontFamily="var(--font-body)"
-          role="alert"
-        >
+        <Text id={errorId} fontSize="xs" color="red.500" fontFamily="var(--font-body)" role="alert">
           {errorMessage}
         </Text>
       )}

@@ -485,7 +485,8 @@ export function Footer({
                     {...({
                       type: 'email',
                       value: email,
-                      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
+                      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                        setEmail(e.target.value),
                       placeholder: newsletter?.placeholder ?? 'email@address.com',
                       required: true,
                     } as unknown as Record<string, unknown>)}

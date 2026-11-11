@@ -216,7 +216,11 @@ export function OTPInput({
             }}
             onBlur={() => setFocusedIdx(null)}
             disabled={isDisabled}
-            aria-label={ariaLabel ? `${ariaLabel} digit ${idx + 1} of ${length}` : `Digit ${idx + 1} of ${length}`}
+            aria-label={
+              ariaLabel
+                ? `${ariaLabel} digit ${idx + 1} of ${length}`
+                : `Digit ${idx + 1} of ${length}`
+            }
             aria-labelledby={ariaLabelledBy}
             aria-describedby={ariaDescribedBy}
             aria-invalid={isInvalid || ariaInvalid || undefined}

@@ -190,7 +190,6 @@ export function triggerHaptic(input: HapticInput, options?: TriggerHapticOptions
   try {
     const ok = navigator.vibrate(pattern);
     if (config.debug && typeof console !== 'undefined') {
-       
       console.debug('[medixdeck:haptics]', { input, pattern, ok });
     }
     return Boolean(ok);
