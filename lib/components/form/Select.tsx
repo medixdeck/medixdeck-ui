@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface SelectOption {
   value: string;
@@ -27,6 +29,10 @@ export interface SelectProps {
   id?: string;
   disabled?: boolean;
   multiple?: boolean;
+  /** Haptic feedback intent/pattern on selection/toggle. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this select. */
+  disableHaptic?: boolean;
   onBlur?: React.FocusEventHandler<HTMLDivElement | HTMLInputElement>;
   onFocus?: React.FocusEventHandler<HTMLDivElement | HTMLInputElement>;
   style?: React.CSSProperties;
@@ -54,9 +60,12 @@ function SingleSelect({
   defaultValue,
   onChange,
   disabled = false,
+  haptic,
+  disableHaptic = false,
   name,
   id,
 }: SelectProps) {
+  const { trigger } = useHaptics();
   const [isOpen, setIsOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
   const [internalValue, setInternalValue] = React.useState<string>(() => {
@@ -103,6 +112,9 @@ function SingleSelect({
 
   const handleSelectOption = (optValue: string) => {
     if (disabled) return;
+    if (!disableHaptic && haptic !== false && optValue !== selectedValue) {
+      trigger(haptic ?? 'selection');
+    }
     if (!isControlled) {
       setInternalValue(optValue);
     }
@@ -130,14 +142,18 @@ function SingleSelect({
       {name && <input type="hidden" name={name} id={id} value={selectedValue} />}
 
       <Box
-        onClick={() => !disabled && setIsOpen(!isOpen)}
+        onClick={() => {
+          if (disabled) return;
+          if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+          setIsOpen(!isOpen);
+        }}
         display="flex"
         alignItems="center"
         justifyContent="space-between"
         h={sz.h}
         px={sz.px}
         borderRadius="md"
-        bg="bg.surface"
+        bg="bg"
         cursor={disabled ? 'not-allowed' : 'pointer'}
         opacity={disabled ? 0.55 : 1}
         transition="border-color 0.15s ease"
@@ -434,7 +450,7 @@ function MultiSelect({
         py="1.5"
         px="3"
         borderRadius="md"
-        bg="bg.surface"
+        bg="bg"
         cursor={disabled ? 'not-allowed' : 'pointer'}
         opacity={disabled ? 0.55 : 1}
         transition="border-color 0.15s ease"
