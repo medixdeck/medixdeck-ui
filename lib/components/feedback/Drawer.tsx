@@ -100,11 +100,7 @@ export function Drawer({
           border="1px solid"
           borderColor="border"
           boxShadow="none"
-          maxH={
-            mappedPlacement === 'top' || mappedPlacement === 'bottom'
-              ? '100dvh'
-              : '100dvh'
-          }
+          maxH={mappedPlacement === 'top' || mappedPlacement === 'bottom' ? '100dvh' : '100dvh'}
           h={mappedPlacement === 'start' || mappedPlacement === 'end' ? '100dvh' : undefined}
         >
           <DrawerHeader

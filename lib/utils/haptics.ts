@@ -97,7 +97,9 @@ function normalizePattern(pattern: number | number[]): HapticPattern | null {
 }
 
 /** Resolve a partial config against defaults. */
-export function resolveHapticsConfig(config?: boolean | HapticsConfig | null): ResolvedHapticsConfig {
+export function resolveHapticsConfig(
+  config?: boolean | HapticsConfig | null,
+): ResolvedHapticsConfig {
   if (config === false) {
     return { ...DEFAULT_HAPTICS_CONFIG, enabled: false };
   }
@@ -144,7 +146,13 @@ export function resolveHapticPattern(
 }
 
 function isResolvedConfig(config: unknown): config is ResolvedHapticsConfig {
-  return !!config && typeof config === 'object' && 'patterns' in config && 'enabled' in config && Array.isArray((config as any).patterns) === false;
+  return (
+    !!config &&
+    typeof config === 'object' &&
+    'patterns' in config &&
+    'enabled' in config &&
+    Array.isArray((config as any).patterns) === false
+  );
 }
 
 /** Cancel any ongoing vibration pattern (best effort). */
@@ -182,7 +190,7 @@ export function triggerHaptic(input: HapticInput, options?: TriggerHapticOptions
   try {
     const ok = navigator.vibrate(pattern);
     if (config.debug && typeof console !== 'undefined') {
-      // eslint-disable-next-line no-console
+       
       console.debug('[medixdeck:haptics]', { input, pattern, ok });
     }
     return Boolean(ok);

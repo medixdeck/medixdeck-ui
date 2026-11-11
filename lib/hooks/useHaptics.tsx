@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useCallback, useContext, useMemo, useSyncExternalStore } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useSyncExternalStore,
+} from 'react';
 import {
   cancelHaptic,
   canUseHaptics,
@@ -68,10 +74,7 @@ export interface HapticsProviderProps {
 export function HapticsProvider({ haptics, children }: HapticsProviderProps) {
   const config = useMemo(() => resolveHapticsConfig(haptics), [haptics]);
 
-  const trigger = useCallback(
-    (input: HapticInput) => triggerHaptic(input, { config }),
-    [config],
-  );
+  const trigger = useCallback((input: HapticInput) => triggerHaptic(input, { config }), [config]);
 
   const cancel = useCallback(() => cancelHaptic(), []);
 
@@ -87,11 +90,18 @@ export function HapticsProvider({ haptics, children }: HapticsProviderProps) {
  */
 export function useHaptics(): UseHapticsResult {
   const ctx = useContext(HapticsContext);
-  const reducedMotion = useSyncExternalStore(subscribeReducedMotion, isReducedMotionPreferred, () => false);
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    isReducedMotionPreferred,
+    () => false,
+  );
   const supported = typeof navigator !== 'undefined' && canUseHaptics();
 
   const isEnabled =
-    ctx.config.enabled && ctx.config.strategy !== 'none' && supported && !(ctx.config.respectReducedMotion && reducedMotion);
+    ctx.config.enabled &&
+    ctx.config.strategy !== 'none' &&
+    supported &&
+    !(ctx.config.respectReducedMotion && reducedMotion);
 
   return {
     isSupported: supported,
@@ -110,4 +120,10 @@ export function triggerGlobalHaptic(input: HapticInput, config?: boolean | Hapti
   return triggerHaptic(input, { config: resolveHapticsConfig(config) });
 }
 
-export type { HapticIntent, HapticInput, HapticPattern, HapticsConfig, ResolvedHapticsConfig } from '../utils/haptics';
+export type {
+  HapticIntent,
+  HapticInput,
+  HapticPattern,
+  HapticsConfig,
+  ResolvedHapticsConfig,
+} from '../utils/haptics';

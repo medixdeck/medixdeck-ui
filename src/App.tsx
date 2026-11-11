@@ -2143,7 +2143,12 @@ export default function App() {
                 colorScheme="purple"
                 tabs={[
                   { id: 'p-overview', label: 'Overview', content: <Box p="2">Overview…</Box> },
-                  { id: 'p-records', label: 'Records', badge: '3', content: <Box p="2">Records…</Box> },
+                  {
+                    id: 'p-records',
+                    label: 'Records',
+                    badge: '3',
+                    content: <Box p="2">Records…</Box>,
+                  },
                   { id: 'p-appts', label: 'Appointments', content: <Box p="2">Appointments…</Box> },
                 ]}
               />
@@ -3071,19 +3076,39 @@ export default function App() {
                 can be disabled globally via <code>MedixProvider haptics</code> or per component.
               </Text>
               <Box display="flex" flexWrap="wrap" gap="3" alignItems="center">
-                <Button onClick={() => triggerHaptic('selection')} variant="outline" colorScheme="blue">
+                <Button
+                  onClick={() => triggerHaptic('selection')}
+                  variant="outline"
+                  colorScheme="blue"
+                >
                   Selection
                 </Button>
-                <Button onClick={() => triggerHaptic('impactLight')} variant="secondary" colorScheme="blue">
+                <Button
+                  onClick={() => triggerHaptic('impactLight')}
+                  variant="secondary"
+                  colorScheme="blue"
+                >
                   Light Impact
                 </Button>
-                <Button onClick={() => triggerHaptic('impactMedium')} variant="solid" colorScheme="blue">
+                <Button
+                  onClick={() => triggerHaptic('impactMedium')}
+                  variant="solid"
+                  colorScheme="blue"
+                >
                   Medium Impact
                 </Button>
-                <Button onClick={() => triggerHaptic('success')} variant="solid" colorScheme="green">
+                <Button
+                  onClick={() => triggerHaptic('success')}
+                  variant="solid"
+                  colorScheme="green"
+                >
                   Success
                 </Button>
-                <Button onClick={() => triggerHaptic('warning')} variant="solid" colorScheme="amber">
+                <Button
+                  onClick={() => triggerHaptic('warning')}
+                  variant="solid"
+                  colorScheme="amber"
+                >
                   Warning
                 </Button>
                 <Button onClick={() => triggerHaptic('error')} variant="solid" colorScheme="red">

@@ -171,7 +171,9 @@ export function Tabs({
               borderRadius={variant === 'pill' ? 'full' : 'none'}
               boxShadow="none"
               borderBottom={variant === 'line' ? '2px solid' : 'none'}
-              borderColor={variant === 'line' ? (isActive ? scheme.indicator : 'transparent') : undefined}
+              borderColor={
+                variant === 'line' ? (isActive ? scheme.indicator : 'transparent') : undefined
+              }
               mb={variant === 'line' ? '-1px' : '0'}
               _hover={
                 !tab.disabled
