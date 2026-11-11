@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Box, Text, type BoxProps } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface TabItem {
   id: string;
@@ -10,6 +12,8 @@ export interface TabItem {
   disabled?: boolean;
   content?: React.ReactNode;
 }
+
+export type TabsColorScheme = 'blue' | 'purple';
 
 // Omit onChange to avoid conflict with BoxProps (which defines onChange as FormEventHandler)
 export interface TabsProps extends Omit<BoxProps, 'onChange'> {
@@ -20,12 +24,50 @@ export interface TabsProps extends Omit<BoxProps, 'onChange'> {
   variant?: 'line' | 'pill';
   size?: 'sm' | 'md' | 'lg';
   renderContent?: boolean;
+  /**
+   * Brand accent color for line variant active/hover/focus states and badges.
+   * @default "blue"
+   */
+  colorScheme?: TabsColorScheme;
+  /** Haptic feedback intent/pattern on tab change. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for tab changes. */
+  disableHaptic?: boolean;
 }
 
 const sizeMap = {
   sm: { px: '3', py: '1.5', fontSize: 'sm' },
   md: { px: '4', py: '2', fontSize: 'md' },
   lg: { px: '5', py: '2.5', fontSize: 'lg' },
+};
+
+const TABS_SCHEME: Record<
+  TabsColorScheme,
+  {
+    activeText: string;
+    indicator: string;
+    focusOutline: string;
+    hoverText: string;
+    badgeActiveBg: string;
+    badgeActiveColor: string;
+  }
+> = {
+  blue: {
+    activeText: 'blue.500',
+    indicator: 'blue.500',
+    focusOutline: 'blue.500',
+    hoverText: 'blue.500',
+    badgeActiveBg: 'blue.100',
+    badgeActiveColor: 'blue.700',
+  },
+  purple: {
+    activeText: '#7700CC',
+    indicator: '#7700CC',
+    focusOutline: '#7700CC',
+    hoverText: '#7700CC',
+    badgeActiveBg: '#F3E8FF',
+    badgeActiveColor: '#6B21A8',
+  },
 };
 
 /**
@@ -49,12 +91,20 @@ export function Tabs({
   variant = 'line',
   size = 'md',
   renderContent = true,
+  colorScheme = 'blue',
+  haptic,
+  disableHaptic = false,
   ...props
 }: TabsProps) {
+  const { trigger } = useHaptics();
   const [internalId, setInternalId] = React.useState(defaultActiveId ?? tabs[0]?.id);
   const activeId = controlledId ?? internalId;
+  const scheme = TABS_SCHEME[colorScheme];
 
   const handleChange = (id: string) => {
+    if (id !== activeId && !disableHaptic && haptic !== false) {
+      trigger(haptic ?? 'selection');
+    }
     setInternalId(id);
     onChange?.(id);
   };
@@ -108,7 +158,7 @@ export function Tabs({
                       ? 'text.heading'
                       : 'text.body'
                     : isActive
-                      ? 'blue.500'
+                      ? scheme.activeText
                       : 'text.body'
               }
               cursor={tab.disabled ? 'not-allowed' : 'pointer'}
@@ -121,12 +171,12 @@ export function Tabs({
               borderRadius={variant === 'pill' ? 'full' : 'none'}
               boxShadow="none"
               borderBottom={variant === 'line' ? '2px solid' : 'none'}
-              borderColor={variant === 'line' ? (isActive ? 'blue.500' : 'transparent') : undefined}
+              borderColor={variant === 'line' ? (isActive ? scheme.indicator : 'transparent') : undefined}
               mb={variant === 'line' ? '-1px' : '0'}
               _hover={
                 !tab.disabled
                   ? variant === 'line'
-                    ? { color: 'blue.500' }
+                    ? { color: scheme.hoverText }
                     : {
                         bg: isActive ? 'bg' : 'bg.subtle',
                         color: isActive ? 'text.heading' : 'text.heading',
@@ -135,7 +185,7 @@ export function Tabs({
               }
               _focusVisible={{
                 outline: '2px solid',
-                outlineColor: 'blue.500',
+                outlineColor: scheme.focusOutline,
                 outlineOffset: '2px',
                 borderRadius: variant === 'pill' ? 'full' : 'sm',
               }}
@@ -161,7 +211,7 @@ export function Tabs({
                         ? 'bg.subtle'
                         : 'bg'
                       : isActive
-                        ? 'blue.100'
+                        ? scheme.badgeActiveBg
                         : 'bg.subtle'
                   }
                   color={
@@ -170,7 +220,7 @@ export function Tabs({
                         ? 'text.heading'
                         : 'text.muted'
                       : isActive
-                        ? 'blue.700'
+                        ? scheme.badgeActiveColor
                         : 'text.muted'
                   }
                 >
