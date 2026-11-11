@@ -13,6 +13,24 @@ All notable changes to `@medixdeck/ui` are documented here.
   - `TagsInput` tag pills now also render a leading dot by default for visual consistency.
   - Updated Badge Storybook stories and `src/App.tsx` showcase.
 
+### Improved
+
+- **Accessibility & form semantics (incremental backlog pass)**:
+  - `FormControl` now generates stable control IDs and wires label/helper/error associations (`aria-describedby`, `aria-invalid`, `aria-required`) to valid child controls.
+  - Added/forwarded ARIA props (`id`, `name`, `aria-label`, `aria-labelledby`, `aria-describedby`, `aria-invalid`, `aria-required`) and baseline roles/keyboard behavior to custom controls including `Select`, `Combobox`, `DatePicker`, `DateRangePicker`, `PhoneInput`, `TagsInput`, `FileUpload`, `OTPInput`, `Switch`, `Checkbox`, `RadioGroup`, and `RichTextInput` (markdown mode).
+  - `Select` and `Combobox` gained improved listbox semantics and keyboard interaction support (open/close, arrow-key navigation, active option handling, Enter selection/toggle).
+  - `Calendar` day grid received basic keyboard accessibility improvements (focusable day cells, grid semantics/labels, and arrow-key focus movement within available day buttons).
+  - `Button` typing/haptics handling improved and disabled non-button (`as="a"`) behavior now avoids navigation/tab focus while preserving `aria-disabled`.
+- **Overlay/layout behavior**:
+  - `Modal` and `Drawer` content areas are viewport-constrained with scrollable bodies to keep headers/close actions and footers accessible on small screens.
+  - `DataTable` container/background updated to use `bg` while preserving readable header/row/hover contrast.
+  - `Tooltip` adds `toggleOnTouch` (default `true`) to allow primary tap actions (e.g. collapsed sidebar links/buttons) without tooltip tap interception.
+- **Suppression/typing cleanup (targeted)**:
+  - Replaced `Calendar` button `@ts-expect-error` workarounds with typed `chakra.button` elements.
+  - Reduced/adjusted suppressions in `DashboardLayout` and `Footer` where feasible during this pass.
+- **Docs/stories**:
+  - Added Storybook stories for `Tag`, `Divider`, `Spinner`/`FullPageSpinner`, `IconButton`, and `FormControl`.
+
 ## [0.1.27] - 2026-11-02
 
 ### Fixed — PWA install prompt
