@@ -482,11 +482,13 @@ export function Footer({
                 <Box as="form" onSubmit={handleNewsletterSubmit} position="relative" display="flex">
                   <Box
                     as="input"
-                    // @ts-ignore email
-                    type="email"
-                    value={email}
-                    onChange={(e: any) => setEmail(e.target.value)}
-                    placeholder={newsletter?.placeholder ?? 'email@address.com'}
+                    {...({
+                      type: 'email',
+                      value: email,
+                      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
+                      placeholder: newsletter?.placeholder ?? 'email@address.com',
+                      required: true,
+                    } as unknown as Record<string, unknown>)}
                     w="full"
                     h="44px"
                     pl={4}
@@ -505,7 +507,6 @@ export function Footer({
                       boxShadow: `0 0 0 1px ${scheme.solid}`,
                     }}
                     transition="all 0.2s"
-                    required
                   />
                   <button
                     type="submit"
