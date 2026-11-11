@@ -42,6 +42,11 @@ export interface SwitchProps {
   description?: string;
   name?: string;
   id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -68,6 +73,11 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       description,
       name,
       id,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-invalid': ariaInvalid,
+      'aria-required': ariaRequired,
     },
     ref,
   ) => {
@@ -134,6 +144,11 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
             name={name}
             checked={isOn}
             disabled={disabled}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={ariaInvalid}
+            aria-required={ariaRequired}
             onChange={handleChange}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
