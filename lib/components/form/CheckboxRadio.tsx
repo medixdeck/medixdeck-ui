@@ -40,6 +40,11 @@ export interface CheckboxProps {
   name?: string;
   value?: string;
   id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -67,6 +72,11 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       name,
       value,
       id,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledBy,
+      'aria-describedby': ariaDescribedBy,
+      'aria-invalid': ariaInvalid,
+      'aria-required': ariaRequired,
     },
     ref,
   ) => {
@@ -125,6 +135,11 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             value={value}
             checked={isOn}
             disabled={disabled}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={ariaInvalid}
+            aria-required={ariaRequired}
             onChange={handleChange}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
@@ -224,6 +239,12 @@ export interface RadioGroupProps {
   haptic?: HapticInput;
   /** Disable haptic feedback for this radio group. */
   disableHaptic?: boolean;
+  id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -250,6 +271,12 @@ export function RadioGroup({
   direction = 'column',
   haptic,
   disableHaptic = false,
+  id,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: RadioGroupProps) {
   const { trigger } = useHaptics();
   const c = COLORS[colorScheme];
@@ -266,10 +293,16 @@ export function RadioGroup({
 
   return (
     <Box
+      id={id}
       display="flex"
       flexDirection={direction}
       gap={direction === 'row' ? '5' : '3'}
       role="radiogroup"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-invalid={ariaInvalid}
+      aria-required={ariaRequired}
     >
       {options.map((opt) => {
         const isSelected = selectedValue === opt.value;
