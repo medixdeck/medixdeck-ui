@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, type BoxProps } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export type AlertStatus = 'info' | 'success' | 'warning' | 'error';
 export type AlertVariant = 'subtle' | 'solid' | 'left-accent';
@@ -12,6 +14,10 @@ export interface AlertProps extends BoxProps {
   icon?: React.ReactNode;
   onClose?: () => void;
   closable?: boolean;
+  /** Haptic feedback intent/pattern when dismissing. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for alert dismiss action. */
+  disableHaptic?: boolean;
 }
 
 const statusConfig: Record<
@@ -64,11 +70,14 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
       icon,
       onClose,
       closable = false,
+      haptic,
+      disableHaptic = false,
       children,
       ...props
     },
     ref,
   ) => {
+    const { trigger } = useHaptics();
     const cfg = statusConfig[status];
 
     const bgColor = variant === 'solid' ? cfg.color : cfg.bg;
@@ -153,7 +162,10 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
             justifyContent="center"
             borderRadius="sm"
             _hover={{ color: variant === 'solid' ? 'white' : 'text.heading' }}
-            onClick={onClose}
+            onClick={() => {
+              if (!disableHaptic && haptic !== false) trigger(haptic ?? 'impactLight');
+              onClose?.();
+            }}
             aria-label="Dismiss alert"
           >
             ×
