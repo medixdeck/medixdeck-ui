@@ -47,6 +47,11 @@ export interface TagsInputProps {
   /** Extra container styles */
   style?: React.CSSProperties;
   className?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 export type TagInputProps = TagsInputProps;
@@ -141,6 +146,11 @@ export function TagsInput({
   disableHaptic = false,
   style,
   className,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: TagsInputProps) {
   const { trigger } = useHaptics();
   const fallbackId = React.useId();
@@ -327,6 +337,11 @@ export function TagsInput({
             placeholder={value.length === 0 ? placeholder : ''}
             disabled={isDisabled}
             readOnly={isReadOnly}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={isInvalid || ariaInvalid || undefined}
+            aria-required={ariaRequired}
             style={{
               flex: 1,
               minWidth: '120px',
