@@ -31,6 +31,11 @@ export interface DateRangePickerProps {
   haptic?: HapticInput;
   /** Disable haptic feedback for this date range picker. */
   disableHaptic?: boolean;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -67,6 +72,11 @@ export function DateRangePicker({
   id,
   haptic,
   disableHaptic = false,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: DateRangePickerProps) {
   const { trigger } = useHaptics();
   const [activeInput, setActiveInput] = useState<'start' | 'end' | null>(null);
@@ -205,7 +215,11 @@ export function DateRangePicker({
           value={displayStart}
           placeholder={startPlaceholder}
           disabled={isDisabled}
-          aria-invalid={isInvalid}
+          aria-label={ariaLabel ? `${ariaLabel} start date` : undefined}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-invalid={isInvalid || ariaInvalid || undefined}
+          aria-required={ariaRequired}
           aria-haspopup="dialog"
           aria-expanded={activeInput === 'start'}
           onClick={() => {
@@ -237,7 +251,11 @@ export function DateRangePicker({
           value={displayEnd}
           placeholder={endPlaceholder}
           disabled={isDisabled}
-          aria-invalid={isInvalid}
+          aria-label={ariaLabel ? `${ariaLabel} end date` : undefined}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-invalid={isInvalid || ariaInvalid || undefined}
+          aria-required={ariaRequired}
           aria-haspopup="dialog"
           aria-expanded={activeInput === 'end'}
           onClick={() => {
