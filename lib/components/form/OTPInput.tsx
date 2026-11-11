@@ -32,6 +32,12 @@ export interface OTPInputProps {
   helperText?: string;
   /** Error message */
   errorMessage?: string;
+  id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -65,6 +71,12 @@ export function OTPInput({
   label,
   helperText,
   errorMessage,
+  id,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: OTPInputProps) {
   const { trigger } = useHaptics();
   const [internalValue, setInternalValue] = React.useState(defaultValue);
@@ -186,6 +198,7 @@ export function OTPInput({
         {Array.from({ length }).map((_, idx) => (
           <input
             key={idx}
+            id={idx === 0 ? id : undefined}
             ref={(el) => {
               inputRefs.current[idx] = el;
             }}
@@ -203,7 +216,11 @@ export function OTPInput({
             }}
             onBlur={() => setFocusedIdx(null)}
             disabled={isDisabled}
-            aria-label={`Digit ${idx + 1} of ${length}`}
+            aria-label={ariaLabel ? `${ariaLabel} digit ${idx + 1} of ${length}` : `Digit ${idx + 1} of ${length}`}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={isInvalid || ariaInvalid || undefined}
+            aria-required={ariaRequired}
             style={{
               width: '48px',
               height: '48px',
