@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 // ─── Brand palette ────────────────────────────────────────────────────────────
 const COLORS = {
@@ -30,6 +32,10 @@ export interface SwitchProps {
   defaultChecked?: boolean;
   onChange?: (checked: boolean) => void;
   disabled?: boolean;
+  /** Haptic feedback intent/pattern on toggle. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this switch. */
+  disableHaptic?: boolean;
   /** Label shown to the right */
   label?: string;
   /** Helper text shown below the label */
@@ -56,6 +62,8 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
       defaultChecked = false,
       onChange,
       disabled = false,
+      haptic,
+      disableHaptic = false,
       label,
       description,
       name,
@@ -63,6 +71,7 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
     },
     ref,
   ) => {
+    const { trigger } = useHaptics();
     const c = COLORS[colorScheme];
     const sz = TRACK_SIZE[size];
     const internalId = id ?? React.useId();
@@ -74,6 +83,9 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
     const isOn = checked !== undefined ? checked : internalChecked;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!disabled && !disableHaptic && haptic !== false) {
+        trigger(haptic ?? 'selection');
+      }
       if (checked === undefined) setInternalChecked(e.target.checked);
       onChange?.(e.target.checked);
     };
