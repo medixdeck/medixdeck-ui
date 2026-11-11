@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 // ─── Brand palette (mirrors Button.tsx exactly) ───────────────────────────────
 const COLORS = {
@@ -28,6 +30,10 @@ export interface CheckboxProps {
   disabled?: boolean;
   /** Show indeterminate dash instead of tick */
   indeterminate?: boolean;
+  /** Haptic feedback intent/pattern on toggle. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this checkbox. */
+  disableHaptic?: boolean;
   children?: React.ReactNode;
   /** Helper text below the label */
   description?: string;
@@ -54,6 +60,8 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       onChange,
       disabled = false,
       indeterminate = false,
+      haptic,
+      disableHaptic = false,
       children,
       description,
       name,
@@ -62,6 +70,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     },
     ref,
   ) => {
+    const { trigger } = useHaptics();
     const c = COLORS[colorScheme];
     const uid = id ?? React.useId();
 
@@ -71,6 +80,9 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     const isOn = controlledChecked !== undefined ? controlledChecked : localChecked;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!disabled && !disableHaptic && haptic !== false) {
+        trigger(haptic ?? 'selection');
+      }
       if (controlledChecked === undefined) setLocalChecked(e.target.checked);
       onChange?.(e.target.checked);
     };
@@ -208,6 +220,10 @@ export interface RadioGroupProps {
   /** Brand color for the selected dot */
   colorScheme?: 'blue' | 'purple';
   direction?: 'row' | 'column';
+  /** Haptic feedback intent/pattern on selection. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this radio group. */
+  disableHaptic?: boolean;
 }
 
 /**
@@ -232,12 +248,18 @@ export function RadioGroup({
   options,
   colorScheme = 'blue',
   direction = 'column',
+  haptic,
+  disableHaptic = false,
 }: RadioGroupProps) {
+  const { trigger } = useHaptics();
   const c = COLORS[colorScheme];
   const [localValue, setLocalValue] = React.useState<string>('');
   const selectedValue = controlledValue !== undefined ? controlledValue : localValue;
 
   const handleChange = (val: string) => {
+    if (!disableHaptic && haptic !== false && val !== selectedValue) {
+      trigger(haptic ?? 'selection');
+    }
     if (controlledValue === undefined) setLocalValue(val);
     onChange?.(val);
   };
