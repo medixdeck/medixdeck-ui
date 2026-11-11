@@ -349,7 +349,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           placeholder={placeholder}
           disabled={disabled}
           readOnly={readOnly}
-          bg="bg.surface"
+          bg="bg"
           border="1px solid"
           borderColor={isInvalid ? 'red.500' : 'border'}
           borderRadius="md"
@@ -369,7 +369,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             outline: 'none',
           }}
           _dark={{
-            bg: 'bg.surface',
+            bg: 'bg',
             borderColor: isInvalid ? 'red.500' : 'border',
             color: 'text.heading',
             _placeholder: { color: 'text.muted' },

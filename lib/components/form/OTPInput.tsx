@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface OTPInputProps {
   /** Number of digits */
@@ -20,12 +22,22 @@ export interface OTPInputProps {
   isDisabled?: boolean;
   /** Whether to mask like a password */
   mask?: boolean;
+  /** Haptic feedback intent/pattern on digit entry/complete. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for OTP interactions. */
+  disableHaptic?: boolean;
   /** Label above the input */
   label?: string;
   /** Helper text */
   helperText?: string;
   /** Error message */
   errorMessage?: string;
+  id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -54,10 +66,19 @@ export function OTPInput({
   isInvalid = false,
   isDisabled = false,
   mask = false,
+  haptic,
+  disableHaptic = false,
   label,
   helperText,
   errorMessage,
+  id,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: OTPInputProps) {
+  const { trigger } = useHaptics();
   const [internalValue, setInternalValue] = React.useState(defaultValue);
   const [focusedIdx, setFocusedIdx] = React.useState<number | null>(null);
   const isControlled = value !== undefined;
@@ -73,6 +94,12 @@ export function OTPInput({
     : 'var(--medix-form-border, var(--chakra-colors-border, #E2E8F0))';
   const focusBorder = isInvalid ? '#DC2626' : colorScheme === 'purple' ? '#7700CC' : '#0685FF';
 
+  const fireOtpHaptic = (nextJoined: string) => {
+    if (isDisabled || disableHaptic || haptic === false) return;
+    const complete = nextJoined.replace(/\s/g, '').length === length;
+    trigger(haptic ?? (complete ? 'success' : 'selection'));
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
     if (e.key === 'Backspace') {
       e.preventDefault();
@@ -81,12 +108,14 @@ export function OTPInput({
         newDigits[idx] = '';
         const joined = newDigits.join('');
         if (!isControlled) setInternalValue(joined);
+        fireOtpHaptic(joined);
         onChange?.(joined);
       } else if (idx > 0) {
         inputRefs.current[idx - 1]?.focus();
         newDigits[idx - 1] = '';
         const joined = newDigits.join('');
         if (!isControlled) setInternalValue(joined);
+        fireOtpHaptic(joined);
         onChange?.(joined);
       }
     } else if (e.key === 'ArrowLeft' && idx > 0) {
@@ -113,6 +142,7 @@ export function OTPInput({
     newDigits[idx] = raw[0];
     const joined = newDigits.join('');
     if (!isControlled) setInternalValue(joined);
+    fireOtpHaptic(joined);
     onChange?.(joined);
     if (idx < length - 1) inputRefs.current[idx + 1]?.focus();
     if (joined.replace(/\s/g, '').length === length) onComplete?.(joined);
@@ -137,6 +167,7 @@ export function OTPInput({
 
     const joined = newDigits.join('');
     if (!isControlled) setInternalValue(joined);
+    fireOtpHaptic(joined);
     onChange?.(joined);
 
     // Move focus to the last box if complete, otherwise the next empty slot
@@ -167,6 +198,7 @@ export function OTPInput({
         {Array.from({ length }).map((_, idx) => (
           <input
             key={idx}
+            id={idx === 0 ? id : undefined}
             ref={(el) => {
               inputRefs.current[idx] = el;
             }}
@@ -184,7 +216,15 @@ export function OTPInput({
             }}
             onBlur={() => setFocusedIdx(null)}
             disabled={isDisabled}
-            aria-label={`Digit ${idx + 1} of ${length}`}
+            aria-label={
+              ariaLabel
+                ? `${ariaLabel} digit ${idx + 1} of ${length}`
+                : `Digit ${idx + 1} of ${length}`
+            }
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={isInvalid || ariaInvalid || undefined}
+            aria-required={ariaRequired}
             style={{
               width: '48px',
               height: '48px',

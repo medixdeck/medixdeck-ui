@@ -2,6 +2,8 @@
 
 import React, { useState, useRef, type KeyboardEvent } from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface TagsInputProps {
   /** Array of tag strings */
@@ -38,9 +40,18 @@ export interface TagsInputProps {
   id?: string;
   /** HTML input name */
   name?: string;
+  /** Haptic feedback intent/pattern on tag add/remove. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for tags interactions. */
+  disableHaptic?: boolean;
   /** Extra container styles */
   style?: React.CSSProperties;
   className?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 export type TagInputProps = TagsInputProps;
@@ -131,9 +142,17 @@ export function TagsInput({
   delimiter = ',',
   id,
   name,
+  haptic,
+  disableHaptic = false,
   style,
   className,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: TagsInputProps) {
+  const { trigger } = useHaptics();
   const fallbackId = React.useId();
   const inputId = id ?? fallbackId;
   const [inputValue, setInputValue] = useState('');
@@ -152,12 +171,14 @@ export function TagsInput({
       setInputValue('');
       return;
     }
+    if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
     onChange([...value, trimmed]);
     setInputValue('');
   };
 
   const removeTag = (indexToRemove: number) => {
     if (isDisabled || isReadOnly) return;
+    if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
     onChange(value.filter((_, idx) => idx !== indexToRemove));
   };
 
@@ -215,7 +236,7 @@ export function TagsInput({
         py={sz.py}
         px={sz.px}
         borderRadius="10px"
-        bg="bg.surface"
+        bg="bg"
         cursor={isDisabled ? 'not-allowed' : 'text'}
         opacity={isDisabled ? 0.55 : 1}
         transition="border-color 0.15s ease"
@@ -232,7 +253,7 @@ export function TagsInput({
             as="span"
             display="inline-flex"
             alignItems="center"
-            gap="1"
+            gap="1.5"
             px={sz.tagPx}
             py={sz.tagPy}
             borderRadius="full"
@@ -252,6 +273,18 @@ export function TagsInput({
                 colorScheme === 'purple' ? 'rgba(119, 0, 204, 0.4)' : 'rgba(6, 133, 255, 0.4)',
             }}
           >
+            <Box
+              as="span"
+              aria-hidden="true"
+              w="6px"
+              h="6px"
+              borderRadius="full"
+              flexShrink={0}
+              bg={colorScheme === 'purple' ? 'purple.500' : 'blue.500'}
+              _dark={{
+                bg: colorScheme === 'purple' ? 'purple.300' : 'blue.300',
+              }}
+            />
             <span>{tag}</span>
             {!isDisabled && !isReadOnly && (
               <button
@@ -304,6 +337,11 @@ export function TagsInput({
             placeholder={value.length === 0 ? placeholder : ''}
             disabled={isDisabled}
             readOnly={isReadOnly}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={isInvalid || ariaInvalid || undefined}
+            aria-required={ariaRequired}
             style={{
               flex: 1,
               minWidth: '120px',

@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 // ─── Reuses the same brand color map as Button.tsx ───────────────────────────
 
@@ -69,6 +71,10 @@ export interface IconButtonProps {
   isRound?: boolean;
   /** Disabled state */
   disabled?: boolean;
+  /** Haptic feedback intent/pattern on press. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this button. */
+  disableHaptic?: boolean;
   /** HTML type attribute */
   type?: 'button' | 'submit' | 'reset';
   /** Click handler */
@@ -99,12 +105,16 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       colorScheme = 'blue',
       isRound = false,
       disabled,
+      haptic,
+      disableHaptic = false,
       children,
       style,
+      onClick,
       ...props
     },
     ref,
   ) => {
+    const { trigger } = useHaptics();
     const c = COLORS[colorScheme];
     const sz = SIZE[size];
 
@@ -137,6 +147,12 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         ref={ref}
         type={props.type ?? 'button'}
         disabled={disabled}
+        onClick={(e) => {
+          if (!disabled && !disableHaptic && haptic !== false) {
+            trigger(haptic ?? 'impactLight');
+          }
+          onClick?.(e);
+        }}
         style={{
           display: 'inline-flex',
           alignItems: 'center',
