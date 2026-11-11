@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import { Calendar } from './Calendar';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface DatePickerProps {
   /** Controlled value (ISO date string: YYYY-MM-DD) */
@@ -23,6 +25,10 @@ export interface DatePickerProps {
   id?: string;
   /** Whether to also show time input */
   includeTime?: boolean;
+  /** Haptic feedback intent/pattern on open/selection. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this date picker. */
+  disableHaptic?: boolean;
 }
 
 /**
@@ -54,7 +60,10 @@ export function DatePicker({
   placeholder = 'Select date',
   id,
   includeTime = false,
+  haptic,
+  disableHaptic = false,
 }: DatePickerProps) {
+  const { trigger } = useHaptics();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -170,11 +179,16 @@ export function DatePicker({
           aria-invalid={isInvalid}
           aria-haspopup="dialog"
           aria-expanded={isOpen}
-          onClick={() => !isDisabled && setIsOpen(!isOpen)}
+          onClick={() => {
+            if (isDisabled) return;
+            if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+            setIsOpen(!isOpen);
+          }}
           onKeyDown={(e) => {
             if (!isDisabled) {
               if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
                 e.preventDefault();
+                if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
                 setIsOpen(true);
               } else if (e.key === 'Escape') {
                 setIsOpen(false);
@@ -237,7 +251,7 @@ export function DatePicker({
           borderRadius="card"
           border="1px solid"
           borderColor="border"
-          bg="bg.surface"
+          bg="bg"
           overflow="hidden"
         >
           <Calendar
@@ -246,6 +260,8 @@ export function DatePicker({
             minDate={parseLocalDate(min)}
             maxDate={parseLocalDate(max)}
             colorScheme={colorScheme}
+            haptic={haptic}
+            disableHaptic={disableHaptic}
           />
           {includeTime && (
             <Box px="5" pb="4" borderTop="1px solid" borderColor="border">

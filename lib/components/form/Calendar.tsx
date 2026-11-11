@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Box, Flex, Text, type BoxProps } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface CalendarProps extends Omit<BoxProps, 'onChange'> {
   value?: Date | null;
@@ -10,6 +12,10 @@ export interface CalendarProps extends Omit<BoxProps, 'onChange'> {
   maxDate?: Date;
   /** Brand color scheme ('blue' | 'purple') — defaults to 'blue' */
   colorScheme?: 'blue' | 'purple';
+  /** Haptic feedback intent/pattern on date/navigation selection. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for calendar interactions. */
+  disableHaptic?: boolean;
 }
 
 const WEEKDAYS = ['MON', 'TUES', 'WED', 'THURS', 'FRI', 'SAT', 'SUN'];
@@ -127,8 +133,14 @@ export function Calendar({
   minDate,
   maxDate,
   colorScheme = 'blue',
+  haptic,
+  disableHaptic = false,
   ...props
 }: CalendarProps) {
+  const { trigger } = useHaptics();
+  const fire = () => {
+    if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+  };
   const accentColor = colorScheme === 'purple' ? '#7700CC' : '#0685FF';
   const accentLight = colorScheme === 'purple' ? 'rgba(119,0,204,0.14)' : 'rgba(6,133,255,0.14)';
 
@@ -172,14 +184,17 @@ export function Calendar({
     (year === maxDate.getFullYear() && month < maxDate.getMonth());
 
   const handlePrevMonth = () => {
+    fire();
     setCurrentMonth(new Date(year, month - 1, 1));
   };
 
   const handleNextMonth = () => {
+    fire();
     setCurrentMonth(new Date(year, month + 1, 1));
   };
 
   const handleToday = () => {
+    fire();
     const today = new Date();
     setCurrentMonth(today);
     setViewMode('day');
@@ -193,12 +208,14 @@ export function Calendar({
 
   // ─── Month-picker selection ─────────────────────────────────────────────────
   const handleMonthSelect = (m: number) => {
+    fire();
     setCurrentMonth(new Date(year, m, 1));
     setViewMode('day');
   };
 
   // ─── Year-picker selection ──────────────────────────────────────────────────
   const handleYearSelect = (y: number) => {
+    fire();
     setCurrentMonth(new Date(y, month, 1));
     setYearPageOffset(0); // reset page offset for next time the year picker opens
     setViewMode('month'); // drop into month-picker after choosing a year
@@ -234,7 +251,14 @@ export function Calendar({
           isDisabled={outOfRange}
           accentColor={accentColor}
           accentLight={accentLight}
-          onClick={outOfRange ? undefined : () => onChange?.(new Date(year, month, i))}
+          onClick={
+            outOfRange
+              ? undefined
+              : () => {
+                  fire();
+                  onChange?.(new Date(year, month, i));
+                }
+          }
         />,
       );
     }
@@ -278,7 +302,10 @@ export function Calendar({
             direction="prev"
             enabled
             accentColor={accentColor}
-            onClick={() => setYearPageOffset((p) => p - 1)}
+            onClick={() => {
+              fire();
+              setYearPageOffset((p) => p - 1);
+            }}
             ariaLabel="Previous years"
           />
           <Text
@@ -293,7 +320,10 @@ export function Calendar({
             direction="next"
             enabled
             accentColor={accentColor}
-            onClick={() => setYearPageOffset((p) => p + 1)}
+            onClick={() => {
+              fire();
+              setYearPageOffset((p) => p + 1);
+            }}
             ariaLabel="Next years"
           />
         </Flex>
@@ -324,7 +354,7 @@ export function Calendar({
     <Box
       w="100%"
       maxW="360px"
-      bg="bg.surface"
+      bg="bg"
       borderRadius="card"
       p="5"
       fontFamily="var(--font-body)"
@@ -351,6 +381,7 @@ export function Calendar({
             accentColor={accentColor}
             accentLight={accentLight}
             onClick={() => {
+              fire();
               setViewMode((v) => (v === 'month' ? 'day' : 'month'));
               setYearPageOffset(0);
             }}
@@ -363,6 +394,7 @@ export function Calendar({
             accentColor={accentColor}
             accentLight={accentLight}
             onClick={() => {
+              fire();
               setViewMode((v) => (v === 'year' ? 'day' : 'year'));
               setYearPageOffset(0);
             }}
