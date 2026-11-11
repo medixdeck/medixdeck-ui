@@ -2,6 +2,17 @@
 
 All notable changes to `@medixdeck/ui` are documented here.
 
+## [Unreleased]
+
+### Changed
+
+- **`Badge` & `Tag` — leading status dots by default**:
+  - Added `showDot?: boolean` (default `true`) to `Badge` and primitive `Tag` to render a leading status dot for faster visual scanning.
+  - Dot colors are chosen per variant/status or color scheme to remain distinguishable from the component background (including solid variants).
+  - Set `showDot={false}` to restore the previous no-dot appearance.
+  - `TagsInput` tag pills now also render a leading dot by default for visual consistency.
+  - Updated Badge Storybook stories and `src/App.tsx` showcase.
+
 ## [0.1.27] - 2026-11-02
 
 ### Fixed — PWA install prompt
