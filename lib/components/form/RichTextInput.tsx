@@ -354,6 +354,11 @@ export interface RichTextInputProps {
    * Callback invoked when a saved draft is restored from localStorage on mount.
    */
   onDraftRestored?: (draft: RichTextDraftPayload) => void;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -1043,6 +1048,11 @@ export function RichTextInput({
   minHeight = '180px',
   maxHeight = '400px',
   maxLength,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
   showCharCount = false,
   toolbarOptions,
   className,
@@ -1457,6 +1467,11 @@ export function RichTextInput({
             onChange={handleMarkdownTextareaChange}
             placeholder={placeholder}
             disabled={disabled}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={isInvalid || ariaInvalid || undefined}
+            aria-required={ariaRequired}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             style={{
