@@ -4,6 +4,8 @@ import React from 'react';
 import { Box, type BoxProps } from '@chakra-ui/react';
 import { sanitizeHtml } from '../../utils/sanitizeHtml';
 import ReactMarkdown from 'react-markdown';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export interface AccordionItem {
   id: string;
@@ -30,6 +32,10 @@ export interface AccordionProps extends Omit<BoxProps, 'onChange'> {
    * Format of the answer string content. Default is "HTML".
    */
   answerType?: 'HTML' | 'MD';
+  /** Haptic feedback intent/pattern on item toggle. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for accordion toggles. */
+  disableHaptic?: boolean;
 }
 
 /**
@@ -59,12 +65,18 @@ export function Accordion({
   defaultOpenIds = [],
   colorScheme = 'blue',
   answerType = 'HTML',
+  haptic,
+  disableHaptic = false,
   ...props
 }: AccordionProps) {
+  const { trigger } = useHaptics();
   const scheme = SCHEME_COLORS[colorScheme];
   const [openIds, setOpenIds] = React.useState<Set<string>>(new Set(defaultOpenIds));
 
   const toggle = (id: string) => {
+    if (!disableHaptic && haptic !== false) {
+      trigger(haptic ?? 'selection');
+    }
     setOpenIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
