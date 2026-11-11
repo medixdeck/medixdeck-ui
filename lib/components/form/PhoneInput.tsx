@@ -28,6 +28,11 @@ export interface PhoneInputProps {
   helperText?: string;
   isDisabled?: boolean;
   id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -331,6 +336,11 @@ export function PhoneInput({
   helperText,
   isDisabled = false,
   id,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
 }: PhoneInputProps) {
   const fallbackId = React.useId();
   const inputId = id ?? fallbackId;
@@ -644,7 +654,11 @@ export function PhoneInput({
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
           disabled={isDisabled}
-          aria-invalid={isInvalid}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
+          aria-invalid={isInvalid || ariaInvalid || undefined}
+          aria-required={ariaRequired}
           style={{
             flex: 1,
             border: 'none',

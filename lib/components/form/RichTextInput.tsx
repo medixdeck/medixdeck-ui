@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
@@ -317,6 +319,10 @@ export interface RichTextInputProps {
   showCharCount?: boolean;
   /** Customize visible toolbar controls */
   toolbarOptions?: ToolbarOptions;
+  /** Haptic feedback intent/pattern for toolbar actions and mode toggles. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for rich text interactions. */
+  disableHaptic?: boolean;
   /** Additional CSS class on the wrapper */
   className?: string;
   /**
@@ -348,6 +354,11 @@ export interface RichTextInputProps {
    * Callback invoked when a saved draft is restored from localStorage on mount.
    */
   onDraftRestored?: (draft: RichTextDraftPayload) => void;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean | 'true' | 'false';
+  'aria-required'?: boolean | 'true' | 'false';
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -434,7 +445,10 @@ function ToolbarBtn({
   title,
   accentColor,
   children,
-}: ToolbarBtnProps) {
+  haptic,
+  disableHaptic,
+}: ToolbarBtnProps & { haptic?: HapticInput; disableHaptic?: boolean }) {
+  const { trigger } = useHaptics();
   const [hovered, setHovered] = React.useState(false);
 
   return (
@@ -443,7 +457,10 @@ function ToolbarBtn({
       title={title}
       onMouseDown={(e) => {
         e.preventDefault();
-        if (!disabled) onClick();
+        if (!disabled) {
+          if (!disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+          onClick();
+        }
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -633,12 +650,17 @@ function ModeSwitcher({
   onSelectMode,
   accentColor,
   disabled,
+  haptic,
+  disableHaptic,
 }: {
   currentMode: RichTextInputMode;
   onSelectMode: (mode: RichTextInputMode) => void;
   accentColor: string;
   disabled?: boolean;
+  haptic?: HapticInput;
+  disableHaptic?: boolean;
 }) {
+  const { trigger } = useHaptics();
   return (
     <Box
       display="inline-flex"
@@ -656,7 +678,10 @@ function ModeSwitcher({
       <button
         type="button"
         disabled={disabled}
-        onClick={() => onSelectMode('wysiwyg')}
+        onClick={() => {
+          if (!disabled && !disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+          onSelectMode('wysiwyg');
+        }}
         style={{
           padding: '2px 10px',
           fontSize: '11px',
@@ -675,7 +700,10 @@ function ModeSwitcher({
       <button
         type="button"
         disabled={disabled}
-        onClick={() => onSelectMode('markdown')}
+        onClick={() => {
+          if (!disabled && !disableHaptic && haptic !== false) trigger(haptic ?? 'selection');
+          onSelectMode('markdown');
+        }}
         style={{
           padding: '2px 10px',
           fontSize: '11px',
@@ -741,7 +769,7 @@ function Toolbar({
       py="1.5"
       borderBottom="1px solid"
       borderColor="border"
-      bg="bg.surface"
+      bg="bg"
       style={{ background: 'var(--medix-form-bg)', borderBottomColor: 'var(--medix-form-border)' }}
     >
       <Box display="flex" alignItems="center" flexWrap="wrap" gap="0.5">
@@ -1020,6 +1048,11 @@ export function RichTextInput({
   minHeight = '180px',
   maxHeight = '400px',
   maxLength,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  'aria-required': ariaRequired,
   showCharCount = false,
   toolbarOptions,
   className,
@@ -1399,7 +1432,7 @@ export function RichTextInput({
       <Box
         borderRadius="md"
         overflow="hidden"
-        bg="bg.surface"
+        bg="bg"
         opacity={disabled ? 0.6 : 1}
         style={{
           border: `1.5px solid ${borderColor}`,
@@ -1434,6 +1467,11 @@ export function RichTextInput({
             onChange={handleMarkdownTextareaChange}
             placeholder={placeholder}
             disabled={disabled}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={isInvalid || ariaInvalid || undefined}
+            aria-required={ariaRequired}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             style={{

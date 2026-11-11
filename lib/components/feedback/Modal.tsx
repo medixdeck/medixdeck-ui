@@ -13,6 +13,8 @@ import {
   DialogCloseTrigger,
   DialogBackdrop,
 } from '@chakra-ui/react';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 
 export type ModalSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 export type ModalMobileVariant = 'centered' | 'bottom-sheet';
@@ -36,6 +38,10 @@ export interface ModalProps {
    * @default "bottom-sheet"
    */
   mobileVariant?: ModalMobileVariant;
+  /** Haptic feedback intent/pattern when the modal closes. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for modal close actions. */
+  disableHaptic?: boolean;
 }
 
 // Chakra UI v3 DialogRoot accepts only its own size union
@@ -99,7 +105,10 @@ export function Modal({
   footer,
   children,
   mobileVariant = 'bottom-sheet',
+  haptic,
+  disableHaptic = false,
 }: ModalProps) {
+  const { trigger } = useHaptics();
   const hasHeader = Boolean(title || description);
 
   React.useEffect(() => {
@@ -112,7 +121,10 @@ export function Modal({
     <DialogRoot
       open={isOpen}
       onOpenChange={(details) => {
-        if (!details.open) onClose();
+        if (!details.open) {
+          if (!disableHaptic && haptic !== false) trigger(haptic ?? 'impactLight');
+          onClose();
+        }
       }}
       closeOnInteractOutside={closeOnOverlayClick}
       closeOnEscape={closeOnEscape}
@@ -126,8 +138,12 @@ export function Modal({
         display="flex"
         alignItems={isBottomSheet ? { base: 'flex-end', md: 'center' } : 'center'}
         justifyContent="center"
+        p={isBottomSheet ? { base: '0', md: '4' } : { base: '4', md: '6' }}
       >
         <DialogContent
+          display="flex"
+          flexDirection="column"
+          overflow="hidden"
           bg="bg.surface"
           border="1px solid"
           borderColor="border"
@@ -138,6 +154,14 @@ export function Modal({
           w={{ base: isBottomSheet ? 'full' : undefined, md: undefined }}
           /* Rounded top corners only on mobile bottom sheet */
           borderTopRadius={isBottomSheet ? { base: 'modal', md: 'modal' } : 'modal'}
+          maxH={
+            isBottomSheet
+              ? {
+                  base: 'calc(100dvh - env(safe-area-inset-top, 0px) - 0.5rem)',
+                  md: 'calc(100dvh - 3rem)',
+                }
+              : { base: 'calc(100dvh - 2rem)', md: 'calc(100dvh - 3rem)' }
+          }
           style={
             isBottomSheet
               ? ({
@@ -149,6 +173,7 @@ export function Modal({
           }
         >
           <DialogHeader
+            flexShrink={0}
             borderBottom={hasHeader ? '1px solid' : 'none'}
             borderColor="border"
             px="6"
@@ -241,12 +266,20 @@ export function Modal({
             </DialogCloseTrigger>
           </DialogHeader>
 
-          <DialogBody px="6" py="5">
+          <DialogBody
+            px="6"
+            py="5"
+            flex="1"
+            minH="0"
+            overflowY="auto"
+            style={{ overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}
+          >
             {children}
           </DialogBody>
 
           {footer && (
             <DialogFooter
+              flexShrink={0}
               borderTop="1px solid"
               borderColor="border"
               px="6"
@@ -257,7 +290,9 @@ export function Modal({
               marginY="1rem"
               /* On mobile bottom-sheet, add safe-area inset */
               style={
-                isBottomSheet ? { paddingBottom: 'env(safe-area-inset-bottom, 16px)' } : undefined
+                isBottomSheet
+                  ? { paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 16px)' }
+                  : undefined
               }
             >
               {footer}

@@ -23,6 +23,24 @@ export type { ThemeMode, ThemeModeSetting, UseThemeModeResult } from './hooks/us
 
 export { useColorScheme } from './hooks/useColorScheme';
 export type { ColorScheme, UseColorSchemeResult } from './hooks/useColorScheme';
+
+export { useHaptics, HapticsProvider } from './hooks/useHaptics';
+export type { UseHapticsResult, HapticsProviderProps } from './hooks/useHaptics';
+export {
+  canUseHaptics,
+  cancelHaptic,
+  DEFAULT_HAPTIC_PATTERNS,
+  isReducedMotionPreferred,
+  resolveHapticPattern,
+  triggerHaptic,
+} from './utils/haptics';
+export type {
+  HapticIntent,
+  HapticInput,
+  HapticPattern,
+  HapticsConfig,
+  ResolvedHapticsConfig,
+} from './utils/haptics';
 export { system, medixConfig } from './theme';
 export { colorTokens } from './theme/colors';
 export { typographyTokens, textStyleTokens } from './theme/typography';
@@ -180,13 +198,17 @@ export type {
 } from './components/layout/Footer';
 
 export { Breadcrumb } from './components/navigation/Breadcrumb';
-export type { BreadcrumbProps, BreadcrumbItem } from './components/navigation/Breadcrumb';
+export type {
+  BreadcrumbProps,
+  BreadcrumbItem,
+  BreadcrumbColorScheme,
+} from './components/navigation/Breadcrumb';
 
 export { Tabs } from './components/navigation/Tabs';
-export type { TabsProps, TabItem } from './components/navigation/Tabs';
+export type { TabsProps, TabItem, TabsColorScheme } from './components/navigation/Tabs';
 
 export { Pagination } from './components/navigation/Pagination';
-export type { PaginationProps } from './components/navigation/Pagination';
+export type { PaginationProps, PaginationColorScheme } from './components/navigation/Pagination';
 
 export { Stepper } from './components/navigation/Stepper';
 export type { StepperProps, Step } from './components/navigation/Stepper';
