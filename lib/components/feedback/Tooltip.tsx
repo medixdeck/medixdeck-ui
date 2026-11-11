@@ -28,6 +28,13 @@ export interface TooltipProps extends Omit<TooltipRootProps, 'content'> {
    * @default "top"
    */
   placement?: TooltipPlacement;
+  /**
+   * On touch/coarse-pointer devices, toggles tooltip open/close on tap by default
+   * for accessibility. Set to `false` for controls with a primary tap action
+   * (links/buttons/icon actions) so the tap is not intercepted.
+   * @default true
+   */
+  toggleOnTouch?: boolean;
 }
 
 /**
@@ -35,8 +42,9 @@ export interface TooltipProps extends Omit<TooltipRootProps, 'content'> {
  *
  * Hover label for icons, truncated text, and contextual hints.
  * On touch / mobile devices, tapping the trigger toggles the tooltip open
- * and an outside tap dismisses it — ensuring the content is always accessible
- * without relying on hover events.
+ * and an outside tap dismisses it by default — ensuring the content is accessible
+ * without relying on hover events. For controls with a primary tap action, set
+ * `toggleOnTouch={false}` so taps pass through.
  *
  * @example
  * ```tsx
@@ -49,7 +57,13 @@ export interface TooltipProps extends Omit<TooltipRootProps, 'content'> {
  * </Tooltip>
  * ```
  */
-export function Tooltip({ label, children, placement = 'top', ...props }: TooltipProps) {
+export function Tooltip({
+  label,
+  children,
+  placement = 'top',
+  toggleOnTouch = true,
+  ...props
+}: TooltipProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLSpanElement>(null);
 
@@ -59,9 +73,11 @@ export function Tooltip({ label, children, placement = 'top', ...props }: Toolti
     return window.matchMedia('(pointer: coarse)').matches;
   }, []);
 
-  // Close on outside tap — only active when tooltip is open on touch devices
+  const touchToggleEnabled = isTouchDevice && toggleOnTouch;
+
+  // Close on outside tap — only active when tooltip tap-toggle is open on touch devices
   React.useEffect(() => {
-    if (!isTouchDevice || !isOpen) return;
+    if (!touchToggleEnabled || !isOpen) return;
 
     const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
       if (triggerRef.current && !triggerRef.current.contains(e.target as Node)) {
@@ -75,10 +91,17 @@ export function Tooltip({ label, children, placement = 'top', ...props }: Toolti
       document.removeEventListener('mousedown', handleOutsideClick);
       document.removeEventListener('touchstart', handleOutsideClick);
     };
-  }, [isTouchDevice, isOpen]);
+  }, [touchToggleEnabled, isOpen]);
+
+  // If touch toggle becomes disabled, ensure controlled-open state is reset
+  React.useEffect(() => {
+    if (!touchToggleEnabled && isOpen) {
+      setIsOpen(false);
+    }
+  }, [touchToggleEnabled, isOpen]);
 
   const handleTriggerClick = (e: React.MouseEvent) => {
-    if (!isTouchDevice) return;
+    if (!touchToggleEnabled) return;
     e.preventDefault();
     e.stopPropagation();
     setIsOpen((prev) => !prev);
@@ -87,8 +110,8 @@ export function Tooltip({ label, children, placement = 'top', ...props }: Toolti
   return (
     <ChakraTooltip.Root
       positioning={{ placement }}
-      open={isTouchDevice ? isOpen : undefined}
-      onOpenChange={isTouchDevice ? (d) => setIsOpen(d.open) : undefined}
+      open={touchToggleEnabled ? isOpen : undefined}
+      onOpenChange={touchToggleEnabled ? (d) => setIsOpen(d.open) : undefined}
       {...props}
     >
       <ChakraTooltip.Trigger asChild>
