@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createToaster, Toaster as ChakraToaster, ToastRoot } from '@chakra-ui/react';
 import { Alert, type AlertStatus, type AlertVariant } from './Alert';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput, HapticIntent } from '../../utils/haptics';
 
 // Inject countdown progress keyframe once
 if (typeof document !== 'undefined') {
@@ -36,6 +38,10 @@ export type ToastOptions = {
   description?: string | React.ReactNode;
   type?: AlertStatus;
   duration?: number;
+  /** Haptic feedback intent/pattern when this toast appears. Set `false` to disable. */
+  haptic?: HapticInput;
+  /** Disable haptic feedback for this toast. */
+  disableHaptic?: boolean;
 };
 
 export const toast = Object.assign(
@@ -45,6 +51,10 @@ export const toast = Object.assign(
       description: options.description as any,
       type: options.type || 'info',
       duration: options.duration ?? 4000,
+      meta: {
+        ...(options.haptic !== undefined ? { haptic: options.haptic } : {}),
+        ...(options.disableHaptic !== undefined ? { disableHaptic: options.disableHaptic } : {}),
+      },
     });
   },
   {
@@ -68,12 +78,44 @@ const progressColors: Record<AlertStatus, string> = {
   info: '#0685FF',
 };
 
+const toastFiredHaptics = new Set<string>();
+
+function getToastHapticIntent(status: AlertStatus): HapticIntent {
+  switch (status) {
+    case 'success':
+      return 'success';
+    case 'error':
+      return 'error';
+    case 'warning':
+      return 'warning';
+    case 'info':
+    default:
+      return 'notification';
+  }
+}
+
 function ToastCard({ toast }: { toast: any }) {
   const [isHovered, setIsHovered] = useState(false);
+  const { trigger } = useHaptics();
   const variant = (toast.meta?.variant as AlertVariant) || 'subtle';
   const duration = toast.duration ?? 4000;
   const status: AlertStatus = (toast.type as AlertStatus) || 'info';
   const barColor = progressColors[status] || '#0685FF';
+
+  useEffect(() => {
+    const id = toast?.id as string | undefined;
+    if (!id || toastFiredHaptics.has(id)) return;
+
+    const disableHaptic = toast?.meta?.disableHaptic === true;
+    const hapticOverride = toast?.meta?.haptic as HapticInput | undefined;
+    if (disableHaptic || hapticOverride === false) {
+      toastFiredHaptics.add(id);
+      return;
+    }
+
+    toastFiredHaptics.add(id);
+    trigger(hapticOverride ?? getToastHapticIntent(status));
+  }, [toast?.id, toast?.meta?.disableHaptic, toast?.meta?.haptic, status, trigger]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
