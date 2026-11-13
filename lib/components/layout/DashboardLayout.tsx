@@ -4,6 +4,8 @@ import React, { useState, useRef, useEffect, useId } from 'react';
 import { Box, chakra, type BoxProps } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useThemeMode, type ThemeModeSetting } from '../../hooks/useThemeMode';
+import { useHaptics } from '../../hooks/useHaptics';
+import type { HapticInput } from '../../utils/haptics';
 import { Logo } from '../primitive/Logo';
 import { Avatar } from '../primitive/Avatar';
 import { Tooltip } from '../feedback/Tooltip';
@@ -665,6 +667,19 @@ export interface DashboardLayoutProps extends Omit<BoxProps, 'children'> {
    * Custom slot to completely override the environment banner UI while preserving layout flow.
    */
   environmentBannerSlot?: React.ReactNode;
+
+  /**
+   * Haptic feedback intent/pattern for dashboard sidebar and mobile menu interactions.
+   * Set `false` to disable menu haptics for this layout instance.
+   * @default "selection"
+   */
+  haptic?: HapticInput;
+
+  /**
+   * Disable haptic feedback for dashboard sidebar and mobile menu interactions.
+   * @default false
+   */
+  disableHaptic?: boolean;
 }
 
 // ─── Helper: default link renderer ───────────────────────────────────────────
@@ -1251,6 +1266,8 @@ function SidebarNavItem({
   scheme,
   isCollapsed = false,
   isSubItem = false,
+  menuHaptic = 'selection',
+  menuHapticsDisabled = false,
 }: {
   item: DashboardNavItem;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
@@ -1258,7 +1275,14 @@ function SidebarNavItem({
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
   isCollapsed?: boolean;
   isSubItem?: boolean;
+  menuHaptic?: HapticInput;
+  menuHapticsDisabled?: boolean;
 }) {
+  const { trigger } = useHaptics();
+  const fireMenuHaptic = React.useCallback(() => {
+    if (menuHapticsDisabled || menuHaptic === false) return;
+    trigger(menuHaptic ?? 'selection');
+  }, [menuHapticsDisabled, menuHaptic, trigger]);
   const [hovered, setHovered] = useState(false);
   const [focusVisible, setFocusVisible] = useState(false);
   const [flyoutOpen, setFlyoutOpen] = useState(false);
@@ -1307,7 +1331,10 @@ function SidebarNavItem({
           aria-label={item.label}
           aria-haspopup="menu"
           aria-expanded={flyoutOpen}
-          onClick={() => setFlyoutOpen((o) => !o)}
+          onClick={() => {
+            fireMenuHaptic();
+            setFlyoutOpen((o) => !o);
+          }}
           onFocus={(e) => setFocusVisible(e.currentTarget.matches(':focus-visible'))}
           onBlur={() => setFocusVisible(false)}
           onMouseEnter={() => setHovered(true)}
@@ -1479,6 +1506,8 @@ function SidebarNavItem({
                         setFlyoutOpen(false);
                         onClick?.();
                       }}
+                      menuHaptic={menuHaptic}
+                      menuHapticsDisabled={menuHapticsDisabled}
                       scheme={scheme}
                       isCollapsed={false}
                       isSubItem={true}
@@ -1513,7 +1542,10 @@ function SidebarNavItem({
             aria-label={item.label}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            onClick={onClick}
+            onClick={() => {
+              fireMenuHaptic();
+              onClick?.();
+            }}
             style={{
               background: isActive
                 ? scheme.activeBgLight
@@ -1621,7 +1653,14 @@ function SidebarNavItem({
       position="relative"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={!hasSubItems ? onClick : undefined}
+      onClick={
+        !hasSubItems
+          ? () => {
+              fireMenuHaptic();
+              onClick?.();
+            }
+          : undefined
+      }
       style={{
         background: isActive ? scheme.activeBgLight : hovered ? scheme.hoverBgLight : 'transparent',
         boxShadow: isActive && !hasSubItems ? `inset 3px 0 0 ${scheme.solid}` : undefined,
@@ -1747,7 +1786,10 @@ function SidebarNavItem({
           type="button"
           aria-expanded={expanded}
           aria-controls={subMenuId}
-          onClick={() => setExpanded((e) => !e)}
+          onClick={() => {
+            fireMenuHaptic();
+            setExpanded((e) => !e);
+          }}
           onFocus={(e) => {
             setFocusVisible(e.currentTarget.matches(':focus-visible'));
           }}
@@ -1788,6 +1830,8 @@ function SidebarNavItem({
                 scheme={scheme}
                 isCollapsed={false}
                 isSubItem={true}
+                menuHaptic={menuHaptic}
+                menuHapticsDisabled={menuHapticsDisabled}
               />
             ))}
           </Box>
@@ -1803,6 +1847,8 @@ interface MobileBottomNavProps {
   items: DashboardMobileNavItem[];
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
+  menuHaptic?: HapticInput;
+  menuHapticsDisabled?: boolean;
 }
 
 // ─── Keyframe singleton injector ────────────────────────────────────────────────────
@@ -1822,10 +1868,22 @@ function injectMobileNavKeyframe() {
   mobileNavKfInjected = true;
 }
 
-function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
+function MobileBottomNav({
+  items,
+  renderLink,
+  scheme,
+  menuHaptic = 'selection',
+  menuHapticsDisabled = false,
+}: MobileBottomNavProps) {
+  const { trigger } = useHaptics();
   React.useEffect(() => {
     injectMobileNavKeyframe();
   }, []);
+
+  const fireMenuHaptic = React.useCallback(() => {
+    if (menuHapticsDisabled || menuHaptic === false) return;
+    trigger(menuHaptic ?? 'selection');
+  }, [menuHapticsDisabled, menuHaptic, trigger]);
 
   return (
     <Box
@@ -1989,6 +2047,7 @@ function MobileBottomNav({ items, renderLink, scheme }: MobileBottomNavProps) {
             justifyContent="center"
             h="16"
             style={{ textDecoration: 'none' }}
+            onClick={fireMenuHaptic}
           >
             {renderLink(navItem, tabContent)}
           </Box>
@@ -2204,11 +2263,21 @@ function SidebarScoreCard({
   data,
   renderLink,
   isCollapsed = false,
+  menuHaptic = 'selection',
+  menuHapticsDisabled = false,
 }: {
   data: DashboardScoreCardData;
   renderLink: (item: DashboardNavItem, children: React.ReactNode) => React.ReactNode;
   isCollapsed?: boolean;
+  menuHaptic?: HapticInput;
+  menuHapticsDisabled?: boolean;
 }) {
+  const { trigger } = useHaptics();
+  const fireMenuHaptic = React.useCallback(() => {
+    if (menuHapticsDisabled || menuHaptic === false) return;
+    if (!data.link) return;
+    trigger(menuHaptic ?? 'selection');
+  }, [menuHapticsDisabled, menuHaptic, trigger, data.link]);
   const tier = getMedixScoreTierMeta(data.tier);
   const initials = data.name
     .split(' ')
@@ -2234,6 +2303,7 @@ function SidebarScoreCard({
             mx="auto"
             aria-label={`${data.role} ${data.name}`}
             cursor={data.link ? 'pointer' : 'default'}
+            onClick={fireMenuHaptic}
           >
             <div
               style={{
@@ -2296,6 +2366,7 @@ function SidebarScoreCard({
       bg="bg"
       overflow="hidden"
       style={{ cursor: data.link ? 'pointer' : 'default' }}
+      onClick={fireMenuHaptic}
       _hover={
         data.link ? { borderColor: tier.ring, boxShadow: `0 0 0 1px ${tier.ring}40` } : undefined
       }
@@ -2442,6 +2513,8 @@ interface SidebarProps {
   scheme: (typeof SCHEME_COLORS)[DashboardColorScheme];
   /** Optional doctor score card rendered below the logo on desktop only. */
   scoreCard?: DashboardScoreCardData;
+  menuHaptic?: HapticInput;
+  menuHapticsDisabled?: boolean;
 }
 
 function Sidebar({
@@ -2460,8 +2533,15 @@ function Sidebar({
   collapseTogglePlacement,
   scheme,
   scoreCard,
+  menuHaptic = 'selection',
+  menuHapticsDisabled = false,
 }: SidebarProps) {
   const [logoutHovered, setLogoutHovered] = useState(false);
+  const { trigger } = useHaptics();
+  const fireMenuHaptic = React.useCallback(() => {
+    if (menuHapticsDisabled || menuHaptic === false) return;
+    trigger(menuHaptic ?? 'selection');
+  }, [menuHapticsDisabled, menuHaptic, trigger]);
 
   return (
     <>
@@ -2471,7 +2551,7 @@ function Sidebar({
           display={{ base: 'block', md: 'none' }}
           position="fixed"
           inset="0"
-          zIndex="overlay"
+          zIndex={{ base: 1999, md: 'overlay' }}
           bg="blackAlpha.500"
           onClick={onClose}
           aria-hidden="true"
@@ -2490,7 +2570,7 @@ function Sidebar({
           base: `${sidebarWidth}px`,
           md: `${isCollapsed ? collapsedSidebarWidth : sidebarWidth}px`,
         }}
-        zIndex={{ base: 'modal', md: isCollapsed ? 1200 : 'sticky' }}
+        zIndex={{ base: 2000, md: isCollapsed ? 1200 : 'sticky' }}
         bg="bg"
         borderRight="1px solid"
         borderColor="border"
@@ -2556,7 +2636,10 @@ function Sidebar({
                     color="text.muted"
                     cursor="pointer"
                     _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
-                    onClick={onToggleCollapse}
+                    onClick={() => {
+                      fireMenuHaptic();
+                      onToggleCollapse?.();
+                    }}
                     aria-label="Expand sidebar"
                     transition="background 0.15s ease, color 0.15s ease"
                   >
@@ -2597,7 +2680,10 @@ function Sidebar({
                     color="text.muted"
                     cursor="pointer"
                     _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
-                    onClick={onToggleCollapse}
+                    onClick={() => {
+                      fireMenuHaptic();
+                      onToggleCollapse?.();
+                    }}
                     aria-label="Collapse sidebar"
                     transition="background 0.15s ease, color 0.15s ease"
                   >
@@ -2618,7 +2704,13 @@ function Sidebar({
             flexShrink={0}
             pt={isCollapsed ? '1' : '3'}
           >
-            <SidebarScoreCard data={scoreCard} renderLink={renderLink} isCollapsed={isCollapsed} />
+            <SidebarScoreCard
+              data={scoreCard}
+              renderLink={renderLink}
+              isCollapsed={isCollapsed}
+              menuHaptic={menuHaptic}
+              menuHapticsDisabled={menuHapticsDisabled}
+            />
           </Box>
         )}
 
@@ -2662,6 +2754,8 @@ function Sidebar({
                     onClick={onClose}
                     scheme={scheme}
                     isCollapsed={isCollapsed}
+                    menuHaptic={menuHaptic}
+                    menuHapticsDisabled={menuHapticsDisabled}
                   />
                 ))}
               </Box>
@@ -2700,6 +2794,7 @@ function Sidebar({
                 onMouseEnter={() => setLogoutHovered(true)}
                 onMouseLeave={() => setLogoutHovered(false)}
                 onClick={() => {
+                  fireMenuHaptic();
                   onClose();
                   onLogout?.();
                 }}
@@ -2732,6 +2827,7 @@ function Sidebar({
               onMouseEnter={() => setLogoutHovered(true)}
               onMouseLeave={() => setLogoutHovered(false)}
               onClick={() => {
+                fireMenuHaptic();
                 onClose();
                 onLogout?.();
               }}
@@ -2779,6 +2875,8 @@ interface TopBarProps {
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
   collapseTogglePlacement?: 'sidebar-header' | 'topbar' | 'both' | 'none';
+  menuHaptic?: HapticInput;
+  menuHapticsDisabled?: boolean;
 }
 
 function TopBar({
@@ -2796,8 +2894,15 @@ function TopBar({
   isCollapsed = false,
   onToggleCollapse,
   collapseTogglePlacement = 'sidebar-header',
+  menuHaptic = 'selection',
+  menuHapticsDisabled = false,
 }: TopBarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { trigger } = useHaptics();
+  const fireMenuHaptic = React.useCallback(() => {
+    if (menuHapticsDisabled || menuHaptic === false) return;
+    trigger(menuHaptic ?? 'selection');
+  }, [menuHapticsDisabled, menuHaptic, trigger]);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const uid = useId();
   const menuButtonId = `user-menu-button-${uid}`;
@@ -2845,7 +2950,10 @@ function TopBar({
         color="text.body"
         borderRadius="md"
         _hover={{ bg: 'bg.subtle' }}
-        onClick={onMenuToggle}
+        onClick={() => {
+          fireMenuHaptic();
+          onMenuToggle();
+        }}
         aria-label={isSidebarOpen ? 'Close navigation menu' : 'Open navigation menu'}
         aria-expanded={isSidebarOpen}
       >
@@ -2874,7 +2982,10 @@ function TopBar({
               color="text.muted"
               cursor="pointer"
               _hover={{ bg: 'bg.subtle', color: 'text.heading' }}
-              onClick={onToggleCollapse}
+              onClick={() => {
+                fireMenuHaptic();
+                onToggleCollapse?.();
+              }}
               aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               transition="background 0.15s ease, color 0.15s ease"
             >
@@ -3187,6 +3298,8 @@ export function DashboardLayout({
   showEnvironmentBanner,
   environmentBanner,
   environmentBannerSlot,
+  haptic,
+  disableHaptic = false,
   ...rest
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -3213,6 +3326,8 @@ export function DashboardLayout({
 
   const scheme = SCHEME_COLORS[colorScheme];
   const hasMobileNav = !!(mobileNavItems && mobileNavItems.length > 0);
+  const menuHaptic = haptic ?? 'selection';
+  const menuHapticsDisabled = !!disableHaptic;
 
   const resolvedGreeting = greeting ?? autoGreeting();
   const resolvedLogo = logo ?? <Logo variant={colorScheme} height={26} />;
@@ -3252,6 +3367,8 @@ export function DashboardLayout({
         collapseTogglePlacement={collapseTogglePlacement}
         scheme={scheme}
         scoreCard={scoreCard}
+        menuHaptic={menuHaptic}
+        menuHapticsDisabled={menuHapticsDisabled}
       />
 
       {/* ── Main content area (offset by sidebar width on desktop) ── */}
@@ -3295,6 +3412,8 @@ export function DashboardLayout({
           isCollapsed={isCollapsed}
           onToggleCollapse={handleToggleCollapse}
           collapseTogglePlacement={collapseTogglePlacement}
+          menuHaptic={menuHaptic}
+          menuHapticsDisabled={menuHapticsDisabled}
         />
 
         {/* Page content */}
@@ -3316,7 +3435,13 @@ export function DashboardLayout({
 
       {/* ── Mobile bottom navigation ── */}
       {hasMobileNav && (
-        <MobileBottomNav items={mobileNavItems!} renderLink={renderLink} scheme={scheme} />
+        <MobileBottomNav
+          items={mobileNavItems!}
+          renderLink={renderLink}
+          scheme={scheme}
+          menuHaptic={menuHaptic}
+          menuHapticsDisabled={menuHapticsDisabled}
+        />
       )}
     </Box>
   );
