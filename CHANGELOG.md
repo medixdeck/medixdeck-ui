@@ -16,6 +16,7 @@ All notable changes to `@medixdeck/ui` are documented here.
 ### Added
 
 - **DashboardLayout haptics**: added optional `haptic` and `disableHaptic` props to configure haptic feedback for dashboard sidebar and mobile menu interactions (defaults to global haptics behavior with `selection` intent).
+- **Toast haptics**: toast appearances now trigger haptic feedback mapped by status (`success`/`error`/`warning` → matching intents, `info`/default → `notification`), with optional per-toast `haptic` and `disableHaptic` overrides in `ToastOptions`.
 
 ### Improved
 
