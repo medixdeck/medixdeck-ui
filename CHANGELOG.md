@@ -13,8 +13,14 @@ All notable changes to `@medixdeck/ui` are documented here.
   - `TagsInput` tag pills now also render a leading dot by default for visual consistency.
   - Updated Badge Storybook stories and `src/App.tsx` showcase.
 
+### Added
+
+- **DashboardLayout haptics**: added optional `haptic` and `disableHaptic` props to configure haptic feedback for dashboard sidebar and mobile menu interactions (defaults to global haptics behavior with `selection` intent).
+
 ### Improved
 
+- **DashboardLayout menu interactions**: sidebar menu clicks (leaf and nested items, flyout/accordion toggles, score card navigation, logout, and sidebar collapse/expand controls), mobile hamburger toggle, and mobile bottom navigation taps now trigger haptic feedback when supported/enabled.
+- **DashboardLayout mobile stacking**: increased the mobile sidebar drawer and overlay z-index so the sidebar and its links reliably stack above dashboard chrome (top bar, environment banner, and mobile bottom navigation) on small screens.
 - **Accessibility & form semantics (incremental backlog pass)**:
   - `FormControl` now generates stable control IDs and wires label/helper/error associations (`aria-describedby`, `aria-invalid`, `aria-required`) to valid child controls.
   - Added/forwarded ARIA props (`id`, `name`, `aria-label`, `aria-labelledby`, `aria-describedby`, `aria-invalid`, `aria-required`) and baseline roles/keyboard behavior to custom controls including `Select`, `Combobox`, `DatePicker`, `DateRangePicker`, `PhoneInput`, `TagsInput`, `FileUpload`, `OTPInput`, `Switch`, `Checkbox`, `RadioGroup`, and `RichTextInput` (markdown mode).
